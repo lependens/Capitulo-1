@@ -17,6 +17,13 @@ Este documento recoge pequeños objetivos que sean **realistas y alcanzables**, 
 
 **Beneficio:** Base de datos confiable y actualizada lista para análisis y entrenamientos de modelos.
 
+09/09/2025: Con siarID he podido conseguir una lista de todas las estaciones de España, con los siguientes datos:
+1. Nombre estación
+2. Código estación
+3. Nombre provincia
+4. Latitud y altitud
+5. Fecha inicio datos
+
 ---
 
 ## 2. Exploración y análisis preliminar de los datos

@@ -1,0 +1,90 @@
+import pandas as pd
+import requests
+import json
+import time
+from datetime import datetime, timedelta
+import os
+
+# Configuración
+API_BASE = "https://servicio.mapama.gob.es/apisiar/API/v1"
+TIPO_DATOS = "Diarios"  # Datos diarios
+AMBITO = "Estacion"
+CLAVE_API = "-bbkRtYLf7hUBgqUJ0J_BfVi_DD_2ATP-F5h_MR8-haK1udnC9"  # Tu clave API
+CODIGO_ESTACION = "IB01"  # Cambia aquí para otras estaciones (ej. "IB02")
+ARCHIVO_ESTACIONES = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/estaciones_baleares.csv'
+CARPETA_SALIDA = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'
+ARCHIVO_FINAL = os.path.join(CARPETA_SALIDA, f"{CODIGO_ESTACION}_datos_completos.csv")  # Archivo combinado final
+
+# Crear carpeta de salida si no existe
+os.makedirs(CARPETA_SALIDA, exist_ok=True)
+
+# Cargar el archivo de estaciones
+df_estaciones = pd.read_csv(ARCHIVO_ESTACIONES)
+
+# Encontrar la fila de la estación por código
+estacion_row = df_estaciones[df_estaciones['Codigo'] == CODIGO_ESTACION]
+if estacion_row.empty:
+    print(f"Estación {CODIGO_ESTACION} no encontrada en el archivo.")
+    exit()
+
+# Obtener fecha de instalación desde el archivo
+fecha_instalacion_str = estacion_row['Fecha_Instalacion'].iloc[0]
+FECHA_INICIO = pd.to_datetime(fecha_instalacion_str, format='%Y-%m-%dT%H:%M:%S').date()
+print(f"Fecha de inicio para {CODIGO_ESTACION}: {FECHA_INICIO}")
+
+FECHA_LIMITE = datetime(2024, 12, 31).date()  # Fin de 2024
+
+# Función para obtener datos de un rango de fechas
+def fetch_data_mes(codigo, fecha_inicio, fecha_fin, clave_api):
+    url = f"{API_BASE}/Datos/{TIPO_DATOS}/{AMBITO}?Id={codigo}&FechaInicial={fecha_inicio}&FechaFinal={fecha_fin}&ClaveAPI={clave_api}"
+    print(f"Intentando: {url}")
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        data_json = response.json()
+        if "Datos" in data_json and data_json["Datos"]:
+            for dato in data_json["Datos"]:
+                dato["Estacion"] = codigo
+            print(f"  - Descargados {len(data_json['Datos'])} registros para {fecha_inicio} a {fecha_fin}")
+            return data_json["Datos"]
+        else:
+            print(f"  - No hay datos para {fecha_inicio} a {fecha_fin}")
+            return []
+    except requests.exceptions.RequestException as e:
+        print(f"  - Error: {e}")
+        if 'response' in locals() and response.text:
+            print(f"    Respuesta API: {response.text}")
+        return []
+
+# Generar rangos mensuales
+datos_todos = []
+fecha_actual = datetime.combine(FECHA_INICIO, datetime.min.time())
+while fecha_actual.date() <= FECHA_LIMITE:
+    # Calcular fin del mes
+    primer_dia_siguiente_mes = (fecha_actual.replace(day=28) + timedelta(days=4)).replace(day=1)
+    fecha_fin_mes = primer_dia_siguiente_mes - timedelta(days=1)
+    if fecha_fin_mes.date() > FECHA_LIMITE:
+        fecha_fin_mes = datetime.combine(FECHA_LIMITE, datetime.min.time())
+    
+    fecha_inicio_str = fecha_actual.strftime('%Y-%m-%d')
+    fecha_fin_str = fecha_fin_mes.strftime('%Y-%m-%d')
+    
+    # Fetch data
+    datos_mes = fetch_data_mes(CODIGO_ESTACION, fecha_inicio_str, fecha_fin_str, CLAVE_API)
+    datos_todos.extend(datos_mes)
+    
+    # Pausa de 60 segundos para respetar límite
+    time.sleep(60)
+    
+    # Avanzar al siguiente mes
+    fecha_actual = primer_dia_siguiente_mes
+
+# Combinar y guardar en CSV si hay datos
+if datos_todos:
+    df_datos = pd.json_normalize(datos_todos)
+    df_datos.to_csv(ARCHIVO_FINAL, index=False)
+    print(f"\nGuardados {len(datos_todos)} registros totales en {ARCHIVO_FINAL}")
+else:
+    print("\nNo se obtuvieron datos para guardar.")
+
+print("\nProceso completado.")

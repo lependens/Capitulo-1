@@ -4,7 +4,7 @@ import json
 import time
 from datetime import datetime, timedelta
 import os
-
+#Coge datos mes a mes, para no saturar la consulta y compila en un mismo archivo, ojo con la limitación diaria 
 # Configuración
 API_BASE = "https://servicio.mapama.gob.es/apisiar/API/v1"
 TIPO_DATOS = "Diarios"  # Datos diarios

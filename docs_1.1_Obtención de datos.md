@@ -32,14 +32,17 @@ Tras ajustar el codigo con ayuda de GROK, he detectado que no puedo hacer la con
 
 Por tanto he tomado los siguientes criterios:
 
-1-Empezar con estación IB01 
+1-Empezar con estación IB01
+
 2-Recoger datos mensuales para no saturar la consulta
+
 3-Compilarlos posterormente en un mismo archivo
 
 Consideraciones:
 
 -IB01 Se inserta manuelamente (Posteriormente cambiaremos a IB02, IB03,...)
 -La fecha inicio la extrae de la columna pertinente en el archivo estaciones_baleares
+
 -La fecha fin es 2024-12-31 , a no ser que tenga menos registros, previamente indicado en el archivo estaciones_baleares (Debo comprobar qye es así, o si por defecto, si no encuentra en fecha, simplemente da error y el archivo incluye hasta el maximo de dias recogidos)
 
 

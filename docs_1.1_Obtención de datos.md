@@ -69,6 +69,37 @@ Resultado: Se ha podido extraer los datos , hsata que se superó el limite diari
 -FECHA INICIO: ""dd""mm""aaaa""
 -FECHA FIN: ""dd""mm""aaaa""
 
+ -Si existe dicho archivo, lo actualiza si las fechas que acabamos de descargar no eran existentes en ese archivo. Por tanto comprueba el archivo que datos tiene actualmente.
+
+ El formato de salido es el siguiente:
+ IBXX_datos_completos.csv
+
+| Variable              | Unidad             |
+|-----------------------|--------------------|
+| Fecha                 | YYYY-MM-DD         |
+| TempMedia             | °C (Grados Celsius)|
+| TempMax               | °C (Grados Celsius)|
+| HorMinTempMax         | Minutos            |
+| TempMin               | °C (Grados Celsius)|
+| HorMinTempMin         | Minutos            |
+| HumedadMedia          | % (Porcentaje)     |
+| HumedadMax            | % (Porcentaje)     |
+| HorMinHumMax          | Minutos            |
+| HumedadMin            | % (Porcentaje)     |
+| HorMinHumMin          | Minutos            |
+| VelViento             | m/s (Metros por segundo) |
+| VelVientoMax          | m/s (Metros por segundo) |
+| HorMinVelMax          | Minutos            |
+| DirViento             | ° (Grados, 0-360)  |
+| DirVientoVelMax       | ° (Grados, 0-360)  |
+| Precipitacion         | mm (Milímetros)    |
+| PePMon                | mm (Milímetros)    |
+| Radiacion             | MJ/m² (Megajulios por metro cuadrado) |
+| TempSuelo1            | °C (Grados Celsius)|
+| TempSuelo2            | °C (Grados Celsius)|
+| EtPMon                | mm (Milímetros)    |
+| Estacion              | Código de estación |
+
 
 
 

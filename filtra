@@ -1,0 +1,35 @@
+import pandas as pd
+import numpy as np
+from scipy import stats  # Para calcular desviación estándar
+
+# Ruta al CSV inicial (ajusta si es necesario)
+archivo_entrada = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares/IB01_datos_completos.csv'
+archivo_depurado = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares/IB01_datos_depurados.csv'  # Salida
+
+# Cargar el CSV
+df = pd.read_csv(archivo_entrada)
+
+# Convertir 'Fecha' a datetime para manejo correcto
+df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+
+# 1. Eliminación de valores nulos (NaN) en columnas de interés
+# Columnas relevantes según tu estructura (agrega o quita según necesites)
+columnas_interes = ['TempMedia', 'TempMax', 'TempMin', 'HumedadMedia', 'HumedadMax', 'HumedadMin', 'VelViento', 'DirViento', 'VelVientoMax', 'DirVientoVelMax', 'Radiacion', 'Precipitacion', 'EtPMon']
+
+# Eliminar filas con NaN en estas columnas
+df = df.dropna(subset=columnas_interes)
+
+print(f"Después de eliminar NaN: {len(df)} registros restantes.")
+
+# 2. Detección y filtrado de valores extremos (±3σ)
+# Para cada columna relevante, calcula media y desviación estándar
+for col in columnas_interes:
+    media = df[col].mean()
+    std = df[col].std()
+    # Filtrar filas donde el valor está dentro de ±3σ
+    df = df[(df[col] >= media - 3 * std) & (df[col] <= media + 3 * std)]
+    print(f"Después de filtrar ±3σ en {col}: {len(df)} registros restantes.")
+
+# Guardar el CSV depurado
+df.to_csv(archivo_depurado, index=False)
+print(f"\nDatos depurados guardados en {archivo_depurado}. Total final: {len(df)} registros.")

@@ -125,3 +125,18 @@ Se realizará una **comparación sistemática** entre:
 Esto permitirá validar la consistencia de los datos y analizar la aplicabilidad de métodos alternativos en las Islas Baleares.
 
 ---
+## 21/09/2025: Prrimeras verisones de filtrado
+
+## filtra.py
+
+Recoge IBXX_datos_completos.csv y lo filtra analizando las columnas de variables.
+
+Variables analizadas: El análisis de ±3σ se ejecuta en las columnas de columnas_interes = ['TempMedia', 'TempMax', 'TempMin', 'HumedadMedia', 'HumedadMax', 'HumedadMin', 'VelViento', 'DirViento', 'VelVientoMax', 'DirVientoVelMax', 'Radiacion', 'Precipitacion', 'EtPMon']. Estas son las variables numéricas relevantes para detectar outliers.
+
+**Como funciona:**
+
+- Pregunta por la estación: El script pregunta por el ID de la estación y genera las rutas de archivos basadas en él (ej. IB01_datos_completos.csv).
+
+- Archivos nuevos: Crea IB01_datos_depurados.csv (datos filtrados) y IB01_datos_eliminados.csv (nulos + outliers).
+
+- Gráficas: Para cada variable en columnas_interes, si hay valores eliminados, crea una gráfica scatter de los valores eliminados vs su índice, con una línea horizontal para la media (del original). Las guarda como PNG en graficas_eliminados (ej. IB01_TempMedia_eliminados.png).

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa Interactivo Estaciones SIAR Baleares</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #map { height: 600px; }
+        .info-panel { position: absolute; top: 10px; right: 10px; background: white; padding: 10px; z-index: 1000; width: 250px; }
+        .stats { font-size: 12px; margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>Mapa Interactivo Estaciones Meteorológicas SIAR - Islas Baleares</h1>
+    <p>Selecciona una estación en el mapa para ver estadísticas históricas (medias).</p>
+    <div id="map"></div>
+    <div id="info-panel" class="info-panel" style="display: none;">
+        <h3 id="estacion-nombre"></h3>
+        <div id="estacion-stats" class="stats"></div>
+    </div>
+
+    <script>
+        // Configurar mapa centrado en Baleares
+        var map = L.map('map').setView([39.5, 2.5], 9);  // Centro aproximado Baleares
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Cargar estaciones (desde CSV en el repositorio)
+        fetch('data/estaciones_baleares.csv')  // Ajusta la ruta en tu repo
+            .then(response => response.text())
+            .then(data => {
+                var lines = data.split('\n');
+                var estaciones = [];
+                for (var i = 1; i < lines.length; i++) {  // Saltar header
+                    var cols = lines[i].split(',');
+                    if (cols.length >= 6) {
+                        var codigo = cols[1];  // Asume 'Codigo'
+                        var nombre = cols[0];  // Asume 'Estacion'
+                        var lat = parseFloat(cols[4]);  // 'Latitud'
+                        var long = parseFloat(cols[3]);  // 'Longitud'
+                        if (!isNaN(lat) && !isNaN(long)) {
+                            estaciones.push({codigo, nombre, lat, long});
+                        }
+                    }
+                }
+
+                // Añadir marcadores
+                estaciones.forEach(function(est) {
+                    var marker = L.marker([est.lat, est.long]).addTo(map)
+                        .bindPopup(`<b>${est.nombre}</b><br>Código: ${est.codigo}`);
+                    marker.on('click', function() {
+                        cargarStats(est.codigo);
+                    });
+                });
+            });
+
+        // Cargar estadísticas históricas al clic
+        function cargarStats(codigo) {
+            fetch('data/estadisticas_historicas.csv')  // Ajusta la ruta
+                .then(response => response.text())
+                .then(data => {
+                    var lines = data.split('\n');
+                    for (var i = 1; i < lines.length; i++) {
+                        var cols = lines[i].split(',');
+                        if (cols[0] === codigo) {  // Asume primera columna 'Estacion'
+                            var stats = {};
+                            stats['TempMedia'] = cols[4];  // Ajusta índices según tu CSV de stats
+                            stats['HumedadMedia'] = cols[5];
+                            // Añade más según necesites
+                            mostrarPanel(cols[1], stats);  // cols[1] = Nombre
+                            return;
+                        }
+                    }
+                    mostrarPanel('No datos', {});
+                });
+        }
+
+        function mostrarPanel(nombre, stats) {
+            document.getElementById('estacion-nombre').innerText = nombre;
+            var panel = document.getElementById('estacion-stats');
+            panel.innerHTML = '';
+            for (var key in stats) {
+                panel.innerHTML += `<p>${key}: ${stats[key]}</p>`;
+            }
+            document.getElementById('info-panel').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

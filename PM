@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 # Ruta base para los archivos (ajusta si es necesario)
-CARPETA_DATOS = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'
+CARPETA_DATOS = 'C:\Users\josep\OneDrive\Documentos\GitHub\Capitulo-1\datos_siar_baleares'
 
 # Preguntar por la estación
 codigo_estacion = input("Introduce el ID de la estación (ej. IB01): ").strip()

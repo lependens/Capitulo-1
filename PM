@@ -1,0 +1,109 @@
+import pandas as pd
+import numpy as np
+import os
+
+# Ruta base para los archivos (ajusta si es necesario)
+CARPETA_DATOS = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'
+
+# Preguntar por la estación
+codigo_estacion = input("Introduce el ID de la estación (ej. IB01): ").strip()
+
+# Rutas de archivos basadas en la estación
+archivo_datos = os.path.join(CARPETA_DATOS, f"{codigo_estacion}_datos_completos.csv")
+archivo_geograficos = os.path.join(CARPETA_DATOS, 'estaciones_baleares.csv')  # Asume que tienes este archivo con latitud, longitud, altitud
+
+# Verificar si los archivos existen
+if not os.path.exists(archivo_datos):
+    print(f"Error: El archivo de datos {archivo_datos} no existe.")
+    exit()
+if not os.path.exists(archivo_geograficos):
+    print(f"Error: El archivo geográfico {archivo_geograficos} no existe.")
+    exit()
+
+# Cargar datos diarios
+df_datos = pd.read_csv(archivo_datos)
+
+# Cargar datos geográficos y obtener para la estación
+df_geo = pd.read_csv(archivo_geograficos)
+estacion_geo = df_geo[df_geo['Codigo'] == codigo_estacion]
+if estacion_geo.empty:
+    print(f"Error: No se encontró información geográfica para la estación {codigo_estacion}.")
+    exit()
+
+latitud = estacion_geo['Latitud'].iloc[0]  # En grados
+longitud = estacion_geo['Longitud'].iloc[0]  # En grados
+altitud = estacion_geo['Altitud'].iloc[0]  # En metros
+
+# Convertir 'Fecha' a datetime si no lo es
+df_datos['Fecha'] = pd.to_datetime(df_datos['Fecha'], errors='coerce')
+
+# Función para calcular ET0 con Penman-Monteith FAO-56
+def calcular_et0(row, lat, alt):
+    # Parámetros de entrada (de las columnas del CSV)
+    Tmean = row['TempMedia']  # Temperatura media (°C)
+    Tmax = row['TempMax']  # Temperatura máxima (°C)
+    Tmin = row['TempMin']  # Temperatura mínima (°C)
+    RHmin = row['HumedadMin'] if 'HumedadMin' in row else (row['HumedadMedia'] if 'HumedadMedia' in row else np.nan)  # Humedad relativa mínima o media (%)
+    wind = row['VelViento']  # Velocidad del viento a 2m (m/s)
+    Rs = row['Radiacion']  # Radiación solar (MJ/m²/día)
+    date = row['Fecha']  # Fecha para calcular día juliano
+
+    # Constantes
+    Gsc = 0.0820  # Constante solar (MJ/m²/min)
+    sigma = 4.903e-9  # Constante de Stefan-Boltzmann (MJ/K⁴/m²/día)
+    lambda_et = 2.45  # Calor latente de vaporización (MJ/kg)
+
+    # Día juliano
+    J = date.timetuple().tm_yday
+
+    # Latitud en radianes
+    phi = np.deg2rad(lat)
+
+    # Declinación solar (δ)
+    delta = 0.409 * np.sin(2 * np.pi * J / 365 - 1.39)
+
+    # Distancia relativa Tierra-Sol (dr)
+    dr = 1 + 0.033 * np.cos(2 * np.pi * J / 365)
+
+    # Ángulo horario al ocaso (ωs)
+    omega_s = np.arccos(-np.tan(phi) * np.tan(delta))
+
+    # Radiación extraterrestre (Ra)
+    Ra = (24 * 60 / np.pi) * Gsc * dr * (omega_s * np.sin(phi) * np.sin(delta) + np.cos(phi) * np.cos(delta) * np.sin(omega_s))
+
+    # Presión atmosférica (P, kPa)
+    P = 101.3 * ((293 - 0.0065 * alt) / 293)**5.26
+
+    # Pendiente de la curva de presión de vapor (Δ, kPa/°C)
+    delta_vp = (4098 * (0.6108 * np.exp(17.27 * Tmean / (Tmean + 237.3)))) / (Tmean + 237.3)**2
+
+    # Constante psicrométrica (γ, kPa/°C)
+    gamma = 0.000665 * P
+
+    # Presión de vapor de saturación (es, kPa)
+    es = 0.6108 * np.exp(17.27 * Tmean / (Tmean + 237.3))
+
+    # Presión de vapor real (ea, kPa)
+    ea = (RHmin / 100) * 0.6108 * np.exp(17.27 * Tmin / (Tmin + 237.3))  # Usando RHmin y Tmin para ea
+
+    # Flujo de calor en el suelo (G, MJ/m²/día) - Aproximación diaria: 0
+    G = 0
+
+    # Radiación neta (Rn, MJ/m²/día)
+    Rns = (1 - 0.23) * Rs  # Radiación neta de onda corta (albedo 0.23 para pasto)
+    Rso = (0.75 + 2e-5 * alt) * Ra  # Radiación de cielo claro
+    Rnl = sigma * (Tmean + 273.2)**4 * (0.34 - 0.14 * np.sqrt(ea)) * (1.35 * (Rs / Rso) - 0.35)  # Radiación neta de onda larga
+    Rn = Rns - Rnl
+
+    # ET0 (mm/día)
+    et0 = (0.408 * delta_vp * (Rn - G) + gamma * (900 / (Tmean + 273)) * wind * (es - ea)) / (delta_vp + gamma * (1 + 0.34 * wind))
+    return et0 if not np.isnan(et0) else np.nan
+
+# Aplicar la función a cada fila
+df_datos['ET0_PM'] = df_datos.apply(lambda row: calcular_et0(row, latitud, altitud), axis=1)
+
+# Guardar el CSV actualizado
+archivo_actualizado = os.path.join(CARPETA_DATOS, f"{codigo_estacion}_datos_completos_et0.csv")
+df_datos.to_csv(archivo_actualizado, index=False)
+
+print(f"ET₀ calculada y guardada en {archivo_actualizado}. Total registros: {len(df_datos)}")

@@ -1,9 +1,10 @@
 import pandas as pd
 import numpy as np
 import os
+import glob  # Añadido para usar glob.glob
 
 # Ruta base para los archivos (ajusta si es necesario)
-CARPETA_DATOS = 'C:\Users\josep\OneDrive\Documentos\GitHub\Capitulo-1\datos_siar_baleares'
+CARPETA_DATOS = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'  # Usando barras normales
 
 # Preguntar por la estación
 codigo_estacion = input("Introduce el ID de la estación (ej. IB01): ").strip()
@@ -12,27 +13,42 @@ codigo_estacion = input("Introduce el ID de la estación (ej. IB01): ").strip()
 archivo_datos = os.path.join(CARPETA_DATOS, f"{codigo_estacion}_datos_completos.csv")
 archivo_geograficos = os.path.join(CARPETA_DATOS, 'estaciones_baleares.csv')  # Asume que tienes este archivo con latitud, longitud, altitud
 
-# Verificar si los archivos existen
+# Verificar si el archivo de datos existe
 if not os.path.exists(archivo_datos):
     print(f"Error: El archivo de datos {archivo_datos} no existe.")
     exit()
+
+# Intentar cargar datos geográficos y generar si no existe
 if not os.path.exists(archivo_geograficos):
-    print(f"Error: El archivo geográfico {archivo_geograficos} no existe.")
-    exit()
+    print(f"Archivo {archivo_geograficos} no encontrado. Generando lista de estaciones a partir de archivos CSV...")
+    archivos = glob.glob(os.path.join(CARPETA_DATOS, 'IB*_datos_completos.csv'))
+    df_estaciones = pd.DataFrame(columns=['Codigo', 'Latitud', 'Longitud', 'Altitud'])
+    for archivo in archivos:
+        codigo = os.path.basename(archivo).replace('_datos_completos.csv', '')
+        # Placeholder para latitud, longitud y altitud (reemplaza con datos reales)
+        nueva_fila = pd.DataFrame({
+            'Codigo': [codigo],
+            'Latitud': [39.5],  # Placeholder para Baleares (ajusta por estación)
+            'Longitud': [2.5],  # Placeholder para Baleares (ajusta por estación)
+            'Altitud': [100]    # Placeholder (ajusta por estación)
+        })
+        df_estaciones = pd.concat([df_estaciones, nueva_fila], ignore_index=True)
+    df_estaciones.to_csv(archivo_geograficos, index=False)
+    print(f"Archivo {archivo_geograficos} generado con valores placeholder. Reemplaza Latitud, Longitud y Altitud con datos reales.")
+else:
+    df_geo = pd.read_csv(archivo_geograficos)
+    estacion_geo = df_geo[df_geo['Codigo'] == codigo_estacion]
+    if estacion_geo.empty:
+        print(f"Error: No se encontró información geográfica para la estación {codigo_estacion}.")
+        exit()
 
 # Cargar datos diarios
 df_datos = pd.read_csv(archivo_datos)
 
-# Cargar datos geográficos y obtener para la estación
-df_geo = pd.read_csv(archivo_geograficos)
-estacion_geo = df_geo[df_geo['Codigo'] == codigo_estacion]
-if estacion_geo.empty:
-    print(f"Error: No se encontró información geográfica para la estación {codigo_estacion}.")
-    exit()
-
+# Obtener datos geográficos (usar valores generados o del CSV)
 latitud = estacion_geo['Latitud'].iloc[0]  # En grados
 longitud = estacion_geo['Longitud'].iloc[0]  # En grados
-altitud = estacion_geo['Altitud'].iloc[0]  # En metros
+altitud = estacion_geo['Altitud'].iloc[0]    # En metros
 
 # Convertir 'Fecha' a datetime si no lo es
 df_datos['Fecha'] = pd.to_datetime(df_datos['Fecha'], errors='coerce')
@@ -41,12 +57,12 @@ df_datos['Fecha'] = pd.to_datetime(df_datos['Fecha'], errors='coerce')
 def calcular_et0(row, lat, alt):
     # Parámetros de entrada (de las columnas del CSV)
     Tmean = row['TempMedia']  # Temperatura media (°C)
-    Tmax = row['TempMax']  # Temperatura máxima (°C)
-    Tmin = row['TempMin']  # Temperatura mínima (°C)
+    Tmax = row['TempMax']     # Temperatura máxima (°C)
+    Tmin = row['TempMin']     # Temperatura mínima (°C)
     RHmin = row['HumedadMin'] if 'HumedadMin' in row else (row['HumedadMedia'] if 'HumedadMedia' in row else np.nan)  # Humedad relativa mínima o media (%)
-    wind = row['VelViento']  # Velocidad del viento a 2m (m/s)
-    Rs = row['Radiacion']  # Radiación solar (MJ/m²/día)
-    date = row['Fecha']  # Fecha para calcular día juliano
+    wind = row['VelViento']   # Velocidad del viento a 2m (m/s)
+    Rs = row['Radiacion']     # Radiación solar (MJ/m²/día)
+    date = row['Fecha']       # Fecha para calcular día juliano
 
     # Constantes
     Gsc = 0.0820  # Constante solar (MJ/m²/min)

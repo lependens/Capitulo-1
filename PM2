@@ -156,6 +156,7 @@ def process_station_data(code, estaciones_df):
         Delta = slope_vapor_pressure(T_mean, saturation_vapor_pressure(T_mean))
         J = row['J']
         Ra = extraterrestrial_radiation(lat, J)
+        df.at[idx, 'Ra'] = Ra  # <-- AÑADIR ESTO para que variants_et0.py lo lea
         Rso = clear_sky_radiation(Ra, z)
         N = daylight_hours(lat, J)
         df.at[idx, 'N'] = N

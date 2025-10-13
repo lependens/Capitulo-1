@@ -7,7 +7,7 @@ import numpy as np
 
 app = dash.Dash(__name__)
 
-data_path = r'datos_siar_baleares'  # Relativo al directorio raíz del proyecto
+data_path = r'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'
 estaciones = [f'IB{str(i).zfill(2)}' for i in range(1, 12)]
 estaciones_df = pd.read_csv(os.path.join(data_path, 'estaciones_baleares.csv'), sep=',', encoding='utf-8-sig', quotechar='"', engine='python')
 estaciones_df['Codigo'] = estaciones_df['Codigo'].astype(str).str.strip().str.upper()

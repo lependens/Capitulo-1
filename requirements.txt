@@ -3,3 +3,4 @@ pandas==2.2.2
 plotly==5.22.0
 numpy==1.26.4
 gunicorn==22.0.0
+statsmodels==0.14.2

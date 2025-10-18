@@ -41,11 +41,11 @@ app.layout = html.Div([
     dcc.Graph(id='time-series'),
     
     html.H2('Diferencias vs Temperatura Media', style=font_style),
-    html.P('Diferencias (mm/día) por modelo vs TempMedia (°C). Muestra sesgos en condiciones térmicas (ej. sobreestimación en calor). Trendline lowess. Interactivo: hover para valores.', style=font_style),
+    html.P('Diferencias (mm/día) por modelo vs TempMedia (°C). Muestra sesgos en condiciones térmicas (ej. sobreestimación en calor). Interactivo: hover para valores.', style=font_style),
     dcc.Graph(id='diff-vs-temp'),
     
     html.H2('Diferencias vs Radiación', style=font_style),
-    html.P('Diferencias (mm/día) vs Radiación (MJ/m²). Revela dependencia de Rs medida (ej. errores en días nublados). Trendline lowess. Clic leyenda para filtrar.', style=font_style),
+    html.P('Diferencias (mm/día) vs Radiación (MJ/m²). Revela dependencia de Rs medida (ej. errores en días nublados). Interactivo: hover para valores.', style=font_style),
     dcc.Graph(id='diff-vs-rs'),
     
     html.H2('Diferencias Mensuales Media (Todos Años)', style=font_style),
@@ -108,13 +108,13 @@ def update_all(code):
         
         df_diff_temp = df_plot.melt(id_vars=['TempMedia'], value_vars=['diff', 'diff_sun', 'diff_harg', 'diff_val'],
                                     var_name='Modelo', value_name='Diferencia')
-        fig_diff_temp = px.scatter(df_diff_temp, x='TempMedia', y='Diferencia', color='Modelo', trendline='lowess',
-                                   title=f'Diferencias vs Temp Media - {code}', opacity=0.7)
+        fig_diff_temp = px.scatter(df_diff_temp, x='TempMedia', y='Diferencia', color='Modelo', 
+                                   title=f'Diferencias vs Temp Media - {code}', opacity=0.7)  # Sin trendline='lowess'
         
         df_diff_rs = df_plot.melt(id_vars=['Radiacion'], value_vars=['diff', 'diff_sun', 'diff_harg', 'diff_val'],
                                   var_name='Modelo', value_name='Diferencia')
-        fig_diff_rs = px.scatter(df_diff_rs, x='Radiacion', y='Diferencia', color='Modelo', trendline='lowess',
-                                 title=f'Diferencias vs Radiación - {code}', opacity=0.7)
+        fig_diff_rs = px.scatter(df_diff_rs, x='Radiacion', y='Diferencia', color='Modelo', 
+                                 title=f'Diferencias vs Radiación - {code}', opacity=0.7)  # Sin trendline='lowess'
         
         df_diff_month = df_plot.copy()
         df_diff_month['Mes'] = df_diff_month['Fecha'].dt.month

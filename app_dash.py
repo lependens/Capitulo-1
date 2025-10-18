@@ -12,7 +12,7 @@ server = app.server  # Esto es lo que Gunicorn usará
 
 # Ruta relativa para Render
 data_path = 'datos_siar_baleares'
-estaciones = [f'IB{str(i).zfill(2)}' for i in range(1, 12)]
+estaciones = ['General'] + [f'IB{str(i).zfill(2)}' for i in range(1, 12)]  # Añadido "General"
 
 # Verificar si el archivo estaciones_baleares.csv existe
 estaciones_csv_path = os.path.join(data_path, 'estaciones_baleares.csv')
@@ -60,77 +60,68 @@ app.layout = html.Div([
     [Input('estacion-dropdown', 'value')]
 )
 def update_all(code):
-    file = os.path.join(data_path, f'{code}_et0_variants.csv')
-    if not os.path.exists(file):
-        print(f"Archivo no encontrado: {file}")
-        empty_table = [], []
-        empty_fig = px.scatter(title=f'Archivo no encontrado: {file}')
-        return empty_table, empty_table, empty_table, empty_table, empty_fig, empty_fig, empty_fig, empty_fig
-    
-    try:
-        df = pd.read_csv(file)
-        df['Fecha'] = pd.to_datetime(df['Fecha'])
+    if code == 'General':
+        # Cálculo general (agregado de todas estaciones)
+        df_all = pd.DataFrame()
+        for est in [f'IB{str(i).zfill(2)}' for i in range(1, 12)]:
+            file = os.path.join(data_path, f'{est}_et0_variants.csv')
+            if os.path.exists(file):
+                df = pd.read_csv(file)
+                df['Estacion'] = est
+                df_all = pd.concat([df_all, df])
         
-        station_info = estaciones_df[estaciones_df['Codigo'] == code].iloc[0]
+        if df_all.empty:
+            empty_table = [], []
+            empty_fig = px.scatter(title='No datos disponibles para General')
+            return empty_table, empty_table, empty_table, empty_table, empty_fig, empty_fig, empty_fig, empty_fig
+        
+        # Tabla info general (medias agregadas)
         info_data = [
-            {'Métrica': 'Nombre', 'Valor': station_info['Estacion']},
-            {'Métrica': 'Latitud', 'Valor': station_info['Latitud']},
-            {'Métrica': 'Altitud (m)', 'Valor': station_info['Altitud']},
-            {'Métrica': 'TempMedia Anual (°C)', 'Valor': round(df['TempMedia'].mean(), 2) if 'TempMedia' in df.columns else 'N/A'},
-            {'Métrica': 'VelViento Media (m/s)', 'Valor': round(df['VelViento'].mean(), 2) if 'VelViento' in df.columns else 'N/A'},
-            {'Métrica': 'HumedadMedia Anual (%)', 'Valor': round(df['HumedadMedia'].mean(), 2) if 'HumedadMedia' in df.columns else 'N/A'},
-            {'Métrica': 'Radiacion Media (MJ/m²)', 'Valor': round(df['Radiacion'].mean(), 2) if 'Radiacion' in df.columns else 'N/A'},
-            {'Métrica': 'Filas Totales', 'Valor': len(df)}
+            {'Métrica': 'Número de Estaciones', 'Valor': len(df_all['Estacion'].unique())},
+            {'Métrica': 'TempMedia Anual (°C)', 'Valor': round(df_all['TempMedia'].mean(), 2)},
+            {'Métrica': 'VelViento Media (m/s)', 'Valor': round(df_all['VelViento'].mean(), 2)},
+            {'Métrica': 'HumedadMedia Anual (%)', 'Valor': round(df_all['HumedadMedia'].mean(), 2)},
+            {'Métrica': 'Radiacion Media (MJ/m²)', 'Valor': round(df_all['Radiacion'].mean(), 2)},
+            {'Métrica': 'Filas Totales', 'Valor': len(df_all)}
         ]
         info_columns = [{"name": 'Métrica', "id": 'Métrica'}, {"name": 'Valor', "id": 'Valor'}]
         
+        # Tabla medias ET0 general
         et0_means = {
             'Modelo': ['SIAR (EtPMon)', 'PM Estándar', 'PM Cielo Claro', 'Hargreaves', 'Valiantzas'],
             'Media Anual (mm/día)': [
-                round(df['EtPMon'].mean(), 3) if 'EtPMon' in df.columns else np.nan,
-                round(df['ET0_calc'].mean(), 3) if 'ET0_calc' in df.columns else np.nan,
-                round(df['ET0_sun'].mean(), 3) if 'ET0_sun' in df.columns else np.nan,
-                round(df['ET0_harg'].mean(), 3) if 'ET0_harg' in df.columns else np.nan,
-                round(df['ET0_val'].mean(), 3) if 'ET0_val' in df.columns else np.nan
+                round(df_all['EtPMon'].mean(), 3),
+                round(df_all['ET0_calc'].mean(), 3),
+                round(df_all['ET0_sun'].mean(), 3),
+                round(df_all['ET0_harg'].mean(), 3),
+                round(df_all['ET0_val'].mean(), 3)
             ]
         }
         et0_df = pd.DataFrame(et0_means)
         et0_columns = [{"name": i, "id": i} for i in et0_df.columns]
         et0_data = et0_df.to_dict('records')
         
-        required = ['Fecha', 'EtPMon', 'ET0_calc', 'ET0_sun', 'ET0_harg', 'ET0_val', 'diff', 'diff_sun', 'diff_harg', 'diff_val', 'TempMedia', 'Radiacion']
-        df_plot = df.dropna(subset=required)
-        print(f"Filas para gráficos después de drop: {len(df_plot)}")
-        
-        fig_time = px.scatter(df_plot, x='Fecha', y=['EtPMon', 'ET0_calc', 'ET0_sun', 'ET0_harg', 'ET0_val'], 
-                              title=f'Serie Temporal ET₀ (Puntos) - {code}',
-                              opacity=0.6, size_max=3)
-        
-        df_diff_temp = df_plot.melt(id_vars=['TempMedia'], value_vars=['diff', 'diff_sun', 'diff_harg', 'diff_val'],
-                                    var_name='Modelo', value_name='Diferencia')
-        fig_diff_temp = px.scatter(df_diff_temp, x='TempMedia', y='Diferencia', color='Modelo', 
-                                   title=f'Diferencias vs Temp Media - {code}', opacity=0.7)  # Sin trendline='lowess'
-        
-        df_diff_rs = df_plot.melt(id_vars=['Radiacion'], value_vars=['diff', 'diff_sun', 'diff_harg', 'diff_val'],
-                                  var_name='Modelo', value_name='Diferencia')
-        fig_diff_rs = px.scatter(df_diff_rs, x='Radiacion', y='Diferencia', color='Modelo', 
-                                 title=f'Diferencias vs Radiación - {code}', opacity=0.7)  # Sin trendline='lowess'
-        
-        df_diff_month = df_plot.copy()
-        df_diff_month['Mes'] = df_diff_month['Fecha'].dt.month
+        # Gráficos general (ej. medias mensuales agregadas)
+        df_all['Mes'] = df_all['Fecha'].dt.month
         diff_cols = ['diff', 'diff_sun', 'diff_harg', 'diff_val']
-        df_monthly = df_diff_month.groupby('Mes')[diff_cols].mean().reset_index()
+        df_monthly = df_all.groupby('Mes')[diff_cols].mean().reset_index()
         df_monthly = df_monthly.melt(id_vars='Mes', value_vars=diff_cols, var_name='Modelo', value_name='Diff Media Mensual')
         df_monthly['Mes'] = df_monthly['Mes'].astype(str)
-        fig_diff_month = px.bar(df_monthly, x='Mes', y='Diff Media Mensual', color='Modelo', barmode='group', title='Diferencias Mensuales Media (Todos Años)')
+        fig_diff_month = px.bar(df_monthly, x='Mes', y='Diff Media Mensual', color='Modelo', barmode='group', title='Diferencias Mensuales Media (Todas Estaciones)')
+        
+        # Para otros gráficos en 'General', usamos agregados
+        fig_time = px.line(df_all.groupby(df_all['Fecha'].dt.year)[['EtPMon', 'ET0_calc', 'ET0_sun', 'ET0_harg', 'ET0_val']].mean().reset_index(), x='Fecha', y=['EtPMon', 'ET0_calc', 'ET0_sun', 'ET0_harg', 'ET0_val'], title='Medias Anuales ET₀ (General)')
+        
+        fig_diff_temp = px.scatter(df_all, x='TempMedia', y='diff', color='Estacion', title='Diferencias vs Temp Media (General)', opacity=0.7)
+        
+        fig_diff_rs = px.scatter(df_all, x='Radiacion', y='diff', color='Estacion', title='Diferencias vs Radiación (General)', opacity=0.7)
         
         return info_data, info_columns, et0_data, et0_columns, fig_time, fig_diff_temp, fig_diff_rs, fig_diff_month
     
-    except Exception as e:
-        print(f"Error: {e}")
-        empty_table = [], []
-        empty_fig = px.scatter(title=f'Error: {e}')
-        return empty_table, empty_table, empty_table, empty_table, empty_fig, empty_fig, empty_fig, empty_fig
+    # Código para estaciones individuales (igual al anterior)
+    # ... (pega el código original de update_all para estaciones individuales aquí) ...
+    
+    # Para "General", usa el código de arriba
 
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0', port=8050)  # Solo para desarrollo local
+    app.run(debug=True, host='0.0.0.0', port=8050)  # Solo para desarrollo local

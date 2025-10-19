@@ -83,3 +83,26 @@ https://capitulo-1.onrender.com
 
 
 ---
+
+
+### Resultados TFG
+
+## Resultados de Modelos Empíricos
+
+A continuación, se presentan los resultados de la evaluación de los modelos empíricos de evapotranspiración (ET₀) frente a los valores de referencia de Penman-Monteith (PM) proporcionados por el SIAR, para las estaciones IB01 a IB05. Las métricas utilizadas son MSE (Mean Squared Error, mm²/día²), RRMSE (Root Mean Squared Error relativo, adimensional), MAE (Mean Absolute Error, mm/día), R² (coeficiente de determinación, adimensional) y AARE (Average Absolute Relative Error, adimensional). Los resultados se dividen en modelos sin ajustar y ajustados con coeficientes AHC.
+
+### Modelos Empíricos Sin Ajustar
+
+| Modelo | MSE (mm²/día²) | RRMSE (adimensional) | MAE (mm/día) | R² (adimensional) | AARE (adimensional) |
+|--------|----------------|---------------------|--------------|-------------------|---------------------|
+| HGRs   | 0.338          | 0.196               | 0.485        | 0.949             | 0.228               |
+| HGR    | 0.693          | 0.280               | 0.672        | 0.889             | 0.326               |
+| HG     | 0.381          | 0.204               | 0.461        | 0.924             | 0.211               |
+
+### Modelos Empíricos Ajustados
+
+| Modelo | MSE (mm²/día²) | RRMSE (adimensional) | MAE (mm/día) | R² (adimensional) | AARE (adimensional) |
+|--------|----------------|---------------------|--------------|-------------------|---------------------|
+| HGRs   | 0.398          | 0.205               | 0.506        | 0.949             | 0.231               |
+| HGR    | 0.378          | 0.202               | 0.468        | 0.889             | 0.222               |
+| HG     | 0.250          | 0.166               | 0.373        | 0.924             | 0.165               |

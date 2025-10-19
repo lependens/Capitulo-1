@@ -1,5 +1,3 @@
-https://capitulo-1.onrender.com
-
 ### Errores para Estación IB01
 
 | Modelo | MSE (mm²/día²) | RMSE (adimensional) | MAE (mm/día) | R² (adimensional) | AARE (adimensional) |
@@ -83,3 +81,4 @@ https://capitulo-1.onrender.com
 
 
 ---
+

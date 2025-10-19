@@ -24,7 +24,7 @@ def calculate_errors(obs, est):
     # MAE: 1/n * sum(|x - x_J|)
     mae = np.mean(np.abs(obs - est))
     
-    # R²: (sum((x - mean(x))(x_J - mean(x_J))))^2 / (sum((x - mean(x))^2) * sum((x_J - mean(x_J))^2))
+    # R²: (sum((x - mean(x))(x_J - mean(x_J))))^2 / (sum((x - mean(x))^2 * sum((x_J - mean(x_J))^2))
     mean_obs = np.mean(obs)
     mean_est = np.mean(est)
     num = np.sum((obs - mean_obs) * (est - mean_est))**2
@@ -36,12 +36,14 @@ def calculate_errors(obs, est):
     
     return round(mse, 2), round(rmse, 2), round(mae, 2), round(r2, 2), round(aare, 2)
 
-# Modelos a comparar
+# Modelos a comparar (incluyendo ajustados)
 models = {
     'PM Estándar': 'ET0_calc',
     'PM Cielo Claro': 'ET0_sun',
     'Hargreaves': 'ET0_harg',
-    'Valiantzas': 'ET0_val'
+    'Valiantzas': 'ET0_val',
+    'Hargreaves Ajustado': 'ET0_harg_ajustado',
+    'Valiantzas Ajustado': 'ET0_val_ajustado'
 }
 
 # Procesar por estación y generar tablas MD
@@ -53,7 +55,7 @@ def generate_error_tables():
     md_tables = {}
     
     for code in estaciones:
-        file = os.path.join(data_path, f'{code}_et0_variants.csv')
+        file = os.path.join(data_path, f'{code}_et0_variants_ajustado.csv')  # Usar versión ajustada
         if not os.path.exists(file):
             print(f"Archivo no encontrado para {code}: {file}")
             continue
@@ -86,10 +88,10 @@ def generate_error_tables():
         md_tables[code] = md_table
         
         # Concatenar para general
-        df['Estacion'] = code  # Añadir columna Estacion para General
+        df['Estacion'] = code
         df_all = pd.concat([df_all, df], ignore_index=True)
     
-    # Calcular errores para General (media de todas estaciones)
+    # Calcular errores para General
     if not df_all.empty:
         obs_all = df_all['EtPMon'].values
         error_data_all = {}
@@ -119,10 +121,10 @@ if __name__ == "__main__":
     tables = generate_error_tables()
     
     # Guardar en un archivo .md
-    with open(os.path.join(data_path, 'analisis_errores.md'), 'w', encoding='utf-8') as f:
+    with open(os.path.join(data_path, 'analisis_errores_ajustado.md'), 'w', encoding='utf-8') as f:
         for key, table in tables.items():
             f.write(table + "\n\n---\n\n")
-    print("Tablas guardadas en 'analisis_errores.md'")
+    print("Tablas guardadas en 'analisis_errores_ajustado.md'")
     
     # Imprimir en consola para revisión
     for key, table in tables.items():

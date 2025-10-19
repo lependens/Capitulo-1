@@ -72,9 +72,9 @@ def update_all(code):
             file = os.path.join(data_path, f'{est}_et0_variants.csv')
             if os.path.exists(file):
                 df = pd.read_csv(file)
-                df['Fecha'] = pd.to_datetime(df['Fecha'])  # Asegura datetime por estación
+                df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')  # Asegura datetime por estación
                 df['Estacion'] = est
-                df_all = pd.concat([df_all, df])
+                df_all = pd.concat([df_all, df], ignore_index=True)
         
         if df_all.empty:
             empty_table = [], []
@@ -82,7 +82,7 @@ def update_all(code):
             return empty_table, empty_table, empty_table, empty_table, empty_table, empty_table, empty_fig, empty_fig, empty_fig, empty_fig
         
         # Re-aplicar datetime después de concat (fix error .dt)
-        df_all['Fecha'] = pd.to_datetime(df_all['Fecha'])
+        df_all['Fecha'] = pd.to_datetime(df_all['Fecha'], errors='coerce')
         
         # Tabla info general (agregados)
         info_data = [

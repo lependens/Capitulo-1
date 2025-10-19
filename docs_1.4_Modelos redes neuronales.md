@@ -29,7 +29,6 @@ Estos modelos se comparan con sus equivalentes empíricos:
  ├─ IB01_et0_variants.csv
  ├─ IB02_et0_variants.csv
  ├─ ...
-📂 scripts/
  ├─ train_nn_et0.py   ← Script principal ANNs
 📂 outputs/
  ├─ nn_errors.csv         ← Errores por año

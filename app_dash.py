@@ -83,6 +83,7 @@ def update_all(code):
         
         # Re-aplicar datetime después de concat (fix error .dt)
         df_all['Fecha'] = pd.to_datetime(df_all['Fecha'], errors='coerce')
+        df_all = df_all.dropna(subset=['Fecha'])  # Drop filas con Fecha NaT
         
         # Tabla info general (agregados)
         info_data = [
@@ -99,11 +100,11 @@ def update_all(code):
         et0_means = {
             'Modelo': ['SIAR (EtPMon)', 'PM Estándar', 'PM Cielo Claro', 'Hargreaves', 'Valiantzas'],
             'Media Anual (mm/día)': [
-                round(df_all['EtPMon'].mean(), 3),
-                round(df_all['ET0_calc'].mean(), 3),
-                round(df_all['ET0_sun'].mean(), 3),
-                round(df_all['ET0_harg'].mean(), 3),
-                round(df_all['ET0_val'].mean(), 3)
+                round(df_all['EtPMon'].mean(), 2),  # Reducido a 2 decimales
+                round(df_all['ET0_calc'].mean(), 2),
+                round(df_all['ET0_sun'].mean(), 2),
+                round(df_all['ET0_harg'].mean(), 2),
+                round(df_all['ET0_val'].mean(), 2)
             ]
         }
         et0_df = pd.DataFrame(et0_means)
@@ -123,7 +124,7 @@ def update_all(code):
             else:
                 r2 = np.nan
             aare = np.mean(np.abs((obs - est) / obs)) if np.all(obs != 0) else np.nan
-            return mse, rmse, mae, r2, aare
+            return round(mse, 2), round(rmse, 2), round(mae, 2), round(r2, 2), round(aare, 2)  # Reducido a 2 decimales
         
         obs = df_all['EtPMon'].values
         models = ['ET0_calc', 'ET0_sun', 'ET0_harg', 'ET0_val']
@@ -163,7 +164,8 @@ def update_all(code):
     
     try:
         df = pd.read_csv(file)
-        df['Fecha'] = pd.to_datetime(df['Fecha'])
+        df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+        df = df.dropna(subset=['Fecha'])  # Drop filas con Fecha NaT
         
         station_info = estaciones_df[estaciones_df['Codigo'] == code].iloc[0]
         info_data = [
@@ -181,11 +183,11 @@ def update_all(code):
         et0_means = {
             'Modelo': ['SIAR (EtPMon)', 'PM Estándar', 'PM Cielo Claro', 'Hargreaves', 'Valiantzas'],
             'Media Anual (mm/día)': [
-                round(df['EtPMon'].mean(), 3) if 'EtPMon' in df.columns else np.nan,
-                round(df['ET0_calc'].mean(), 3) if 'ET0_calc' in df.columns else np.nan,
-                round(df['ET0_sun'].mean(), 3) if 'ET0_sun' in df.columns else np.nan,
-                round(df['ET0_harg'].mean(), 3) if 'ET0_harg' in df.columns else np.nan,
-                round(df['ET0_val'].mean(), 3) if 'ET0_val' in df.columns else np.nan
+                round(df['EtPMon'].mean(), 2),  # Reducido a 2 decimales
+                round(df['ET0_calc'].mean(), 2),
+                round(df['ET0_sun'].mean(), 2),
+                round(df['ET0_harg'].mean(), 2),
+                round(df['ET0_val'].mean(), 2)
             ]
         }
         et0_df = pd.DataFrame(et0_means)

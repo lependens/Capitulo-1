@@ -19,7 +19,7 @@ estaciones_csv_path = os.path.join(data_path, 'estaciones_baleares.csv')
 if not os.path.exists(estaciones_csv_path):
     raise FileNotFoundError(f"No se encontró el archivo: {estaciones_csv_path}")
 
-estaciones_df = pd.read_csv(estaciones_csv_path, sep=',', encoding='utf-8-sig', quotechar='"', engine='python', errors='replace')
+estaciones_df = pd.read_csv(estaciones_csv_path, sep=',', encoding='utf-8-sig', quotechar='"', engine='python', encoding_errors='replace')
 estaciones_df['Codigo'] = estaciones_df['Codigo'].astype(str).str.strip().str.upper()
 
 font_style = dict(family="Arial, sans-serif", size=14, color="#333333")
@@ -75,7 +75,7 @@ def update_all(code):
         for est in [f'IB{str(i).zfill(2)}' for i in range(1, 12)]:
             file = os.path.join(data_path, f'{est}_et0_variants.csv')
             if os.path.exists(file):
-                df = pd.read_csv(file, encoding='utf-8-sig', errors='replace')
+                df = pd.read_csv(file, encoding='utf-8-sig', encoding_errors='replace')
                 df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
                 df['Estacion'] = est
                 df_all = pd.concat([df_all, df], ignore_index=True)
@@ -188,7 +188,7 @@ def update_all(code):
         return empty_table, empty_table, empty_table, empty_table, empty_table, empty_table, empty_fig, empty_fig, empty_fig, empty_fig, error_msg
     
     try:
-        df = pd.read_csv(file, encoding='utf-8-sig', errors='replace')
+        df = pd.read_csv(file, encoding='utf-8-sig', encoding_errors='replace')
         df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
         df = df.dropna(subset=['Fecha'])
         print(f"Filas totales para {code}: {len(df)}")  # Log

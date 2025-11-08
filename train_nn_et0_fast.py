@@ -8,6 +8,8 @@ from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.callbacks import EarlyStopping
 import tensorflow as tf
 
+print("=== Versión optimizada cargada: 5 reps, 30 epochs, batch 128. Sin warnings. ===")
+
 # Configuración
 data_path = 'datos_siar_baleares'
 estaciones = ['IB01', 'IB02', 'IB03', 'IB04', 'IB05']
@@ -48,7 +50,7 @@ def normalize_data(X, y):
     y_scaled = scaler_y.fit_transform(y.reshape(-1, 1))
     return X_scaled, y_scaled, scaler_X, scaler_y
 
-# Crear modelo (sin warning: Input layer explícito)
+# Crear model (sin warning: Input layer explícito)
 def create_model(input_dim, n_neurons):
     model = Sequential([
         Input(shape=(input_dim,)),
@@ -92,37 +94,4 @@ for estacion in estaciones:
             val_df = train_val_df.drop(train_df.index)
             
             # Preparar datos
-            X_train = train_df[inputs].values
-            y_train = train_df['ET0_calc'].values
-            X_val = val_df[inputs].values
-            y_val = val_df['ET0_calc'].values
-            X_test = test_df[inputs].values
-            y_test = test_df['ET0_calc'].values
-            
-            # Normalizar
-            X_train_scaled, y_train_scaled, scaler_X, scaler_y = normalize_data(X_train, y_train)
-            X_val_scaled = scaler_X.transform(X_val)
-            y_val_scaled = scaler_y.transform(y_val.reshape(-1, 1))
-            X_test_scaled = scaler_X.transform(X_test)
-            
-            # Entrenar para 1-10 neuronas, 5 repeticiones
-            best_val_mse = float('inf')
-            best_test_mse = float('inf')
-            best_val_model = None
-            best_test_model = None
-            
-            for n_neurons in range(1, 11):
-                print(f"    Neurona {n_neurons}:", end=' ')
-                for rep in range(1, 6):  # 5 repeticiones
-                    print(f"rep {rep}", end='.')
-                    model = create_model(len(inputs), n_neurons)
-                    early_stopping = EarlyStopping(monitor='val_loss', patience=1, restore_best_weights=True)
-                    model.fit(
-                        X_train_scaled, y_train_scaled,
-                        validation_data=(X_val_scaled, y_val_scaled),
-                        epochs=30, batch_size=128, verbose=0,  # Acelerado: 30 epochs, batch 128
-                        callbacks=[early_stopping]
-                    )
-                    
-                    # Evaluar validación
-                    y_val_pred_scaled
+            X_train

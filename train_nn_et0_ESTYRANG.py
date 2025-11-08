@@ -9,6 +9,12 @@ from tensorflow.keras.callbacks import EarlyStopping
 import tensorflow as tf
 import itertools
 
+# =========================================================================
+# SOLUCIÓN CRÍTICA: Deshabilitar GPU para evitar "CUDA error: UNKNOWN ERROR (303)"
+# Esto obliga a TensorFlow a usar la CPU, que es más estable en entornos virtuales.
+tf.config.set_visible_devices([], 'GPU')
+# =========================================================================
+
 print("=== Script Interactivo para Entrenamiento de ANN ET₀ ===")
 print("Este programa entrena ANN_Rs, ANN_Ra, ANN_HR para una estación y rango de neuronas especificado.")
 print("Guarda métricas en CSV y el mejor modelo (.h5) por tipo.")
@@ -99,7 +105,6 @@ def train_for_station(estacion, min_neurons, max_neurons):
     df_full = df_full.dropna(subset=['Fecha']).sort_values(by='Fecha')
     
     # --- AJUSTE CLAVE: Usamos ET0_calc como variable de salida ---
-    # Esto es coherente con que es la ET0 Penman-Monteith calculada por tu script 'variants_et0.py'
     output_col = 'ET0_calc' 
     # -----------------------------------------------------------
     
@@ -216,7 +221,6 @@ def train_for_station(estacion, min_neurons, max_neurons):
         # Guardar el mejor modelo de este tipo (ANN_Rs, ANN_Ra, o ANN_HR)
         if best_model_data['model'] is not None:
             model_path = os.path.join(data_path, f'best_model_{estacion}_{model_name}.h5')
-            # La advertencia de HDF5 es normal. 
             best_model_data['model'].save(model_path)
             print(f"Mejor modelo guardado: {model_path} (Neuronas: {best_model_data['neurons']}, MSE: {best_model_data['MSE']})")
         

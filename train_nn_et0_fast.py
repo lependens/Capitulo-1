@@ -1,4 +1,3 @@
-# Código optimizado - Copia en nueva celda
 import pandas as pd
 import numpy as np
 import os
@@ -9,10 +8,10 @@ from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.callbacks import EarlyStopping
 import tensorflow as tf
 
-# Configuración acelerada
+# Configuración
 data_path = 'datos_siar_baleares'
 estaciones = ['IB01', 'IB02', 'IB03', 'IB04', 'IB05']
-output_file = os.path.join(data_path, 'nn_errors_fast.csv')  # Nuevo archivo para esta versión
+output_file = os.path.join(data_path, 'nn_errors_fast.csv')
 
 # Combinaciones de inputs (según Tabla 4 del TFG)
 input_combinations = {
@@ -49,7 +48,7 @@ def normalize_data(X, y):
     y_scaled = scaler_y.fit_transform(y.reshape(-1, 1))
     return X_scaled, y_scaled, scaler_X, scaler_y
 
-# Crear modelo (sin warnings)
+# Crear modelo (sin warning: Input layer explícito)
 def create_model(input_dim, n_neurons):
     model = Sequential([
         Input(shape=(input_dim,)),
@@ -59,7 +58,7 @@ def create_model(input_dim, n_neurons):
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='mse')
     return model
 
-# Entrenamiento con k-fold por años (acelerado: 5 repeticiones, 50 epochs)
+# Entrenamiento con k-fold por años (acelerado: 5 reps, 30 epochs, batch 128)
 results = []
 for estacion in estaciones:
     print(f"\n=== Procesando estación {estacion} ===")
@@ -106,7 +105,7 @@ for estacion in estaciones:
             y_val_scaled = scaler_y.transform(y_val.reshape(-1, 1))
             X_test_scaled = scaler_X.transform(X_test)
             
-            # Entrenar para 1-10 neuronas, 5 repeticiones (acelerado)
+            # Entrenar para 1-10 neuronas, 5 repeticiones
             best_val_mse = float('inf')
             best_test_mse = float('inf')
             best_val_model = None
@@ -114,72 +113,16 @@ for estacion in estaciones:
             
             for n_neurons in range(1, 11):
                 print(f"    Neurona {n_neurons}:", end=' ')
-                for rep in range(1, 6):  # 5 repeticiones (reducido)
+                for rep in range(1, 6):  # 5 repeticiones
                     print(f"rep {rep}", end='.')
                     model = create_model(len(inputs), n_neurons)
                     early_stopping = EarlyStopping(monitor='val_loss', patience=1, restore_best_weights=True)
                     model.fit(
                         X_train_scaled, y_train_scaled,
                         validation_data=(X_val_scaled, y_val_scaled),
-                        epochs=50, batch_size=64, verbose=0,  # 50 epochs, batch 64 (acelerado)
+                        epochs=30, batch_size=128, verbose=0,  # Acelerado: 30 epochs, batch 128
                         callbacks=[early_stopping]
                     )
                     
                     # Evaluar validación
-                    y_val_pred_scaled = model.predict(X_val_scaled, verbose=0)
-                    y_val_pred = scaler_y.inverse_transform(y_val_pred_scaled)
-                    val_mse = mean_squared_error(y_val, y_val_pred)
-                    
-                    if val_mse < best_val_mse:
-                        best_val_mse = val_mse
-                        best_val_model = model
-                        print("v", end='')  # Mejor val
-                    
-                    # Evaluar test
-                    y_test_pred_scaled = model.predict(X_test_scaled, verbose=0)
-                    y_test_pred = scaler_y.inverse_transform(y_test_pred_scaled)
-                    test_mse = mean_squared_error(y_test, y_test_pred)
-                    
-                    if test_mse < best_test_mse:
-                        best_test_mse = test_mse
-                        best_test_model = model
-                        print("t", end='')  # Mejor test
-                    else:
-                        print(".", end='')
-                
-                print(f" [Mejor val MSE: {best_val_mse:.3f}, Mejor test MSE: {best_test_mse:.3f}]")
-            
-            # Calcular métricas finales
-            for selection, model in [('Validation', best_val_model), ('Test', best_test_model)]:
-                y_test_pred_scaled = model.predict(X_test_scaled, verbose=0)
-                y_test_pred = scaler_y.inverse_transform(y_test_pred_scaled)
-                mse, rmse, mae, r2, aare = calculate_metrics(y_test, y_test_pred)
-                
-                results.append({
-                    'Estacion': estacion,
-                    'Modelo': model_name,
-                    'Seleccion': selection,
-                    'Test_Year': test_year,
-                    'MSE': mse,
-                    'RMSE': rmse,
-                    'MAE': mae,
-                    'R2': r2,
-                    'AARE': aare
-                })
-                print(f"    {selection}: MSE {mse:.3f}, MAE {mae:.3f}")
-    
-    print(f"Estación {estacion} completada.")
-
-# Guardar resultados
-results_df = pd.DataFrame(results)
-results_df.to_csv(output_file, index=False)
-print(f"\nResultados guardados en {output_file}")
-
-# Resumen por modelo y estación (media de métricas por año)
-summary = results_df.groupby(['Estacion', 'Modelo', 'Seleccion'])[['MSE', 'RMSE', 'MAE', 'R2', 'AARE']].mean().reset_index()
-print("\nResumen de métricas promedio:")
-print(summary.round(3))
-
-# Guardar resumen
-summary.to_csv(os.path.join(data_path, 'nn_errors_summary.csv'), index=False)
-print(f"Resumen guardado en {data_path}/nn_errors_summary.csv")
+                    y_val_pred_scaled

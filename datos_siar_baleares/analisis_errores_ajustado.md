@@ -68,15 +68,29 @@
 
 ---
 
+### Errores para Estación IB06
+
+| Modelo | MSE (mm²/día²) | RMSE (adimensional) | MAE (mm/día) | R² (adimensional) | AARE (adimensional) |
+|--------|----------------|---------------------|--------------|-------------------|---------------------|
+| PM Estándar | 0.01 | 0.03 | 0.02 | 1.0 | 0.02 |
+| PM Cielo Claro | 0.48 | 0.23 | 0.46 | 0.93 | 0.17 |
+| Hargreaves | 0.98 | 0.33 | 0.84 | 0.92 | 0.4 |
+| Valiantzas | 0.28 | 0.18 | 0.4 | 0.94 | 0.2 |
+| Hargreaves Ajustado | 0.29 | 0.18 | 0.42 | 0.92 | 0.2 |
+| Valiantzas Ajustado | 0.2 | 0.15 | 0.34 | 0.94 | 0.15 |
+
+
+---
+
 ### Errores Generales (Media de Todas Estaciones)
 
 | Modelo | MSE (mm²/día²) | RMSE (adimensional) | MAE (mm/día) | R² (adimensional) | AARE (adimensional) |
 |--------|----------------|---------------------|--------------|-------------------|---------------------|
 | PM Estándar | 0.0 | 0.02 | 0.02 | 1.0 | 0.02 |
-| PM Cielo Claro | 0.48 | 0.22 | 0.46 | 0.94 | 0.16 |
-| Hargreaves | 0.56 | 0.24 | 0.61 | 0.91 | 0.29 |
-| Valiantzas | 0.24 | 0.16 | 0.37 | 0.94 | 0.16 |
-| Hargreaves Ajustado | 0.31 | 0.18 | 0.43 | 0.91 | 0.18 |
+| PM Cielo Claro | 0.48 | 0.23 | 0.46 | 0.93 | 0.17 |
+| Hargreaves | 0.62 | 0.26 | 0.65 | 0.91 | 0.31 |
+| Valiantzas | 0.25 | 0.16 | 0.37 | 0.94 | 0.17 |
+| Hargreaves Ajustado | 0.31 | 0.18 | 0.42 | 0.91 | 0.18 |
 | Valiantzas Ajustado | 0.21 | 0.15 | 0.35 | 0.94 | 0.14 |
 
 

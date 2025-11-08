@@ -7,7 +7,7 @@ import os
 data_path = r'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'
 
 # Lista de estaciones (solo IB01-IB05, ya que IB06-IB11 no tienen datos)
-estaciones = [f'IB{str(i).zfill(2)}' for i in range(1, 6)]
+estaciones = [f'IB{str(i).zfill(2)}' for i in range(1, 11)]
 
 # Función para calcular AHC y ajustar ET0 (como en MATLAB: mean(ratios), sin 'a')
 def calculate_ahc_for_station(code):

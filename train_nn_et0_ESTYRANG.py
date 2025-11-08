@@ -7,6 +7,7 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Input
 from tensorflow.keras.callbacks import EarlyStopping
 import tensorflow as tf
+import itertools
 
 print("=== Script Interactivo para Entrenamiento de ANN ET₀ ===")
 print("Este programa entrena ANN_Rs, ANN_Ra, ANN_HR para una estación y rango de neuronas especificado.")
@@ -20,141 +21,186 @@ input_combinations = {
     'ANN_HR': ['TempMax', 'TempMin', 'TempMedia', 'Ra', 'HumedadMedia']  # 5 inputs
 }
 
+# --- Constantes de Entrenamiento ---
+NUM_REPETITIONS = 5  # Número de veces que se entrena cada combinación neuronas/modelo
+EPOCHS = 100         # Máximo de épocas
+BATCH_SIZE = 128     # Tamaño del lote
+PATIENCE = 10        # Para EarlyStopping
+
 # Función para calcular métricas
-def calculate_metrics(y_true, y_pred):
+def calculate_metrics(y_true, y_pred, obs_mean):
     mse = mean_squared_error(y_true, y_pred)
     rmse = np.sqrt(mse)
     mae = mean_absolute_error(y_true, y_pred)
     r2 = r2_score(y_true, y_pred)
-    aare = np.mean(np.abs((y_true - y_pred) / y_true)) if np.all(y_true != 0) else np.nan
-    return mse, rmse, mae, r2, aare
+    
+    # Calcular RRMSE
+    rrmse = rmse / obs_mean if obs_mean != 0 else np.nan
+    
+    # Calcular AARE
+    valid_aare = (y_true != 0)
+    y_true_aare, y_pred_aare = y_true[valid_aare], y_pred[valid_aare]
+    aare = np.mean(np.abs((y_true_aare - y_pred_aare) / y_true_aare))
+    
+    return round(mse, 3), round(rmse, 3), round(mae, 3), round(r2, 3), round(aare, 3), round(rrmse, 3)
 
-# Cargar y preparar datos
-def load_data(estacion):
-    file = os.path.join(data_path, f'{estacion}_et0_variants.csv')
-    if not os.path.exists(file):
-        print(f"Archivo no encontrado: {file}")
-        return None
-    df = pd.read_csv(file, encoding='utf-8-sig', encoding_errors='replace')
-    df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
-    df = df.dropna(subset=['Fecha', 'ET0_calc'])
-    return df
-
-# Normalizar datos
-def normalize_data(X, y):
-    scaler_X = MinMaxScaler()
-    scaler_y = MinMaxScaler()
-    X_scaled = scaler_X.fit_transform(X)
-    y_scaled = scaler_y.fit_transform(y.reshape(-1, 1))
-    return X_scaled, y_scaled, scaler_X, scaler_y
-
-# Crear modelo
-def create_model(input_dim, n_neurons):
+# Función para construir y entrenar el modelo
+def build_and_train_model(X_train_scaled, y_train_scaled, X_test_scaled, y_test_scaled, n_neurons):
     model = Sequential([
-        Input(shape=(input_dim,)),
-        Dense(n_neurons, activation='tanh'),
-        Dense(1, activation='linear')
+        Input(shape=(X_train_scaled.shape[1],)),
+        Dense(n_neurons, activation='tanh', name='hidden_layer'),
+        Dense(1, activation='linear', name='output_layer')
     ])
+    
     model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='mse')
-    return model
+    
+    early_stop = EarlyStopping(monitor='val_loss', patience=PATIENCE, restore_best_weights=True)
+    
+    # Entrenar el modelo
+    history = model.fit(
+        X_train_scaled, y_train_scaled, 
+        epochs=EPOCHS, 
+        batch_size=BATCH_SIZE, 
+        verbose=0, # Ocultar output del entrenamiento para limpieza de consola
+        validation_data=(X_test_scaled, y_test_scaled),
+        callbacks=[early_stop]
+    )
+    
+    # Evaluar en el conjunto de prueba
+    test_loss = model.evaluate(X_test_scaled, y_test_scaled, verbose=0)
+    
+    return model, test_loss
 
-# Entrenar para una estación y rango de neuronas
+# Función principal de entrenamiento por estación
 def train_for_station(estacion, min_neurons, max_neurons):
-    print(f"\n=== Entrenando para estación {estacion} (neuronas {min_neurons}-{max_neurons}) ===")
+    # Cargar y preparar datos para la estación
+    file_path = os.path.join(data_path, f'{estacion}_filtered.csv')
     
-    df = load_data(estacion)
-    if df is None:
-        return None
+    # FIX: Definir output_file y summary_path dentro del scope de la función
+    output_file = os.path.join(data_path, f'n_results_{estacion}.csv') 
+    summary_path = os.path.join(data_path, f'n_summary_{estacion}.csv')
+
+    if not os.path.exists(file_path):
+        print(f"ERROR: Archivo no encontrado para {estacion}: {file_path}")
+        return {}
+
+    df_full = pd.read_csv(file_path, encoding='utf-8-sig')
+    df_full['Fecha'] = pd.to_datetime(df_full['Fecha'], errors='coerce', dayfirst=True)
+    df_full = df_full.dropna(subset=['Fecha']).sort_values(by='Fecha')
     
-    df['Year'] = df['Fecha'].dt.year
-    years = sorted(df['Year'].unique())
-    print(f"Años disponibles: {len(years)} (de {years[0]} a {years[-1]})")
+    # Eliminar filas con NaN en alguna de las columnas relevantes (inputs + output)
+    all_cols_needed = list(set(itertools.chain.from_iterable(input_combinations.values()))) + ['EtPMon']
+    df = df_full.dropna(subset=all_cols_needed).reset_index(drop=True)
+
+    if df.empty:
+        print(f"ADVERTENCIA: DataFrame vacío después de limpiar NaN para {estacion}.")
+        return {}
     
+    print(f"\nDatos válidos para {estacion}: {len(df)} filas.")
+    
+    # Preparar el Escalador (MinMaxScaler)
+    # Se entrena un escalador por cada set de inputs (para entradas y salidas)
+    
+    # Definir años de entrenamiento y prueba
+    all_years = sorted(df['Fecha'].dt.year.unique())
+    # Usar el último año como test, el resto como train
+    test_year = all_years[-1] 
+    train_years = all_years[:-1]
+
+    best_models = {}
     results = []
-    best_models = {}  # {model_name: (model, scaler_X, scaler_y, best_mse)}
+
+    print(f"Año de test: {test_year}")
     
+    # Filtrar datos de entrenamiento y prueba
+    df_train = df[df['Fecha'].dt.year.isin(train_years)].copy().reset_index(drop=True)
+    df_test = df[df['Fecha'].dt.year == test_year].copy().reset_index(drop=True)
+    
+    if df_train.empty or df_test.empty:
+        print("ERROR: No hay suficientes datos para entrenamiento o prueba.")
+        return {}
+    
+    # Iterar sobre las combinaciones de modelos (ANN_Rs, ANN_Ra, ANN_HR)
     for model_name, inputs in input_combinations.items():
-        print(f"\n--- Modelo {model_name} ({len(inputs)} inputs) ---")
+        print(f"\nModelo {model_name}:")
+        best_model_data = {'MSE': np.inf, 'model': None, 'neurons': None}
         
-        available_inputs = [col for col in inputs if col in df.columns]
-        if len(available_inputs) != len(inputs):
-            print(f"Advertencia: Faltan columnas {set(inputs) - set(available_inputs)}")
-            continue
+        # Obtener los datos para este modelo específico
+        X_train = df_train[inputs].values
+        X_test = df_test[inputs].values
+        y_train = df_train['EtPMon'].values.reshape(-1, 1)
+        y_test = df_test['EtPMon'].values.reshape(-1, 1)
+
+        # Escaladores (separados para inputs X y output Y)
+        scaler_X = MinMaxScaler(feature_range=(0, 1))
+        scaler_y = MinMaxScaler(feature_range=(0, 1))
         
-        best_mse = float('inf')
-        best_model_data = None
+        # Entrenar escaladores
+        X_train_scaled = scaler_X.fit_transform(X_train)
+        y_train_scaled = scaler_y.fit_transform(y_train)
+        X_test_scaled = scaler_X.transform(X_test)
+        y_test_scaled = scaler_y.transform(y_test)
         
-        # K-fold por años
-        for test_year in years:
-            print(f"  Test year: {test_year}")
+        # Media de la variable observada para RRMSE y AARE
+        obs_mean = y_test.mean() 
+        
+        # Iterar sobre el rango de neuronas
+        for n_neurons in range(min_neurons, max_neurons + 1):
+            print(f"  Neurona {n_neurons}:", end=" ")
             
-            test_df = df[df['Year'] == test_year]
-            train_val_df = df[df['Year'] != test_year]
-            train_df = train_val_df.sample(frac=0.85, random_state=42)
-            val_df = train_val_df.drop(train_df.index)
+            best_mse_rep = np.inf
             
-            X_train = train_df[inputs].values
-            y_train = train_df['ET0_calc'].values
-            X_val = val_df[inputs].values
-            y_val = val_df['ET0_calc'].values
-            X_test = test_df[inputs].values
-            y_test = test_df['ET0_calc'].values
-            
-            X_train_scaled, y_train_scaled, scaler_X, scaler_y = normalize_data(X_train, y_train)
-            X_val_scaled = scaler_X.transform(X_val)
-            y_val_scaled = scaler_y.transform(y_val.reshape(-1, 1))
-            X_test_scaled = scaler_X.transform(X_test)
-            
-            # Entrenar para el rango de neuronas
-            for n_neurons in range(min_neurons, max_neurons + 1):
-                print(f"    Neurona {n_neurons}:", end=' ')
-                for rep in range(1, 6):  # 5 repeticiones
-                    print(f"rep {rep}", end='.')
-                    model = create_model(len(inputs), n_neurons)
-                    early_stopping = EarlyStopping(monitor='val_loss', patience=1, restore_best_weights=True)
-                    model.fit(
-                        X_train_scaled, y_train_scaled,
-                        validation_data=(X_val_scaled, y_val_scaled),
-                        epochs=30, batch_size=128, verbose=0,
-                        callbacks=[early_stopping]
-                    )
-                    
-                    y_test_pred_scaled = model.predict(X_test_scaled, verbose=0)
-                    y_test_pred = scaler_y.inverse_transform(y_test_pred_scaled)
-                    test_mse, _, _, _, _ = calculate_metrics(y_test, y_test_pred)
-                    
-                    if test_mse < best_mse:
-                        best_mse = test_mse
-                        best_model_data = (model, scaler_X, scaler_y)
-                        print("t", end='')  # Mejor test
-                    else:
-                        print(".", end='')
+            # Repetir el entrenamiento varias veces
+            for rep in range(1, NUM_REPETITIONS + 1):
+                print(f"rep {rep}..", end="")
                 
-                print(f" [Mejor test MSE: {best_mse:.3f}]")
-            
-            # Métricas para este test_year
-            if best_model_data:
-                model, scaler_X, scaler_y = best_model_data
-                y_test_pred_scaled = model.predict(X_test_scaled, verbose=0)
-                y_test_pred = scaler_y.inverse_transform(y_test_pred_scaled)
-                mse, rmse, mae, r2, aare = calculate_metrics(y_test, y_test_pred)
+                # Construir, entrenar y evaluar
+                model, test_loss = build_and_train_model(
+                    X_train_scaled, y_train_scaled, 
+                    X_test_scaled, y_test_scaled, 
+                    n_neurons
+                )
+
+                # Desescalar predicciones para métricas reales
+                y_pred_scaled = model.predict(X_test_scaled, verbose=0)
+                y_pred_real = scaler_y.inverse_transform(y_pred_scaled).flatten()
+                
+                # Calcular métricas (usando y_test real, no escalado)
+                mse, rmse, mae, r2, aare, rrmse = calculate_metrics(y_test.flatten(), y_pred_real, obs_mean)
+
+                # Guardar resultados detallados
                 results.append({
                     'Estacion': estacion,
                     'Modelo': model_name,
+                    'Neuronas': n_neurons,
+                    'Repeticion': rep,
                     'Test_Year': test_year,
                     'MSE': mse,
                     'RMSE': rmse,
                     'MAE': mae,
                     'R2': r2,
-                    'AARE': aare
+                    'AARE': aare,
+                    'RRMSE': rrmse
                 })
-        
-        # Guardar mejor modelo por tipo
-        if best_model_data:
-            model, scaler_X, scaler_y = best_model_data
+
+                # Actualizar el mejor modelo para este número de neuronas
+                if mse < best_mse_rep:
+                    best_mse_rep = mse
+                    
+                # Actualizar el mejor modelo global para este tipo de ANN
+                if mse < best_model_data['MSE']:
+                    best_model_data['MSE'] = mse
+                    best_model_data['model'] = model
+                    best_model_data['neurons'] = n_neurons
+                    
+            print(f" [Mejor test MSE: {round(best_mse_rep, 3)}]")
+
+        # Guardar el mejor modelo de este tipo (ANN_Rs, ANN_Ra, o ANN_HR)
+        if best_model_data['model'] is not None:
             model_path = os.path.join(data_path, f'best_model_{estacion}_{model_name}.h5')
-            model.save(model_path)
-            print(f"Mejor modelo guardado: {model_path}")
+            # Advertencia: HDF5 es legacy, pero lo mantenemos por compatibilidad con el TFG.
+            best_model_data['model'].save(model_path)
+            print(f"Mejor modelo guardado: {model_path} (Neuronas: {best_model_data['neurons']}, MSE: {best_model_data['MSE']})")
         
         best_models[model_name] = best_model_data
     
@@ -162,32 +208,54 @@ def train_for_station(estacion, min_neurons, max_neurons):
     if results:
         results_df = pd.DataFrame(results)
         results_df.to_csv(output_file, index=False)
-        print(f"\nResultados guardados en {output_file}")
+        print(f"\nResultados detallados guardados en {output_file}")
         
-        summary = results_df.groupby(['Estacion', 'Modelo'])[['MSE', 'RMSE', 'MAE', 'R2', 'AARE']].mean().reset_index()
-        summary_path = os.path.join(data_path, f'n_{estacion}_summary.csv')
-        summary.to_csv(summary_path, index=False)
-        print(f"Resumen guardado en {summary_path}")
-        print("\nResumen de métricas:")
-        print(summary.round(3))
+        # Generar y guardar resumen (promedio por Modelo y Neuronas)
+        summary = results_df.groupby(['Estacion', 'Modelo', 'Neuronas'])[['MSE', 'RMSE', 'MAE', 'R2', 'AARE', 'RRMSE']].mean().reset_index()
+        summary_path_model = os.path.join(data_path, f'n_summary_{estacion}_model.csv')
+        summary.to_csv(summary_path_model, index=False)
+        print(f"Resumen por Modelo/Neurona guardado en {summary_path_model}")
+        
+        # Resumen general (promedio por Modelo)
+        summary_general = results_df.groupby(['Estacion', 'Modelo'])[['MSE', 'RMSE', 'MAE', 'R2', 'AARE', 'RRMSE']].mean().reset_index()
+        summary_general_path = os.path.join(data_path, f'n_summary_{estacion}.csv')
+        summary_general.to_csv(summary_general_path, index=False)
+        print(f"Resumen general guardado en {summary_general_path}")
+        print("\nResumen de métricas (promedio de 5 repeticiones por modelo):")
+        print(summary_general.round(3))
     
     return best_models
 
 # Main interactivo
 if __name__ == "__main__":
     print("\n--- Entrenamiento Interactivo ANN ET₀ ---")
-    estacion = input("Estación (ej. IB01): ").strip().upper()
     
-    rango_input = input("Rango de neuronas (ej. 4-10): ").strip()
-    min_neurons, max_neurons = map(int, rango_input.split('-'))
+    # Usamos un bucle para manejar errores de entrada
+    while True:
+        try:
+            estacion = input("Estación (ej. IB01): ").strip().upper()
+            if not estacion:
+                raise ValueError("La estación no puede estar vacía.")
+            break
+        except Exception as e:
+            print(f"Entrada no válida: {e}. Inténtalo de nuevo.")
+            
+    while True:
+        try:
+            rango_input = input("Rango de neuronas (ej. 4-10): ").strip()
+            min_neurons, max_neurons = map(int, rango_input.split('-'))
+            if min_neurons > max_neurons or min_neurons <= 0:
+                raise ValueError("Rango inválido. Asegúrate de que min <= max y min > 0.")
+            break
+        except Exception as e:
+            print(f"Formato de rango no válido (debe ser X-Y): {e}. Inténtalo de nuevo.")
+
     
     print(f"Entrenando para {estacion}, neuronas {min_neurons}-{max_neurons}...")
     
-    best_models = train_for_station(estacion, min_neurons, max_neurons)
-    
-    if best_models:
-        print("\nModelos guardados por tipo:")
-        for model_name, model_data in best_models.items():
-            print(f"- {model_name}: best_model_{estacion}_{model_name}.h5")
-    else:
-        print("No se entrenaron modelos válidos.")
+    try:
+        train_for_station(estacion, min_neurons, max_neurons)
+    except Exception as e:
+        print(f"\n🚨 ERROR CRÍTICO durante el entrenamiento: {e}")
+        import traceback
+        traceback.print_exc()

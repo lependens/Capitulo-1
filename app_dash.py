@@ -409,6 +409,6 @@ else:
 
 if __name__ == '__main__':
     print("Dash app está lista para ser servida por Gunicorn o similar.")
-    # No se usa app.run_server() aquí, ya que el entorno de despliegue lo maneja, 
-    # pero para pruebas locales, podrías descomentar la línea de abajo.
-    # app.run_server(debug=True)
+    # --- INICIO DEL SERVIDOR LOCAL ---
+    print("Iniciando servidor de desarrollo local de Dash...")
+    app.run_server(debug=True)

@@ -89,11 +89,12 @@ def load_data_globally():
 df_global, found_estaciones_global = load_data_globally()
 
 if df_global.empty:
+    # CORRECCIÓN DE SINTAXIS APLICADA AQUÍ (for e e in estaciones -> for e in estaciones)
     error_message = html.Div(
         [
             html.H1("⚠️ Error Crítico de Carga de Datos", style={'color': '#e74c3c'}),
             html.P("La aplicación no pudo encontrar o procesar ningún archivo CSV de datos."),
-            html.P(f"Por favor, asegúrate de que los archivos {', '.join([f'{e}_et0_variants_ajustado.csv' for e e in estaciones])} "
+            html.P(f"Por favor, asegúrate de que los archivos {', '.join([f'{e}_et0_variants_ajustado.csv' for e in estaciones])} "
                    f"estén en la carpeta 'datos_siar_baleares' dentro de la carpeta del proyecto."),
         ], style={'textAlign': 'center', 'marginTop': '50px'}
     )
@@ -409,7 +410,6 @@ else:
 
 if __name__ == '__main__':
     print("Dash app está lista para ser servida por Gunicorn o similar.")
-    # --- INICIO DEL SERVIDOR LOCAL (CORRECCIÓN: app.run_server -> app.run) ---
-    print("Iniciando servidor de desarrollo local de Dash...")
     # La versión de Dash instalada usa app.run() en lugar de app.run_server()
+    print("Iniciando servidor de desarrollo local de Dash...")
     app.run(debug=True)

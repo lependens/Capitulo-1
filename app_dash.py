@@ -14,14 +14,13 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server  # Esencial para Render/Gunicorn
 
 # =========================================================================
-# 1. CARGA GLOBAL DE DATOS (CON FALLBACK Y RUTA ABSOLUTA CORREGIDA)
+# 1. CARGA GLOBAL DE DATOS
 # =========================================================================
 # Definir la ruta base como el directorio donde reside este script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Rutas prioritarias, relativas al directorio del script
 data_path_priority = os.path.join(SCRIPT_DIR, 'datos_siar_baleares')
-# Rutas secundarias (la raíz del proyecto, en caso de que los CSV estén fuera de la subcarpeta)
 data_path_fallback = SCRIPT_DIR
 
 estaciones = ['IB01', 'IB02', 'IB03', 'IB04', 'IB05'] # Extensible
@@ -30,22 +29,32 @@ font_style = {'family': 'Arial, sans-serif', 'size': 14, 'color': '#333333'}
 header_style = {'fontWeight': 'bold', 'color': '#2c3e50', 'marginBottom': '10px'}
 table_style = {'textAlign': 'left', 'fontFamily': 'Arial', 'fontSize': '14px'}
 
+# Definición extendida de modelos para el dashboard
+MODELOS_DICT = {
+    'ET0_calc': {'label': 'Penman-Monteith (SIAR)', 'color': '#007bff'},
+    'ET0_sun': {'label': 'Sunshine', 'color': '#1abc9c'},
+    'ET0_harg': {'label': 'Hargreaves Original', 'color': '#f39c12'},
+    'ET0_val': {'label': 'Valiantzas Original', 'color': '#e74c3c'},
+    'ET0_harg_ajustado': {'label': 'Hargreaves Ajustado', 'color': '#3498db'},
+    'ET0_val_ajustado': {'label': 'Valiantzas Ajustado', 'color': '#2ecc71'},
+}
+
+MODELO_REFERENCIA = 'ET0_calc'
+MODELOS_EMPIRICOS = [col for col in MODELOS_DICT.keys() if col != MODELO_REFERENCIA]
+
+
 def load_data_globally():
     """Carga y concatena todos los archivos de datos de ET0, intentando varias rutas."""
     df_all = pd.DataFrame()
     found_estaciones = []
     
     print("Iniciando carga global de archivos CSV...")
-    print(f"Directorio de script base: {SCRIPT_DIR}")
 
-    # Iterar sobre la ruta prioritaria y luego la de fallback (si es diferente)
     paths_to_check = [data_path_priority]
     if data_path_fallback != data_path_priority:
          paths_to_check.append(data_path_fallback)
 
     for path in paths_to_check:
-        print(f"Intentando cargar desde la ruta: {path}")
-        
         # Copiamos la lista para saber qué buscar en esta iteración
         estaciones_a_buscar = [code for code in estaciones if code not in found_estaciones]
 
@@ -54,7 +63,6 @@ def load_data_globally():
             filepath = os.path.join(path, filename)
             
             try:
-                # Comprobación de existencia para un mensaje de error más limpio
                 if not os.path.exists(filepath):
                     raise FileNotFoundError(f"El archivo no existe en la ruta.")
 
@@ -62,8 +70,10 @@ def load_data_globally():
                 df['Estacion'] = code
                 df['Fecha'] = pd.to_datetime(df['Fecha'])
                 
-                # Convertir columnas clave a numérico, manejando errores
-                for col in ['ET0_calc', 'ET0_harg_ajustado', 'ET0_val_ajustado', 'TempMedia', 'Radiacion']:
+                # Convertir columnas clave a numérico
+                cols_to_convert = list(MODELOS_DICT.keys()) + ['TempMedia', 'Radiacion']
+                for col in cols_to_convert:
+                    # Usar 'errors=coerce' para reemplazar valores no numéricos con NaN
                     df[col] = pd.to_numeric(df[col], errors='coerce')
                 
                 df_all = pd.concat([df_all, df], ignore_index=True)
@@ -83,13 +93,18 @@ def load_data_globally():
         print("¡ERROR CRÍTICO! No se pudo cargar ningún dato.")
         return pd.DataFrame(), []
     
-    print(f"Carga global finalizada. Estaciones cargadas: {found_estaciones}")
+    # Añadir columna de mes para análisis estacional
+    if not df_all.empty:
+        df_all['Mes'] = df_all['Fecha'].dt.month
+    
     return df_all, found_estaciones
 
 df_global, found_estaciones_global = load_data_globally()
 
+# =========================================================================
+# 2. CONFIGURACIÓN INICIAL (Solo si hay datos cargados)
+# =========================================================================
 if df_global.empty:
-    # CORRECCIÓN DE SINTAXIS APLICADA AQUÍ (for e e in estaciones -> for e in estaciones)
     error_message = html.Div(
         [
             html.H1("⚠️ Error Crítico de Carga de Datos", style={'color': '#e74c3c'}),
@@ -100,17 +115,9 @@ if df_global.empty:
     )
     app.layout = dbc.Container(error_message)
 else:
-    # Obtener el rango de años para el slider
     min_year = df_global['Fecha'].dt.year.min()
     max_year = df_global['Fecha'].dt.year.max()
     years = list(range(min_year, max_year + 1))
-    
-    # Lista de Modelos (Columnas para análisis)
-    modelos = [
-        {'label': 'Penman-Monteith (SIAR)', 'value': 'ET0_calc'},
-        {'label': 'Hargreaves Ajustado', 'value': 'ET0_harg_ajustado'},
-        {'label': 'Valiantzas Ajustado', 'value': 'ET0_val_ajustado'},
-    ]
     
     # Columnas para la tabla de errores
     errors_columns = [
@@ -123,43 +130,44 @@ else:
     ]
     
     # =========================================================================
-    # 2. FUNCIONES DE CÁLCULO DE MÉTRICAS Y GRÁFICOS
+    # 3. FUNCIONES DE CÁLCULO DE MÉTRICAS Y GRÁFICOS
     # =========================================================================
 
     def calculate_errors_df(df_filtered):
-        """Calcula las métricas de error agregadas para el DataFrame filtrado."""
+        """Calcula las métricas de error para todos los modelos empíricos vs PM."""
         if df_filtered.empty:
             return pd.DataFrame()
 
-        y_true = df_filtered['ET0_calc'].dropna()
-        if y_true.empty:
+        # Usar sólo el subconjunto de columnas necesario para el cálculo
+        cols_to_use = [MODELO_REFERENCIA] + MODELOS_EMPIRICOS
+        df_comp = df_filtered[cols_to_use].dropna()
+        
+        if df_comp.empty:
             return pd.DataFrame()
-            
+
+        y_true = df_comp[MODELO_REFERENCIA]
         mean_y_true = y_true.mean()
         
         results = []
-        for model in modelos[1:]: # Excluir ET0_calc (la referencia)
-            col = model['value']
-            
-            # Asegurar que ambos tienen valores
-            comparison_df = df_filtered[['ET0_calc', col]].dropna()
-            
-            if comparison_df.empty:
-                continue
-
-            y_true_comp = comparison_df['ET0_calc']
-            y_pred = comparison_df[col]
+        for col in MODELOS_EMPIRICOS:
+            model_label = MODELOS_DICT[col]['label']
+            y_pred = df_comp[col]
             
             # Métricas
-            mse = ((y_true_comp - y_pred) ** 2).mean()
+            mse = ((y_true - y_pred) ** 2).mean()
             rmse = np.sqrt(mse)
-            mae = (np.abs(y_true_comp - y_pred)).mean()
-            r2 = 1 - (np.sum((y_true_comp - y_pred)**2) / np.sum((y_true_comp - mean_y_true)**2)) if mean_y_true != 0 else 0
-            # Evitar división por cero o NaNs en AARE
-            aare = (np.abs((y_true_comp - y_pred) / y_true_comp)).replace([np.inf, -np.inf], np.nan).dropna().mean()
+            mae = (np.abs(y_true - y_pred)).mean()
+            
+            # Cálculo de R2
+            numerator_r2 = np.sum((y_true - y_pred) ** 2)
+            denominator_r2 = np.sum((y_true - mean_y_true) ** 2)
+            r2 = 1 - (numerator_r2 / denominator_r2) if denominator_r2 != 0 else 0
+            
+            # Cálculo de AARE
+            aare = (np.abs((y_true - y_pred) / y_true)).replace([np.inf, -np.inf], np.nan).dropna().mean()
             
             results.append({
-                "Modelo": model['label'],
+                "Modelo": model_label,
                 "MSE": f"{mse:.3f}",
                 "RRMSE": f"{rmse / mean_y_true:.3f}" if mean_y_true else "N/A",
                 "MAE": f"{mae:.3f}",
@@ -169,118 +177,216 @@ else:
             
         return pd.DataFrame(results)
         
-    def create_time_series_fig(df_filtered, selected_models):
-        """Crea el gráfico de series temporales para los modelos seleccionados."""
-        if df_filtered.empty or not selected_models:
+    def create_scatter_fig(df_filtered, selected_model_col, station_title):
+        """Crea el gráfico de nube de puntos (Scatter Plot) de ET0_calc vs Modelo Empírico."""
+        if df_filtered.empty or selected_model_col == MODELO_REFERENCIA:
             return go.Figure()
 
-        df_monthly = df_filtered.set_index('Fecha')[selected_models].resample('M').mean().reset_index()
+        df_plot = df_filtered[[MODELO_REFERENCIA, selected_model_col]].dropna().copy()
         
-        fig = px.line(df_monthly, x='Fecha', y=selected_models, 
-                      title='Serie Temporal Mensual de ET₀ (Media)',
-                      labels={'value': 'ET₀ (mm/día)', 'Fecha': 'Fecha', 'variable': 'Modelo'},
-                      color_discrete_map={
-                          'ET0_calc': '#1f77b4',       # Azul PM
-                          'ET0_harg_ajustado': '#ff7f0e', # Naranja Hargreaves
-                          'ET0_val_ajustado': '#2ca02c'  # Verde Valiantzas
-                      })
-                      
-        fig.update_layout(title_font_size=18, font=font_style, hovermode="x unified")
-        return fig
-
-    def create_scatter_diff(df_filtered, x_var, title):
-        """Crea un gráfico de dispersión de diferencia vs una variable (Temp/Rs)."""
-        if df_filtered.empty:
-            return None
-            
-        df_plot = df_filtered.copy().dropna(subset=['ET0_calc', 'ET0_harg_ajustado', 'ET0_val_ajustado', x_var])
-        if df_plot.empty:
-            return None
-
-        # Calcular las diferencias
-        df_plot['Diff_Harg'] = df_plot['ET0_harg_ajustado'] - df_plot['ET0_calc']
-        df_plot['Diff_Val'] = df_plot['ET0_val_ajustado'] - df_plot['ET0_calc']
+        y_true = df_plot[MODELO_REFERENCIA]
+        y_pred = df_plot[selected_model_col]
         
-        # Melt para Plotly
-        df_melted = df_plot.melt(
-            id_vars=[x_var], 
-            value_vars=['Diff_Harg', 'Diff_Val'], 
-            var_name='Modelo', 
-            value_name='Diferencia (mm/día)'
+        # Calcular R2 para el título
+        r2 = r2_score(y_true, y_pred) if len(y_true) > 1 and y_true.std() > 0 else 0
+        
+        # Ajuste de la línea 1:1 para el rango de valores
+        min_val = min(y_true.min(), y_pred.min())
+        max_val = max(y_true.max(), y_pred.max())
+        
+        fig = go.Figure()
+
+        # Puntos de dispersión (diarios)
+        fig.add_trace(go.Scatter(
+            x=y_true, 
+            y=y_pred,
+            mode='markers',
+            marker=dict(
+                size=5,
+                color=MODELOS_DICT[selected_model_col]['color'],
+                opacity=0.6
+            ),
+            name=f'{MODELOS_DICT[selected_model_col]["label"]} (R²: {r2:.3f})'
+        ))
+
+        # Línea de ajuste 1:1 (referencia)
+        fig.add_trace(go.Scatter(
+            x=[min_val, max_val], 
+            y=[min_val, max_val],
+            mode='lines',
+            line=dict(color='black', dash='dash'),
+            name='Línea 1:1'
+        ))
+        
+        # Configuración del layout
+        fig.update_layout(
+            title=f'Correlación Diaria: {MODELOS_DICT[selected_model_col]["label"]} vs PM',
+            xaxis_title=f'ET₀ Penman-Monteith (mm/día)',
+            yaxis_title=f'ET₀ {MODELOS_DICT[selected_model_col]["label"]} (mm/día)',
+            font=font_style, 
+            hovermode="closest",
+            showlegend=True
         )
         
-        fig = px.scatter(df_melted, x=x_var, y='Diferencia (mm/día)', color='Modelo', 
-                         title=title,
-                         labels={x_var: x_var, 'Diferencia (mm/día)': 'Error de Estimación'},
-                         template="plotly_white")
+        fig.update_xaxes(range=[min_val*0.9, max_val*1.1])
+        fig.update_yaxes(range=[min_val*0.9, max_val*1.1])
         
-        fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="Diferencia Cero")
-        fig.update_traces(marker=dict(size=3, opacity=0.5))
-        fig.update_layout(title_font_size=18, font=font_style, legend_title_text="Modelo")
         return fig
-
-    def create_monthly_diff_fig(df_filtered):
-        """Crea el gráfico de barras de diferencias medias mensuales."""
-        if df_filtered.empty:
-            return None
-            
-        df_plot = df_filtered.copy().dropna(subset=['ET0_calc', 'ET0_harg_ajustado', 'ET0_val_ajustado'])
-        if df_plot.empty:
-            return None
-
-        # Calcular diferencias y mes
-        df_plot['Diff_Harg'] = df_plot['ET0_harg_ajustado'] - df_plot['ET0_calc']
-        df_plot['Diff_Val'] = df_plot['ET0_val_ajustado'] - df_plot['ET0_calc']
-        df_plot['Mes'] = df_plot['Fecha'].dt.month
         
-        # Calcular media mensual de las diferencias
-        df_monthly_diff = df_plot.groupby('Mes')[['Diff_Harg', 'Diff_Val']].mean().reset_index()
+    def create_monthly_diff_fig(df_filtered, selected_model_col):
+        """Crea el gráfico de la diferencia media mensual (Modelo - PM)."""
+        if df_filtered.empty or selected_model_col == MODELO_REFERENCIA:
+            return go.Figure()
         
-        # Melt para Plotly
-        df_melted = df_monthly_diff.melt(
-            id_vars=['Mes'], 
-            value_vars=['Diff_Harg', 'Diff_Val'], 
-            var_name='Modelo', 
-            value_name='Diferencia Media Mensual (mm/día)'
+        # Agrupar por mes y calcular la media de ambos modelos
+        df_monthly = df_filtered.groupby('Mes')[[MODELO_REFERENCIA, selected_model_col]].mean().reset_index()
+        
+        # Calcular la diferencia media mensual (Modelo - PM)
+        df_monthly['Diferencia_Media'] = df_monthly[selected_model_col] - df_monthly[MODELO_REFERENCIA]
+        
+        meses = {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun', 
+                 7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'}
+        df_monthly['Mes_Label'] = df_monthly['Mes'].map(meses)
+
+        # Crear el gráfico de barras
+        fig = px.bar(
+            df_monthly, 
+            x='Mes_Label', 
+            y='Diferencia_Media', 
+            color='Diferencia_Media',
+            color_continuous_scale=px.colors.sequential.RdBu, # Escala de color para las diferencias
+            labels={'Diferencia_Media': 'Error Medio (mm/día)', 'Mes_Label': 'Mes'},
+            title=f'Error Medio Mensual: {MODELOS_DICT[selected_model_col]["label"]} - Penman-Monteith'
         )
         
-        # Mapear números de mes a nombres
-        month_names = {1:'Ene', 2:'Feb', 3:'Mar', 4:'Abr', 5:'May', 6:'Jun', 7:'Jul', 8:'Ago', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dic'}
-        df_melted['Mes_Nombre'] = df_melted['Mes'].map(month_names)
-
-        fig = px.bar(df_melted, x='Mes_Nombre', y='Diferencia Media Mensual (mm/día)', color='Modelo', 
-                     barmode='group', 
-                     title='Sesgo Promedio Mensual (Modelo - PM)',
-                     labels={'Mes_Nombre': 'Mes', 'Diferencia Media Mensual (mm/día)': 'Error (mm/día)'},
-                     template="plotly_white")
-
-        fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="Diferencia Cero")
-        fig.update_layout(title_font_size=18, font=font_style, legend_title_text="Modelo")
+        # Añadir línea de referencia cero
+        fig.add_hline(y=0, line_dash="dash", line_color="grey")
+        
+        fig.update_layout(
+            font=font_style, 
+            coloraxis_showscale=False,
+            title_font_size=18
+        )
+        
         return fig
 
+    def create_all_models_time_series(df_filtered, station_title):
+        """
+        NUEVO: Crea un gráfico de series temporales (con puntos) para TODOS los modelos.
+        Recomendado solo cuando se filtra una estación específica.
+        """
+        if df_filtered.empty:
+            return go.Figure()
+
+        fig = go.Figure()
+        
+        # Usamos los datos de Fecha, y todas las columnas ET0 relevantes
+        df_plot = df_filtered[['Fecha'] + list(MODELOS_DICT.keys())].dropna()
+
+        # Iterar sobre todos los modelos para agregar trazas
+        for col, config in MODELOS_DICT.items():
+            # Seleccionamos modo 'lines+markers' para ver la evolución y la densidad de puntos
+            fig.add_trace(go.Scatter(
+                x=df_plot['Fecha'],
+                y=df_plot[col],
+                mode='lines+markers',
+                marker=dict(size=3, opacity=0.5),
+                line=dict(width=1),
+                name=config['label'],
+                line_color=config['color']
+            ))
+
+        fig.update_layout(
+            title=f'Serie Temporal Diaria de ET₀: Comparación de Todos los Modelos en {station_title}',
+            xaxis_title='Fecha',
+            yaxis_title='ET₀ (mm/día)',
+            font=font_style,
+            hovermode="x unified",
+            height=500
+        )
+        return fig
+
+    # Función auxiliar para calcular R2 (necesaria para el scatter plot)
+    def r2_score(y_true, y_pred):
+        ss_res = np.sum((y_true - y_pred) ** 2)
+        ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
+        return 1 - (ss_res / ss_tot) if ss_tot != 0 else 0
 
     # =========================================================================
-    # 3. DISEÑO DE LA APLICACIÓN DASH
+    # 4. DISEÑO DE LA APLICACIÓN DASH
     # =========================================================================
+
+    # Nuevo componente de explicación de modelos (Igual al anterior)
+    model_explanation_card = dbc.Card([
+        dbc.CardHeader("Fórmulas y Contexto de Comparación", style={'backgroundColor': '#2980b9', 'color': 'white', 'fontWeight': 'bold'}),
+        dbc.CardBody([
+            html.P(html.Strong("Modelo de Referencia (Base de Comparación):"), className="mb-1"),
+            html.Div([
+                html.Span("Penman-Monteith (SIAR)", style={'color': MODELOS_DICT['ET0_calc']['color'], 'fontWeight': 'bold'}),
+                html.Ul([
+                    html.Li("Es el modelo estándar FAO-56, considerado el más preciso."),
+                    html.Li("Inputs: Temperatura media, Radiación, Humedad, Velocidad del Viento."),
+                    html.Li("Contexto: Todos los modelos empíricos se evalúan contra PM (ET0_calc) para determinar su precisión en Baleares."),
+                ], className="ml-3"),
+            ], className="mb-3 border-bottom pb-2"),
+
+            html.P(html.Strong("Modelos Empíricos (Simples):"), className="mb-1"),
+            html.Ul([
+                html.Li([
+                    html.Span("Sunshine (ET0_sun):", style={'color': MODELOS_DICT['ET0_sun']['color'], 'fontWeight': 'bold'}),
+                    " Basado solo en Radiación (Rs) y Temperatura Media."
+                ]),
+                html.Li([
+                    html.Span("Hargreaves Original (ET0_harg):", style={'color': MODELOS_DICT['ET0_harg']['color'], 'fontWeight': 'bold'}),
+                    " Basado en TMax, TMin y Radiación Extraterrestre (Ra). Ideal donde faltan datos de viento/humedad."
+                ]),
+                html.Li([
+                    html.Span("Valiantzas Original (ET0_val):", style={'color': MODELOS_DICT['ET0_val']['color'], 'fontWeight': 'bold'}),
+                    " Basado en TMax, TMin, Ra y Humedad Media. Mejor para zonas costeras húmedas."
+                ]),
+            ], className="ml-3"),
+
+            html.P(html.Strong("Modelos Ajustados:"), className="mb-1 mt-3"),
+            html.Ul([
+                html.Li([
+                    html.Span("Hargreaves Ajustado (ET0_harg_ajustado):", style={'color': MODELOS_DICT['ET0_harg_ajustado']['color'], 'fontWeight': 'bold'}),
+                    " Hargreaves recalibrado con coeficientes AHC (ajustados a Baleares) para reducir el error sistemático."
+                ]),
+                html.Li([
+                    html.Span("Valiantzas Ajustado (ET0_val_ajustado):", style={'color': MODELOS_DICT['ET0_val_ajustado']['color'], 'fontWeight': 'bold'}),
+                    " Valiantzas recalibrado con coeficientes AHC (ajustados a Baleares) para obtener una mejor correlación."
+                ]),
+            ], className="ml-3"),
+
+        ], style={'fontSize': '13px', 'lineHeight': '1.5'}),
+    ], className="mb-4 shadow-sm")
+
 
     app.layout = dbc.Container([
-        dbc.Row(dbc.Col(html.H1("Dashboard de Análisis de ET₀ - Islas Baleares", className="text-center my-4", style={'color': '#1abc9c', 'fontFamily': 'Arial, sans-serif'}))),
+        dbc.Row(dbc.Col(html.H1("Dashboard de Análisis Comparativo de ET₀", 
+                                className="text-center my-4", 
+                                style={'color': '#1abc9c', 'fontFamily': 'Arial, sans-serif'}))),
         
         dbc.Row([
+            # Panel de Control (4 columnas)
             dbc.Col([
+                # Card de Explicación de Modelos
+                model_explanation_card,
+
                 html.Div([
-                    html.Label("Seleccionar Estación:", style=header_style),
+                    html.Label("1. Seleccionar Estación (para filtrar datos):", style=header_style),
                     dcc.Dropdown(
                         id='dropdown-estacion',
-                        options=[{'label': f'Estación {e}', 'value': e} for e in found_estaciones_global],
-                        value=found_estaciones_global[0] if found_estaciones_global else None,
+                        options=[{'label': 'Todas las Estaciones (Media)', 'value': 'ALL'}] + 
+                                [{'label': f'Estación {e}', 'value': e} for e in found_estaciones_global],
+                        value='IB01', # Valor inicial en IB01 para mostrar la serie temporal por defecto
                         clearable=False,
                         style=font_style
                     ),
                 ], className="mb-4"),
                 
                 html.Div([
-                    html.Label("Seleccionar Rango de Años:", style=header_style),
+                    html.Label("2. Seleccionar Rango de Años:", style=header_style),
                     dcc.RangeSlider(
                         id='slider-year',
                         min=min_year,
@@ -292,29 +398,47 @@ else:
                     ),
                 ], className="mb-4 pt-3"),
                 
+                html.Hr(),
+
                 html.Div([
-                    html.Label("Modelos a Visualizar en Serie Temporal:", style=header_style),
-                    dcc.Checklist(
-                        id='checklist-modelos',
-                        options=modelos,
-                        value=[m['value'] for m in modelos],
-                        inline=False,
-                        style=font_style,
-                        labelStyle={'display': 'block', 'cursor': 'pointer'}
+                    html.Label("3. Modelo a Comparar (vs PM) - En Nube de Puntos y Errores:", style=header_style),
+                    dcc.Dropdown(
+                        id='dropdown-model-comp',
+                        options=[{'label': v['label'], 'value': k} for k, v in MODELOS_DICT.items() if k != MODELO_REFERENCIA],
+                        value='ET0_val_ajustado', # Seleccionar el mejor por defecto
+                        clearable=False,
+                        style=font_style
                     ),
                 ], className="mb-4"),
-            ], md=4, className="bg-light p-4 rounded-3 shadow-lg"),
+                
+                # Nuevo filtro para AHC (Solo tiene efecto si se selecciona un modelo ajustado)
+                html.Div([
+                    html.Label("4. Estación de Origen de AHC (Análisis de Transferibilidad):", 
+                               style={**header_style, 'fontSize': '14px', 'fontWeight': 'normal'}),
+                    dcc.Dropdown(
+                        id='dropdown-ahc-estacion',
+                        options=[{'label': f'AHC de {e} (Usado en el CSV)', 'value': e} for e in found_estaciones_global],
+                        value=found_estaciones_global[0], # Valor inicial
+                        clearable=False,
+                        style={'fontSize': '12px'}
+                    ),
+                    html.Small("Nota: Actualmente, los datos CSV solo contienen el AHC original de cada estación, por lo que este selector solo es un placeholder de visualización y no cambia el AHC interno del modelo.", className="text-muted"),
+                ], className="mb-4 p-3 border rounded"),
+
+
+            ], md=4, className="p-4 rounded-3 shadow-lg", style={'backgroundColor': '#ecf0f1'}), # Fondo más claro para el panel de control
             
+            # Panel de Salida (8 columnas)
             dbc.Col(html.Div(id='output-dashboard'), md=8),
         ], className="my-4"),
         
         html.Div(id='data-error-message', style={'color': '#e74c3c', 'fontWeight': 'bold', 'textAlign': 'center', 'marginTop': '20px'}),
 
-    ], fluid=True, style={'backgroundColor': '#ecf0f1', 'minHeight': '100vh'})
+    ], fluid=True, style={'backgroundColor': '#f5f7f9', 'minHeight': '100vh'}) # Fondo general más claro
 
 
     # =========================================================================
-    # 4. CALLBACKS
+    # 5. CALLBACKS
     # =========================================================================
 
     @app.callback(
@@ -322,94 +446,155 @@ else:
          Output('data-error-message', 'children')],
         [Input('dropdown-estacion', 'value'),
          Input('slider-year', 'value'),
-         Input('checklist-modelos', 'value')]
+         Input('dropdown-model-comp', 'value'),
+         Input('dropdown-ahc-estacion', 'value')] # Aunque no se usa directamente en el cálculo, se pasa para el título.
     )
-    def update_dashboard(code, year_range, selected_models):
+    def update_dashboard(code, year_range, selected_model_col, ahc_station):
         error_msg = ""
         
-        # 1. Filtrar los datos
+        # 1. Filtrar los datos globales
         try:
-            # Asegurarse de que el código exista antes de filtrar
-            if code not in found_estaciones_global:
+            start_year, end_year = year_range
+            
+            # Filtrar por rango de años en el dataset global
+            df_year_filtered = df_global[
+                (df_global['Fecha'].dt.year >= start_year) & 
+                (df_global['Fecha'].dt.year <= end_year)
+            ].copy()
+
+            if df_year_filtered.empty:
+                error_msg = f"🚨 No hay datos disponibles en el rango {start_year}-{end_year}."
+                return html.Div(error_msg), error_msg
+            
+            # Filtrar por estación o usar todos para el análisis
+            if code == 'ALL':
+                df_filtered = df_year_filtered
+                station_title = "Media Agregada de Todas las Estaciones"
+                show_time_series = False
+            elif code in found_estaciones_global:
+                df_filtered = df_year_filtered[df_year_filtered['Estacion'] == code]
+                station_title = f"Estación {code}"
+                show_time_series = True
+            else:
                 error_msg = f"🚨 La estación seleccionada ({code}) no tiene datos cargados."
                 return html.Div(error_msg), error_msg
-                
-            df_filtered = df_global[df_global['Estacion'] == code].copy()
 
-            # Filtrar por rango de años
-            start_year, end_year = year_range
-            df_filtered = df_filtered[
-                (df_filtered['Fecha'].dt.year >= start_year) & 
-                (df_filtered['Fecha'].dt.year <= end_year)
-            ]
-            
             if df_filtered.empty:
-                error_msg = f"🚨 No hay datos disponibles para la estación {code} en el rango {start_year}-{end_year}."
+                error_msg = f"🚨 No hay datos disponibles para {station_title} en el rango {start_year}-{end_year}."
                 return html.Div(error_msg), error_msg
 
             # 2. Generar Componentes
             
-            # Cálculo de Errores
-            errors_df = calculate_errors_df(df_filtered)
+            # Cálculo de Errores para la selección actual (Estación o ALL)
+            errors_df_current = calculate_errors_df(df_filtered)
+            errors_df_global = calculate_errors_df(df_year_filtered) 
             
-            # Gráficos
-            fig_time = create_time_series_fig(df_filtered, selected_models)
-            fig_diff_temp = create_scatter_diff(df_filtered, 'TempMedia', 'Diferencia vs Temperatura Media (PM vs Empíricos)')
-            fig_diff_rs = create_scatter_diff(df_filtered, 'Radiacion', 'Diferencia vs Radiación (PM vs Empíricos)')
-            fig_diff_month = create_monthly_diff_fig(df_filtered)
+            # Gráfico de Nube de Puntos (Scatter Plot)
+            fig_scatter = create_scatter_fig(df_filtered, selected_model_col, station_title)
+            
+            # Gráfico de Diferencias Mensuales
+            fig_monthly_diff = create_monthly_diff_fig(df_filtered, selected_model_col)
+            
+            # Gráfico de Serie Temporal (solo si no es ALL)
+            if show_time_series:
+                 fig_time_series = create_all_models_time_series(df_filtered, station_title)
+                 graph_time_series = dbc.Card([
+                    dbc.CardHeader(f"Evolución Diaria de ET₀ de TODOS los Modelos en {station_title}", 
+                                   style={'backgroundColor': '#2c3e50', 'color': 'white'}),
+                    dbc.CardBody(dcc.Graph(figure=fig_time_series)),
+                ], className="mb-4 shadow-sm")
+            else:
+                graph_time_series = None
             
             # 3. Construir el Layout de Salida
-            content = [
-                html.H2(f"Análisis de ET₀ para Estación {code}", style={'color': '#2c3e50', 'marginTop': '0'}),
-                
-                dbc.Card([
-                    dbc.CardHeader("Métricas de Error (vs Penman-Monteith)", style={'backgroundColor': '#2c3e50', 'color': 'white'}),
-                    dbc.CardBody(
-                         dash_table.DataTable(
-                            id='error-table',
-                            data=errors_df.to_dict('records'),
-                            columns=errors_columns,
-                            style_cell={**table_style, 'border': '1px solid #ddd'},
-                            style_header={'fontWeight': 'bold', 'backgroundColor': '#f8f9fa', 'color': '#2c3e50'},
-                            style_table={'overflowX': 'auto', 'marginBottom': '0px', 'borderRadius': '0 0 0.25rem 0.25rem'},
-                        ),
-                    ),
-                ], className="mb-4 shadow-sm"),
-                
-                dbc.Card([
-                    dbc.CardHeader("Serie Temporal de ET₀"),
-                    dbc.CardBody(dcc.Graph(figure=fig_time)),
-                ], className="mb-4 shadow-sm"),
-                
-                dbc.Card([
-                    dbc.CardHeader("Sesgo Promedio Mensual (Modelo - PM)"),
-                    dbc.CardBody(dcc.Graph(figure=fig_diff_month) if fig_diff_month else html.P('Datos insuficientes para el gráfico.', style=font_style)),
-                ], className="mb-4 shadow-sm"),
+            
+            # Título dinámico
+            ahc_note = f" (AHC referencia: {ahc_station})" if 'ajustado' in selected_model_col else ""
+            
+            dashboard_title = html.H2(station_title, 
+                                      style={'color': '#2c3e50', 'marginTop': '0', 'marginBottom': '10px', 'textAlign': 'center'})
+            
+            comparison_subtitle = html.H4(f"Análisis de Correlación y Error Estacional: {MODELOS_DICT[selected_model_col]['label']}{ahc_note} vs Penman-Monteith",
+                                          style={'color': MODELOS_DICT[selected_model_col]['color'], 'textAlign': 'center', 'marginBottom': '20px'})
 
-                dbc.CardGroup([
-                    dbc.Card([
-                        dbc.CardHeader("Diferencias vs Temperatura Media"),
-                        dbc.CardBody(dcc.Graph(figure=fig_diff_temp) if fig_diff_temp else html.P('Datos insuficientes.', style=font_style)),
-                    ], className="shadow-sm"),
-                    dbc.Card([
-                        dbc.CardHeader("Diferencias vs Radiación"),
-                        dbc.CardBody(dcc.Graph(figure=fig_diff_rs) if fig_diff_rs else html.P('Datos insuficientes.', style=font_style)),
-                    ], className="shadow-sm"),
-                ], className="mb-4"),
-            ]
+
+            # Nube de Puntos (Gráfico de Correlación)
+            graph_scatter = dbc.Card([
+                dbc.CardHeader(f"Nube de Puntos Diarios: {MODELOS_DICT[selected_model_col]['label']} vs PM", 
+                               style={'backgroundColor': '#2c3e50', 'color': 'white'}),
+                dbc.CardBody(dcc.Graph(figure=fig_scatter)),
+            ], className="mb-4 shadow-sm")
+
+            # Gráfico de Diferencias Mensuales (Mensualización del error)
+            graph_monthly_diff = dbc.Card([
+                dbc.CardHeader(f"Error Medio Mensual (Modelo - PM)", 
+                               style={'backgroundColor': '#2c3e50', 'color': 'white'}),
+                dbc.CardBody(dcc.Graph(figure=fig_monthly_diff)),
+            ], className="mb-4 shadow-sm")
+            
+            # Tabla de la Estación/ALL seleccionada
+            table_current_errors = dbc.Card([
+                dbc.CardHeader(f"Métricas de Error para {station_title} (vs Penman-Monteith)", 
+                               style={'backgroundColor': '#2c3e50', 'color': 'white'}),
+                dbc.CardBody(
+                     dash_table.DataTable(
+                        id='error-table-current',
+                        data=errors_df_current.to_dict('records'),
+                        columns=errors_columns,
+                        style_cell={**table_style, 'border': '1px solid #ddd', 'minWidth': '100px', 'width': '100px', 'maxWidth': '100px'},
+                        style_header={'fontWeight': 'bold', 'backgroundColor': '#f8f9fa', 'color': '#2c3e50'},
+                        style_table={'overflowX': 'auto', 'marginBottom': '0px', 'borderRadius': '0 0 0.25rem 0.25rem'},
+                    ),
+                ),
+            ], className="mb-4 shadow-sm")
+            
+            # Tabla de Media Global
+            table_global_errors = dbc.Card([
+                dbc.CardHeader(f"Media de Errores en Todas las Estaciones ({', '.join(found_estaciones_global)}) (vs PM)", 
+                               style={'backgroundColor': '#1abc9c', 'color': 'white'}),
+                dbc.CardBody(
+                     dash_table.DataTable(
+                        id='error-table-global',
+                        data=errors_df_global.to_dict('records'),
+                        columns=errors_columns,
+                        style_cell={**table_style, 'border': '1px solid #ddd', 'minWidth': '100px', 'width': '100px', 'maxWidth': '100px'},
+                        style_header={'fontWeight': 'bold', 'backgroundColor': '#f8f9fa', 'color': '#2c3e50'},
+                        style_table={'overflowX': 'auto', 'marginBottom': '0px', 'borderRadius': '0 0 0.25rem 0.25rem'},
+                    ),
+                ),
+            ], className="mb-4 shadow-lg border-success")
+
+            # Construcción del contenido
+            content = [dashboard_title]
+            
+            # 1. Gráfico de Serie Temporal (si aplica)
+            if graph_time_series:
+                content.append(graph_time_series)
+            
+            # 2. Análisis del Modelo Seleccionado
+            content.append(comparison_subtitle)
+            content.append(dbc.Row([
+                dbc.Col(graph_scatter, md=6),
+                dbc.Col(graph_monthly_diff, md=6),
+            ], className="mb-4"))
+
+            # 3. Tablas de Errores
+            content.append(table_current_errors)
+            content.append(table_global_errors)
+            
             return content, error_msg
         
         except Exception as e:
-            error_msg = f"🚨 Error crítico procesando la estación {code}: {str(e)}"
+            error_msg = f"🚨 Error crítico al actualizar el dashboard: {str(e)}"
             print(error_msg)
             # Retorna una vista de error amigable en la app
             return html.Div([
                 html.H3("¡Error Inesperado en el Dashboard!", style={'color': '#e74c3c'}),
                 html.P(f"El procesamiento falló. Detalle: {str(e)}"),
-            ]), error_msg
+                html.P("Por favor, revisa la consola para más detalles."),
+            ], className="alert alert-danger"), error_msg
 
 if __name__ == '__main__':
-    print("Dash app está lista para ser servida por Gunicorn o similar.")
     # La versión de Dash instalada usa app.run() en lugar de app.run_server()
     print("Iniciando servidor de desarrollo local de Dash...")
     app.run(debug=True)

@@ -4,6 +4,7 @@ Este repositorio contiene la evolución y ampliación del trabajo realizado orig
 
 El proyecto comenzó como una continuación experimental del TFG y ha evolucionado progresivamente hacia una infraestructura de datos y modelado para las estaciones meteorológicas SIAR de las Islas Baleares.
 
+
 ---
 
 # 1. Origen del proyecto

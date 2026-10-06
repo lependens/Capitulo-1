@@ -1,0 +1,12 @@
+services:
+  siar_sync:
+    build: .
+    container_name: siar_sync
+    user: "1000:1000"
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ../:/app/Capitulo-1

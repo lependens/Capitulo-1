@@ -8,7 +8,7 @@ La instancia de producción continúa desplegada desde `/home/josep/siar-sync` e
 
 ## Configuración
 
-Compose carga las variables desde `.env`, que no debe versionarse. `.env.example` enumera las variables leídas por la aplicación y sus valores predeterminados. `SIAR_NIF`, `SIAR_PASSWORD` y `GITHUB_TOKEN` se necesitan para las consultas autenticadas y para publicar cambios en GitHub. Las variables de Telegram son opcionales.
+Compose carga las variables desde `.env`, que no debe versionarse. `.env.example` enumera las variables leídas por la aplicación y sus valores predeterminados. `SIAR_NIF` y `SIAR_PASSWORD` se usan para consultar SIAR; `GITHUB_TOKEN` permite al worker publicar cambios en GitHub. Las variables de Telegram son opcionales.
 
 `SIAR_API_KEY` se conserva como variable legacy/deprecada: `app.py` aún la lee por compatibilidad, mientras la autenticación actual usa NIF y contraseña.
 

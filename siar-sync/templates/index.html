@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sincronizador SIAR - Dell Server</title>
+    <style>
+        :root { color-scheme: dark; }
+        body { font-family: -apple-system, system-ui, Roboto, sans-serif; margin: 0; background: #0f172a; color: #f8fafc; }
+        .wrap { max-width: 1250px; margin: 0 auto; padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 380px); gap: 18px; }
+        h2, h3 { color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 0.55rem; margin-top: 0; }
+        .panel { background: #1e293b; padding: 18px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 18px; }
+        .subtle { color: #94a3b8; font-size: .9rem; }
+        .status-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 10px 0 14px; }
+        .metric { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 10px; }
+        .metric b { display: block; font-size: 1.15rem; margin-top: 2px; }
+        label { display: block; margin: 10px 0 6px; font-size: .9rem; color: #cbd5e1; }
+        input, button { width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 8px; border: 1px solid #475569; background: #0f172a; color: white; box-sizing: border-box; font-size: 1rem; }
+        input::placeholder { color: #64748b; }
+        button { background: #0284c7; font-weight: bold; cursor: pointer; border: none; margin-top: 7px; }
+        button:hover { background: #0369a1; }
+        button.secondary { background: #334155; }
+        button.secondary:hover { background: #475569; }
+        button:disabled { opacity: .55; cursor: wait; }
+        .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; background: #1e293b; border-radius: 10px; overflow: hidden; font-size: .88rem; }
+        th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #334155; vertical-align: top; }
+        th { background: #334155; color: #cbd5e1; }
+        tr.selected { background: #0b2940; }
+        .pill { display: inline-block; padding: 3px 7px; border-radius: 999px; border: 1px solid #475569; font-size: .78rem; white-space: nowrap; }
+        .good { color: #86efac; border-color: #166534; }
+        .warn { color: #fde68a; border-color: #92400e; }
+        .bad { color: #fca5a5; border-color: #991b1b; }
+        .terminal { background: #000; color: #7CFC00; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; padding: 14px; border-radius: 8px; min-height: 180px; max-height: 440px; overflow: auto; font-size: .84rem; border: 1px solid #333; }
+        .err-text { color: #ff6666; }
+        .analysis-box { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 12px; margin-top: 10px; }
+        .range { margin-top: 4px; padding: 6px 8px; border-radius: 6px; background: #111827; font-family: ui-monospace, monospace; font-size: .8rem; }
+        .table-scroll { overflow-x: auto; }
+        .help { margin-top: 6px; }
+        @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } .status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 520px) { .wrap { padding: 10px; } .two { grid-template-columns: 1fr; } th, td { padding: 8px 7px; } }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <main>
+        <div class="panel">
+            <h2>🌾 Sincronizador SIAR · Baleares</h2>
+            <div class="subtle">Escribe la estación y una única fecha objetivo. El servidor calcula automáticamente qué días faltan.</div>
+        </div>
+
+        <div class="panel">
+            <h3>🚀 Sincronizar una estación</h3>
+            <form id="syncForm" onsubmit="iniciar(event)">
+                <label for="est">Código de estación</label>
+                <input type="text" id="est" placeholder="Ej.: IB04" autocomplete="off" autocapitalize="characters" required>
+
+                <label for="objetivo">Fecha objetivo</label>
+                <input type="text" id="objetivo" inputmode="numeric" autocomplete="off" placeholder="31/12/2025" value="{{ objetivo_es }}" required>
+                <div class="subtle help">Formato: <strong>DD/MM/AAAA</strong>. Ejemplo: 31/12/2025. Así evitamos el selector de Android que te estaba mostrando otro orden.</div>
+
+                <div class="two">
+                    <button type="button" class="secondary" id="btnAnalizar" onclick="analizar()">🔎 Analizar cobertura</button>
+                    <button type="submit" id="btnIniciar">▶️ Sincronizar pendientes</button>
+                </div>
+            </form>
+            <div id="analysis" class="analysis-box subtle">Selecciona una estación y pulsa «Analizar cobertura».</div>
+        </div>
+
+        <div class="panel">
+            <h3>📊 Cobertura local</h3>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr><th>Estación</th><th>Desde</th><th>Hasta</th><th>Filas</th><th>Huecos</th><th>Pendientes</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody>
+                    {% for est in estaciones %}
+                        <tr>
+                            <td><strong>{{ est.estacion }}</strong></td>
+                            <td>{{ est.inicio or '—' }}</td>
+                            <td>{{ est.fin or '—' }}</td>
+                            <td>{{ est.filas }}</td>
+                            <td>{{ est.huecos }}</td>
+                            <td>{{ est.pendientes if est.pendientes is not none else '—' }}</td>
+                            <td><span class="pill {% if est.estado == 'COMPLETA' %}good{% elif 'CSV' in est.estado %}bad{% else %}warn{% endif %}">{{ est.estado }}</span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="subtle">Objetivo mostrado: {{ objetivo_es }}</div>
+        </div>
+
+        <div class="panel">
+            <h3>🖥️ Consola de tareas activas (en vivo)</h3>
+            <div id="terminal" class="terminal">Esperando tareas...</div>
+        </div>
+    </main>
+
+    <aside>
+        <div class="panel">
+            <h3>🧭 Cómo funciona</h3>
+            <div class="subtle">
+                El servidor mira las fechas que ya existen, detecta huecos y descarga solo los rangos pendientes en bloques pequeños. Cada bloque se guarda primero en el CSV local y se hacen checkpoints periódicos a GitHub.
+            </div>
+        </div>
+        <div class="panel">
+            <h3>📡 Cuota actual de SIAR</h3>
+            <div id="apiUsage" class="subtle">Pulsa el botón para consultar los límites y el uso del token.</div>
+            <button type="button" class="secondary" onclick="consultarCuota()" id="btnCuota">🔄 Consultar cuota SIAR</button>
+        </div>
+
+
+        <div class="panel">
+            <h3>📋 Leyenda de estaciones</h3>
+            {% if leyenda and leyenda.columnas %}
+            <div class="table-scroll">
+                <table>
+                    <thead><tr>{% for col in leyenda.columnas %}<th>{{ col }}</th>{% endfor %}</tr></thead>
+                    <tbody>
+                    {% for fila in leyenda.filas %}
+                        <tr>{% for valor in fila %}<td>{{ valor }}</td>{% endfor %}</tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="subtle">No se pudo cargar «estaciones_baleares.csv» desde el repositorio local.</p>
+            {% endif %}
+        </div>
+    </aside>
+</div>
+
+<script>
+function normalizarFechaEntrada(value) {
+    const v = String(value || '').trim();
+    const m = v.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (m) {
+        const d = Number(m[1]), mo = Number(m[2]), y = Number(m[3]);
+        const dt = new Date(Date.UTC(y, mo - 1, d));
+        if (dt.getUTCFullYear() === y && dt.getUTCMonth() === mo - 1 && dt.getUTCDate() === d) {
+            return `${y.toString().padStart(4,'0')}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        }
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+    throw new Error('Fecha inválida. Usa DD/MM/AAAA, por ejemplo 31/12/2025.');
+}
+
+function estadoPill(estado) {
+    if (estado === 'COMPLETA') return '<span class="pill good">COMPLETA</span>';
+    if (estado && estado.includes('CSV')) return `<span class="pill bad">${estado}</span>`;
+    return `<span class="pill warn">${estado || '—'}</span>`;
+}
+
+async function analizar(silencioso=false) {
+    const est = document.getElementById('est').value.trim().toUpperCase();
+    const objetivo = document.getElementById('objetivo').value.trim();
+    const box = document.getElementById('analysis');
+    if (!est) { box.textContent = 'Escribe una estación, por ejemplo IB04.'; return false; }
+    let iso;
+    try { iso = normalizarFechaEntrada(objetivo); }
+    catch (err) { box.textContent = err.message; return false; }
+
+    const btn = document.getElementById('btnAnalizar');
+    btn.disabled = true;
+    if (!silencioso) box.textContent = 'Analizando cobertura local…';
+    try {
+        const res = await fetch(`/analyze?estacion=${encodeURIComponent(est)}&objetivo=${encodeURIComponent(iso)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Error al analizar');
+        let html = `<strong>${data.estacion}</strong> · objetivo ${iso.split('-').reverse().join('/')}<br>`;
+        if (!data.exists) {
+            html += '<span class="subtle">No existe CSV local. Al sincronizar, SIAR consultará Info/ESTACIONES, creará el CSV canónico y empezará desde la fecha de instalación.</span>';
+        } else if (!data.inicio) {
+            html += '<span class="err-text">El CSV existe, pero no contiene fechas válidas.</span>';
+        } else {
+            html += `Cobertura: <strong>${data.inicio}</strong> → <strong>${data.fin}</strong><br>`;
+            html += `Filas: <strong>${data.filas}</strong> · Días únicos: <strong>${data.dias_unicos}</strong><br>`;
+            html += `Huecos internos: <strong>${data.huecos}</strong> · Pendientes hasta objetivo: <strong>${data.pendientes ?? '—'}</strong><br>`;
+            html += `Estado: ${estadoPill(data.estado)}`;
+            if (data.rangos_pendientes && data.rangos_pendientes.length) {
+                html += '<div style="margin-top:8px"><strong>Primeros rangos pendientes:</strong></div>';
+                for (const r of data.rangos_pendientes.slice(0, 8)) {
+                    html += `<div class="range">${r.inicio} → ${r.fin} · ${r.dias} día(s)</div>`;
+                }
+                if ((data.rangos_pendientes_total || 0) > data.rangos_pendientes.length) {
+                    html += `<div class="subtle" style="margin-top:6px">… y ${data.rangos_pendientes_total - data.rangos_pendientes.length} rango(s) más.</div>`;
+                }
+            }
+        }
+        box.innerHTML = html;
+        return true;
+    } catch (err) {
+        box.innerHTML = `<span class="err-text">${err.message}</span>`;
+        return false;
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function consultarCuota() {
+    const box = document.getElementById('apiUsage');
+    const btn = document.getElementById('btnCuota');
+    btn.disabled = true;
+    box.textContent = 'Consultando SIAR…';
+    try {
+        const res = await fetch('/api_usage');
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'No se pudo consultar la cuota');
+        box.innerHTML = `Peticiones: <strong>${data.peticiones_minuto}/${data.max_peticiones_minuto}</strong> por minuto · <strong>${data.peticiones_dia}/${data.max_peticiones_dia}</strong> por día<br>` +
+                        `Registros: <strong>${data.registros_minuto}/${data.max_registros_minuto}</strong> por minuto · <strong>${data.registros_dia}/${data.max_registros_dia}</strong> por día`;
+    } catch (err) {
+        box.innerHTML = `<span class="err-text">${err.message}</span>`;
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function iniciar(e) {
+    e.preventDefault();
+    const estInput = document.getElementById('est');
+    const est = estInput.value.trim().toUpperCase();
+    let objetivo;
+    try { objetivo = normalizarFechaEntrada(document.getElementById('objetivo').value); }
+    catch (err) { alert(err.message); return; }
+
+    const ok = await analizar(true);
+    if (!ok) return;
+
+    const formData = new FormData();
+    formData.append('estacion', est);
+    formData.append('objetivo', objetivo);
+
+    const btn = document.getElementById('btnIniciar');
+    btn.disabled = true;
+    btn.textContent = '⏳ Encolando…';
+    try {
+        const res = await fetch('/start', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'No se pudo iniciar');
+        if (data.status === 'busy') alert(data.message);
+    } catch (err) {
+        alert(err.message);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '▶️ Sincronizar pendientes';
+    }
+}
+
+setInterval(async () => {
+    try {
+        const res = await fetch('/status');
+        const data = await res.json();
+        const term = document.getElementById('terminal');
+        let html = '';
+        for (const [est, stat] of Object.entries(data)) {
+            const colorClass = stat.error ? 'err-text' : '';
+            html += `<div class="${colorClass}">[${stat.ts || '--:--:--'}] <b>${est}</b>: ${stat.msg || ''}</div>`;
+            if (stat.analysis && stat.running) {
+                const a = stat.analysis;
+                html += `<div class="subtle" style="margin:3px 0 8px 18px">Cobertura: ${a.inicio || '—'} → ${a.fin || '—'} · Pendientes: ${a.pendientes ?? '—'}</div>`;
+            }
+        }
+        if (html !== '') term.innerHTML = html;
+        else term.textContent = 'Esperando tareas…';
+    } catch (e) {}
+}, 3000);
+</script>
+</body>
+</html>

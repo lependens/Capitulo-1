@@ -28,6 +28,12 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 # 2. Mapa de documentación
 
+## Estado actual y componentes
+
+- [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
+- [Hoja de ruta](docs/ROADMAP.md) — fases, dependencias y próximos hitos.
+- [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
+
 ## 2.1 Objetivos
 
 ### [1.0 — Objetivos alcanzables](docs_1.0_Objetivos%20alcanzables.md)

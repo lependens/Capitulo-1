@@ -67,7 +67,7 @@ def capture_run(config: Config, client_factory=SiarClient, now=utc_now) -> Path:
             "station": details.get("station", {"code": station.code, "label": station.label, "siar_station_form_id": station.siar_station_form_id}),
             "capture": {"started_at_utc": iso_utc(station_started), "finished_at_utc": iso_utc(finished), "status": status},
             "source": details.get("source", {"system": "SIAR", "product": "necesidadesHidricas"}),
-            "source_issue_at": None, "http": http, "artifacts": records,
+            "source_issue_at": None, "request": details.get("request", {}), "http": http, "artifacts": records,
             "errors": [error] if error else [],
         }
         publish_capture(temp, station.code, capture_id, metadata, artifacts)

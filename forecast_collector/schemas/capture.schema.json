@@ -3,19 +3,102 @@
   "$id": "https://siar.example/schemas/capture.schema.json",
   "title": "SIAR Raw Station Capture",
   "type": "object",
-  "required": ["schema_version", "collector_version", "run_id", "capture_id", "station", "capture", "source", "source_issue_at", "http", "artifacts", "errors"],
+  "required": [
+    "schema_version",
+    "collector_version",
+    "run_id",
+    "capture_id",
+    "station",
+    "capture",
+    "source",
+    "source_issue_at",
+    "http",
+    "artifacts",
+    "errors"
+  ],
   "properties": {
-    "schema_version": {"const": "siar-raw-capture-v1"},
-    "collector_version": {"type": "string"},
-    "run_id": {"type": "string", "pattern": "^run_"},
-    "capture_id": {"type": "string", "pattern": "^cap_"},
-    "station": {"type": "object", "required": ["code", "label", "siar_station_form_id"], "properties": {"code": {"type": "string"}, "label": {"type": "string"}, "siar_station_form_id": {"type": "string"}}},
-    "capture": {"type": "object", "required": ["started_at_utc", "finished_at_utc", "status"], "properties": {"started_at_utc": {"type": "string", "format": "date-time"}, "finished_at_utc": {"type": "string", "format": "date-time"}, "status": {"enum": ["complete", "partial", "failed"]}}},
-    "source": {"type": "object"},
-    "source_issue_at": {"type": ["null", "string"]},
-    "http": {"type": "object"},
-    "artifacts": {"type": "object"},
-    "errors": {"type": "array", "items": {"type": "string"}}
+    "schema_version": {
+      "const": "siar-raw-capture-v1"
+    },
+    "collector_version": {
+      "type": "string"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^run_"
+    },
+    "capture_id": {
+      "type": "string",
+      "pattern": "^cap_"
+    },
+    "station": {
+      "type": "object",
+      "required": [
+        "code",
+        "label",
+        "siar_station_form_id"
+      ],
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "siar_station_form_id": {
+          "type": "string"
+        }
+      }
+    },
+    "capture": {
+      "type": "object",
+      "required": [
+        "started_at_utc",
+        "finished_at_utc",
+        "status"
+      ],
+      "properties": {
+        "started_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "finished_at_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "failed"
+          ]
+        }
+      }
+    },
+    "source": {
+      "type": "object"
+    },
+    "source_issue_at": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "http": {
+      "type": "object"
+    },
+    "artifacts": {
+      "type": "object"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "request": {
+      "type": "object"
+    }
   },
   "additionalProperties": true
 }

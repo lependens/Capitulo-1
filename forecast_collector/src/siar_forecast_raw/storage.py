@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import shutil
 import tempfile
+import re
 from typing import Any
 
 from .hashing import write_checksums
@@ -13,6 +14,8 @@ def _write_json(path: Path, value: dict[str, Any]) -> None:
 
 
 def publish_capture(run_temp: Path, station_code: str, capture_id: str, metadata: dict[str, Any], artifacts: dict[str, bytes]) -> Path:
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", station_code):
+        raise ValueError("station_code must be a safe directory name")
     station_dir = run_temp / station_code
     station_dir.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=f".{capture_id}.", dir=station_dir))

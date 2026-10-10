@@ -1,4 +1,5 @@
 import json
+import pytest
 
 from siar_forecast_raw.hashing import verify_checksums
 from siar_forecast_raw.storage import begin_run, publish_capture, publish_run
@@ -26,3 +27,8 @@ def test_append_only_rejects_existing_run(tmp_path):
         assert False, "expected append-only collision"
     except FileExistsError:
         pass
+
+
+def test_rejects_unsafe_station_directory_name(tmp_path):
+    with pytest.raises(ValueError):
+        publish_capture(tmp_path, "../escape", "cap_test", {}, {})

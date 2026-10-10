@@ -81,7 +81,11 @@ class SiarClient:
         start, http["initial_get"] = self._request("GET", "/necesidadesHidricas/inicio")
         if start is None:
             raise CaptureError("SIAR start page request failed", http=http)
-        csrf = self._csrf(start.content)
+        try:
+            csrf = self._csrf(start.content)
+        except CaptureError as exc:
+            exc.http = http
+            raise
         form = {**station.form_params, "idEstacion": station.siar_station_form_id, "_csrf": csrf}
         validation, http["validation_post"] = self._request("POST", "/necesidadesHidricasRest/validarForm", json=form)
         if validation is None:

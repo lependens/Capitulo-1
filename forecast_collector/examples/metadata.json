@@ -24,9 +24,9 @@
     }
   },
   "artifacts": {
-    "html": {"filename": "result.html", "size_bytes": 128, "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
-    "zip": {"filename": "forecast.zip", "size_bytes": 256, "sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
-    "csv": {"filename": "forecast.csv", "source_filename": "synthetic.csv", "size_bytes": 32, "sha256": "2222222222222222222222222222222222222222222222222222222222222222"}
+    "html": {"filename": "result.html", "size_bytes": 40, "sha256": "60a213d46c5fc291dd4a1ec01bb2df897df20d7303ee16df9131aac797a7babf"},
+    "zip": {"filename": "forecast.zip", "size_bytes": 150, "sha256": "5314b7eb40ead07b18caaa8db8b52bf45282c75a85f6112378e526b0f7d7fb0c"},
+    "csv": {"filename": "forecast.csv", "source_filename": "synthetic.csv", "size_bytes": 26, "sha256": "b8b9079f8cb0cc7ed5aa2a2675fafee04b44a14592a12c67f5bbacea19874653"}
   },
   "errors": []
 }

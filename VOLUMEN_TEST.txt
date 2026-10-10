@@ -1,1 +1,0 @@
-CONEXION_OK

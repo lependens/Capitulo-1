@@ -1,5 +1,15 @@
+# Secretos
 .env
 .env.*
 !.env.example
+# Python
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+# Backups y artefactos locales
+*.backup*
+*.patch
+manifest_csv_*.sha256
+# Git local
+.git/

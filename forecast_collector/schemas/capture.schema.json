@@ -11,7 +11,6 @@
     "station",
     "capture",
     "source",
-    "source_issue_at",
     "http",
     "artifacts",
     "errors"
@@ -76,13 +75,24 @@
       }
     },
     "source": {
-      "type": "object"
-    },
-    "source_issue_at": {
-      "type": [
-        "null",
-        "string"
-      ]
+      "type": "object",
+      "required": [
+        "system",
+        "product",
+        "source_issue_at"
+      ],
+      "properties": {
+        "system": {
+          "const": "SIAR"
+        },
+        "product": {
+          "const": "necesidadesHidricas"
+        },
+        "source_issue_at": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": true
     },
     "http": {
       "type": "object"

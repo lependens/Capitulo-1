@@ -405,7 +405,7 @@ Regla provisional:
 
 v0.1 está implementado en `forecast_collector/` y fusionado en `main` mediante PR #8. El gate técnico previo al merge pasó **29 tests**. La validación sintética cubre JSON Schema, guard rail de secretos, lectura segura de ZIP, SHA-256, estados `complete` / `partial` / `failed`, append-only y publicación atómica. `source.source_issue_at` es `null`.
 
-Todavía no hay prueba live contra SIAR, almacenamiento bajo `/srv`, scheduler ni despliegue. El siguiente gate es preparar un runbook y realizar una prueba live manual con IB04. El almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
+Todavía no hay prueba live contra SIAR, almacenamiento bajo `/srv`, scheduler ni despliegue. El siguiente gate es cerrar empíricamente con 04W el contrato actual de `#necesidadesNetasForm` y determinar el payload mínimo requerido; después se preparará el runbook y se realizará la prueba live manual con IB04. El almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
 
 Responsabilidad:
 
@@ -583,7 +583,7 @@ Para una futura base DuckDB:
 ### Alta prioridad
 
 - completar el backfill y validar científicamente la cobertura histórica de las estaciones; que haya diez CSV canónicos no significa que el histórico esté completo;
-- completar el siguiente gate de Forecast: runbook y prueba live manual con IB04;
+- cerrar el contrato actual del formulario/payload con 04W y, después, completar el runbook y la prueba live manual IB04;
 - coordinar con 02 el almacenamiento definitivo fuera de Git y el backup off-site.
 
 ### No bloqueantes inmediatos

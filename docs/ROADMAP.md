@@ -569,6 +569,8 @@ reanudar/completar backfill SIAR
 En paralelo:
 
 ```text
+cierre contrato formulario/payload con 04W
+   ↓
 runbook + prueba live manual IB04
    ↓
 validación contra SIAR real

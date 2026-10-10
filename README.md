@@ -434,7 +434,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Aplicación web            | ⚪ Futura                         |
 | Kc / necesidades de riego | ⚪ Futura                         |
 
-El capturador Raw Forecast v0.1 está implementado y fusionado en `main` mediante PR #8. El gate sintético previo al merge pasó 29 tests. Aún no se ha ejecutado una prueba live contra SIAR ni se ha desplegado. El siguiente gate es un runbook y una prueba live manual con IB04; el almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
+El capturador Raw Forecast v0.1 está implementado y fusionado en `main` mediante PR #8. El gate sintético previo al merge pasó 29 tests. Aún no se ha ejecutado una prueba live contra SIAR ni se ha desplegado. El siguiente gate es cerrar con 04W el contrato actual del formulario/payload SIAR; después se finalizará el runbook y la prueba live manual con IB04; el almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
 
 ---
 

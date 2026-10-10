@@ -29,7 +29,7 @@ def test_complete_and_partial_are_both_published(tmp_path):
     assert (final / "IB04").is_dir() and (final / "IB05").is_dir()
     statuses = [json.loads(p.read_text())["capture"]["status"] for p in final.glob("*/cap_*/metadata.json")]
     assert sorted(statuses) == ["complete", "partial"]
-    assert all(json.loads(p.read_text())["source_issue_at"] is None for p in final.glob("*/cap_*/metadata.json"))
+    assert all(json.loads(p.read_text())["source"]["source_issue_at"] is None for p in final.glob("*/cap_*/metadata.json"))
 
 
 class FailedClient:

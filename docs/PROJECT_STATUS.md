@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Última actualización:** 2026-10-09  
+**Última actualización:** 2026-10-10  
 **Repositorio principal:** `lependens/Capitulo-1`  
 **Rol de este documento:** punto de recuperación rápido del estado real del proyecto.
 
@@ -123,8 +123,8 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 
 | Componente | Estado | Situación actual | Próximo hito |
 |---|---|---|---|
-| SIAR Sync | 🟠 | v2.3.1 estable en producción | preparar/probar v2.3.2 |
-| TLS SIAR API | 🟠 | fallo externo reproducible con cadena CA normal | v2.3.3 con `SIAR_CA_BUNDLE` |
+| SIAR Sync | 🟢 | v2.3.3 desplegada y validada en producción | reanudar/completar backfill |
+| TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | backfill avanzado, aún no finalizado | completar estaciones restantes |
 | Docker / servidor | 🟠 | incidencia de zombies diagnosticada | aplicar/validar `init: true` |
 | GitHub / monorepo | 🟢 | PR #1 y PR #2 fusionadas | documentación y siguientes PR pequeñas |
@@ -144,35 +144,40 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 
 ### 5.1 Versión productiva
 
-Versión estable actual:
+La versión productiva actual es `v2.3.3`, desplegada y validada desde:
 
 ```text
-v2.3.1
+/home/josep/siar-sync
 ```
 
-Código productivo validado por hashes entre host y contenedor:
+v2.3.2 fue desplegada y validada como corrección funcional intermedia. El worker productivo v2.3.3 tiene SHA-256:
 
 ```text
-app.py
-siar_worker.py
-templates/index.html
+7d48be629cd6cf584bed491f9e30da57f62a025f67654be1c33706b02886a81f
+```
+
+Otros hashes productivos cotejados:
+
+```text
 Dockerfile
-requirements.txt
-docker-compose.yml
-```
+39998beee1043cc1a12388038ea3b9faf6aa831adeeabc2cf90c88f0ae96f9f9
 
-Los tres archivos principales validados host ↔ contenedor fueron:
+certs/siar_extra_chain.pem
+3b212076d42035c737e112287fef31db3fbcea2e907e17c9a95cd13bb31b97cf
 
-```text
 app.py
-SHA-256 c2569944a4ef27fe42ff9168022065f58db72a78bb9acc6417eaacb1ef8e2d02
-
-siar_worker.py
-SHA-256 0bd2c2a541b31238067cd969397110f262eaa994a1540adfa73a58893089999c
+c2569944a4ef27fe42ff9168022065f58db72a78bb9acc6417eaacb1ef8e2d02
 
 templates/index.html
-SHA-256 1de14ab615bf1b63a86495e1238988db03f3be27e0f7cba161d8fd7354d49f73
+1de14ab615bf1b63a86495e1238988db03f3be27e0f7cba161d8fd7354d49f73
+
+requirements.txt
+3af465eba4e9d46d574053b001bdbf5c3799279b819cf8a84adf6d6a0c99df3d
 ```
+
+La plantilla y el worker v2.3.3 están cotejados con el contenedor. La autenticación real y `Info/ACCESOS` fueron validados. Tras los despliegues v2.3.2 y v2.3.3, los nueve CSV IB01–IB09 permanecieron byte a byte idénticos. El TLS está operativo mediante `SIAR_CA_BUNDLE` y la verificación TLS sigue activa.
+
+La actualización de código de GitHub queda pendiente de esta PR; no despliega ni sustituye producción.
 
 ### 5.2 Funciones actualmente consolidadas
 
@@ -193,36 +198,21 @@ SHA-256 1de14ab615bf1b63a86495e1238988db03f3be27e0f7cba161d8fd7354d49f73
 - interfaz FastAPI/Uvicorn en puerto 8000;
 - interfaz web para análisis, sincronización, estado y cuota SIAR.
 
-### 5.3 Próxima versión v2.3.2
+### 5.3 v2.3.2 — corrección funcional intermedia desplegada y validada
 
-Alcance aprobado y cerrado:
-
-1. interpretar correctamente `Fecha_Instalacion` y `Fecha_Baja` en la zona `Europe/Madrid`;
-2. aplicar `Fecha_Baja` también a estaciones existentes/reanudadas;
-3. intentar checkpoint Git antes de salir por `SiarDailyLimitError`;
-4. normalizar permisos finales de CSV a `0644` manteniendo escritura atómica.
-
-No debe incluir refactors, cambios de UI ni modificaciones ajenas a estos cuatro puntos.
-
-### 5.4 Próxima versión v2.3.3
-
-Objetivo aprobado:
+El artefacto final v2.3.2 fue desplegado y validado antes de v2.3.3. Su SHA-256 exacto fue:
 
 ```text
-SIAR_CA_BUNDLE=/ruta/siar_bundle.pem
+87e583dd6576d74cc4b51e1abb7ccbdd34ec94ec1fc15619e1999786367d1916
 ```
 
-Debe ser opcional y mantener validación TLS activa.
+Incluye el tratamiento de fechas civiles de instalación/baja en `Europe/Madrid`, aplicar la baja al reanudar estaciones, intentar checkpoint Git al alcanzar la cuota diaria y normalizar permisos finales de CSV a `0644` manteniendo escritura atómica.
 
-No se autoriza utilizar:
+### 5.4 v2.3.3 — compatibilidad TLS desplegada y validada
 
-```text
-verify=False
-```
+v2.3.3 incorpora `SIAR_CA_BUNDLE` opcional para utilizar una cadena CA compatible con validación TLS activa. Sin la variable se conserva la verificación estándar. No se utiliza `verify=False`.
 
-La incidencia TLS actual se reproduce fuera del programa y también en el host. SIAR responde correctamente cuando se utiliza explícitamente una cadena CA válida.
-
----
+El certificado adicional versionado es material CA público. El bundle `siar_bundle.pem` se genera durante el build combinando el trust store de `certifi` con la cadena adicional; el bundle generado no se versiona. El workaround puede retirarse cuando MAPA sirva una cadena compatible.
 
 ## 6. Catálogo y datos SIAR de Baleares
 
@@ -381,11 +371,11 @@ No se desplegó esta versión desde GitHub al servidor.
 
 Cambios de producción deben reflejarse mediante PR pequeñas y trazables.
 
-Ejemplos próximos:
+Estado de esta actualización:
 
-- `init: true`, una vez validado;
-- SIAR Sync v2.3.2;
-- SIAR Sync v2.3.3.
+- las versiones v2.3.2 y v2.3.3 ya están desplegadas y validadas en producción;
+- esta PR sincroniza el estado v2.3.3 en GitHub y no despliega ni sustituye producción;
+- cualquier cambio de infraestructura, incluido `init: true`, requiere su propia validación y revisión.
 
 ---
 
@@ -616,10 +606,9 @@ Para una futura base DuckDB:
 
 ### Alta prioridad
 
-- TLS de `servicio.mapa.gob.es` impide continuar adquisición normal con validación CA estándar.
-- completar v2.3.2 y posteriormente v2.3.3.
-- validar corrección `init: true` para zombies.
-- desplegar cuanto antes el Raw Forecast Capturer para no perder emisiones potencialmente irrecuperables.
+- reanudar/completar el backfill histórico SIAR; el problema TLS ya no es un bloqueador inmediato, pues la conexión funciona con `SIAR_CA_BUNDLE` y validación TLS activa;
+- validar de forma prolongada la corrección de procesos zombie conforme al seguimiento de infraestructura;
+- desplegar y observar el Raw Forecast Capturer para evitar perder emisiones potencialmente irrecuperables.
 
 ### No bloqueantes
 
@@ -629,29 +618,23 @@ Para una futura base DuckDB:
 - ML;
 - aplicación web final.
 
----
-
 ## 16. Próximos pasos recomendados
 
 Orden orientativo actual:
 
 ```text
-1. SIAR Sync v2.3.2
-2. validar init: true / cerrar INC-INFRA-001
-3. SIAR Sync v2.3.3 y recuperar acceso TLS seguro
-4. completar backfill IB10 / IB101 / IB11 y pendientes
-5. implementar/desplegar Raw Forecast Capturer
-6. observar cadencia/horizonte de forecast
-7. investigar AEMET
-8. diseñar backup off-site
-9. dataset científico reproducible
-10. ET₀ y ML
-11. producto web/API/riego
+1. Reanudar/completar backfill SIAR
+2. continuar observación de la estabilidad de v2.3.3 y de INC-INFRA-001
+3. implementar/desplegar Raw Forecast Capturer
+4. observar cadencia/horizonte de forecast
+5. investigar AEMET
+6. diseñar backup off-site
+7. dataset científico reproducible
+8. ET₀ y ML
+9. producto web/API/riego
 ```
 
-Algunas tareas pueden ejecutarse en paralelo si no comparten riesgos.
-
----
+La sincronización de v2.3.3 en GitHub está pendiente de revisión y merge de esta PR. La PR no sustituye producción.
 
 ## 17. Protocolo de actualización de este documento
 

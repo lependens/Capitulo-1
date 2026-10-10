@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Última actualización:** 2026-10-09  
+**Última actualización:** 2026-10-10  
 **Objetivo:** definir las fases del proyecto, sus dependencias y los criterios para considerarlas terminadas.
 
 > Este documento describe hacia dónde va el proyecto.  
@@ -116,16 +116,13 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 
 ### Trabajo actual
 
-- 🟠 completar backfill restante;
-- 🟠 v2.3.2:
-  - fechas civiles instalación/baja;
-  - aplicar baja a estaciones existentes;
-  - checkpoint al alcanzar cuota;
-  - permisos `0644`;
-- 🟠 v2.3.3:
-  - `SIAR_CA_BUNDLE`;
-  - validación TLS activa;
-- 🟠 resolver definitivamente acumulación de zombies con `init: true`.
+- 🟠 completar el backfill restante;
+- ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y permisos finales `0644`;
+- ✅ v2.3.3 desplegada y validada: `SIAR_CA_BUNDLE` opcional con verificación TLS activa;
+- 🟠 mantener observación prolongada de la incidencia de procesos zombie;
+- 🟠 sincronizar el estado productivo v2.3.3 en GitHub mediante esta PR.
+
+El TLS ya no es un bloqueador inmediato para la adquisición. La fase observacional sigue en curso hasta completar los criterios de salida.
 
 ### Criterio de salida
 
@@ -545,14 +542,14 @@ No constituye una fase final; acompaña a todas las demás.
 
 # Ruta crítica actual
 
-A fecha 2026-10-09:
+A fecha 2026-10-10:
 
 ```text
-v2.3.2
+v2.3.2 y v2.3.3 desplegadas y validadas
    ↓
-v2.3.3 / TLS seguro
+sincronizar v2.3.3 en GitHub mediante PR revisable
    ↓
-completar históricos SIAR
+reanudar/completar históricos SIAR
 ```
 
 En paralelo:
@@ -580,8 +577,6 @@ Dataset científico
    ↓
 ET₀ + ML
 ```
-
----
 
 # Qué NO priorizar todavía
 

@@ -18,6 +18,7 @@ DATOS_PATH = os.path.join(REPO_PATH, "datos_siar_baleares")
 
 SIAR_NIF = os.environ.get("SIAR_NIF")
 SIAR_PASSWORD = os.environ.get("SIAR_PASSWORD")
+SIAR_CA_BUNDLE = (os.environ.get("SIAR_CA_BUNDLE") or "").strip() or None
 
 # Parámetros conservadores y configurables desde .env.
 CHUNK_DAYS = max(1, int(os.environ.get("SIAR_CHUNK_DAYS", "7")))
@@ -70,6 +71,40 @@ class SiarDataError(Exception):
 
 class SiarDailyLimitError(Exception):
     pass
+
+
+class SiarTlsConfigError(requests.RequestException):
+    """Configuración TLS SIAR inválida; nunca desactiva la verificación."""
+
+
+def _siar_verify_value():
+    """Devuelve True o la ruta del CA bundle opcional usado solo por SIAR.
+
+    Sin SIAR_CA_BUNDLE se conserva el comportamiento estándar de requests
+    (verify=True). Si la variable está configurada, la ruta debe existir y ser
+    legible. Nunca se devuelve False.
+    """
+    if not SIAR_CA_BUNDLE:
+        return True
+
+    bundle = os.path.abspath(os.path.expanduser(SIAR_CA_BUNDLE))
+    if not os.path.isfile(bundle):
+        raise SiarTlsConfigError(
+            f"SIAR_CA_BUNDLE no existe o no es un archivo: {bundle}"
+        )
+    if not os.access(bundle, os.R_OK):
+        raise SiarTlsConfigError(
+            f"SIAR_CA_BUNDLE no es legible por el proceso: {bundle}"
+        )
+    return bundle
+
+
+def _siar_get(url, **kwargs):
+    """GET exclusivo para SIAR con validación TLS siempre activa."""
+    if "verify" in kwargs:
+        raise TypeError("_siar_get gestiona internamente el parámetro verify")
+    kwargs["verify"] = _siar_verify_value()
+    return requests.get(url, **kwargs)
 
 
 def normalizar_fecha(valor):
@@ -272,19 +307,19 @@ def obtener_token_siar(nif, password):
     if not nif or not password:
         raise SiarAuthError("Faltan SIAR_NIF / SIAR_PASSWORD")
     try:
-        r1 = requests.get(
+        r1 = _siar_get(
             f"{API_BASE}/Autenticacion/cifrarCadena",
             params={"cadena": nif},
             timeout=20,
         )
         r1.raise_for_status()
-        r2 = requests.get(
+        r2 = _siar_get(
             f"{API_BASE}/Autenticacion/cifrarCadena",
             params={"cadena": password},
             timeout=20,
         )
         r2.raise_for_status()
-        r3 = requests.get(
+        r3 = _siar_get(
             f"{API_BASE}/Autenticacion/obtenerToken",
             params={"Usuario": r1.text.strip(), "Password": r2.text.strip()},
             timeout=20,
@@ -378,7 +413,7 @@ def obtener_accesos(token):
 
     for intento in range(1, API_RETRIES + 1):
         try:
-            res = requests.get(
+            res = _siar_get(
                 f"{API_BASE}/Info/ACCESOS",
                 params={"token": token},
                 timeout=20,
@@ -451,7 +486,7 @@ def obtener_estacion_info(token, codigo):
         return cuota
 
     try:
-        res = requests.get(
+        res = _siar_get(
             f"{API_BASE}/Info/ESTACIONES",
             params={"token": token},
             timeout=30,
@@ -596,7 +631,7 @@ def fetch_data_rango(codigo, f_inicio, f_fin, token):
             return cuota
 
         try:
-            res = requests.get(
+            res = _siar_get(
                 f"{API_BASE}/Datos/{TIPO_DATOS}/{AMBITO}",
                 params={
                     "token": token,

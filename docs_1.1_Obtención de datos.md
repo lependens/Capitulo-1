@@ -1353,3 +1353,30 @@ La bitácora histórica de este documento se mantiene como registro de cómo evo
 
 > **Conclusión de octubre de 2026:**  
 > SIAR Sync ya constituye una infraestructura productiva y versionada para observaciones históricas. La prioridad inmediata es cerrar las correcciones v2.3.2/v2.3.3, completar el backfill y mantener acceso TLS seguro. En paralelo, el forecast SIAR ha pasado de ser una incógnita a una fuente HTTP reproducible, por lo que la nueva prioridad de adquisición es preservar emisiones raw antes de que puedan perderse.
+
+
+---
+
+# ACTUALIZACIÓN 10/10/2026 — SIAR Sync v2.3.2 y v2.3.3 validadas
+
+Desde la actualización anterior, las versiones v2.3.2 y v2.3.3 de SIAR Sync se desplegaron y validaron en producción, que continúa ejecutándose desde `/home/josep/siar-sync`.
+
+## v2.3.2 — correcciones funcionales
+
+La versión v2.3.2 aplicó las correcciones aprobadas para fechas civiles de instalación y baja en `Europe/Madrid`, estaciones cerradas que se reanudan, checkpoint Git al alcanzar la cuota diaria y permisos finales `0644` conservando la escritura atómica. SHA-256 del artefacto final:
+
+```text
+87e583dd6576d74cc4b51e1abb7ccbdd34ec94ec1fc15619e1999786367d1916
+```
+
+## v2.3.3 — compatibilidad TLS
+
+La v2.3.3 añadió el uso opcional de `SIAR_CA_BUNDLE` para resolver la cadena TLS de SIAR sin desactivar la validación. Sin esta variable se mantiene la verificación TLS estándar; con ella se verifica contra el bundle indicado. No se utiliza `verify=False`.
+
+El worker productivo tiene SHA-256 `7d48be629cd6cf584bed491f9e30da57f62a025f67654be1c33706b02886a81f`. El Dockerfile productivo tiene SHA-256 `39998beee1043cc1a12388038ea3b9faf6aa831adeeabc2cf90c88f0ae96f9f9`. La cadena `siar_extra_chain.pem` (SHA-256 `3b212076d42035c737e112287fef31db3fbcea2e907e17c9a95cd13bb31b97cf`) contiene únicamente certificados CA públicos; `siar_bundle.pem` se genera en el build combinando esa cadena con el almacén de confianza de `certifi` y no se versiona. El workaround podrá retirarse cuando MAPA sirva una cadena compatible.
+
+## Validación operativa y continuidad
+
+Se validaron la autenticación real y `Info/ACCESOS`. Los CSV de IB01–IB09 permanecieron byte a byte idénticos tras ambos despliegues. El TLS deja de ser un bloqueador inmediato para SIAR Sync; el siguiente objetivo de adquisición es reanudar y completar el backfill histórico.
+
+La versión productiva v2.3.3 aún está pendiente de sincronizar en GitHub mediante esta PR. Este cambio documental/canónico no despliega ni sustituye la instancia productiva.

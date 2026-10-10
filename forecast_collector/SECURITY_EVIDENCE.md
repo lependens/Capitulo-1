@@ -12,4 +12,4 @@ Verification performed locally on synthetic material only; no live SIAR response
 - Synthetic example artifact hashes are valid SHA-256 values for fabricated HTML/ZIP/CSV byte sequences; they do not represent SIAR data.
 - All test HTML is inline synthetic markup. No HTTP response fixture or real credential is in the repository.
 
-Independent review run evidence: `25 passed` with the synthetic pytest suite after the acceptance-criteria fixes. This is not a substitute for the pre-deployment scan of an actual SIAR HTML response. If a real response contains a reusable session/authentication value, the implementation refuses to persist that HTML and records the station outcome as failed.
+Independent review run evidence: `26 passed` with the synthetic pytest suite after the acceptance-criteria fixes. This is not a substitute for the pre-deployment scan of an actual SIAR HTML response. If a real response contains a reusable session/authentication value, the implementation refuses to persist that HTML and records the station outcome as failed.

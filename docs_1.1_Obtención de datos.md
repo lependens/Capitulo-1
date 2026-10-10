@@ -661,3 +661,722 @@ El CSV seguirá siendo una fuente sencilla y auditable, mientras que Parquet y D
 
 
 
+# ACTUALIZACIÓN OCTUBRE 2026 — SIAR Sync v2.3.x y Forecast
+
+Esta sección actualiza el estado descrito anteriormente sin eliminar la bitácora histórica de 2025–2026.
+
+A octubre de 2026, la adquisición de datos SIAR ha pasado de ser un conjunto de scripts experimentales a una infraestructura operativa con código canónico versionado, ejecución Docker y control de integridad de los CSV.
+
+---
+
+## 22. SIAR Sync v2.3.1 — versión estable en producción
+
+La versión actualmente estable en producción es:
+
+```text
+v2.3.1
+```
+
+La instancia productiva continúa ejecutándose desde:
+
+```text
+/home/josep/siar-sync
+```
+
+El código canónico de esta versión ya se encuentra también versionado dentro del monorepo:
+
+```text
+siar-sync/
+```
+
+La incorporación a GitHub se realizó mediante la PR #2 sin desplegar automáticamente dicha copia sobre producción.
+
+Los archivos canónicos identificados son:
+
+```text
+siar-sync/
+├── app.py
+├── siar_worker.py
+├── Dockerfile
+├── requirements.txt
+├── docker-compose.yml
+├── .env.example
+├── .dockerignore
+├── README.md
+└── templates/
+    └── index.html
+```
+
+Las credenciales reales permanecen fuera de Git mediante `.env`.
+
+---
+
+## 23. Aplicación web actual
+
+SIAR Sync utiliza FastAPI y Uvicorn.
+
+El contenedor se denomina:
+
+```text
+siar_sync
+```
+
+y la aplicación se sirve actualmente en:
+
+```text
+puerto 8000
+```
+
+La interfaz permite:
+
+- consultar las estaciones presentes en los CSV;
+- analizar cobertura;
+- detectar huecos y pendientes;
+- seleccionar una fecha objetivo;
+- iniciar sincronizaciones;
+- visualizar el estado de las tareas;
+- consultar el uso/cuota actual de SIAR;
+- mostrar la leyenda de estaciones desde `estaciones_baleares.csv`.
+
+Los endpoints principales del componente son:
+
+```text
+GET  /
+GET  /status
+GET  /api_usage
+GET  /analyze
+POST /start
+```
+
+La interfaz no sustituye al worker; actúa como capa de control sobre `siar_worker.py`.
+
+---
+
+## 24. Autenticación actual de SIAR
+
+El flujo productivo utiliza:
+
+```text
+SIAR_NIF
+SIAR_PASSWORD
+```
+
+para obtener dinámicamente el token necesario para la API.
+
+La variable:
+
+```text
+SIAR_API_KEY
+```
+
+permanece únicamente por compatibilidad legacy en el código actual y no constituye el mecanismo principal de autenticación.
+
+---
+
+## 25. Catálogo oficial de estaciones de Baleares
+
+El catálogo actual confirmado contiene 12 estaciones:
+
+```text
+IB01
+IB02
+IB03
+IB04
+IB05
+IB06
+IB07
+IB08
+IB09
+IB10
+IB101
+IB11
+```
+
+De ellas, se han identificado tres estaciones cerradas:
+
+```text
+IB07
+IB09
+IB101
+```
+
+Por tanto:
+
+```text
+12 estaciones oficiales
+9 activas
+3 cerradas
+```
+
+El sistema utiliza `Info/ESTACIONES` para obtener metadatos de instalación y baja cuando necesita crear una estación nueva.
+
+Una estación sin CSV local puede:
+
+1. consultar sus metadatos;
+2. crear un CSV vacío con las 23 columnas canónicas;
+3. comenzar desde su fecha de instalación;
+4. limitar la adquisición a su fecha de baja cuando corresponda.
+
+---
+
+## 26. Esquema canónico consolidado
+
+Los CSV siguen utilizando exactamente 23 columnas:
+
+```text
+Fecha
+TempMedia
+TempMax
+HorMinTempMax
+TempMin
+HorMinTempMin
+HumedadMedia
+HumedadMax
+HorMinHumMax
+HumedadMin
+HorMinHumMin
+VelViento
+DirViento
+VelVientoMax
+HorMinVelMax
+DirVientoVelMax
+Radiacion
+Precipitacion
+TempSuelo1
+TempSuelo2
+EtPMon
+PePMon
+Estacion
+```
+
+Regla vigente:
+
+> No debe modificarse este esquema durante la fase de adquisición sin una migración explícita y validada.
+
+Las auditorías realizadas sobre las estaciones ya descargadas no han mostrado duplicados ni fechas inválidas en los CSV revisados.
+
+---
+
+## 27. Descarga, cuota y resiliencia HTTP
+
+El worker continúa trabajando con bloques máximos de:
+
+```text
+7 días
+```
+
+La cuota no se trata como un número fijo asumido por el programa.
+
+SIAR Sync consulta dinámicamente la información de acceso y uso disponible mediante SIAR.
+
+La versión v2.3.1 incorpora tratamiento/reintentos para errores temporales como:
+
+```text
+HTTP 429
+HTTP 500
+HTTP 502
+HTTP 503
+HTTP 504
+timeouts
+```
+
+El objetivo es detener o reintentar de forma controlada sin comprometer la integridad del CSV.
+
+---
+
+## 28. Persistencia y escritura segura
+
+La estrategia sigue siendo:
+
+```text
+descargar
+   ↓
+validar
+   ↓
+combinar
+   ↓
+deduplicar por Fecha
+   ↓
+ordenar
+   ↓
+guardar temporal
+   ↓
+validar
+   ↓
+reemplazo atómico
+```
+
+Si GitHub falla después de guardar correctamente el CSV:
+
+> los datos locales permanecen conservados.
+
+Git no es la única copia operativa de los datos durante una ejecución.
+
+---
+
+## 29. Checkpoints Git
+
+SIAR Sync realiza checkpoints periódicos en Git para reducir el volumen de cambios pendientes.
+
+El flujo general es:
+
+```text
+CSV local
+   ↓
+git status
+   ↓
+commit
+   ↓
+fetch / integración segura
+   ↓
+push
+```
+
+Se ha comprobado en producción que una estación puede seguir avanzando y conservar el progreso local aunque el push no pueda completarse temporalmente.
+
+---
+
+## 30. v2.3.2 — correcciones internas previstas
+
+Se ha definido una siguiente versión con alcance deliberadamente reducido:
+
+```text
+v2.3.2
+```
+
+Los cuatro cambios previstos son:
+
+### 30.1 Fecha_Instalacion y Fecha_Baja
+
+SIAR puede devolver timestamps cuya fecha UTC no coincide directamente con la fecha civil local.
+
+No debe aplicarse `.date()` sobre UTC sin considerar la zona horaria.
+
+La regla prevista es interpretar correctamente el instante y convertirlo a:
+
+```text
+Europe/Madrid
+```
+
+antes de obtener la fecha civil.
+
+### 30.2 Aplicar Fecha_Baja al reanudar estaciones
+
+Actualmente la lógica de metadatos está más orientada a estaciones nuevas.
+
+Una estación cerrada con CSV parcial no debe intentar completar fechas posteriores a su baja real.
+
+### 30.3 Checkpoint al agotarse la cuota diaria
+
+Se ha comprobado que, cuando se alcanza la cuota diaria de SIAR, los últimos bloques pueden quedar correctamente guardados en local pero no llegar al push final.
+
+v2.3.2 debe intentar un último checkpoint Git seguro antes de terminar por:
+
+```text
+SiarDailyLimitError
+```
+
+Si Git falla, los CSV locales deben conservarse igualmente.
+
+### 30.4 Permisos de los CSV
+
+La escritura atómica puede dejar algunos archivos con permisos demasiado restrictivos.
+
+La versión prevista normalizará el archivo final a:
+
+```text
+0644
+```
+
+sin eliminar la escritura atómica.
+
+---
+
+## 31. v2.3.3 — soporte de CA personalizada
+
+En octubre de 2026 se detectó un problema TLS contra:
+
+```text
+servicio.mapa.gob.es
+```
+
+El fallo se reproduce también fuera de SIAR Sync utilizando herramientas del host, por lo que no se considera inicialmente un defecto del worker.
+
+Se ha comprobado que el servidor responde correctamente si se utiliza explícitamente una cadena CA válida.
+
+La solución prevista para una versión posterior es permitir:
+
+```text
+SIAR_CA_BUNDLE=/ruta/siar_bundle.pem
+```
+
+de manera opcional.
+
+Regla de seguridad:
+
+> La validación TLS debe permanecer activa.
+
+No se recomienda ni se autoriza utilizar:
+
+```text
+verify=False
+```
+
+como solución permanente.
+
+---
+
+## 32. Incidencia Docker: procesos zombie
+
+Durante la auditoría del servidor se detectó una acumulación anormal de procesos zombie `git` dentro del contenedor `siar_sync`.
+
+La investigación mostró que:
+
+- Uvicorn actuaba como PID 1;
+- el contenedor no disponía de un init/reaper;
+- procesos Git huérfanos podían quedar adoptados por PID 1;
+- la acumulación afectaba al contador de PIDs aunque no consumiera CPU de forma significativa.
+
+La corrección mínima autorizada consiste en añadir:
+
+```yaml
+init: true
+```
+
+al servicio Docker de SIAR Sync y recrear únicamente ese contenedor sin reconstruir la imagen.
+
+Esta incidencia pertenece principalmente a infraestructura y debe considerarse cerrada solo después de observar varios checkpoints Git sin nueva acumulación.
+
+---
+
+## 33. Estado del backfill histórico
+
+El backfill de Baleares continúa en curso.
+
+Último snapshot consolidado comunicado a Dirección 00:
+
+- IB01–IB08 disponen de CSV válidos en las auditorías realizadas;
+- IB01–IB06 e IB08 habían alcanzado 31/12/2025;
+- IB07 está cerrada y requiere respetar correctamente su fecha de baja;
+- IB09 tiene progreso histórico parcial conservado;
+- IB10 está pendiente;
+- IB101 está pendiente;
+- IB11 está pendiente.
+
+Este estado debe actualizarse conforme avance la descarga.
+
+---
+
+# NUEVA LÍNEA — Forecast SIAR
+
+## 34. Ingeniería inversa completada
+
+La investigación del forecast SIAR ha demostrado que la fuente es reproducible mediante HTTP sin navegador humano y sin autenticación de usuario.
+
+Flujo confirmado:
+
+```text
+GET /siarweb/necesidadesHidricas/inicio
+→ obtiene sesión web + CSRF
+→ llamadas auxiliares de estación/cultivo
+→ validación del formulario
+→ POST /siarweb/necesidadesHidricas/calculo
+→ HTML con forecast
+→ GET /siarweb/necesidadesHidricas/exportCSV
+→ ZIP con CSV oficial
+```
+
+La sesión utiliza:
+
+```text
+JSESSIONID
+XSRF-TOKEN
+_csrf
+```
+
+Estos identificadores se necesitan durante la sesión, pero no forman parte de los datos científicos y no deben persistirse como secretos.
+
+---
+
+## 35. Datos del forecast SIAR
+
+En las pruebas realizadas se observó la estructura:
+
+```text
+Fecha
+Kc
+ET0 (mm)
+ETc (mm)
+Pe (mm)
+ETc - Pe (mm)
+```
+
+El CSV oficial utiliza:
+
+```text
+delimitador ;
+decimal ,
+```
+
+El HTML de `/calculo` contiene los mismos resultados con mayor precisión numérica que el CSV.
+
+Por este motivo, la estrategia actual es conservar ambos artefactos raw cuando sea seguro:
+
+```text
+HTML original
++
+ZIP/CSV oficial
+```
+
+sin decidir prematuramente cuál será la única fuente científica.
+
+---
+
+## 36. Horizonte todavía no resuelto
+
+En pruebas iniciales aparecieron siete fechas, pero únicamente seis tenían ET₀ informado.
+
+Una fila con ET₀ vacío:
+
+```text
+ET0 vacío
+```
+
+no debe transformarse en:
+
+```text
+ET0 = 0
+```
+
+Tampoco se debe etiquetar todavía cada fecha como D+0, D+1, D+6, etc.
+
+La semántica exacta se determinará observando varias emisiones durante varios días.
+
+---
+
+## 37. Histórico de emisiones
+
+La interfaz no ha mostrado hasta ahora un selector de fecha de emisión para recuperar predicciones anteriores.
+
+Por tanto, se adopta una regla conservadora:
+
+> Una emisión que no se capture cuando está disponible puede ser irrecuperable.
+
+Esto convierte la preservación de forecast raw en una prioridad temporal.
+
+---
+
+## 38. Raw Forecast Capturer
+
+Antes de construir el Forecast Collector completo se ha aprobado una capa mínima de preservación.
+
+Responsabilidad:
+
+```text
+SIAR web
+   ↓
+captura HTTP
+   ↓
+RAW append-only
+```
+
+Una captura representa:
+
+```text
+1 estación
++
+1 instante de recogida
++
+HTML original
++
+ZIP oficial
++
+CSV extraído
++
+metadata
++
+hashes SHA-256
+```
+
+Cada ejecución tendrá un:
+
+```text
+run_id
+```
+
+y cada estación un:
+
+```text
+capture_id
+```
+
+Las capturas nunca se sobrescriben ni se eliminan automáticamente aunque dos ejecuciones devuelvan exactamente el mismo contenido.
+
+Estados previstos:
+
+```text
+complete
+partial
+failed
+```
+
+---
+
+## 39. Almacenamiento raw forecast
+
+La ubicación física aprobada conceptualmente es:
+
+```text
+/srv/siar-forecast/raw
+```
+
+Debe vivir fuera del repositorio Git.
+
+La creación, propietario y permisos se coordinarán con infraestructura antes del despliegue.
+
+Frecuencia experimental inicial prevista:
+
+```text
+08:00
+14:00
+20:00
+Europe/Madrid
+```
+
+El objetivo de esta frecuencia es caracterizar cuándo cambia realmente la publicación SIAR.
+
+No presupone que SIAR emita exactamente tres forecasts diarios.
+
+---
+
+## 40. Separación SIAR Sync / Forecast
+
+SIAR Sync y la nueva captura de forecast deben permanecer funcionalmente independientes.
+
+El capturador de forecast no debe:
+
+```text
+importar siar_worker.py
+modificar datos_siar_baleares/
+participar en los commits automáticos de SIAR Sync
+depender del scheduler de SIAR Sync
+requerir que el contenedor siar_sync esté activo
+```
+
+Ambos componentes pueden ejecutarse en el mismo servidor, pero un fallo del forecast no debe comprometer la adquisición histórica.
+
+---
+
+## 41. Próxima investigación: AEMET
+
+La siguiente línea técnica consiste en identificar una fuente AEMET que permita obtener para ubicaciones equivalentes a las estaciones SIAR:
+
+```text
+temperatura
+humedad relativa
+viento
+radiación
+precipitación
+```
+
+Estas variables serán candidatas a inputs de modelos propios de ET₀ futura.
+
+Regla científica:
+
+> Para predecir D+n solo podrán utilizarse datos que estuvieran disponibles en el instante de emisión.
+
+No se utilizarán observaciones futuras como inputs de entrenamiento predictivo.
+
+---
+
+## 42. Arquitectura de adquisición actualizada
+
+La arquitectura de adquisición pasa a ser:
+
+```text
+                        SIAR
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+        OBSERVACIONES           FORECAST
+              │                     │
+         SIAR Sync          Raw Forecast Capturer
+              │                     │
+     CSV canónico 23 col.      raw append-only
+              │                     │
+              └──────────┬──────────┘
+                         │
+                         ↓
+                 Dataset científico
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+          ET₀ / métodos        ML / forecast
+              │                     │
+              └──────────┬──────────┘
+                         ↓
+                    Validación
+```
+
+---
+
+## 43. Documentación maestra del proyecto
+
+A partir de esta etapa se incorporan dos documentos de coordinación:
+
+```text
+docs/PROJECT_STATUS.md
+docs/ROADMAP.md
+```
+
+Su objetivo es evitar que el estado del proyecto dependa únicamente de los chats o de la memoria de trabajo.
+
+`PROJECT_STATUS.md` describe:
+
+- estado real;
+- versiones;
+- componentes;
+- incidencias;
+- decisiones vigentes;
+- próximos pasos.
+
+`ROADMAP.md` describe:
+
+- fases;
+- dependencias;
+- prioridades;
+- criterios de salida.
+
+La bitácora histórica de este documento se mantiene como registro de cómo evolucionó la adquisición.
+
+---
+
+> **Conclusión de octubre de 2026:**  
+> SIAR Sync ya constituye una infraestructura productiva y versionada para observaciones históricas. La prioridad inmediata es cerrar las correcciones v2.3.2/v2.3.3, completar el backfill y mantener acceso TLS seguro. En paralelo, el forecast SIAR ha pasado de ser una incógnita a una fuente HTTP reproducible, por lo que la nueva prioridad de adquisición es preservar emisiones raw antes de que puedan perderse.
+
+
+---
+
+# ACTUALIZACIÓN 10/10/2026 — SIAR Sync v2.3.2 y v2.3.3 validadas
+
+Desde la actualización anterior, las versiones v2.3.2 y v2.3.3 de SIAR Sync se desplegaron y validaron en producción, que continúa ejecutándose desde `/home/josep/siar-sync`.
+
+## v2.3.2 — correcciones funcionales
+
+La versión v2.3.2 aplicó las correcciones aprobadas para fechas civiles de instalación y baja en `Europe/Madrid`, estaciones cerradas que se reanudan, checkpoint Git al alcanzar la cuota diaria y permisos finales `0644` conservando la escritura atómica. SHA-256 del artefacto final:
+
+```text
+87e583dd6576d74cc4b51e1abb7ccbdd34ec94ec1fc15619e1999786367d1916
+```
+
+## v2.3.3 — compatibilidad TLS
+
+La v2.3.3 añadió el uso opcional de `SIAR_CA_BUNDLE` para resolver la cadena TLS de SIAR sin desactivar la validación. Sin esta variable se mantiene la verificación TLS estándar; con ella se verifica contra el bundle indicado. No se utiliza `verify=False`.
+
+El worker productivo tiene SHA-256 `7d48be629cd6cf584bed491f9e30da57f62a025f67654be1c33706b02886a81f`. El Dockerfile productivo tiene SHA-256 `39998beee1043cc1a12388038ea3b9faf6aa831adeeabc2cf90c88f0ae96f9f9`. La cadena `siar_extra_chain.pem` (SHA-256 `3b212076d42035c737e112287fef31db3fbcea2e907e17c9a95cd13bb31b97cf`) contiene únicamente certificados CA públicos; `siar_bundle.pem` se genera en el build combinando esa cadena con el almacén de confianza de `certifi` y no se versiona. El workaround podrá retirarse cuando MAPA sirva una cadena compatible.
+
+## Validación operativa y continuidad
+
+Se validaron la autenticación real y `Info/ACCESOS`. Los CSV de IB01–IB09 permanecieron byte a byte idénticos tras ambos despliegues. El TLS deja de ser un bloqueador inmediato para SIAR Sync; el siguiente objetivo de adquisición es reanudar y completar el backfill histórico.
+
+La v2.3.3 queda incorporada como versión canónica de GitHub mediante la PR #4; esta actualización no despliega ni sustituye la instancia productiva.

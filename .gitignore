@@ -22,8 +22,14 @@ ENV/
 .env.*
 !.env.example
 *.pem
+!siar-sync/certs/siar_extra_chain.pem
 *.key
 secrets.*
+
+# Artefactos locales SIAR Sync (solo este componente)
+siar-sync/*.backup*
+siar-sync/*.patch
+siar-sync/manifest_csv_*.sha256
 
 # IDE
 .vscode/

@@ -451,13 +451,13 @@ hashes
 - SHA-256 de artefactos;
 - datos legibles posteriormente sin Collector ni base de datos.
 
-Raíz física decidida:
+Raíz propuesta, todavía no aprovisionada y pendiente de coordinación con 02:
 
 ```text
 /srv/siar-forecast/raw
 ```
 
-Todavía no debe crearse/desplegarse sin coordinación con infraestructura.
+No hay almacenamiento creado bajo `/srv`; su provisión y el backup off-site siguen pendientes.
 
 Frecuencia experimental aprobada:
 

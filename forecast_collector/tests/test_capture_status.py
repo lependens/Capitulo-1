@@ -29,6 +29,7 @@ def test_complete_and_partial_are_both_published(tmp_path):
     assert (final / "IB04").is_dir() and (final / "IB05").is_dir()
     statuses = [json.loads(p.read_text())["capture"]["status"] for p in final.glob("*/cap_*/metadata.json")]
     assert sorted(statuses) == ["complete", "partial"]
+    assert all(json.loads(p.read_text())["source_issue_at"] is None for p in final.glob("*/cap_*/metadata.json"))
 
 
 class FailedClient:
@@ -40,3 +41,18 @@ def test_failed_status_is_published(tmp_path):
     cfg = Config(tmp_path, "https://example.invalid", 1, 1, 1, (), (Station("IB01", "Synthetic", "1", {}),))
     final = capture_run(cfg, client_factory=FailedClient)
     assert json.loads((final / "run.json").read_text())["status"] == "failed"
+
+
+class IncompleteClient:
+    def __init__(self, _config): pass
+    def capture_station(self, station):
+        return ({"http": {}}, {"result.html": b"<html>safe forecast</html>"})
+
+
+def test_incomplete_return_cannot_be_marked_complete(tmp_path):
+    cfg = Config(tmp_path, "https://example.invalid", 1, 1, 1, (), (Station("IB01", "Synthetic", "1", {}),))
+    final = capture_run(cfg, client_factory=IncompleteClient)
+    metadata_path = next(final.glob("IB01/cap_*/metadata.json"))
+    metadata = json.loads(metadata_path.read_text())
+    assert metadata["capture"]["status"] == "partial"
+    assert "incomplete artifact set" in metadata["errors"][0]

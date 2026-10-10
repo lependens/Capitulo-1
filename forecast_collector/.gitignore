@@ -1,0 +1,11 @@
+__pycache__/
+.pytest_cache/
+.venv/
+.test-deps/
+.pytest-tmp/
+.pip-bootstrap.py
+*.py[cod]
+*.egg-info/
+.env
+*.raw
+data/

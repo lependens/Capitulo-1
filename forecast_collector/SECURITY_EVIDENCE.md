@@ -13,3 +13,5 @@ Verification performed locally on synthetic material only; no live SIAR response
 - All test HTML is inline synthetic markup. No HTTP response fixture or real credential is in the repository.
 
 Independent review run evidence: `26 passed` with the synthetic pytest suite after the acceptance-criteria fixes. This is not a substitute for the pre-deployment scan of an actual SIAR HTML response. If a real response contains a reusable session/authentication value, the implementation refuses to persist that HTML and records the station outcome as failed.
+
+- `tests/test_schema_validation.py` validates both synthetic examples and a generated run/capture against the Draft 2020-12 schemas using `jsonschema` with format checking.

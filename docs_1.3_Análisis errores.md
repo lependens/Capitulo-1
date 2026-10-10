@@ -1,4 +1,4 @@
-https://capitulo-1.onrender.com
+> Nota histórica: la aplicación Dash asociada a este análisis se desplegó en Render y fue retirada en octubre de 2026.
 
 
 

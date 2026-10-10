@@ -1,0 +1,32 @@
+{
+  "schema_version": "siar-raw-capture-v1",
+  "collector_version": "0.1.0",
+  "run_id": "run_20261010T060000.000Z_a1b2c3",
+  "capture_id": "cap_20261010T060001.000Z_IB04_d4e5f6",
+  "station": {"code": "IB04", "label": "Synthetic station", "siar_station_form_id": "synthetic-4"},
+  "capture": {
+    "started_at_utc": "2026-10-10T06:00:01.000Z",
+    "finished_at_utc": "2026-10-10T06:00:01.900Z",
+    "status": "complete"
+  },
+  "source": {"system": "SIAR", "product": "necesidadesHidricas"},
+  "source_issue_at": null,
+  "http": {
+    "calculation_post": {
+      "method": "POST",
+      "url": "https://example.invalid/siarweb/necesidadesHidricas/calculo",
+      "started_at_utc": "2026-10-10T06:00:01.100Z",
+      "finished_at_utc": "2026-10-10T06:00:01.600Z",
+      "duration_ms": 500,
+      "status_code": 200,
+      "content_type": "text/html;charset=UTF-8",
+      "content_length": 128
+    }
+  },
+  "artifacts": {
+    "html": {"filename": "result.html", "size_bytes": 128, "sha256": "0000000000000000000000000000000000000000000000000000000000000000"},
+    "zip": {"filename": "forecast.zip", "size_bytes": 256, "sha256": "1111111111111111111111111111111111111111111111111111111111111111"},
+    "csv": {"filename": "forecast.csv", "source_filename": "synthetic.csv", "size_bytes": 32, "sha256": "2222222222222222222222222222222222222222222222222222222222222222"}
+  },
+  "errors": []
+}

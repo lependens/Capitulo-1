@@ -1,0 +1,21 @@
+{
+  "schema_version": "raw-capture-run-v1",
+  "collector_version": "0.1.0",
+  "run_id": "run_20261010T060000.000Z_a1b2c3",
+  "started_at_utc": "2026-10-10T06:00:00.000Z",
+  "finished_at_utc": "2026-10-10T06:00:02.000Z",
+  "target_scope": "configured",
+  "stations_resolved": [
+    {"code": "IB04", "label": "Synthetic station", "siar_station_form_id": "synthetic-4"},
+    {"code": "IB05", "label": "Synthetic station 2", "siar_station_form_id": "synthetic-5"}
+  ],
+  "stations_attempted": 2,
+  "stations_complete": 1,
+  "stations_partial": 0,
+  "stations_failed": 1,
+  "status": "partial",
+  "captures": [
+    {"station_code": "IB04", "capture_id": "cap_20261010T060001.000Z_IB04_d4e5f6", "status": "complete", "error": null},
+    {"station_code": "IB05", "capture_id": "cap_20261010T060001.500Z_IB05_102030", "status": "failed", "error": "Synthetic connection timeout"}
+  ]
+}

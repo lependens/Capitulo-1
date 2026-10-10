@@ -1,0 +1,17 @@
+# Experimental frequency is handled by an external scheduler after approval.
+# This package only performs one batch run per invocation.
+data_root = "/srv/siar-forecast/raw"
+base_url = "https://servicio.mapa.gob.es/siarweb"
+connect_timeout_seconds = 10
+read_timeout_seconds = 30
+max_attempts = 2
+retry_backoff_seconds = [2, 5]
+station_scope = "configured"
+
+# form_params should be filled from the verified SIAR form contract before any
+# live capture. The raw capturer intentionally does not infer horizons.
+[[stations]]
+code = "IB04"
+label = "Son Ferriol"
+siar_station_form_id = "4_7"
+form_params = { esCalculo = "0", tipoCalculo = "2", idCultivo = "6", idComarca = "702", comarcaEstacion = "Mallorca" }

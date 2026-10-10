@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "siar-forecast-raw"
+version = "0.1.0"
+description = "Append-only raw capture of SIAR forecast responses"
+requires-python = ">=3.11"
+dependencies = ["requests>=2.31,<3", "beautifulsoup4>=4.12,<5"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[project.scripts]
+siar-forecast-raw = "siar_forecast_raw.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

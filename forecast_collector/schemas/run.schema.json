@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://siar.example/schemas/run.schema.json",
+  "title": "SIAR Raw Capture Run",
+  "type": "object",
+  "required": ["schema_version", "collector_version", "run_id", "started_at_utc", "finished_at_utc", "stations_resolved", "stations_attempted", "stations_complete", "stations_partial", "stations_failed", "status", "captures"],
+  "properties": {
+    "schema_version": {"const": "raw-capture-run-v1"},
+    "collector_version": {"type": "string"},
+    "run_id": {"type": "string", "pattern": "^run_"},
+    "started_at_utc": {"type": "string", "format": "date-time"},
+    "finished_at_utc": {"type": "string", "format": "date-time"},
+    "target_scope": {"type": "string"},
+    "stations_resolved": {"type": "array", "items": {"type": "object", "required": ["code", "label", "siar_station_form_id"], "properties": {"code": {"type": "string"}, "label": {"type": "string"}, "siar_station_form_id": {"type": "string"}}}},
+    "stations_attempted": {"type": "integer", "minimum": 0},
+    "stations_complete": {"type": "integer", "minimum": 0},
+    "stations_partial": {"type": "integer", "minimum": 0},
+    "stations_failed": {"type": "integer", "minimum": 0},
+    "status": {"enum": ["complete", "partial", "failed"]},
+    "captures": {"type": "array", "items": {"type": "object", "required": ["station_code", "capture_id", "status"], "properties": {"station_code": {"type": "string"}, "capture_id": {"type": "string"}, "status": {"enum": ["complete", "partial", "failed"]}, "error": {"type": ["string", "null"]}}}}
+  },
+  "additionalProperties": true
+}

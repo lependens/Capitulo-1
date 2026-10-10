@@ -25,6 +25,7 @@ API_PAUSE_SECONDS = max(0, int(os.environ.get("SIAR_PAUSE_SECONDS", "3")))
 API_RETRIES = max(1, int(os.environ.get("SIAR_API_RETRIES", "3")))
 PUSH_EVERY_CHUNKS = max(1, int(os.environ.get("SIAR_PUSH_EVERY_CHUNKS", "4")))
 TARGET_DATE_DEFAULT = os.environ.get("SIAR_TARGET_DATE", "2025-12-31")
+SIAR_CIVIL_TIMEZONE = "Europe/Madrid"
 # Reconsulta los últimos N días del objetivo para recoger correcciones publicadas posteriormente.
 REFRESH_RECENT_DAYS = max(0, int(os.environ.get("SIAR_REFRESH_RECENT_DAYS", "31")))
 
@@ -90,6 +91,20 @@ def fecha_iso(valor):
 
 def formatear_fecha_es(valor):
     return normalizar_fecha(valor).strftime("%d/%m/%Y")
+
+
+def _siar_timestamp_to_civil_date(valor):
+    """Convierte timestamps administrativos SIAR a fecha civil Europe/Madrid.
+
+    SIAR ha devuelto históricamente medianoches locales serializadas como
+    timestamps UTC sin sufijo de zona (p. ej. 22:00/23:00 del día anterior).
+    Para preservar la fecha civil, los timestamps sin zona se interpretan como
+    UTC y se convierten a Europe/Madrid antes de extraer la fecha.
+    """
+    ts = pd.to_datetime(str(valor), errors="raise")
+    if getattr(ts, "tzinfo", None) is None:
+        ts = ts.tz_localize("UTC")
+    return ts.tz_convert(SIAR_CIVIL_TIMEZONE).date()
 
 
 def get_leyenda():
@@ -473,7 +488,7 @@ def obtener_estacion_info(token, codigo):
         return {"error": f"SIAR no informó Fecha_Instalacion para {codigo_buscado}"}
 
     try:
-        fecha_instalacion = pd.to_datetime(str(fecha_instalacion_raw), errors="raise").date()
+        fecha_instalacion = _siar_timestamp_to_civil_date(fecha_instalacion_raw)
     except Exception as exc:
         return {"error": f"Fecha_Instalacion inválida para {codigo_buscado}: {fecha_instalacion_raw!r} ({exc})"}
 
@@ -481,7 +496,7 @@ def obtener_estacion_info(token, codigo):
     fecha_baja_raw = info.get("Fecha_Baja")
     if fecha_baja_raw not in (None, "", "null"):
         try:
-            fecha_baja = pd.to_datetime(str(fecha_baja_raw), errors="raise").date()
+            fecha_baja = _siar_timestamp_to_civil_date(fecha_baja_raw)
         except Exception as exc:
             return {"error": f"Fecha_Baja inválida para {codigo_buscado}: {fecha_baja_raw!r} ({exc})"}
         if fecha_baja < fecha_instalacion:
@@ -705,6 +720,7 @@ def _atomic_write_csv(df, path):
         check = pd.read_csv(tmp_path, on_bad_lines="error")
         if list(check.columns) != list(df.columns):
             raise SiarDataError("La validación del CSV temporal detectó un cambio de esquema")
+        os.chmod(tmp_path, 0o644)
         os.replace(tmp_path, path)
     finally:
         if os.path.exists(tmp_path):
@@ -1137,8 +1153,12 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
             send_telegram(tg_token, tg_chat, f"[{ts}] {estacion}: {msg}")
         print(f"[{ts}] {estacion}: {msg}", flush=True)
 
-    deltas = analyze_station(estacion, target)
-    new_station = (not deltas["exists"]) or (deltas["exists"] and not deltas["inicio"])
+    # Solo usamos este primer análisis para saber si hay CSV/fechas. El periodo
+    # oficial se consulta siempre a SIAR antes de construir el plan definitivo.
+    deltas_requested = analyze_station(estacion, target)
+    new_station = (not deltas_requested["exists"]) or (
+        deltas_requested["exists"] and not deltas_requested["inicio"]
+    )
     effective_target = target
     fecha_instalacion = None
     fecha_baja = None
@@ -1156,46 +1176,89 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
     chunks_done = 0
     chunks_since_push = 0
 
-    # Una estación sin CSV (o con CSV vacío) obtiene su inicio real desde SIAR.
-    if new_station:
+    def checkpoint_before_quota_exit(reason):
+        """Protege en Git lo ya persistido antes de salir por cuota SIAR."""
+        ok, git_msg = push_to_github(gh_token, git_paths)
+        if ok:
+            update_log(
+                f"⏸️ {reason} Progreso local conservado. ☁️ Checkpoint final: {git_msg}. "
+                "Continúa otro día.",
+                True,
+                notify=True,
+                extra={
+                    "analysis": analyze_station(estacion, effective_target),
+                    "objetivo_solicitado": target.isoformat(),
+                    "objetivo_efectivo": effective_target.isoformat(),
+                    "fecha_instalacion": fecha_instalacion.isoformat() if fecha_instalacion else None,
+                    "fecha_baja": fecha_baja.isoformat() if fecha_baja else None,
+                },
+            )
+        else:
+            update_log(
+                f"⏸️ {reason} Progreso local conservado. ⚠️ Checkpoint Git falló: {git_msg}. "
+                "El CSV local permanece intacto; continúa otro día.",
+                True,
+                notify=True,
+                extra={
+                    "analysis": analyze_station(estacion, effective_target),
+                    "objetivo_solicitado": target.isoformat(),
+                    "objetivo_efectivo": effective_target.isoformat(),
+                    "fecha_instalacion": fecha_instalacion.isoformat() if fecha_instalacion else None,
+                    "fecha_baja": fecha_baja.isoformat() if fecha_baja else None,
+                },
+            )
+        return ok, git_msg
+
+    # v2.3.2: el periodo oficial se consulta SIEMPRE, también para CSV existentes.
+    update_log(
+        "📍 Consultando Info/ESTACIONES para validar el periodo oficial de la estación.",
+        notify=new_station,
+    )
+    try:
+        info_result = obtener_estacion_info(token, estacion)
+    except SiarDailyLimitError as exc:
+        checkpoint_before_quota_exit(str(exc))
+        return
+
+    if isinstance(info_result, dict) and "error_token" in info_result:
+        update_log("🔑 Token rechazado al consultar ESTACIONES; renovando…")
+        try:
+            token = obtener_token_siar(SIAR_NIF, SIAR_PASSWORD)
+        except SiarAuthError as exc:
+            update_log(f"⚠️ No se pudo renovar token: {exc}", True, notify=True)
+            return
+        try:
+            info_result = obtener_estacion_info(token, estacion)
+        except SiarDailyLimitError as exc:
+            checkpoint_before_quota_exit(str(exc))
+            return
+
+    if isinstance(info_result, dict):
+        if "error_rate_limit" in info_result:
+            checkpoint_before_quota_exit(
+                f"Cuota/límite SIAR al consultar estaciones: {info_result['error_rate_limit'][:250]}."
+            )
+            return
+        if "error" in info_result:
+            # Política conservadora: sin periodo oficial fiable no continuamos.
+            update_log(f"⚠️ Info/ESTACIONES: {info_result['error']}", True, notify=True)
+            return
+
+    station_info = info_result
+    fecha_instalacion = station_info["fecha_instalacion"]
+    fecha_baja = station_info.get("fecha_baja")
+    if fecha_baja and effective_target > fecha_baja:
+        effective_target = fecha_baja
         update_log(
-            "🆕 Estación nueva/sin fechas: consultando Info/ESTACIONES para obtener su periodo real.",
+            f"ℹ️ La estación tiene Fecha_Baja {formatear_fecha_es(fecha_baja)}; "
+            f"el objetivo efectivo se limita a {formatear_fecha_es(effective_target)}.",
             notify=True,
         )
-        info_result = obtener_estacion_info(token, estacion)
-        if isinstance(info_result, dict) and "error_token" in info_result:
-            update_log("🔑 Token rechazado al consultar ESTACIONES; renovando…")
-            try:
-                token = obtener_token_siar(SIAR_NIF, SIAR_PASSWORD)
-            except SiarAuthError as exc:
-                update_log(f"⚠️ No se pudo renovar token: {exc}", True, notify=True)
-                return
-            info_result = obtener_estacion_info(token, estacion)
 
-        if isinstance(info_result, dict):
-            if "error_rate_limit" in info_result:
-                update_log(
-                    f"⏸️ Cuota/límite SIAR al consultar estaciones: {info_result['error_rate_limit'][:250]}. "
-                    "Progreso local conservado.",
-                    True,
-                    notify=True,
-                )
-                return
-            if "error" in info_result:
-                update_log(f"⚠️ Info/ESTACIONES: {info_result['error']}", True, notify=True)
-                return
+    # A partir de aquí, todo análisis/plan usa el objetivo efectivo oficial.
+    deltas = analyze_station(estacion, effective_target)
 
-        station_info = info_result
-        fecha_instalacion = station_info["fecha_instalacion"]
-        fecha_baja = station_info.get("fecha_baja")
-        if fecha_baja and effective_target > fecha_baja:
-            effective_target = fecha_baja
-            update_log(
-                f"ℹ️ La estación tiene Fecha_Baja {formatear_fecha_es(fecha_baja)}; "
-                f"el objetivo efectivo se limita a {formatear_fecha_es(effective_target)}.",
-                notify=True,
-            )
-
+    if new_station:
         if not os.path.exists(path):
             try:
                 _create_empty_canonical_csv(path)
@@ -1220,14 +1283,13 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
             except (OSError, pd.errors.ParserError, SiarDataError, ValueError) as exc:
                 update_log(f"⚠️ Error leyendo CSV existente: {exc}", True, notify=True)
                 return
-            if existing_df.empty:
-                if existing_columns != CANONICAL_COLUMNS:
-                    update_log(
-                        "⚠️ El CSV vacío existente no usa el esquema canónico; no se sobrescribe automáticamente.",
-                        True,
-                        notify=True,
-                    )
-                    return
+            if existing_df.empty and existing_columns != CANONICAL_COLUMNS:
+                update_log(
+                    "⚠️ El CSV vacío existente no usa el esquema canónico; no se sobrescribe automáticamente.",
+                    True,
+                    notify=True,
+                )
+                return
 
         deltas = analyze_station(estacion, effective_target)
         update_log(
@@ -1276,21 +1338,34 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
             update_log("⚠️ El CSV no contiene fechas válidas.", True, notify=True, extra={"analysis": deltas})
             return
         update_log(
-            f"🔄 Objetivo {formatear_fecha_es(target)}. Cobertura actual {formatear_fecha_es(deltas['inicio'])} → "
-            f"{formatear_fecha_es(deltas['fin'])}. Pendientes: {deltas.get('pendientes', 0)} días.",
+            f"🔄 Objetivo solicitado {formatear_fecha_es(target)}; objetivo efectivo {formatear_fecha_es(effective_target)}. "
+            f"Cobertura actual {formatear_fecha_es(deltas['inicio'])} → {formatear_fecha_es(deltas['fin'])}. "
+            f"Pendientes: {deltas.get('pendientes', 0)} días.",
             notify=True,
-            extra={"analysis": deltas},
+            extra={
+                "analysis": deltas,
+                "fecha_instalacion": fecha_instalacion.isoformat(),
+                "fecha_baja": fecha_baja.isoformat() if fecha_baja else None,
+                "objetivo_solicitado": target.isoformat(),
+                "objetivo_efectivo": effective_target.isoformat(),
+            },
         )
 
     try:
-        # Recalculamos a partir del archivo real antes de empezar.
+        # v2.3.2: el plan siempre empieza en la Fecha_Instalacion oficial. Los
+        # datos históricos anteriores no se borran automáticamente, pero tampoco
+        # generan peticiones ni pendientes artificiales.
         fechas = _read_dates(path)
-        if not fechas and fecha_instalacion is not None:
+        if fecha_instalacion is not None:
             start_date = fecha_instalacion
         elif fechas:
             start_date = min(fechas)
         else:
-            update_log("⚠️ No se encontraron fechas válidas en el CSV y no hay fecha de instalación disponible.", True, notify=True)
+            update_log(
+                "⚠️ No se encontraron fechas válidas en el CSV y no hay fecha de instalación disponible.",
+                True,
+                notify=True,
+            )
             return
 
         pending_ranges = _missing_ranges(fechas, start_date, effective_target)
@@ -1320,7 +1395,11 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
                 chunks_done += 1
                 update_log(
                     f"⏭️ Bloque ya cubierto localmente {formatear_fecha_es(current)} → {formatear_fecha_es(chunk_end)}; se omite.",
-                    extra={"analysis": analyze_station(estacion, effective_target), "blocks_done": chunks_done, "blocks_total": len(pending_chunks)},
+                    extra={
+                        "analysis": analyze_station(estacion, effective_target),
+                        "blocks_done": chunks_done,
+                        "blocks_total": len(pending_chunks),
+                    },
                 )
                 continue
 
@@ -1351,10 +1430,8 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
 
             if isinstance(datos, dict):
                 if "error_rate_limit" in datos:
-                    update_log(
-                        f"⏸️ Cuota/límite SIAR: {datos['error_rate_limit'][:250]}. Progreso local conservado; reintenta más tarde.",
-                        True,
-                        notify=True,
+                    checkpoint_before_quota_exit(
+                        f"Cuota/límite SIAR: {datos['error_rate_limit'][:250]}."
                     )
                     return
                 update_log(f"⚠️ Error API: {datos.get('error', str(datos))}", True, notify=True)
@@ -1411,7 +1488,6 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
                 time.sleep(API_PAUSE_SECONDS)
 
         # Refresco de los últimos días para incorporar correcciones ya publicadas en SIAR.
-        # Releemos fechas para que las estaciones nuevas también entren en este paso.
         fechas = _read_dates(path)
         if fechas and REFRESH_RECENT_DAYS > 0 and effective_target >= min(fechas):
             refresh_start = max(min(fechas), effective_target - timedelta(days=REFRESH_RECENT_DAYS - 1))
@@ -1445,10 +1521,8 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
 
                     if isinstance(datos, dict):
                         if "error_rate_limit" in datos:
-                            update_log(
-                                f"⏸️ Refresco detenido por cuota SIAR: {datos['error_rate_limit'][:250]}.",
-                                True,
-                                notify=True,
+                            checkpoint_before_quota_exit(
+                                f"Refresco detenido por cuota SIAR: {datos['error_rate_limit'][:250]}."
                             )
                             return
                         update_log(f"⚠️ Error en refresco: {datos.get('error', str(datos))}", True, notify=True)
@@ -1475,7 +1549,7 @@ def sync_station(estacion, target_date, tg_token, tg_chat, gh_token, status_dict
                         time.sleep(API_PAUSE_SECONDS)
 
     except SiarDailyLimitError as exc:
-        update_log(f"⏸️ {exc} Progreso local conservado; continúa otro día.", True, notify=True)
+        checkpoint_before_quota_exit(str(exc))
         return
 
     ok, msg = push_to_github(gh_token, git_paths)

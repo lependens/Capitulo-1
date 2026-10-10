@@ -127,7 +127,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | backfill avanzado, aún no finalizado | completar estaciones restantes |
 | Docker / servidor | 🟠 | incidencia de zombies diagnosticada | aplicar/validar `init: true` |
-| GitHub / monorepo | 🟢 | PR #1 y PR #2 fusionadas | documentación y siguientes PR pequeñas |
+| GitHub / monorepo | 🟢 | PR #1, #2 y #3 fusionadas; PR #4 canoniza v2.3.3 | reanudar/completar backfill |
 | Forecast SIAR | 🟢 | contrato HTTP reproducido | Raw Forecast Capturer |
 | Raw Forecast Capturer | 🟠 | diseño aprobado, no desplegado | implementación aislada |
 | AEMET forecast | 🟠 | pendiente de investigación específica | identificar producto e inputs |
@@ -177,7 +177,7 @@ requirements.txt
 
 La plantilla y el worker v2.3.3 están cotejados con el contenedor. La autenticación real y `Info/ACCESOS` fueron validados. Tras los despliegues v2.3.2 y v2.3.3, los nueve CSV IB01–IB09 permanecieron byte a byte idénticos. El TLS está operativo mediante `SIAR_CA_BUNDLE` y la verificación TLS sigue activa.
 
-La actualización de código de GitHub queda pendiente de esta PR; no despliega ni sustituye producción.
+La versión v2.3.3 queda canonizada en GitHub mediante la PR #4, sin desplegar ni sustituir la instancia activa.
 
 ### 5.2 Funciones actualmente consolidadas
 
@@ -301,31 +301,9 @@ Incidencia:
 INC-INFRA-001
 ```
 
-Diagnóstico:
+La acumulación de procesos zombie `git` dentro de `siar_sync` sigue en observación. `init: true` ya está aplicado en producción. La incidencia permanece abierta hasta validar varios checkpoints Git sin nueva acumulación de zombies.
 
-- el contenedor `siar_sync` acumuló más de mil procesos zombie `git`;
-- los zombies terminaron adoptados por Uvicorn;
-- Uvicorn es actualmente PID 1;
-- el contenedor no tenía init/reaper;
-- los procesos Git provienen de checkpoints ejecutados por `siar_worker.py`;
-- la hipótesis principal es adopción de procesos auxiliares/huérfanos no recolectados;
-- el problema no ha demostrado corrupción de CSV.
-
-Corrección autorizada:
-
-```yaml
-init: true
-```
-
-en el servicio `siar_sync`, recreando únicamente ese contenedor, sin rebuild ni pull.
-
-Estado de este documento:
-
-```text
-AUTORIZADA / pendiente de informe final de ejecución y validación prolongada
-```
-
-La incidencia no debe cerrarse hasta observar varios checkpoints Git reales sin nueva acumulación.
+No se considera cerrada únicamente por haber aplicado la configuración; hace falta completar la observación operativa.
 
 ---
 
@@ -367,15 +345,15 @@ siar-sync/
 
 No se desplegó esta versión desde GitHub al servidor.
 
-### Regla futura
+### PR #3 — documentación maestra fusionada
 
-Cambios de producción deben reflejarse mediante PR pequeñas y trazables.
+Se incorporaron `docs/PROJECT_STATUS.md` y `docs/ROADMAP.md`, junto con las actualizaciones documentales aprobadas.
 
-Estado de esta actualización:
+### PR #4 — canonización de SIAR Sync v2.3.3
 
-- las versiones v2.3.2 y v2.3.3 ya están desplegadas y validadas en producción;
-- esta PR sincroniza el estado v2.3.3 en GitHub y no despliega ni sustituye producción;
-- cualquier cambio de infraestructura, incluido `init: true`, requiere su propia validación y revisión.
+La PR #4 incorpora a GitHub el estado productivo v2.3.3 con la trazabilidad de v2.3.2 y v2.3.3. No despliega ni sustituye producción.
+
+Cambios de producción y de infraestructura deben reflejarse mediante PR revisables y separadas.
 
 ---
 
@@ -624,7 +602,7 @@ Orden orientativo actual:
 
 ```text
 1. Reanudar/completar backfill SIAR
-2. continuar observación de la estabilidad de v2.3.3 y de INC-INFRA-001
+2. continuar observación de INC-INFRA-001 hasta validar varios checkpoints
 3. implementar/desplegar Raw Forecast Capturer
 4. observar cadencia/horizonte de forecast
 5. investigar AEMET
@@ -634,7 +612,7 @@ Orden orientativo actual:
 9. producto web/API/riego
 ```
 
-La sincronización de v2.3.3 en GitHub está pendiente de revisión y merge de esta PR. La PR no sustituye producción.
+La PR #4 canoniza en GitHub la versión v2.3.3 validada en producción y no sustituye la instancia activa.
 
 ## 17. Protocolo de actualización de este documento
 

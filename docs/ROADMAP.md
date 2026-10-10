@@ -68,7 +68,7 @@ Disponer de una base segura, versionada y reproducible desde la que evolucionar.
 - ✅ eliminación de `venv/` del versionado;
 - ✅ SIAR Sync canónico incorporado a `siar-sync/`;
 - ✅ separación conceptual producción ↔ GitHub;
-- 🟠 documentación maestra `PROJECT_STATUS` / `ROADMAP`;
+- ✅ documentación maestra `PROJECT_STATUS` / `ROADMAP`;
 - 🟠 auditoría y limpieza legacy gradual.
 
 ### Criterio de salida
@@ -120,7 +120,7 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 - ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y permisos finales `0644`;
 - ✅ v2.3.3 desplegada y validada: `SIAR_CA_BUNDLE` opcional con verificación TLS activa;
 - 🟠 mantener observación prolongada de la incidencia de procesos zombie;
-- 🟠 sincronizar el estado productivo v2.3.3 en GitHub mediante esta PR.
+- ✅ v2.3.3 canónica en GitHub tras PR #4;
 
 El TLS ya no es un bloqueador inmediato para la adquisición. La fase observacional sigue en curso hasta completar los criterios de salida.
 
@@ -545,11 +545,9 @@ No constituye una fase final; acompaña a todas las demás.
 A fecha 2026-10-10:
 
 ```text
-v2.3.2 y v2.3.3 desplegadas y validadas
+v2.3.3 canónica en GitHub, desplegada y validada en producción
    ↓
-sincronizar v2.3.3 en GitHub mediante PR revisable
-   ↓
-reanudar/completar históricos SIAR
+reanudar/completar backfill SIAR
 ```
 
 En paralelo:

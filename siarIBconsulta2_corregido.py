@@ -9,7 +9,7 @@ import os
 API_BASE = "https://servicio.mapama.gob.es/apisiar/API/v1"
 TIPO_DATOS = "Diarios"  # Datos diarios
 AMBITO = "Estacion"
-CLAVE_API = "-bbkRtYLf7hUBgqUJ0J_BfVi_DD_2ATP-F5h_MR8-haK1udnC9"  # Tu clave API
+CLAVE_API = ""  # LEGACY / NO OPERATIVO: credencial SIAR retirada
 CARPETA_SALIDA = 'C:/Users/josep/OneDrive/Documentos/GitHub/Capitulo-1/datos_siar_baleares'
 
 # Función para obtener datos de un rango de fechas

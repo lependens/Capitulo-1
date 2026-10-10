@@ -113,4 +113,4 @@ class SiarClient:
             raise CaptureError(str(exc), artifacts=artifacts, http=http) from exc
         artifacts["forecast.zip"] = export.content
         artifacts["forecast.csv"] = csv_bytes
-        return ({"station": {"code": station.code, "label": station.label, "siar_station_form_id": station.siar_station_form_id}, "http": http, "source_issue_at": None, "source": {"system": "SIAR", "product": "necesidadesHidricas"}, "request": {**station.form_params, "idEstacion": station.siar_station_form_id}, "csv_source_filename": filename}, artifacts)
+        return ({"station": {"code": station.code, "label": station.label, "siar_station_form_id": station.siar_station_form_id}, "http": http, "source": {"system": "SIAR", "product": "necesidadesHidricas", "source_issue_at": None}, "request": {**station.form_params, "idEstacion": station.siar_station_form_id}, "csv_source_filename": filename}, artifacts)

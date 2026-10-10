@@ -6,7 +6,7 @@ import time
 import os
 
 # Configuración
-API_KEY = '-bbkRtYLf7hUBgqUJ0J_BfVi_DD_2ATP-F5h_MR8-haK1udnC9'  # Tu clave de 50 caracteres
+API_KEY = ""  # LEGACY / NO OPERATIVO: credencial SIAR retirada
 BASE_URL_DATOS = 'https://servicio.mapama.gob.es/apisiar/API/v1/datos'
 BASE_URL_INFO = 'https://servicio.mapama.gob.es/apisiar/API/v1/Info'
 TIPO_DATOS = 'Diarios'

@@ -126,7 +126,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | SIAR Sync | 🟢 | v2.3.3 desplegada y validada en producción | reanudar/completar backfill |
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | backfill avanzado, aún no finalizado | completar estaciones restantes |
-| Docker / servidor | 🟠 | `init: true` aplicado; INC-INFRA-001 sigue abierta | validar varios checkpoints sin nueva acumulación |
+| Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
 | GitHub / monorepo | 🟢 | PR #1, #2 y #3 fusionadas; PR #4 canoniza v2.3.3 | reanudar/completar backfill |
 | Forecast SIAR | 🟢 | contrato HTTP reproducido | Raw Forecast Capturer |
 | Raw Forecast Capturer | 🟠 | diseño aprobado, no desplegado | implementación aislada |
@@ -301,9 +301,9 @@ Incidencia:
 INC-INFRA-001
 ```
 
-La acumulación de procesos zombie `git` dentro de `siar_sync` sigue en observación. `init: true` ya está aplicado en producción. La incidencia permanece abierta hasta validar varios checkpoints Git sin nueva acumulación de zombies.
+La incidencia queda **RESUELTA** tras validar `init: true` en producción: `docker-init` como PID 1, 0 procesos zombie, 265 checkpoints Git, 254 subidas correctas, 0 errores Git, `pids.current=12` y `RestartCount=0`.
 
-No se considera cerrada únicamente por haber aplicado la configuración; hace falta completar la observación operativa.
+`init: true` queda como requisito canónico de `siar_sync`.
 
 ---
 
@@ -602,14 +602,13 @@ Orden orientativo actual:
 
 ```text
 1. Reanudar/completar backfill SIAR
-2. continuar observación de INC-INFRA-001 hasta validar varios checkpoints
-3. implementar/desplegar Raw Forecast Capturer
-4. observar cadencia/horizonte de forecast
-5. investigar AEMET
-6. diseñar backup off-site
-7. dataset científico reproducible
-8. ET₀ y ML
-9. producto web/API/riego
+2. implementar/desplegar Raw Forecast Capturer
+3. observar cadencia/horizonte de forecast
+4. investigar AEMET
+5. diseñar backup off-site
+6. dataset científico reproducible
+7. ET₀ y ML
+8. producto web/API/riego
 ```
 
 La PR #4 canoniza en GitHub la versión v2.3.3 validada en producción y no sustituye la instancia activa.

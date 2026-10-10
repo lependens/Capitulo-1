@@ -532,7 +532,7 @@ No constituye una fase final; acompaña a todas las demás.
 
 ### Próximos puntos
 
-- 🟠 cerrar `INC-INFRA-001`;
+- ✅ `INC-INFRA-001` resuelta; `init: true` validado durante 265 checkpoints Git.
 - 🟠 backup raw forecast;
 - 🟠 proveedor off-site OneDrive o Google Drive;
 - ⚪ checksums/manifest;

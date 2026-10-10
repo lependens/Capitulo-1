@@ -1379,4 +1379,4 @@ El worker productivo tiene SHA-256 `7d48be629cd6cf584bed491f9e30da57f62a025f6765
 
 Se validaron la autenticación real y `Info/ACCESOS`. Los CSV de IB01–IB09 permanecieron byte a byte idénticos tras ambos despliegues. El TLS deja de ser un bloqueador inmediato para SIAR Sync; el siguiente objetivo de adquisición es reanudar y completar el backfill histórico.
 
-La versión productiva v2.3.3 aún está pendiente de sincronizar en GitHub mediante esta PR. Este cambio documental/canónico no despliega ni sustituye la instancia productiva.
+La v2.3.3 queda incorporada como versión canónica de GitHub mediante la PR #4; esta actualización no despliega ni sustituye la instancia productiva.

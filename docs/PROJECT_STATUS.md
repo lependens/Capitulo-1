@@ -126,7 +126,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | SIAR Sync | 🟢 | v2.3.3 desplegada y validada en producción | reanudar/completar backfill |
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | backfill avanzado, aún no finalizado | completar estaciones restantes |
-| Docker / servidor | 🟠 | incidencia de zombies diagnosticada | aplicar/validar `init: true` |
+| Docker / servidor | 🟠 | `init: true` aplicado; INC-INFRA-001 sigue abierta | validar varios checkpoints sin nueva acumulación |
 | GitHub / monorepo | 🟢 | PR #1, #2 y #3 fusionadas; PR #4 canoniza v2.3.3 | reanudar/completar backfill |
 | Forecast SIAR | 🟢 | contrato HTTP reproducido | Raw Forecast Capturer |
 | Raw Forecast Capturer | 🟠 | diseño aprobado, no desplegado | implementación aislada |

@@ -1,5 +1,6 @@
 services:
   siar_sync:
+    init: true
     build: .
     container_name: siar_sync
     user: "1000:1000"

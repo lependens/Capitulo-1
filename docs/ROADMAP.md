@@ -69,7 +69,7 @@ Disponer de una base segura, versionada y reproducible desde la que evolucionar.
 - ✅ SIAR Sync canónico incorporado a `siar-sync/`;
 - ✅ separación conceptual producción ↔ GitHub;
 - ✅ documentación maestra `PROJECT_STATUS` / `ROADMAP`;
-- 🟠 auditoría y limpieza legacy gradual.
+- ✅ reorganización legacy segura de código y datos históricos completada mediante PR #9 y PR #10; `datos_siar_baleares/` conserva solo los CSV canónicos.
 
 ### Criterio de salida
 
@@ -119,10 +119,10 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 - 🟠 completar el backfill restante;
 - ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y permisos finales `0644`;
 - ✅ v2.3.3 desplegada y validada: `SIAR_CA_BUNDLE` opcional con verificación TLS activa;
-- 🟠 mantener observación prolongada de la incidencia de procesos zombie;
 - ✅ v2.3.3 canónica en GitHub tras PR #4;
+- ✅ `INC-INFRA-001` resuelta y `init: true` canónico.
 
-El TLS ya no es un bloqueador inmediato para la adquisición. La fase observacional sigue en curso hasta completar los criterios de salida.
+La ejecución actual de SIAR Sync ha terminado por ahora. `datos_siar_baleares/` contiene exclusivamente los diez CSV canónicos IB01–IB10; IB101 e IB11 todavía no tienen CSV canónico. La validación/completitud científica de las estaciones sigue pendiente. El TLS no es un bloqueador inmediato.
 
 ### Criterio de salida
 
@@ -163,7 +163,21 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - 🟠 semántica exacta del horizonte pendiente;
 - 🟠 cadencia de publicación pendiente.
 
-### Raw Forecast Capturer
+### Raw Forecast Capturer — v0.1 implementado
+
+- ✅ implementación fusionada en `main` mediante PR #8;
+- ✅ estados `complete` / `partial` / `failed`;
+- ✅ append-only;
+- ✅ SHA-256;
+- ✅ publicación atómica;
+- ✅ guard rail de secretos;
+- ✅ manejo seguro de ZIP;
+- ✅ JSON Schema;
+- ✅ tests sintéticos (29 passed en el gate previo al merge);
+- ✅ integración en `main`;
+- ✅ `source.source_issue_at = null`.
+
+El código actual está en `forecast_collector/`. Aún no hay prueba live contra SIAR ni despliegue.
 
 Arquitectura aprobada:
 
@@ -195,14 +209,15 @@ Decisiones:
 
 ### Trabajo pendiente
 
-- 🟠 implementar capturador mínimo;
-- 🟠 verificar que HTML raw no contiene secretos persistibles;
-- 🟠 desplegar infraestructura;
-- 🟠 observar 7–14 días;
+- 🟠 preparar runbook y realizar prueba live manual con IB04;
+- 🟠 validar el flujo contra SIAR real;
+- 🟠 acordar con 02 el almacenamiento definitivo `/srv` y los permisos;
+- 🟠 definir y probar backup off-site;
+- 🟠 desplegar después de superar el gate live y de infraestructura;
+- 🟠 observar 7–14 días tras el despliegue;
 - ⚪ determinar cadencia real;
 - ⚪ determinar semántica D+N;
 - ⚪ decidir frecuencia definitiva;
-- ⚪ backup off-site;
 - ⚪ parser/normalización posterior.
 
 ### Criterio de salida
@@ -553,11 +568,13 @@ reanudar/completar backfill SIAR
 En paralelo:
 
 ```text
-Raw Forecast Capturer
+runbook + prueba live manual IB04
    ↓
-capturas durante varios días
+validación contra SIAR real
    ↓
-caracterización temporal
+almacenamiento `/srv` + backup off-site
+   ↓
+despliegue y observación
 ```
 
 También en paralelo:

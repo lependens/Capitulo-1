@@ -33,6 +33,8 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — fases, dependencias y próximos hitos.
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
+- [Forecast Collector](forecast_collector/README.md) — estado y límites del capturador raw v0.1.
+- [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
 
 ## 2.1 Objetivos
 
@@ -185,6 +187,23 @@ El proyecto actual se organiza en varias capas:
                              ↓
                            RIEGO
 ```
+
+---
+
+## Estructura actual del monorepo
+
+```text
+Capitulo-1/
+├── siar-sync/
+├── forecast_collector/
+├── datos_siar_baleares/       # CSV canónicos IB01–IB10
+├── legacy/                    # código y datos históricos
+├── docs/
+├── estaciones_baleares.csv
+└── README.md
+```
+
+`IB101` e `IB11` todavía no tienen CSV canónico. El backfill y la validación científica de cobertura/completitud de las estaciones siguen pendientes.
 
 ---
 
@@ -398,7 +417,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 | Área                      | Estado                           |
 | ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟢 En desarrollo avanzado        |
+| Datos históricos SIAR     | 🟠 10 CSV canónicos IB01–IB10; backfill y validación científica pendientes |
 | SIAR Sync                 | 🟢 Implementado                  |
 | Control de cobertura      | 🟢 Implementado                  |
 | Validación de datos       | 🟢 Implementado                  |
@@ -409,10 +428,13 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Redes neuronales          | 🟢 Primera etapa implementada    |
 | Dataset científico        | 🟡 Próxima etapa                 |
 | Nuevos modelos ML         | 🟡 Próxima etapa                 |
-| Forecast Collector        | 🟡 Investigación / próxima etapa |
+| Forecast Collector        | 🟢 v0.1 fusionado en main; no validado live ni desplegado |
+| Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
 | Predicción propia de ET₀  | ⚪ Futura                         |
 | Aplicación web            | ⚪ Futura                         |
 | Kc / necesidades de riego | ⚪ Futura                         |
+
+El capturador Raw Forecast v0.1 está implementado y fusionado en `main` mediante PR #8. El gate sintético previo al merge pasó 29 tests. Aún no se ha ejecutado una prueba live contra SIAR ni se ha desplegado. El siguiente gate es un runbook y una prueba live manual con IB04; el almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
 
 ---
 

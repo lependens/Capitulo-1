@@ -74,32 +74,20 @@ lependens/Capitulo-1
 
 La separación se realiza por componentes y carpetas, no mediante repositorios independientes.
 
-Estructura consolidada actualmente:
+Estructura real del monorepo en `main`:
 
 ```text
 Capitulo-1/
 ├── siar-sync/
-├── datos_siar_baleares/
-├── estaciones_baleares.csv
-├── docs_*.md
-└── ...
-```
-
-Estructura futura prevista, todavía no completada:
-
-```text
-Capitulo-1/
-├── siar-sync/
-├── forecast-collector/       # futuro
-├── et0/                      # futuro
-├── analysis/                 # futuro
-├── ml/                       # futuro
+├── forecast_collector/
+├── datos_siar_baleares/       # CSV canónicos IB01–IB10
+├── legacy/                    # código y datos históricos/no productivos
 ├── docs/
-├── tests/                    # futuro
-├── config/                   # futuro
-├── datos_siar_baleares/      # no mover mientras producción dependa de esta ruta
-└── estaciones_baleares.csv   # no mover mientras producción dependa de esta ruta
+├── estaciones_baleares.csv
+└── README.md
 ```
+
+`datos_siar_baleares/` contiene exclusivamente los diez CSV canónicos `IB01`–`IB10`. `IB101` e `IB11` aún no tienen CSV canónico. La validación científica y la completitud histórica de las estaciones siguen pendientes.
 
 ### 3.2 Producción y GitHub
 
@@ -123,13 +111,13 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 
 | Componente | Estado | Situación actual | Próximo hito |
 |---|---|---|---|
-| SIAR Sync | 🟢 | v2.3.3 desplegada y validada en producción | reanudar/completar backfill |
+| SIAR Sync | 🟢 | v2.3.3 desplegada y validada; ejecución actual terminada por ahora | reanudar backfill cuando se autorice |
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
-| Datos históricos SIAR | 🟠 | backfill avanzado, aún no finalizado | completar estaciones restantes |
+| Datos históricos SIAR | 🟠 | diez CSV canónicos IB01–IB10; completitud científica pendiente | validar/completar histórico de estaciones |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
-| GitHub / monorepo | 🟢 | PR #1, #2 y #3 fusionadas; PR #4 canoniza v2.3.3 | reanudar/completar backfill |
-| Forecast SIAR | 🟢 | contrato HTTP reproducido | Raw Forecast Capturer |
-| Raw Forecast Capturer | 🟠 | diseño aprobado, no desplegado | implementación aislada |
+| GitHub / monorepo | 🟢 | PR #1–#10 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
+| Forecast SIAR | 🟢 | contrato HTTP reproducido | runbook + prueba live manual IB04 |
+| Raw Forecast Capturer | 🟢 | v0.1 fusionado mediante PR #8; gate técnico sintético superado (29 passed), sin live test ni despliegue | runbook + prueba live manual IB04 |
 | AEMET forecast | 🟠 | pendiente de investigación específica | identificar producto e inputs |
 | Dataset científico | ⚪ | aún no consolidado | después de asegurar adquisición |
 | ET₀ / modelos físicos | 🟡 | existe trabajo previo legacy | revisión científica posterior |
@@ -351,7 +339,15 @@ Se incorporaron `docs/PROJECT_STATUS.md` y `docs/ROADMAP.md`, junto con las actu
 
 ### PR #4 — canonización de SIAR Sync v2.3.3
 
-La PR #4 incorpora a GitHub el estado productivo v2.3.3 con la trazabilidad de v2.3.2 y v2.3.3. No despliega ni sustituye producción.
+Fusionada. Incorpora a GitHub el estado productivo v2.3.3 con la trazabilidad de v2.3.2 y v2.3.3. No desplegó ni sustituyó producción.
+
+### PR #8 — Raw Forecast Capturer v0.1
+
+Fusionó en `main` la implementación del capturador bajo `forecast_collector/`. El gate técnico previo al merge pasó 29 tests sintéticos; aún no hay prueba live ni despliegue.
+
+### PR #9 y PR #10 — reorganización legacy
+
+Fusionadas. PR #9 archivó código histórico bajo `legacy/`; PR #10 separó los datos derivados históricos, dejando `datos_siar_baleares/` únicamente con los diez CSV canónicos IB01–IB10.
 
 Cambios de producción y de infraestructura deben reflejarse mediante PR revisables y separadas.
 
@@ -407,7 +403,9 @@ Regla provisional:
 
 ## 11. Raw Forecast Capturer
 
-Diseño aprobado.
+v0.1 está implementado en `forecast_collector/` y fusionado en `main` mediante PR #8. El gate técnico previo al merge pasó **29 tests**. La validación sintética cubre JSON Schema, guard rail de secretos, lectura segura de ZIP, SHA-256, estados `complete` / `partial` / `failed`, append-only y publicación atómica. `source.source_issue_at` es `null`.
+
+Todavía no hay prueba live contra SIAR, almacenamiento bajo `/srv`, scheduler ni despliegue. El siguiente gate es preparar un runbook y realizar una prueba live manual con IB04. El almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
 
 Responsabilidad:
 
@@ -584,34 +582,29 @@ Para una futura base DuckDB:
 
 ### Alta prioridad
 
-- reanudar/completar el backfill histórico SIAR; el problema TLS ya no es un bloqueador inmediato, pues la conexión funciona con `SIAR_CA_BUNDLE` y validación TLS activa;
-- validar de forma prolongada la corrección de procesos zombie conforme al seguimiento de infraestructura;
-- desplegar y observar el Raw Forecast Capturer para evitar perder emisiones potencialmente irrecuperables.
+- completar el backfill y validar científicamente la cobertura histórica de las estaciones; que haya diez CSV canónicos no significa que el histórico esté completo;
+- completar el siguiente gate de Forecast: runbook y prueba live manual con IB04;
+- coordinar con 02 el almacenamiento definitivo fuera de Git y el backup off-site.
 
-### No bloqueantes
+### No bloqueantes inmediatos
 
-- limpieza legacy adicional del repositorio;
-- reorganización completa de carpetas;
-- normalización científica;
-- ML;
-- aplicación web final.
+- validar la cadencia real y la semántica D+n del forecast;
+- desplegar y observar el capturador durante 7–14 días después de aprobar la prueba live y la infraestructura;
+- investigación AEMET, dataset científico reproducible, ET₀, ML y aplicación final.
 
 ## 16. Próximos pasos recomendados
 
-Orden orientativo actual:
-
 ```text
-1. Reanudar/completar backfill SIAR
-2. implementar/desplegar Raw Forecast Capturer
-3. observar cadencia/horizonte de forecast
-4. investigar AEMET
-5. diseñar backup off-site
-6. dataset científico reproducible
-7. ET₀ y ML
-8. producto web/API/riego
+1. Runbook + prueba live manual IB04
+2. Validación de la respuesta contra SIAR real
+3. Acordar con 02 almacenamiento definitivo y backup off-site
+4. Despliegue y observación durante 7–14 días
+5. Medir cadencia real y resolver semántica D+n
+6. Completar/validar el backfill SIAR y consolidar dataset científico
+7. ET₀, ML y producto web/API/riego
 ```
 
-La PR #4 canoniza en GitHub la versión v2.3.3 validada en producción y no sustituye la instancia activa.
+La ejecución actual de SIAR Sync ha terminado por ahora. Raw Forecast Capturer v0.1 ya está fusionado en `main`, pendiente del gate live y de infraestructura.
 
 ## 17. Protocolo de actualización de este documento
 

@@ -154,9 +154,9 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 ### Ingeniería inversa
 
 - ✅ flujo HTTP identificado;
-- ✅ sesión pública reproducible;
-- ✅ POST de cálculo reproducido;
-- ✅ export CSV/ZIP reproducido;
+- ✅ sesión pública y CSRF reproducibles;
+- ✅ validación y POST de cálculo reproducidos;
+- ✅ exportación ZIP/CSV reproducida;
 - ✅ estructura CSV conocida;
 - ✅ HTML con mayor precisión identificado;
 - ✅ ausencia de login confirmada;
@@ -209,6 +209,7 @@ Decisiones:
 
 ### Trabajo pendiente
 
+- 🟠 cerrar con 04W el contrato actual de `#necesidadesNetasForm` y clasificar sus campos como `required`, `optional` o `UI-only` antes del live test;
 - 🟠 preparar runbook y realizar prueba live manual con IB04;
 - 🟠 validar el flujo contra SIAR real;
 - 🟠 acordar con 02 el almacenamiento definitivo `/srv` y los permisos;

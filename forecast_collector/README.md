@@ -6,6 +6,8 @@ Batch-only Python component for preserving SIAR forecast responses as immutable,
 
 v0.1 was merged into `main` through PR #8. Synthetic validation is complete; the pre-merge technical gate passed **29 tests**. The implementation includes JSON Schema validation, the secret guard, safe ZIP handling, SHA-256 checksums, `complete` / `partial` / `failed` states, append-only captures, and atomic publication. `source.source_issue_at` is `null`.
 
+The example form parameters are not yet the proven minimal live contract. The current SIAR form contract must be revalidated before the IB04 live test; additional serialized province/community fields may prove required.
+
 It has not been live-tested against SIAR and is not deployed. The next gate is a runbook plus a manual live test with IB04. Permanent storage under `/srv` and off-site backup remain pending coordination with 02. Do not set up a scheduler or deploy before those gates are approved.
 
 The example station and form values are configuration examples only. Review and verify the SIAR form contract and station IDs before any live capture. No secrets belong in the TOML file.

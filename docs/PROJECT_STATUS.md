@@ -116,7 +116,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | Datos históricos SIAR | 🟠 | diez CSV canónicos IB01–IB10; completitud científica pendiente | validar/completar histórico de estaciones |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
 | GitHub / monorepo | 🟢 | PR #1–#10 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
-| Forecast SIAR | 🟢 | contrato HTTP reproducido | runbook + prueba live manual IB04 |
+| Forecast SIAR | 🟠 | flujo HTTP reproducido; contrato exacto del formulario/payload actual pendiente de cierre con 04W | cerrar contrato actual y después runbook + live test IB04 |
 | Raw Forecast Capturer | 🟢 | v0.1 fusionado mediante PR #8; gate técnico sintético superado (29 passed), sin live test ni despliegue | runbook + prueba live manual IB04 |
 | AEMET forecast | 🟠 | pendiente de investigación específica | identificar producto e inputs |
 | Dataset científico | ⚪ | aún no consolidado | después de asegurar adquisición |
@@ -595,13 +595,15 @@ Para una futura base DuckDB:
 ## 16. Próximos pasos recomendados
 
 ```text
-1. Runbook + prueba live manual IB04
-2. Validación de la respuesta contra SIAR real
-3. Acordar con 02 almacenamiento definitivo y backup off-site
-4. Despliegue y observación durante 7–14 días
-5. Medir cadencia real y resolver semántica D+n
-6. Completar/validar el backfill SIAR y consolidar dataset científico
-7. ET₀, ML y producto web/API/riego
+1. Cerrar con 04W el contrato actual del formulario/payload SIAR
+2. Ajustar configuración/código solo si la evidencia demuestra que faltan campos requeridos
+3. Finalizar runbook + prueba live manual IB04
+4. Validar la respuesta contra SIAR real
+5. Acordar almacenamiento definitivo y backup off-site con 02
+6. Despliegue experimental y observación 7–14 días
+7. Medir cadencia real y resolver semántica D+n
+8. Completar/validar el backfill SIAR y consolidar dataset científico
+9. ET₀, ML y producto web/API/riego
 ```
 
 La ejecución actual de SIAR Sync ha terminado por ahora. Raw Forecast Capturer v0.1 ya está fusionado en `main`, pendiente del gate live y de infraestructura.

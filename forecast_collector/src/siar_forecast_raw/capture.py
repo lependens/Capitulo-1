@@ -1,16 +1,17 @@
 from collections import Counter
-from datetime import datetime, timezone
 import json
 from pathlib import Path
 from typing import Any
 
 from . import __version__
-from .config import Config, Station
+from .config import Config
 from .errors import CaptureError, SensitiveHtmlError
 from .ids import iso_utc, new_capture_id, new_run_id, utc_now
 from .metadata import artifact_record
 from .siar_client import SiarClient
 from .storage import begin_run, publish_capture, publish_run
+
+_REQUIRED_ARTIFACTS = {"result.html", "forecast.zip", "forecast.csv"}
 
 
 def _status(results: list[dict[str, Any]]) -> str:
@@ -38,6 +39,13 @@ def capture_run(config: Config, client_factory=SiarClient, now=utc_now) -> Path:
         try:
             details, artifacts = client_factory(config).capture_station(station)
             http = details.get("http", {})
+            missing = sorted(name for name in _REQUIRED_ARTIFACTS if not artifacts.get(name))
+            if missing:
+                raise CaptureError(
+                    "Capture client returned incomplete artifact set: " + ", ".join(missing),
+                    artifacts=artifacts,
+                    http=http,
+                )
             status = "complete"
         except SensitiveHtmlError as exc:
             http, artifacts, error, status = exc.http, exc.artifacts, str(exc), "failed"

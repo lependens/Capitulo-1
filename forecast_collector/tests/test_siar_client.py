@@ -61,5 +61,5 @@ def test_validation_matches_observed_urlencoded_contract(tmp_path):
     assert validation[2]["data"]["_csrf"] == "synthetic-csrf-token-123"
     calculation = next(call for call in calls if call[1].endswith("/necesidadesHidricas/calculo"))
     assert calculation[2]["data"]["idEstacion"] == "4_7"
-    assert details["source_issue_at"] is None
+    assert details["source"]["source_issue_at"] is None
     assert set(artifacts) == {"result.html", "forecast.zip", "forecast.csv"}

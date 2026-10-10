@@ -3,7 +3,7 @@ import pandas as pd
 import json
 
 # Configuración
-API_KEY = '-bbkRtYLf7hUBgqUJ0J_BfVi_DD_2ATP-F5h_MR8-haK1udnC9'  # Reemplaza con tu clave de 50 caracteres
+API_KEY = ""  # LEGACY / NO OPERATIVO: credencial SIAR retirada
 BASE_URL_INFO = 'https://servicio.mapama.gob.es/apisiar/API/v1/Info'
 OUTPUT_LISTADO = 'estaciones_listado.xlsx'  # Archivo Excel de salida
 

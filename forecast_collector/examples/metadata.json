@@ -3,14 +3,21 @@
   "collector_version": "0.1.0",
   "run_id": "run_20261010T060000.000Z_a1b2c3",
   "capture_id": "cap_20261010T060001.000Z_IB04_d4e5f6",
-  "station": {"code": "IB04", "label": "Synthetic station", "siar_station_form_id": "synthetic-4"},
+  "station": {
+    "code": "IB04",
+    "label": "Synthetic station",
+    "siar_station_form_id": "synthetic-4"
+  },
   "capture": {
     "started_at_utc": "2026-10-10T06:00:01.000Z",
     "finished_at_utc": "2026-10-10T06:00:01.900Z",
     "status": "complete"
   },
-  "source": {"system": "SIAR", "product": "necesidadesHidricas"},
-  "source_issue_at": null,
+  "source": {
+    "system": "SIAR",
+    "product": "necesidadesHidricas",
+    "source_issue_at": null
+  },
   "http": {
     "calculation_post": {
       "method": "POST",
@@ -24,9 +31,22 @@
     }
   },
   "artifacts": {
-    "html": {"filename": "result.html", "size_bytes": 40, "sha256": "60a213d46c5fc291dd4a1ec01bb2df897df20d7303ee16df9131aac797a7babf"},
-    "zip": {"filename": "forecast.zip", "size_bytes": 150, "sha256": "5314b7eb40ead07b18caaa8db8b52bf45282c75a85f6112378e526b0f7d7fb0c"},
-    "csv": {"filename": "forecast.csv", "source_filename": "synthetic.csv", "size_bytes": 26, "sha256": "b8b9079f8cb0cc7ed5aa2a2675fafee04b44a14592a12c67f5bbacea19874653"}
+    "html": {
+      "filename": "result.html",
+      "size_bytes": 40,
+      "sha256": "60a213d46c5fc291dd4a1ec01bb2df897df20d7303ee16df9131aac797a7babf"
+    },
+    "zip": {
+      "filename": "forecast.zip",
+      "size_bytes": 150,
+      "sha256": "5314b7eb40ead07b18caaa8db8b52bf45282c75a85f6112378e526b0f7d7fb0c"
+    },
+    "csv": {
+      "filename": "forecast.csv",
+      "source_filename": "synthetic.csv",
+      "size_bytes": 26,
+      "sha256": "b8b9079f8cb0cc7ed5aa2a2675fafee04b44a14592a12c67f5bbacea19874653"
+    }
   },
   "errors": []
 }

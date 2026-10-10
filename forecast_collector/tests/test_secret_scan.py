@@ -14,6 +14,7 @@ def test_blocks_reusable_csrf_and_session_values():
 @pytest.mark.parametrize("html", [
     b'<input type="hidden" name="_csrf" value="">',
     b'<meta name="csrf-token" content="">',
+    b'<div>_csrf Cookie XSRF-TOKEN JSESSIONID Authorization</div>',
     b'<div id="forecast-row-1234567890">Weather forecast</div>',
     b'<script src="/assets/app.0123456789abcdef0123456789abcdef.js"></script>',
     b'<p>ordinary forecast token unit</p>',

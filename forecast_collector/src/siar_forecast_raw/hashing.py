@@ -1,4 +1,5 @@
 import hashlib
+import os
 from pathlib import Path
 
 
@@ -6,9 +7,16 @@ def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _write_text_synced(path: Path, text: str) -> None:
+    with path.open("w", encoding="ascii", newline="") as stream:
+        stream.write(text)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
 def write_checksums(directory: Path, files: list[str]) -> None:
     lines = [f"{sha256_bytes((directory / name).read_bytes())}  {name}" for name in sorted(files)]
-    (directory / "SHA256SUMS").write_text("\n".join(lines) + "\n", encoding="ascii")
+    _write_text_synced(directory / "SHA256SUMS", "\n".join(lines) + "\n")
 
 
 def verify_checksums(directory: Path) -> list[str]:

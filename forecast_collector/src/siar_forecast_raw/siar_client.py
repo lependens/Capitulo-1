@@ -64,7 +64,7 @@ class SiarClient:
         soup = BeautifulSoup(html, "html.parser")
         for selector in (("input", "_csrf"), ("meta", "_csrf")):
             tag = soup.find(selector[0], attrs={"name": selector[1]})
-            if tag and tag.get("value") or tag and tag.get("content"):
+            if (tag and tag.get("value")) or (tag and tag.get("content")):
                 value = str(tag.get("value") or tag.get("content"))
                 self.known_values.add(value)
                 return value
@@ -87,7 +87,12 @@ class SiarClient:
             exc.http = http
             raise
         form = {**station.form_params, "idEstacion": station.siar_station_form_id, "_csrf": csrf}
-        validation, http["validation_post"] = self._request("POST", "/necesidadesHidricasRest/validarForm", json=form)
+        validation, http["validation_post"] = self._request(
+            "POST",
+            "/necesidadesHidricasRest/validarForm",
+            data=form,
+            headers={"X-XSRF-TOKEN": csrf},
+        )
         if validation is None:
             raise CaptureError("SIAR form validation failed", http=http)
         calculation, http["calculation_post"] = self._request("POST", "/necesidadesHidricas/calculo", data=form)

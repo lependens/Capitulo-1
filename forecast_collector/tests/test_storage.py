@@ -109,6 +109,7 @@ def test_staging_modes_normalize_before_atomic_publication(tmp_path, monkeypatch
             {"capture": {"status": "complete"}},
             {"result.html": b"synthetic html", "forecast.zip": b"synthetic zip"},
         )
+        expected_capture_target = run_temp / "IB04" / "cap_permission_test"
         published_run = publish_run(run_temp, run_target, {"status": "complete"})
 
         assert staging_modes == {"capture": [0o2700], "run": [0o2700]}
@@ -132,6 +133,6 @@ def test_staging_modes_normalize_before_atomic_publication(tmp_path, monkeypatch
         assert len(replaces) == 2
         assert all(source.name.startswith(".") for source, _ in replaces)
         assert any(destination == published_run for _, destination in replaces)
-        assert any(destination == published_run / "IB04/cap_permission_test" for _, destination in replaces)
+        assert any(destination == expected_capture_target for _, destination in replaces)
     finally:
         os.umask(old_umask)

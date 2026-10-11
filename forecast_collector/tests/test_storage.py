@@ -1,5 +1,7 @@
 import json
 import os
+import stat
+from pathlib import Path
 import pytest
 
 from siar_forecast_raw.hashing import verify_checksums
@@ -67,3 +69,69 @@ def test_capture_is_not_published_if_atomic_rename_fails(tmp_path, monkeypatch):
 def test_rejects_unsafe_station_directory_name(tmp_path):
     with pytest.raises(ValueError):
         publish_capture(tmp_path, "../escape", "cap_test", {}, {})
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX permission and SGID semantics are required")
+def test_staging_modes_normalize_before_atomic_publication(tmp_path, monkeypatch):
+    import siar_forecast_raw.storage as storage
+
+    old_umask = os.umask(0o007)
+    try:
+        data_root = tmp_path / "raw"
+        data_root.mkdir(mode=0o2770)
+        os.chmod(data_root, 0o2770)
+
+        staging_modes = {"capture": [], "run": []}
+        original_set_permissions = storage._set_final_permissions
+
+        def inspect_then_normalize(path):
+            path = Path(path)
+            mode = stat.S_IMODE(path.stat().st_mode)
+            key = "capture" if path.parent.name == "IB04" else "run"
+            staging_modes[key].append(mode)
+            original_set_permissions(path)
+
+        replaces = []
+        original_replace = os.replace
+
+        def record_replace(source, destination):
+            replaces.append((Path(source), Path(destination)))
+            return original_replace(source, destination)
+
+        monkeypatch.setattr(storage, "_set_final_permissions", inspect_then_normalize)
+        monkeypatch.setattr(storage.os, "replace", record_replace)
+
+        run_temp, run_target = begin_run(data_root, "2026-10-11T08:00:00.000Z", "run_permission_test")
+        capture = publish_capture(
+            run_temp,
+            "IB04",
+            "cap_permission_test",
+            {"capture": {"status": "complete"}},
+            {"result.html": b"synthetic html", "forecast.zip": b"synthetic zip"},
+        )
+        published_run = publish_run(run_temp, run_target, {"status": "complete"})
+
+        assert staging_modes == {"capture": [0o2700], "run": [0o2700]}
+        assert stat.S_IMODE((published_run / "IB04/cap_permission_test").stat().st_mode) == 0o2770
+        assert stat.S_IMODE(published_run.stat().st_mode) == 0o2770
+
+        for directory in [published_run, published_run / "IB04", published_run / "IB04/cap_permission_test"]:
+            mode = stat.S_IMODE(directory.stat().st_mode)
+            assert mode & stat.S_ISGID
+            assert mode & 0o007 == 0
+            assert mode == 0o2770
+        for directory in [published_run, published_run / "IB04/cap_permission_test"]:
+            for file_path in directory.rglob("*"):
+                if file_path.is_file():
+                    mode = stat.S_IMODE(file_path.stat().st_mode)
+                    assert mode == 0o660
+                    assert mode & 0o007 == 0
+
+        assert verify_checksums(published_run / "IB04/cap_permission_test") == []
+        assert verify_checksums(published_run) == []
+        assert len(replaces) == 2
+        assert all(source.name.startswith(".") for source, _ in replaces)
+        assert any(destination == published_run for _, destination in replaces)
+        assert any(destination == published_run / "IB04/cap_permission_test" for _, destination in replaces)
+    finally:
+        os.umask(old_umask)

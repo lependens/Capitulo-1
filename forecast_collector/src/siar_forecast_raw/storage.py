@@ -9,6 +9,18 @@ from typing import Any
 from .hashing import write_checksums
 
 
+def _set_final_permissions(path: Path) -> None:
+    """Make a fully staged tree group-accessible, applying the root last."""
+    path = Path(path)
+    for current, directories, files in os.walk(path, topdown=False):
+        current_path = Path(current)
+        for filename in files:
+            os.chmod(current_path / filename, 0o660)
+        for dirname in directories:
+            os.chmod(current_path / dirname, 0o2770)
+    os.chmod(path, 0o2770)
+
+
 def _write_bytes_synced(path: Path, content: bytes) -> None:
     with path.open("wb") as stream:
         stream.write(content)
@@ -51,6 +63,7 @@ def publish_capture(run_temp: Path, station_code: str, capture_id: str, metadata
         target = station_dir / capture_id
         if target.exists():
             raise FileExistsError(f"Append-only target already exists: {target}")
+        _set_final_permissions(staging)
         os.replace(staging, target)
         _fsync_dir(station_dir)
         return target
@@ -84,6 +97,7 @@ def publish_run(run_temp: Path, final_path: Path, run_metadata: dict[str, Any]) 
     _fsync_dir(run_temp)
     if final_path.exists():
         raise FileExistsError(f"Append-only run target already exists: {final_path}")
+    _set_final_permissions(run_temp)
     os.replace(run_temp, final_path)
     _fsync_dir(final_path.parent)
     return final_path

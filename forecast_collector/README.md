@@ -4,7 +4,7 @@ Batch-only Python component for preserving SIAR forecast responses as immutable,
 
 ## State and deployment boundary
 
-v0.1 was merged into `main` through PR #12. The implementation includes JSON Schema validation, the secret guard, safe ZIP handling, SHA-256 checksums, `complete` / `partial` / `failed` states, append-only captures, and atomic publication. `source.source_issue_at` is `null`.
+v0.1 entered `main` through PR #8. PR #12 added the validated shared-group storage permissions. PR #13 adapts the client to the demonstrated SIAR E2E contract. The implementation includes JSON Schema validation, the secret guard, safe ZIP handling, SHA-256 checksums, `complete` / `partial` / `failed` states, append-only captures, and atomic publication. `source.source_issue_at` is `null`.
 
 The SIAR E2E contract has been manually demonstrated for IB04 — Son Ferriol, Mallorca, Aguacate: `/inicio` → AJAX `/validarForm` → normal form POST `/calculo` → same-session GET `/exportCSV`. The practical form parameters in the example configuration are `C1 + G1 + G2 + G3`; `fechaInicial` and `fechaFinal` are intentionally absent. SIAR returned a ZIP containing one CSV with seven forecast rows and columns `Fecha`, `Kc`, `ET0`, `ETc`, `Pe`, and `ETc - Pe`; the HTML result and CSV agreed on dates and forecast values.
 

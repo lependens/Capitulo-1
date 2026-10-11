@@ -8,10 +8,10 @@ max_attempts = 2
 retry_backoff_seconds = [2, 5]
 station_scope = "configured"
 
-# form_params should be filled from the verified SIAR form contract before any
-# live capture. The raw capturer intentionally does not infer horizons.
+# The verified IB04 forecast form contract. Keep date fields absent for this
+# forecast scenario; they are intentionally not inferred or added by the client.
 [[stations]]
 code = "IB04"
 label = "Son Ferriol"
 siar_station_form_id = "4_7"
-form_params = { esCalculo = "0", tipoCalculo = "2", idCultivo = "6", idComarca = "702", comarcaEstacion = "Mallorca" }
+form_params = { esCalculo = "0", tipoCalculo = "2", idCultivo = "6", idComarca = "702", comarcaEstacion = "Mallorca", idCAEstacion = "-1", provinciaEstHidden = "7", chkProvincia = "1", radioProvCom = "on", idProvinciaEstacion = "7", chkComRegante = "0", idComunidadRegantes = "-1", sEstacion = "IB04 - Son Ferriol", chkComarca = "0", comarcaSelect = "-1" }

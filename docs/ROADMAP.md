@@ -116,15 +116,20 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 
 ### Trabajo actual
 
-- ✅ backfill temporal de adquisición alcanzado para las 12 estaciones;
-- 🟠 Quality Audit v1 y certificación científica de calidad/cobertura pendientes;
-- ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y lógica de permisos finales `0644` para archivos escritos por el worker;
-- 🟠 saneamiento operativo posterior a v2.3.2 pendiente: normalizar los seis CSV heredados en `0600` a `0644`, verificando SHA-256 PRE/POST idéntico y modo `0644` en los 12, sin reescribir contenido y coordinado aparte con 01/02;
-- ✅ v2.3.3 desplegada y validada: `SIAR_CA_BUNDLE` opcional con verificación TLS activa;
+- ✅ backfill temporal de adquisición alcanzado para 12 estaciones;
+- ✅ Quality Audit v1 PRE completado: 12 estaciones (9 ACTIVE, 3 CLOSED), 11 WARN, 1 FAIL (IB09), 0 INCOMPLETE;
+- ✅ cobertura PRE ponderada 96,99 %: 75.494 días con dato de 77.840 esperados; 2.346 huecos;
+- 🟠 Quality Recovery / POST autorizado, aún no completado; los 2.346 huecos siguen PENDING_RETRY / NOT_ATTEMPTED, intentos 0, sin CONFIRMED_NO_DATA;
+- 🟠 resolver discrepancia de huso del catálogo: snapshot local 31 frente a Info/ESTACIONES 30, sin corrección automática;
+- ✅ saneamiento operativo posterior a v2.3.2: 12/12 CSV con modo 0644, SHA-256 PRE = POST 12/12, contenido raw intacto;
+- ✅ v2.3.2 desplegada y validada; lógica correctora de permisos incluida desde esa versión;
+- ✅ v2.3.3 desplegada y validada: SIAR_CA_BUNDLE opcional con verificación TLS activa;
 - ✅ v2.3.3 canónica en GitHub tras PR #4;
-- ✅ `INC-INFRA-001` resuelta y `init: true` canónico.
+- ✅ INC-INFRA-001 resuelta y init: true canónico.
 
-La ejecución actual de SIAR Sync ha terminado por ahora. `datos_siar_baleares/` contiene los 12 CSV canónicos IB01–IB11 e IB101. El backfill temporal alcanzado no certifica la calidad ni significa que todos los días tengan observaciones válidas.
+IB09 permanece FAIL porque el CSV raw conserva la observación 2005-10-23, anterior a la Fecha_Instalacion oficial 2005-10-24; su Fecha_Baja oficial es 2018-10-10. La fila no se elimina y queda fuera del periodo oficial.
+
+La ejecución actual de SIAR Sync terminó por ahora. datos_siar_baleares/ contiene 12 CSV canónicos. El resultado PRE y los formatos se documentan en docs/siar/quality.md y docs/siar/sync-status.md.
 
 ### Criterio de salida
 
@@ -144,7 +149,7 @@ Ampliación geográfica futura: SIAR Sync España no forma parte de la implement
 Estado:
 
 ```text
-🟠 adquisición temporal alcanzada; certificación científica pendiente
+🟠 Quality PRE completado; Recovery / POST y certificación pendientes
 ```
 
 ---
@@ -165,6 +170,8 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - ✅ HTML con mayor precisión identificado;
 - ✅ ausencia de login confirmada;
 - ✅ contrato E2E SIAR demostrado y `LIVE-IB04 #2` completado; PR #14 fusionada;
+- ✅ permanent runtime preflight PASS: service user, almacenamiento base, release pattern, configuración y TLS bundle permanente validados;
+- 🟠 permanent smoke run autorizado, resultado pendiente;
 - 🟠 semántica exacta del horizonte pendiente;
 - 🟠 cadencia de publicación pendiente.
 
@@ -212,15 +219,26 @@ Decisiones:
 - raíz prevista `/srv/siar-forecast/raw`;
 - frecuencia experimental 08:00 / 14:00 / 20:00 Europe/Madrid.
 
-### Trabajo pendiente
+### Infraestructura permanente y siguiente gate
 
-- 🟠 acordar con 02 el almacenamiento definitivo `/srv`, permisos y backup off-site;
-- 🟠 desplegar experimentalmente después de cerrar almacenamiento y backup;
-- 🟠 observar 7–14 días tras el despliegue;
-- ⚪ determinar cadencia real;
-- ⚪ determinar semántica D+N;
-- ⚪ decidir frecuencia definitiva;
-- ⚪ parser/normalización posterior.
+El release preparado es e850827e24cff11ae46f51c9bc3e8a2f36b0d2da, con Python 3.14.4. El permanent runtime preflight está en PASS. La infraestructura física validada incluye:
+
+- usuario de servicio siar-forecast;
+- /srv/siar-forecast/raw/{runs,tmp} creado con permisos base y SGID validados;
+- patrón de releases en /opt/siar-forecast;
+- configuración en /etc/siar-forecast;
+- TLS bundle permanente validado;
+- runtime independiente del home validado.
+
+Pendiente:
+
+- 🟠 ejecutar y revisar el permanent smoke run, ya autorizado;
+- 🟠 configurar y validar rclone/off-site backup;
+- 🟠 configurar scheduler experimental solo después del backup;
+- ⚪ determinar cadencia real y semántica D+N;
+- ⚪ decidir frecuencia definitiva y parser/normalización posterior.
+
+El Collector no está desplegado de forma periódica. La FASE 2 permanece abierta.
 
 ### Criterio de salida
 
@@ -257,18 +275,19 @@ Variables prioritarias:
 - radiación global;
 - precipitación.
 
-### Investigación necesaria
+### Tracks AEMET
 
-- 🟠 identificar producto AEMET actual;
-- 🟠 API/automatización;
-- ⚪ resolución espacial;
-- ⚪ resolución temporal;
-- ⚪ horizonte;
-- ⚪ frecuencia de actualización;
-- ⚪ autenticación/límites;
-- ⚪ posibilidad de histórico de forecast;
-- ⚪ correspondencia espacial con estaciones SIAR;
-- ⚪ conservación de cada emisión.
+- ✅ **Track A — ACCEPTED:** AEMET municipal daily latest forecast → captura prospectiva append-only → futuro benchmark Hargreaves.
+- 🟠 **Track B — RESEARCH:** el feed exacto de AEMET utilizado por SIAR no está demostrado.
+
+Límites de Track A:
+
+- el producto municipal no es un forecast puntual de una estación SIAR;
+- por sí solo no permite calcular FAO-56 Penman–Monteith completo;
+- no se ha demostrado histórico de emisiones;
+- todavía no tiene horizonte D+n asignado.
+
+Contrato empírico raw y diseño del Collector para captura prospectiva siguen pendientes. Aceptar el producto para Track A no cierra la investigación de Track B ni completa la FASE 3.
 
 ### Regla científica
 
@@ -562,40 +581,33 @@ No constituye una fase final; acompaña a todas las demás.
 A fecha 2026-10-12:
 
 ```text
-SIAR Sync v2.3.3 canónica y desplegada
+FASE 1
+Quality Audit PRE ✅
    ↓
-backfill temporal alcanzado para 12 estaciones
+Quality Recovery / POST 🟠
    ↓
-Quality Audit v1 y certificación científica pendientes
+certificación observacional 🟠
+
+FASE 2
+E2E / LIVE-IB04 #2 ✅
+   ↓
+infra preflight permanente ✅
+   ↓
+permanent smoke run 🟠
+   ↓
+backup off-site
+   ↓
+scheduler experimental
+
+FASE 3
+AEMET Track A: producto municipal aceptado ✅
+   ↓
+contrato raw empírico / diseño Collector 🟠
+
+Track B: investigar feed AEMET exacto usado por SIAR 🟠
 ```
 
-En paralelo:
-
-```text
-contrato E2E demostrado; `LIVE-IB04 #2` completo
-   ↓
-almacenamiento `/srv` + backup off-site con 02
-   ↓
-despliegue experimental
-   ↓
-observación 7–14 días
-```
-
-También en paralelo:
-
-```text
-AEMET
-   ↓
-inputs futuros
-```
-
-Después convergen en:
-
-```text
-Dataset científico
-   ↓
-ET₀ + ML
-```
+Las fases 1, 2 y 3 permanecen abiertas. AEMET Track A no equivale a un forecast puntual de estación SIAR ni demuestra histórico de emisiones.
 
 # Qué NO priorizar todavía
 

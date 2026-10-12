@@ -47,7 +47,7 @@ Los tres informes son artefactos de salida de una ejecución futura, no parte de
 - campos desconocidos o no aplicables vacíos, nunca reemplazados por cero;
 - orden estable de columnas según los encabezados especificados abajo.
 
-Los informes **todavía no se han generado**. No añadir filas de ejemplo ni snapshots inventados al repositorio.
+Quality Audit v1 PRE ya se ejecutó. Los informes y snapshots de esa ejecución son artefactos separados: esta actualización documental no los genera, copia ni modifica. No añadir filas de ejemplo ni snapshots inventados.
 
 ## 1. siar_station_audit.csv
 
@@ -112,4 +112,4 @@ PR #15 solo define cómo auditar y documentar el modo. La normalización real se
 
 ## Estructura y ejecución
 
-Los destinos reservados están bajo data_quality/siar/. Su README identifica los informes esperados. La generación de archivos y cualquier segunda pasada de adquisición requieren una decisión posterior; esta PR solo documenta política, formatos y ubicación.
+Los destinos reservados están bajo data_quality/siar/. Su README identifica los informes esperados. Quality Audit v1 PRE está completado; Quality Recovery / POST está autorizado y pendiente. La creación o actualización de resultados pertenece a una ejecución de auditoría autorizada y queda fuera de esta PR documental.

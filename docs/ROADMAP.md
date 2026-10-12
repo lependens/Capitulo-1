@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Última actualización:** 2026-10-10  
+**Última actualización:** 2026-10-12  
 **Objetivo:** definir las fases del proyecto, sus dependencias y los criterios para considerarlas terminadas.
 
 > Este documento describe hacia dónde va el proyecto.  
@@ -116,13 +116,14 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 
 ### Trabajo actual
 
-- 🟠 completar el backfill restante;
+- ✅ backfill temporal de adquisición alcanzado para las 12 estaciones;
+- 🟠 Quality Audit v1 y certificación científica de calidad/cobertura pendientes;
 - ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y permisos finales `0644`;
 - ✅ v2.3.3 desplegada y validada: `SIAR_CA_BUNDLE` opcional con verificación TLS activa;
 - ✅ v2.3.3 canónica en GitHub tras PR #4;
 - ✅ `INC-INFRA-001` resuelta y `init: true` canónico.
 
-La ejecución actual de SIAR Sync ha terminado por ahora. `datos_siar_baleares/` contiene exclusivamente los diez CSV canónicos IB01–IB10; IB101 e IB11 todavía no tienen CSV canónico. La validación/completitud científica de las estaciones sigue pendiente. El TLS no es un bloqueador inmediato.
+La ejecución actual de SIAR Sync ha terminado por ahora. `datos_siar_baleares/` contiene los 12 CSV canónicos IB01–IB11 e IB101. El backfill temporal alcanzado no certifica la calidad ni significa que todos los días tengan observaciones válidas.
 
 ### Criterio de salida
 
@@ -137,10 +138,12 @@ La fase observacional se considera consolidada cuando:
 7. la versión productiva coincide con una versión trazable en GitHub;
 8. existe procedimiento de backup/restauración probado.
 
+Ampliación geográfica futura: SIAR Sync España no forma parte de la implementación actual.
+
 Estado:
 
 ```text
-🟠 en curso avanzado
+🟠 adquisición temporal alcanzada; certificación científica pendiente
 ```
 
 ---
@@ -558,12 +561,14 @@ No constituye una fase final; acompaña a todas las demás.
 
 # Ruta crítica actual
 
-A fecha 2026-10-10:
+A fecha 2026-10-12:
 
 ```text
-v2.3.3 canónica en GitHub, desplegada y validada en producción
+SIAR Sync v2.3.3 canónica y desplegada
    ↓
-reanudar/completar backfill SIAR
+backfill temporal alcanzado para 12 estaciones
+   ↓
+Quality Audit v1 y certificación científica pendientes
 ```
 
 En paralelo:

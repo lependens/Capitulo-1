@@ -32,6 +32,8 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — fases, dependencias y próximos hitos.
+- [Calidad SIAR](docs/siar/quality.md) — política y formatos de Quality Audit v1.
+- [Estado de sincronización SIAR](docs/siar/sync-status.md) — alcance temporal y certificación pendiente.
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
 - [Forecast Collector](forecast_collector/README.md) — estado y límites del capturador raw v0.1.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
@@ -196,14 +198,16 @@ El proyecto actual se organiza en varias capas:
 Capitulo-1/
 ├── siar-sync/
 ├── forecast_collector/
-├── datos_siar_baleares/       # CSV canónicos IB01–IB10
+├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
+├── data_quality/siar/         # reservado para informes; aún vacío de auditorías
 ├── legacy/                    # código y datos históricos
 ├── docs/
+│   └── siar/
 ├── estaciones_baleares.csv
 └── README.md
 ```
 
-`IB101` e `IB11` todavía no tienen CSV canónico. El backfill y la validación científica de cobertura/completitud de las estaciones siguen pendientes.
+El backfill temporal de adquisición ha alcanzado las 12 estaciones: IB01–IB11 e IB101 tienen su CSV canónico. La certificación científica de calidad sigue pendiente; el alcance temporal alcanzado no implica que cada día tenga datos ni que el conjunto esté certificado.
 
 ---
 
@@ -417,8 +421,8 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 | Área                      | Estado                           |
 | ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟠 10 CSV canónicos IB01–IB10; backfill y validación científica pendientes |
-| SIAR Sync                 | 🟢 Implementado                  |
+| Datos históricos SIAR     | 🟠 12 CSV canónicos IB01–IB11 + IB101; backfill temporal alcanzado, certificación científica pendiente |
+| SIAR Sync                 | 🟢 v2.3.3 desplegada; backfill temporal alcanzado para 12 estaciones |
 | Control de cobertura      | 🟢 Implementado                  |
 | Validación de datos       | 🟢 Implementado                  |
 | Docker                    | 🟢 Implementado                  |

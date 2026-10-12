@@ -13,8 +13,7 @@
     "source",
     "http",
     "artifacts",
-    "errors",
-    "html_persistence"
+    "errors"
   ],
   "properties": {
     "schema_version": {

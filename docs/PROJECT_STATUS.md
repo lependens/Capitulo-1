@@ -117,7 +117,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | 12 CSV canónicos; backfill temporal alcanzado, certificación científica pendiente | ejecutar Quality Audit v1 y revisar resultados |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
-| GitHub / monorepo | 🟢 | PR #1–#11 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
+| GitHub / monorepo | 🟢 | PR #1–#14 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
 | Forecast SIAR | 🟢 | contrato E2E demostrado; PR #14 fusionada; `LIVE-IB04 #2` completo | acordar almacenamiento `/srv` y backup off-site con 02 |
 | Raw Forecast Capturer | 🟠 | v0.1 fusionado mediante PR #8; 29 tests sintéticos y `LIVE-IB04 #2` completos; no desplegado | almacenamiento `/srv` y backup off-site con 02 |
 | AEMET forecast | 🟠 | pendiente de investigación específica | identificar producto e inputs |

@@ -234,7 +234,7 @@ Activas:
 
 ### Quality Audit v1 — PRE completado
 
-La auditoría PRE de los 12 CSV canónicos está completada. El alcance temporal se calcula con el catálogo contrastado y cutoff explícito para estaciones activas:
+La auditoría PRE de los 12 CSV canónicos está completada. El cálculo usa los periodos oficiales disponibles y un cutoff explícito para estaciones activas; la discrepancia de huso sigue pendiente:
 
 | Métrica PRE | Resultado |
 |---|---:|

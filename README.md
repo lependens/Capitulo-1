@@ -421,8 +421,8 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 | Área                      | Estado                           |
 | ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟠 12 CSV canónicos IB01–IB11 + IB101; backfill temporal alcanzado, certificación científica pendiente |
-| SIAR Sync                 | 🟢 v2.3.3 desplegada; backfill temporal alcanzado para 12 estaciones |
+| Datos históricos SIAR     | 🟠 12 estaciones; Quality Audit v1 PRE completado, cobertura ponderada 96,99 %; Recovery / POST y certificación pendientes |
+| SIAR Sync                 | 🟢 v2.3.3; 12 CSV en 0644 con contenido raw intacto tras saneamiento |
 | Control de cobertura      | 🟢 Implementado                  |
 | Validación de datos       | 🟢 Implementado                  |
 | Docker                    | 🟢 Implementado                  |
@@ -432,13 +432,13 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Redes neuronales          | 🟢 Primera etapa implementada    |
 | Dataset científico        | 🟡 Próxima etapa                 |
 | Nuevos modelos ML         | 🟡 Próxima etapa                 |
-| Forecast Collector        | 🟠 v0.1 en main; E2E demostrado, PR #14 fusionada y LIVE-IB04 #2 completo; despliegue pendiente |
+| Forecast Collector        | 🟠 E2E/LIVE-IB04 #2 completos; runtime preflight PASS; smoke autorizado pendiente; backup y scheduler pendientes |
 | Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
 | Predicción propia de ET₀  | ⚪ Futura                         |
 | Aplicación web            | ⚪ Futura                         |
 | Kc / necesidades de riego | ⚪ Futura                         |
 
-Raw Forecast Capturer v0.1 está implementado y fusionado en `main` mediante PR #8; el gate sintético previo al merge pasó 29 tests. El contrato E2E fue demostrado, PR #14 está fusionada y `LIVE-IB04 #2` está completo. El capturador aún no está desplegado. El siguiente gate es acordar con 02 el almacenamiento definitivo bajo `/srv` y el backup off-site.
+Raw Forecast Capturer v0.1 está implementado en `main` (PR #8); el gate sintético pasó 29 tests. El contrato E2E y `LIVE-IB04 #2` están completos. El release permanente superó el preflight, pero el smoke run aún está pendiente de resultado; rclone/off-site backup y scheduler no están configurados. El Collector todavía no funciona de forma periódica.
 
 ---
 

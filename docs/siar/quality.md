@@ -4,13 +4,13 @@
 
 Definir una auditoría reproducible de los 12 CSV canónicos de Baleares: IB01–IB11 y IB101, almacenados en datos_siar_baleares/.
 
-El backfill temporal de adquisición ha alcanzado las 12 estaciones, pero la certificación científica de calidad y cobertura sigue pendiente. Esta especificación no declara los datos completos ni válidos. No modifica los CSV raw, no inicia una segunda pasada de adquisición y no genera resultados de auditoría por sí sola.
+El backfill temporal de adquisición ha alcanzado las 12 estaciones, pero la certificación científica de calidad y cobertura sigue pendiente. Esta especificación no declara los datos completos ni válidos ni modifica los CSV raw. Quality Recovery / POST está autorizado y en curso; la especificación no ejecuta la recuperación ni genera resultados de auditoría por sí sola.
 
 ## Fuentes y autoridad del catálogo
 
 estaciones_baleares.csv en la raíz del repositorio es un snapshot local reproducible y versionado, útil para repetir auditorías y registrar su SHA-256. No es por sí solo la autoridad vigente sobre el catálogo SIAR.
 
-Antes de certificar, contrastar códigos, estado y fechas de instalación/baja con Info/ESTACIONES de SIAR, que es la autoridad a consultar. Registrar el snapshot local empleado y su hash; documentar discrepancias y no certificar estaciones afectadas hasta resolverlas.
+Antes de certificar, contrastar códigos, estado y fechas de instalación/baja con Info/ESTACIONES de SIAR, que es la autoridad a consultar. Registrar el snapshot local empleado y su hash, y documentar discrepancias. El hallazgo CATALOG-TZ (huso 31 en el snapshot local frente a 30 en Info/ESTACIONES) queda pendiente de investigación semántica: no corregir automáticamente `estaciones_baleares.csv` ni usar ese campo científicamente hasta conocer su significado. Por sí solo no degrada el resultado PRE ni bloquea la certificación observacional, salvo que se demuestre que afecta al periodo o a la semántica de los datos.
 
 El esquema raw SIAR esperado es de 23 columnas. No se modifica.
 
@@ -38,7 +38,7 @@ Los valores deben identificar el estado realmente usado; no se rellenan con valo
 
 ## Formato común de los informes CSV
 
-Los tres informes son artefactos de salida de una ejecución futura, no parte de los CSV raw:
+Los tres informes son artefactos de salida de una ejecución de auditoría; no forman parte de los CSV raw:
 
 - UTF-8 sin BOM, delimitador coma y una fila de encabezado;
 - fechas como YYYY-MM-DD y timestamps UTC ISO 8601 terminados en Z;

@@ -113,7 +113,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 
 | Componente | Estado | Situación actual | Próximo hito |
 |---|---|---|---|
-| SIAR Sync | 🟢 | v2.3.3 desplegada y validada; ejecución actual terminada por ahora | reanudar backfill cuando se autorice |
+| SIAR Sync | 🟢 | v2.3.3 desplegada y validada; ejecución actual terminada por ahora | Quality Recovery / POST autorizado y en curso |
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | Quality Audit v1 PRE completado: 12 estaciones, cobertura ponderada 96,99 %; recuperación/POST y certificación pendientes | Quality Recovery / POST y certificación observacional |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
@@ -246,11 +246,11 @@ La auditoría PRE de los 12 CSV canónicos está completada. El cálculo usa los
 | Huecos PRE | 2.346 |
 | Cobertura ponderada | 96,99 % |
 
-Los 2.346 huecos se mantienen como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. No se ha declarado ningún `CONFIRMED_NO_DATA`. Quality Recovery / POST está autorizado, pero aún no se ha completado.
+Los 2.346 huecos se mantienen como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. No se ha declarado ningún `CONFIRMED_NO_DATA`. Quality Recovery / POST está autorizado y en curso; aún no consta como completado.
 
 **IB09 permanece FAIL:** la fecha oficial de instalación es 2005-10-24 y la fecha oficial de baja 2018-10-10; el CSV raw contiene una fila de 2005-10-23. La fila se conserva íntegra y queda fuera del periodo oficial. No se ha corregido ni reescrito el CSV.
 
-Hallazgo de catálogo pendiente de resolución: el huso del snapshot local es 31 y el de Info/ESTACIONES es 30. No se corregirá automáticamente el catálogo; la discrepancia debe resolverse antes de cerrar la certificación.
+Hallazgo CATALOG-TZ pendiente de investigación semántica: el huso del snapshot local es 31 y el de Info/ESTACIONES es 30. No se corregirá automáticamente `estaciones_baleares.csv` ni se usará ese campo científicamente hasta conocer su significado. Por sí sola, esta discrepancia no degrada el resultado PRE ni bloquea la certificación observacional, salvo que se demuestre que afecta al periodo o a la semántica de los datos.
 
 Las políticas y formatos están en [Calidad SIAR](siar/quality.md); el resumen PRE y el estado de recuperación están en [sync-status](siar/sync-status.md). Esta actualización documental no genera ni modifica artefactos de auditoría.
 
@@ -593,7 +593,7 @@ Para una futura base DuckDB:
 
 ### Alta prioridad
 
-- completar Quality Recovery / POST, resolver la discrepancia de huso 31 vs 30 y certificar científicamente cobertura, validez y huecos; el PRE mantiene 2.346 fechas pendientes de consulta;
+- completar Quality Recovery / POST y certificar científicamente cobertura, validez y huecos; el PRE mantiene 2.346 fechas pendientes de consulta. Investigar CATALOG-TZ como hallazgo semántico no bloqueante por sí solo;
 - completar el permanent smoke run ya autorizado y configurar rclone/off-site backup antes del scheduler experimental.
 
 ### No bloqueantes inmediatos
@@ -605,8 +605,8 @@ Para una futura base DuckDB:
 ## 16. Próximos pasos recomendados
 
 ```text
-1. Completar Quality Recovery / POST sin modificar los CSV raw
-2. Resolver el desacuerdo de huso 31 vs 30 y certificar el periodo observacional
+1. Completar Quality Recovery / POST; no interpolar, imputar, borrar ni editar manualmente observaciones. Los registros reales devueltos por SIAR para fechas ausentes pueden incorporarse mediante el mecanismo canónico de SIAR Sync.
+2. Revisar los resultados POST y certificar el periodo observacional; investigar CATALOG-TZ sin corregir automáticamente `estaciones_baleares.csv` ni usar el campo científicamente hasta conocer su significado.
 3. Ejecutar el permanent smoke run autorizado y revisar su resultado
 4. Configurar rclone/off-site backup y validarlo
 5. Configurar scheduler experimental solo tras superar backup

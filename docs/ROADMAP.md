@@ -119,8 +119,8 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 - ✅ backfill temporal de adquisición alcanzado para 12 estaciones;
 - ✅ Quality Audit v1 PRE completado: 12 estaciones (9 ACTIVE, 3 CLOSED), 11 WARN, 1 FAIL (IB09), 0 INCOMPLETE;
 - ✅ cobertura PRE ponderada 96,99 %: 75.494 días con dato de 77.840 esperados; 2.346 huecos;
-- 🟠 Quality Recovery / POST autorizado, aún no completado; los 2.346 huecos siguen PENDING_RETRY / NOT_ATTEMPTED, intentos 0, sin CONFIRMED_NO_DATA;
-- 🟠 resolver discrepancia de huso del catálogo: snapshot local 31 frente a Info/ESTACIONES 30, sin corrección automática;
+- 🟠 Quality Recovery / POST autorizado y en curso; aún no consta completado. Los 2.346 huecos siguen PENDING_RETRY / NOT_ATTEMPTED, intentos 0, sin CONFIRMED_NO_DATA;
+- 🟠 CATALOG-TZ: discrepancia sistemática snapshot local 31 frente a Info/ESTACIONES 30, pendiente de investigación semántica; no corregir automáticamente `estaciones_baleares.csv` ni usar el campo científicamente hasta conocer su significado. Por sí sola no degrada PRE ni bloquea certificación salvo evidencia de efecto en periodo/semántica;
 - ✅ saneamiento operativo posterior a v2.3.2: 12/12 CSV con modo 0644, SHA-256 PRE = POST 12/12, contenido raw intacto;
 - ✅ v2.3.2 desplegada y validada; lógica correctora de permisos incluida desde esa versión;
 - ✅ v2.3.3 desplegada y validada: SIAR_CA_BUNDLE opcional con verificación TLS activa;
@@ -587,6 +587,10 @@ Quality Audit PRE ✅
 Quality Recovery / POST 🟠
    ↓
 certificación observacional 🟠
+
+La auditoría no interpola ni reescribe CSV raw. Recovery no interpolará, imputará, borrará ni editará manualmente observaciones; los registros reales devueltos por SIAR para fechas ausentes pueden incorporarse mediante el mecanismo canónico de SIAR Sync.
+
+CATALOG-TZ (snapshot local 31 frente a Info/ESTACIONES 30) queda pendiente de investigación semántica, sin corrección automática. No se usará ese campo científicamente hasta conocer su significado. Por sí solo no degrada PRE ni bloquea certificación salvo que se demuestre un efecto en el periodo o la semántica de los datos.
 
 FASE 2
 E2E / LIVE-IB04 #2 ✅

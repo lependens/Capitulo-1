@@ -22,7 +22,7 @@
 
 Los 2.346 huecos están registrados como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. **No se ha declarado ningún `CONFIRMED_NO_DATA`**: no hubo consultas de recuperación que probaran una respuesta SIAR válida con cero registros.
 
-Quality Recovery / POST está autorizado, pero todavía no está completado. La certificación observacional permanece abierta hasta revisar el POST y resolver los hallazgos pendientes.
+Quality Recovery / POST está autorizado y en curso; aún no consta como completado. La certificación observacional permanece abierta principalmente por los 2.346 huecos pendientes y la revisión de resultados POST.
 
 ## Hallazgo IB09
 
@@ -35,7 +35,7 @@ El CSV raw conserva una fila fechada **2005-10-23**, anterior al inicio oficial.
 
 ## Catálogo de estaciones
 
-El snapshot local reproducible `estaciones_baleares.csv` indica huso **31**, mientras que `Info/ESTACIONES` indica huso **30**. Es una discrepancia pendiente de decisión y contraste. No se corregirá automáticamente el catálogo ni se dará por certificada la referencia afectada hasta resolverla.
+El hallazgo **CATALOG-TZ** (snapshot local `estaciones_baleares.csv`: huso **31**; `Info/ESTACIONES`: huso **30**) está pendiente de investigación semántica y se clasifica como sistemático, pero no bloqueante por sí solo. No se corregirá automáticamente el catálogo ni se usará ese campo científicamente hasta conocer su significado. Por sí solo no degrada el resultado PRE ni bloquea la certificación, salvo que se demuestre que afecta al periodo o a la semántica de los datos.
 
 ## Saneamiento operativo de permisos posterior a v2.3.2
 
@@ -51,6 +51,6 @@ No se reescribieron filas, esquema, fechas ni observaciones.
 
 ## Estado de adquisición
 
-Los CSV canónicos presentes son IB01–IB11 e IB101. La ejecución actual de SIAR Sync terminó por ahora y no se ha lanzado una segunda pasada. El backfill temporal alcanzado no equivale a certificación científica.
+Los CSV canónicos presentes son IB01–IB11 e IB101. La ejecución actual de SIAR Sync terminó por ahora. Quality Recovery / POST está autorizado y en curso; aún no consta como completado. El backfill temporal alcanzado no equivale a certificación científica.
 
 Las políticas, reglas de clasificación y esquemas de informes están en [Quality Audit v1](quality.md). Este documento resume el estado comunicado; no genera ni contiene snapshots o informes de auditoría.

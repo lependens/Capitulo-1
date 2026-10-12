@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Última actualización:** 2026-10-10  
+**Última actualización:** 2026-10-12  
 **Repositorio principal:** `lependens/Capitulo-1`  
 **Rol de este documento:** punto de recuperación rápido del estado real del proyecto.
 
@@ -80,14 +80,16 @@ Estructura real del monorepo en `main`:
 Capitulo-1/
 ├── siar-sync/
 ├── forecast_collector/
-├── datos_siar_baleares/       # CSV canónicos IB01–IB10
+├── datos_siar_baleares/       # 12 CSV canónicos
+├── data_quality/siar/         # reservado para informes de auditoría
 ├── legacy/                    # código y datos históricos/no productivos
 ├── docs/
+│   └── siar/
 ├── estaciones_baleares.csv
 └── README.md
 ```
 
-`datos_siar_baleares/` contiene exclusivamente los diez CSV canónicos `IB01`–`IB10`. `IB101` e `IB11` aún no tienen CSV canónico. La validación científica y la completitud histórica de las estaciones siguen pendientes.
+`datos_siar_baleares/` contiene los 12 CSV canónicos: `IB01`–`IB11` e `IB101`. El backfill temporal de adquisición ha alcanzado las 12 estaciones. La certificación científica de calidad y cobertura sigue pendiente; no se presupone que todos los días esperados tengan observaciones válidas.
 
 ### 3.2 Producción y GitHub
 
@@ -113,11 +115,11 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 |---|---|---|---|
 | SIAR Sync | 🟢 | v2.3.3 desplegada y validada; ejecución actual terminada por ahora | reanudar backfill cuando se autorice |
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
-| Datos históricos SIAR | 🟠 | diez CSV canónicos IB01–IB10; completitud científica pendiente | validar/completar histórico de estaciones |
+| Datos históricos SIAR | 🟠 | 12 CSV canónicos; backfill temporal alcanzado, certificación científica pendiente | ejecutar Quality Audit v1 y revisar resultados |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
-| GitHub / monorepo | 🟢 | PR #1–#10 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
-| Forecast SIAR | 🟠 | flujo HTTP reproducido; contrato exacto del formulario/payload actual pendiente de cierre con 04W | cerrar contrato actual y después runbook + live test IB04 |
-| Raw Forecast Capturer | 🟢 | v0.1 fusionado mediante PR #8; gate técnico sintético superado (29 passed), sin live test ni despliegue | runbook + prueba live manual IB04 |
+| GitHub / monorepo | 🟢 | PR #1–#14 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
+| Forecast SIAR | 🟢 | contrato E2E demostrado; PR #14 fusionada; `LIVE-IB04 #2` completo | acordar almacenamiento `/srv` y backup off-site con 02 |
+| Raw Forecast Capturer | 🟠 | v0.1 fusionado mediante PR #8; 29 tests sintéticos y `LIVE-IB04 #2` completos; no desplegado | almacenamiento `/srv` y backup off-site con 02 |
 | AEMET forecast | 🟠 | pendiente de investigación específica | identificar producto e inputs |
 | Dataset científico | ⚪ | aún no consolidado | después de asegurar adquisición |
 | ET₀ / modelos físicos | 🟡 | existe trabajo previo legacy | revisión científica posterior |
@@ -230,18 +232,19 @@ Activas:
 9 estaciones
 ```
 
-### Último estado de backfill reportado a Dirección 00
+### Estado de adquisición y certificación
 
-- IB01–IB08: CSV válidos según las auditorías realizadas.
-- IB01–IB06 e IB08: alcanzaban 31/12/2025 en el último reporte consolidado.
-- IB07: cerrada; cobertura histórica hasta el entorno de su fecha de baja, pendiente de validar semántica exacta de fecha civil.
-- IB09: backfill histórico parcialmente completado; progreso protegido y checkpoint realizado.
-- IB10: pendiente.
-- IB101: pendiente.
-- IB11: pendiente.
+Dirección 00 declara alcanzado el backfill temporal de adquisición para las 12 estaciones. El inventario del repositorio confirma los CSV canónicos `IB01_datos_completos.csv`–`IB11_datos_completos.csv` y `IB101_datos_completos.csv`. SIAR Sync v2.3.3 completó por ahora la ejecución actual.
 
-> Este bloque debe actualizarse cuando 01 complete nuevas estaciones.  
-> No asumir que este snapshot sigue vigente sin revisar la fecha de actualización del documento.
+Este hito significa que se alcanzó el objetivo temporal de adquisición comunicado; **no certifica** continuidad, validez científica, ausencia de huecos, ni que SIAR devolviera registros para cada fecha esperada. No se ha lanzado una segunda pasada.
+
+Quality Audit v1 está pendiente. Sus políticas y formatos se describen en [Calidad SIAR](siar/quality.md); el estado de sincronización se mantiene en [sync-status](siar/sync-status.md). Aún no hay informes CSV de auditoría ni snapshots generados en `data_quality/siar/`.
+
+### Saneamiento operativo posterior a v2.3.2
+
+El modo canónico esperado de los CSV es `0644`. La lógica correctora ya está incluida en SIAR Sync v2.3.2; esta incidencia menor es un saneamiento operativo posterior a v2.3.2, no una nueva versión funcional. El inventario PRE reportado es: `0644` en IB01, IB02, IB04, IB10, IB101 e IB11; `0600` en IB03, IB05, IB06, IB07, IB08 e IB09.
+
+La normalización puntual del filesystem se coordinará aparte con 01/02. Requiere hash PRE, `chmod 0644`, hash POST idéntico y comprobación del modo en los 12 archivos. No se deben reescribir contenidos ni usar GitHub para cambiar estos permisos. Quality Audit registrará el modo observado y, si se normaliza antes de la auditoría definitiva, cuándo se hizo.
 
 ---
 
@@ -343,11 +346,15 @@ Fusionada. Incorpora a GitHub el estado productivo v2.3.3 con la trazabilidad de
 
 ### PR #8 — Raw Forecast Capturer v0.1
 
-Fusionó en `main` la implementación del capturador bajo `forecast_collector/`. El gate técnico previo al merge pasó 29 tests sintéticos; aún no hay prueba live ni despliegue.
+Fusionó en `main` la implementación del capturador bajo `forecast_collector/`; el gate técnico previo al merge pasó 29 tests sintéticos.
+
+### PR #14 — contrato E2E y live test
+
+Fusionada. El contrato E2E SIAR quedó demostrado y `LIVE-IB04 #2` está completo. El capturador no está desplegado; el siguiente gate es acordar almacenamiento `/srv` y backup off-site con 02.
 
 ### PR #9 y PR #10 — reorganización legacy
 
-Fusionadas. PR #9 archivó código histórico bajo `legacy/`; PR #10 separó los datos derivados históricos, dejando `datos_siar_baleares/` únicamente con los diez CSV canónicos IB01–IB10.
+Fusionadas. PR #9 archivó código histórico bajo `legacy/`; PR #10 separó los datos derivados históricos y dejó entonces `datos_siar_baleares/` con los diez CSV canónicos IB01–IB10.
 
 Cambios de producción y de infraestructura deben reflejarse mediante PR revisables y separadas.
 
@@ -405,7 +412,7 @@ Regla provisional:
 
 v0.1 está implementado en `forecast_collector/` y fusionado en `main` mediante PR #8. El gate técnico previo al merge pasó **29 tests**. La validación sintética cubre JSON Schema, guard rail de secretos, lectura segura de ZIP, SHA-256, estados `complete` / `partial` / `failed`, append-only y publicación atómica. `source.source_issue_at` es `null`.
 
-Todavía no hay prueba live contra SIAR, almacenamiento bajo `/srv`, scheduler ni despliegue. El siguiente gate es cerrar empíricamente con 04W el contrato actual de `#necesidadesNetasForm` y determinar el payload mínimo requerido; después se preparará el runbook y se realizará la prueba live manual con IB04. El almacenamiento definitivo y el backup off-site siguen pendientes de coordinación con 02.
+El contrato E2E SIAR está demostrado, PR #14 está fusionada y `LIVE-IB04 #2` está completo. El capturador aún no está desplegado y todavía no hay almacenamiento bajo `/srv` ni scheduler. El siguiente gate es coordinar con 02 el almacenamiento definitivo y el backup off-site.
 
 Responsabilidad:
 
@@ -582,9 +589,8 @@ Para una futura base DuckDB:
 
 ### Alta prioridad
 
-- completar el backfill y validar científicamente la cobertura histórica de las estaciones; que haya diez CSV canónicos no significa que el histórico esté completo;
-- cerrar el contrato actual del formulario/payload con 04W y, después, completar el runbook y la prueba live manual IB04;
-- coordinar con 02 el almacenamiento definitivo fuera de Git y el backup off-site.
+- realizar Quality Audit v1 y certificar científicamente cobertura, validez y huecos de las 12 estaciones; el backfill temporal alcanzado no implica que todos los días tengan observaciones;
+- coordinar con 02 el almacenamiento definitivo bajo `/srv` y el backup off-site para el despliegue experimental.
 
 ### No bloqueantes inmediatos
 
@@ -595,18 +601,16 @@ Para una futura base DuckDB:
 ## 16. Próximos pasos recomendados
 
 ```text
-1. Cerrar con 04W el contrato actual del formulario/payload SIAR
-2. Ajustar configuración/código solo si la evidencia demuestra que faltan campos requeridos
-3. Finalizar runbook + prueba live manual IB04
-4. Validar la respuesta contra SIAR real
-5. Acordar almacenamiento definitivo y backup off-site con 02
-6. Despliegue experimental y observación 7–14 días
-7. Medir cadencia real y resolver semántica D+n
-8. Completar/validar el backfill SIAR y consolidar dataset científico
-9. ET₀, ML y producto web/API/riego
+1. Ejecutar Quality Audit v1 de los 12 CSV canónicos sin modificar los datos raw
+2. Revisar hallazgos y certificar cobertura/calidad científica
+3. Acordar con 02 el almacenamiento definitivo bajo `/srv` y el backup off-site
+4. Preparar el despliegue experimental del Raw Forecast Capturer
+5. Observar el despliegue durante 7–14 días
+6. Medir cadencia real y resolver semántica D+n
+7. ET₀, ML y producto web/API/riego
 ```
 
-La ejecución actual de SIAR Sync ha terminado por ahora. Raw Forecast Capturer v0.1 ya está fusionado en `main`, pendiente del gate live y de infraestructura.
+La ejecución actual de SIAR Sync ha terminado por ahora. Raw Forecast Capturer v0.1 está fusionado y `LIVE-IB04 #2` está completo; el despliegue queda pendiente de almacenamiento `/srv` y backup off-site.
 
 ## 17. Protocolo de actualización de este documento
 

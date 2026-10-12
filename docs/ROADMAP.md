@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Última actualización:** 2026-10-10  
+**Última actualización:** 2026-10-12  
 **Objetivo:** definir las fases del proyecto, sus dependencias y los criterios para considerarlas terminadas.
 
 > Este documento describe hacia dónde va el proyecto.  
@@ -116,13 +116,15 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 
 ### Trabajo actual
 
-- 🟠 completar el backfill restante;
-- ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y permisos finales `0644`;
+- ✅ backfill temporal de adquisición alcanzado para las 12 estaciones;
+- 🟠 Quality Audit v1 y certificación científica de calidad/cobertura pendientes;
+- ✅ v2.3.2 desplegada y validada: fechas civiles de instalación/baja, tratamiento de estaciones reanudadas, checkpoint al alcanzar cuota y lógica de permisos finales `0644` para archivos escritos por el worker;
+- 🟠 saneamiento operativo posterior a v2.3.2 pendiente: normalizar los seis CSV heredados en `0600` a `0644`, verificando SHA-256 PRE/POST idéntico y modo `0644` en los 12, sin reescribir contenido y coordinado aparte con 01/02;
 - ✅ v2.3.3 desplegada y validada: `SIAR_CA_BUNDLE` opcional con verificación TLS activa;
 - ✅ v2.3.3 canónica en GitHub tras PR #4;
 - ✅ `INC-INFRA-001` resuelta y `init: true` canónico.
 
-La ejecución actual de SIAR Sync ha terminado por ahora. `datos_siar_baleares/` contiene exclusivamente los diez CSV canónicos IB01–IB10; IB101 e IB11 todavía no tienen CSV canónico. La validación/completitud científica de las estaciones sigue pendiente. El TLS no es un bloqueador inmediato.
+La ejecución actual de SIAR Sync ha terminado por ahora. `datos_siar_baleares/` contiene los 12 CSV canónicos IB01–IB11 e IB101. El backfill temporal alcanzado no certifica la calidad ni significa que todos los días tengan observaciones válidas.
 
 ### Criterio de salida
 
@@ -137,10 +139,12 @@ La fase observacional se considera consolidada cuando:
 7. la versión productiva coincide con una versión trazable en GitHub;
 8. existe procedimiento de backup/restauración probado.
 
+Ampliación geográfica futura: SIAR Sync España no forma parte de la implementación actual.
+
 Estado:
 
 ```text
-🟠 en curso avanzado
+🟠 adquisición temporal alcanzada; certificación científica pendiente
 ```
 
 ---
@@ -160,6 +164,7 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - ✅ estructura CSV conocida;
 - ✅ HTML con mayor precisión identificado;
 - ✅ ausencia de login confirmada;
+- ✅ contrato E2E SIAR demostrado y `LIVE-IB04 #2` completado; PR #14 fusionada;
 - 🟠 semántica exacta del horizonte pendiente;
 - 🟠 cadencia de publicación pendiente.
 
@@ -177,7 +182,7 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - ✅ integración en `main`;
 - ✅ `source.source_issue_at = null`.
 
-El código actual está en `forecast_collector/`. Aún no hay prueba live contra SIAR ni despliegue.
+El código actual está en `forecast_collector/`. `LIVE-IB04 #2` está completo; el capturador aún no está desplegado.
 
 Arquitectura aprobada:
 
@@ -209,12 +214,8 @@ Decisiones:
 
 ### Trabajo pendiente
 
-- 🟠 cerrar con 04W el contrato actual de `#necesidadesNetasForm` y clasificar sus campos como `required`, `optional` o `UI-only` antes del live test;
-- 🟠 preparar runbook y realizar prueba live manual con IB04;
-- 🟠 validar el flujo contra SIAR real;
-- 🟠 acordar con 02 el almacenamiento definitivo `/srv` y los permisos;
-- 🟠 definir y probar backup off-site;
-- 🟠 desplegar después de superar el gate live y de infraestructura;
+- 🟠 acordar con 02 el almacenamiento definitivo `/srv`, permisos y backup off-site;
+- 🟠 desplegar experimentalmente después de cerrar almacenamiento y backup;
 - 🟠 observar 7–14 días tras el despliegue;
 - ⚪ determinar cadencia real;
 - ⚪ determinar semántica D+N;
@@ -558,26 +559,26 @@ No constituye una fase final; acompaña a todas las demás.
 
 # Ruta crítica actual
 
-A fecha 2026-10-10:
+A fecha 2026-10-12:
 
 ```text
-v2.3.3 canónica en GitHub, desplegada y validada en producción
+SIAR Sync v2.3.3 canónica y desplegada
    ↓
-reanudar/completar backfill SIAR
+backfill temporal alcanzado para 12 estaciones
+   ↓
+Quality Audit v1 y certificación científica pendientes
 ```
 
 En paralelo:
 
 ```text
-cierre contrato formulario/payload con 04W
+contrato E2E demostrado; `LIVE-IB04 #2` completo
    ↓
-runbook + prueba live manual IB04
+almacenamiento `/srv` + backup off-site con 02
    ↓
-validación contra SIAR real
+despliegue experimental
    ↓
-almacenamiento `/srv` + backup off-site
-   ↓
-despliegue y observación
+observación 7–14 días
 ```
 
 También en paralelo:

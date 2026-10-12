@@ -155,3 +155,68 @@ def test_sensitive_html_can_be_omitted_from_complete_capture(tmp_path):
     }
     assert "html" not in metadata["artifacts"]
     assert not (metadata_path.parent / "result.html").exists()
+
+
+def test_legacy_v1_metadata_without_html_persistence_matches_schema():
+    metadata = json.loads((EXAMPLES / "metadata.json").read_text(encoding="utf-8"))
+    metadata.pop("html_persistence", None)
+
+    assert metadata["schema_version"] == "siar-raw-capture-v1"
+    _validate(metadata, "capture.schema.json")
+
+
+class HtmlNotAvailableClient:
+    def __init__(self, _config):
+        pass
+
+    def capture_station(self, station):
+        return (
+            {
+                "station": {
+                    "code": station.code,
+                    "label": station.label,
+                    "siar_station_form_id": station.siar_station_form_id,
+                },
+                "source": {
+                    "system": "SIAR",
+                    "product": "necesidadesHidricas",
+                    "source_issue_at": None,
+                },
+                "request": {"idEstacion": station.siar_station_form_id},
+                "http": {},
+                "csv_source_filename": "synthetic.csv",
+                "html_persistence": {
+                    "status": "not_available",
+                    "findings": [],
+                },
+            },
+            {
+                "forecast.zip": b"synthetic-zip",
+                "forecast.csv": b"Fecha;ET0\n",
+            },
+        )
+
+
+def test_not_available_html_cannot_produce_complete_capture(tmp_path):
+    config = Config(
+        tmp_path,
+        "https://example.invalid",
+        1,
+        1,
+        1,
+        (),
+        (Station("IB04", "Synthetic", "4_7", {}),),
+    )
+    final = capture_run(config, client_factory=HtmlNotAvailableClient)
+    run = json.loads((final / "run.json").read_text(encoding="utf-8"))
+    metadata_path = next(final.glob("IB04/cap_*/metadata.json"))
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+
+    _validate(run, "run.schema.json")
+    _validate(metadata, "capture.schema.json")
+    assert run["status"] != "complete"
+    assert metadata["capture"]["status"] != "complete"
+    assert metadata["html_persistence"] == {
+        "status": "not_available",
+        "findings": [],
+    }

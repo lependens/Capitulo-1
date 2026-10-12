@@ -48,5 +48,9 @@
       "sha256": "b8b9079f8cb0cc7ed5aa2a2675fafee04b44a14592a12c67f5bbacea19874653"
     }
   },
-  "errors": []
+  "errors": [],
+  "html_persistence": {
+    "status": "persisted",
+    "findings": []
+  }
 }

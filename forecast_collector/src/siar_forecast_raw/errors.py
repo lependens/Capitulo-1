@@ -1,10 +1,17 @@
 class CaptureError(Exception):
     """Expected station-level capture failure."""
 
-    def __init__(self, message: str, artifacts: dict[str, bytes] | None = None, http: dict | None = None):
+    def __init__(
+        self,
+        message: str,
+        artifacts: dict[str, bytes] | None = None,
+        http: dict | None = None,
+        details: dict | None = None,
+    ):
         super().__init__(message)
         self.artifacts = artifacts or {}
         self.http = http or {}
+        self.details = details or {}
 
 
 class SensitiveHtmlError(CaptureError):

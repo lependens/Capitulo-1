@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 from .config import Config, Station
 from .errors import CaptureError
 from .ids import iso_utc
-from .secret_scan import assert_html_safe
+from .secret_scan import assert_html_safe, find_reusable_session_values
 from .zip_safe import MAX_ARCHIVE_BYTES, extract_single_csv
 
 
@@ -149,12 +149,29 @@ class SiarClient:
         )
         if calculation is None:
             raise CaptureError("SIAR calculation request failed", http=http)
-        try:
+        html_findings = find_reusable_session_values(calculation.content, self.known_values)
+        if html_findings:
+            html_persistence = {"status": "omitted_sensitive", "findings": html_findings}
+        else:
+            # Keep the guard as the fail-closed authority for persistence.
             assert_html_safe(calculation.content, self.known_values)
-        except CaptureError as exc:
-            exc.http = http
-            raise
-        artifacts["result.html"] = calculation.content
+            artifacts["result.html"] = calculation.content
+            html_persistence = {"status": "persisted", "findings": []}
+        details = {
+            "station": {
+                "code": station.code,
+                "label": station.label,
+                "siar_station_form_id": station.siar_station_form_id,
+            },
+            "http": http,
+            "source": {
+                "system": "SIAR",
+                "product": "necesidadesHidricas",
+                "source_issue_at": None,
+            },
+            "request": {**station.form_params, "idEstacion": station.siar_station_form_id},
+            "html_persistence": html_persistence,
+        }
         export, http["export_get"] = self._request(
             "GET",
             "/necesidadesHidricas/exportCSV",
@@ -162,7 +179,12 @@ class SiarClient:
             stream=True,
         )
         if export is None:
-            raise CaptureError("SIAR CSV export request failed", artifacts=artifacts, http=http)
+            raise CaptureError(
+                "SIAR CSV export request failed",
+                artifacts=artifacts,
+                http=http,
+                details=details,
+            )
         try:
             zip_bytes = self._read_limited(export)
             http["export_get"]["content_length"] = len(zip_bytes)
@@ -172,13 +194,21 @@ class SiarClient:
                 f"SIAR export download failed: {type(exc).__name__}",
                 artifacts=artifacts,
                 http=http,
+                details=details,
             ) from exc
         except CaptureError as exc:
             exc.artifacts = artifacts
             exc.http = http
-            raise CaptureError(str(exc), artifacts=artifacts, http=http) from exc
+            exc.details = details
+            raise CaptureError(
+                str(exc),
+                artifacts=artifacts,
+                http=http,
+                details=details,
+            ) from exc
         finally:
             export.close()
         artifacts["forecast.zip"] = zip_bytes
         artifacts["forecast.csv"] = csv_bytes
-        return ({"station": {"code": station.code, "label": station.label, "siar_station_form_id": station.siar_station_form_id}, "http": http, "source": {"system": "SIAR", "product": "necesidadesHidricas", "source_issue_at": None}, "request": {**station.form_params, "idEstacion": station.siar_station_form_id}, "csv_source_filename": filename}, artifacts)
+        details["csv_source_filename"] = filename
+        return details, artifacts

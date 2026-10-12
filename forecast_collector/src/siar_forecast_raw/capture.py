@@ -11,7 +11,7 @@ from .metadata import artifact_record
 from .siar_client import SiarClient
 from .storage import begin_run, publish_capture, publish_run
 
-_REQUIRED_ARTIFACTS = {"result.html", "forecast.zip", "forecast.csv"}
+_REQUIRED_ARTIFACTS = {"forecast.zip", "forecast.csv"}
 
 
 def _status(results: list[dict[str, Any]]) -> str:
@@ -40,6 +40,27 @@ def capture_run(config: Config, client_factory=SiarClient, now=utc_now) -> Path:
             details, artifacts = client_factory(config).capture_station(station)
             http = details.get("http", {})
             missing = sorted(name for name in _REQUIRED_ARTIFACTS if not artifacts.get(name))
+            html_persistence = details.get("html_persistence")
+            if html_persistence is None and artifacts.get("result.html"):
+                html_persistence = {"status": "persisted", "findings": []}
+                details["html_persistence"] = html_persistence
+            if html_persistence is None:
+                missing.append("html_persistence")
+            else:
+                html_status = html_persistence.get("status")
+                if html_status == "persisted":
+                    if not artifacts.get("result.html"):
+                        missing.append("result.html")
+                elif html_status == "omitted_sensitive":
+                    if artifacts.get("result.html"):
+                        raise CaptureError(
+                            "Sensitive HTML persistence marker conflicts with persisted result.html",
+                            artifacts=artifacts,
+                            http=http,
+                            details=details,
+                        )
+                else:
+                    missing.append("complete_html_persistence_state")
             if missing:
                 raise CaptureError(
                     "Capture client returned incomplete artifact set: " + ", ".join(missing),
@@ -52,6 +73,8 @@ def capture_run(config: Config, client_factory=SiarClient, now=utc_now) -> Path:
             # Secret-bearing HTML is never persisted, even in a partial capture.
         except CaptureError as exc:
             http, artifacts, error = exc.http, exc.artifacts, str(exc)
+            if exc.details:
+                details = exc.details
             status = "partial" if artifacts else "failed"
         except Exception as exc:  # keep station failures independent
             error, status = f"{type(exc).__name__}: {exc}", "failed"
@@ -68,6 +91,10 @@ def capture_run(config: Config, client_factory=SiarClient, now=utc_now) -> Path:
             "capture": {"started_at_utc": iso_utc(station_started), "finished_at_utc": iso_utc(finished), "status": status},
             "source": details.get("source", {"system": "SIAR", "product": "necesidadesHidricas", "source_issue_at": None}),
             "request": details.get("request", {}), "http": http, "artifacts": records,
+            "html_persistence": details.get(
+                "html_persistence",
+                {"status": "not_available", "findings": []},
+            ),
             "errors": [error] if error else [],
         }
         publish_capture(temp, station.code, capture_id, metadata, artifacts)

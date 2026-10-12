@@ -138,6 +138,7 @@ def test_validation_calculation_and_export_match_observed_transport_contract(tmp
     assert client.session is session
 
     assert details["request"] == {**EXPECTED_FORM_PARAMS, "idEstacion": "4_7"}
+    assert details["html_persistence"] == {"status": "persisted", "findings": []}
     assert set(artifacts) == {"result.html", "forecast.zip", "forecast.csv"}
     assert artifacts["forecast.zip"] == _zip_bytes()
     assert artifacts["forecast.csv"].startswith(b"\xef\xbb\xbfFecha;Kc;ET0;ETc;Pe;ETc - Pe")
@@ -218,3 +219,104 @@ def test_export_stream_failure_preserves_safe_calculation_html(tmp_path):
         client.capture_station(config.stations[0])
     assert caught.value.artifacts == {"result.html": b"<html><table id='tablaDatos'></table></html>"}
     assert "export_get" in caught.value.http
+
+
+def test_sensitive_calculation_html_is_omitted_but_export_continues(tmp_path):
+    config = Config(
+        tmp_path,
+        "https://example.invalid/siarweb",
+        1,
+        1,
+        1,
+        (),
+        (Station("IB04", "Son Ferriol", "4_7", EXPECTED_FORM_PARAMS),),
+    )
+    session = requests.Session()
+    calls = []
+    result_csrf = "R" * 96
+
+    def fake_request(method, url, timeout=None, **kwargs):
+        calls.append((method, url))
+        if url.endswith("/necesidadesHidricas/inicio"):
+            return _response(
+                url,
+                (
+                    f'<meta name="_csrf" content="{META_CSRF}">'
+                    f'<input name="_csrf" value="{HIDDEN_CSRF}">'
+                ).encode(),
+            )
+        if url.endswith("/necesidadesHidricasRest/validarForm"):
+            return _response(url, b"", None)
+        if url.endswith("/necesidadesHidricas/calculo"):
+            return _response(
+                url,
+                (
+                    f'<html><meta name="_csrf" content="{result_csrf}">'
+                    f'<input type="hidden" name="_csrf" value="{result_csrf}">'
+                    "<table id='tablaDatos'></table></html>"
+                ).encode(),
+            )
+        if url.endswith("/necesidadesHidricas/exportCSV"):
+            return _response(url, _zip_bytes(), "application/zip;charset=UTF-8")
+        raise AssertionError(url)
+
+    session.request = fake_request
+    details, artifacts = SiarClient(config, session=session).capture_station(config.stations[0])
+
+    assert [method for method, _ in calls] == ["GET", "POST", "POST", "GET"]
+    assert details["html_persistence"] == {
+        "status": "omitted_sensitive",
+        "findings": ["csrf/session field"],
+    }
+    assert "result.html" not in artifacts
+    assert set(artifacts) == {"forecast.zip", "forecast.csv"}
+    assert result_csrf not in repr(details)
+
+
+def test_sensitive_html_omission_survives_export_failure_metadata_context(tmp_path):
+    config = Config(
+        tmp_path,
+        "https://example.invalid/siarweb",
+        1,
+        1,
+        1,
+        (),
+        (Station("IB04", "Son Ferriol", "4_7", EXPECTED_FORM_PARAMS),),
+    )
+    session = requests.Session()
+    result_csrf = "S" * 96
+
+    def fake_request(method, url, timeout=None, **kwargs):
+        if url.endswith("/necesidadesHidricas/inicio"):
+            return _response(
+                url,
+                (
+                    f'<meta name="_csrf" content="{META_CSRF}">'
+                    f'<input name="_csrf" value="{HIDDEN_CSRF}">'
+                ).encode(),
+            )
+        if url.endswith("/necesidadesHidricasRest/validarForm"):
+            return _response(url, b"", None)
+        if url.endswith("/necesidadesHidricas/calculo"):
+            return _response(
+                url,
+                f'<input type="hidden" name="_csrf" value="{result_csrf}">'.encode(),
+            )
+        if url.endswith("/necesidadesHidricas/exportCSV"):
+            response = _response(url, b"", "application/zip")
+            def failed_stream(chunk_size):
+                raise requests.ConnectionError("synthetic stream interruption")
+            response.iter_content = failed_stream
+            return response
+        raise AssertionError(url)
+
+    session.request = fake_request
+    with pytest.raises(CaptureError, match="export download failed") as caught:
+        SiarClient(config, session=session).capture_station(config.stations[0])
+
+    assert caught.value.artifacts == {}
+    assert caught.value.details["html_persistence"] == {
+        "status": "omitted_sensitive",
+        "findings": ["csrf/session field"],
+    }
+    assert result_csrf not in repr(caught.value.details)

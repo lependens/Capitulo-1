@@ -108,6 +108,29 @@
     },
     "request": {
       "type": "object"
+    },
+    "html_persistence": {
+      "type": "object",
+      "required": [
+        "status",
+        "findings"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "persisted",
+            "omitted_sensitive",
+            "not_available"
+          ]
+        },
+        "findings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
     }
   },
   "additionalProperties": true

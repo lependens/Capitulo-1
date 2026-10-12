@@ -36,13 +36,13 @@ The configured `data_root` is outside Git. Runs are partitioned using `started_a
   SHA256SUMS
   <station_code>/<capture_id>/
     metadata.json
-    result.html       # only after the secret guard accepts it
+    result.html       # optional: present only when the secret guard accepts it
     forecast.zip      # original ZIP bytes
     forecast.csv      # single CSV member, copied byte-for-byte in memory
     SHA256SUMS
 ```
 
-Incomplete station outcomes are also published with metadata. If HTML contains reusable session/auth values, it is not persisted. If a safe HTML response exists but ZIP export fails, that is a `partial` capture. If no useful artifact exists, the station capture is `failed`. A station failure does not prevent attempts for other configured stations.
+Incomplete station outcomes are also published with metadata. If HTML contains reusable session/auth values, it remains in RAM only, is not persisted, and the flow continues to `/exportCSV`. Metadata records `html_persistence.status = omitted_sensitive` plus sanitized finding categories only. New captures always emit `html_persistence`; historical `siar-raw-capture-v1` metadata created before this policy may legitimately omit that field. A capture may still be `complete` when the validated original ZIP and its byte-for-byte CSV member are preserved even though sensitive HTML was deliberately omitted. If export then fails, normal partial/failed rules apply; HTML omission alone never upgrades the outcome. A station failure does not prevent attempts for other configured stations.
 
 Every capture is first assembled in a sibling temporary directory and exposed by same-filesystem rename. A whole run is staged under `<data_root>/tmp/` and published by rename. Existing run/capture IDs raise an error; nothing is overwritten or deduplicated.
 
@@ -65,7 +65,7 @@ An empty list means every listed file matches. `source_issue_at` remains JSON `n
 
 ZIP members are read directly from memory, without `extractall()` or filesystem path use. Exactly one bounded `.csv` member is accepted; absolute paths, drive paths, traversal segments, multiple files, and non-CSV content fail closed.
 
-The HTML guard checks values in sensitive form fields and credential assignments, cookie headers, bearer/JWT forms, opaque token contexts, and exact session values observed in memory. Empty CSRF markers and ordinary page IDs/static asset hashes are allowed. A finding is reported in error metadata; the HTML is not silently redacted or persisted.
+The HTML guard checks values in sensitive form fields and credential assignments, cookie headers, bearer/JWT forms, opaque token contexts, and exact session values observed in memory. Empty CSRF markers and ordinary page IDs/static asset hashes are allowed. When the guard finds reusable sensitive material, only sanitized finding categories are recorded; the HTML is kept in RAM, is neither redacted nor persisted, and export may continue. Safe HTML is persisted byte-for-byte.
 
 ## Synthetic examples
 

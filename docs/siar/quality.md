@@ -112,4 +112,4 @@ PR #15 solo define cómo auditar y documentar el modo. La normalización real se
 
 ## Estructura y ejecución
 
-Los destinos reservados están bajo data_quality/siar/. Su README identifica los informes esperados. Quality Audit v1 PRE está completado; Quality Recovery / POST está autorizado y pendiente. La creación o actualización de resultados pertenece a una ejecución de auditoría autorizada y queda fuera de esta PR documental.
+Los destinos reservados están bajo data_quality/siar/. Su README identifica los informes esperados. Quality Audit v1 PRE está completado; Quality Recovery / POST está autorizado y en curso; aún no consta como completado. La creación o actualización de resultados pertenece a una ejecución de auditoría autorizada y queda fuera de esta PR documental.

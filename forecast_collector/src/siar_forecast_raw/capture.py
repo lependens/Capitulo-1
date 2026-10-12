@@ -46,15 +46,21 @@ def capture_run(config: Config, client_factory=SiarClient, now=utc_now) -> Path:
                 details["html_persistence"] = html_persistence
             if html_persistence is None:
                 missing.append("html_persistence")
-            elif html_persistence.get("status") == "persisted" and not artifacts.get("result.html"):
-                missing.append("result.html")
-            elif html_persistence.get("status") == "omitted_sensitive" and artifacts.get("result.html"):
-                raise CaptureError(
-                    "Sensitive HTML persistence marker conflicts with persisted result.html",
-                    artifacts=artifacts,
-                    http=http,
-                    details=details,
-                )
+            else:
+                html_status = html_persistence.get("status")
+                if html_status == "persisted":
+                    if not artifacts.get("result.html"):
+                        missing.append("result.html")
+                elif html_status == "omitted_sensitive":
+                    if artifacts.get("result.html"):
+                        raise CaptureError(
+                            "Sensitive HTML persistence marker conflicts with persisted result.html",
+                            artifacts=artifacts,
+                            http=http,
+                            details=details,
+                        )
+                else:
+                    missing.append("complete_html_persistence_state")
             if missing:
                 raise CaptureError(
                     "Capture client returned incomplete artifact set: " + ", ".join(missing),

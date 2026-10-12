@@ -8,9 +8,9 @@ v0.1 entered `main` through PR #8. PR #12 added the validated shared-group stora
 
 The SIAR E2E contract has been manually demonstrated for IB04 — Son Ferriol, Mallorca, Aguacate: `/inicio` → AJAX `/validarForm` → normal form POST `/calculo` → same-session GET `/exportCSV`. The practical form parameters in the example configuration are `C1 + G1 + G2 + G3`; `fechaInicial` and `fechaFinal` are intentionally absent. SIAR returned a ZIP containing one CSV with seven forecast rows and columns `Fecha`, `Kc`, `ET0`, `ETc`, `Pe`, and `ETc - Pe`; the HTML result and CSV agreed on dates and forecast values.
 
-This code adaptation is not deployed, and the live Capturer has not been run. Automated tests use synthetic responses and do not contact SIAR. Permanent storage under `/srv` and off-site backup remain pending coordination with 02. Do not set up a scheduler or deploy before those gates are approved.
+`LIVE-IB04 #2` is complete and the SIAR E2E contract has been demonstrated; PR #14 is merged. This code adaptation is not deployed. Permanent storage under `/srv` and off-site backup remain pending coordination with 02; these are the next gates before deployment. Automated tests remain synthetic and do not contact SIAR.
 
-The example station and form values are configuration examples only. Review and verify the SIAR form contract and station IDs before any live capture. No secrets belong in the TOML file.
+The example station and form values are configuration examples only. The SIAR E2E form contract was demonstrated for IB04; verify station configuration before a future capture. No secrets belong in the TOML file.
 
 ## Install and one-shot execution
 

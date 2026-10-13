@@ -3,7 +3,7 @@
 **Actualizado:** 2026-10-12  
 **Versión SIAR Sync en producción:** v2.3.3
 **Backfill temporal:** alcanzado para las 12 estaciones
-**Quality Audit v1 PRE:** COMPLETADO
+**Quality Audit v1 PRE:** COMPLETADO — válido
 
 ## Resultado de Quality Audit v1 PRE
 
@@ -20,9 +20,13 @@
 | Huecos PRE | 2.346 |
 | Cobertura ponderada | 96,99 % |
 
-Los 2.346 huecos están registrados como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. **No se ha declarado ningún `CONFIRMED_NO_DATA`**: no hubo consultas de recuperación que probaran una respuesta SIAR válida con cero registros.
+En el snapshot PRE, los 2.346 huecos están registrados como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. El PRE no declaró ningún `CONFIRMED_NO_DATA`; Quality Recovery R1 está pausado y no se ha generado un POST.
 
-Quality Recovery / POST está autorizado y en curso; aún no consta como completado. La certificación observacional permanece abierta principalmente por los 2.346 huecos pendientes y la revisión de resultados POST.
+Quality Recovery R1 = `PAUSED` en checkpoint 206/431 bloques; causa = `UNEXPLAINED_CHANGE` IB07; `POST = NOT GENERATED`. `FORENSIC-IB07-001` está autorizado y R1 permanece detenido hasta resolverlo.
+
+## Hallazgo `UNEXPLAINED_CHANGE` IB07
+
+IB07 tiene `Fecha_Baja` oficial **2012-11-13**. El HEAD previo terminaba en **2012-11-12** y ahora aparece una fila de **2012-11-13**. El origen de la escritura aún no está demostrado; no se declara la fila válida ni inválida. `FORENSIC-IB07-001` está autorizado. Quality Recovery R1 permanece detenido hasta resolverlo.
 
 ## Hallazgo IB09
 
@@ -51,6 +55,6 @@ No se reescribieron filas, esquema, fechas ni observaciones.
 
 ## Estado de adquisición
 
-Los CSV canónicos presentes son IB01–IB11 e IB101. La ejecución actual de SIAR Sync terminó por ahora. Quality Recovery / POST está autorizado y en curso; aún no consta como completado. El backfill temporal alcanzado no equivale a certificación científica.
+Los CSV canónicos presentes son IB01–IB11 e IB101. Quality Audit PRE permanece válido. Quality Recovery R1 sigue pausado en 206/431 bloques por `UNEXPLAINED_CHANGE` IB07; `POST = NOT GENERATED`. `FORENSIC-IB07-001` está autorizado y R1 no debe reanudarse hasta resolver el hallazgo.
 
 Las políticas, reglas de clasificación y esquemas de informes están en [Quality Audit v1](quality.md). Este documento resume el estado comunicado; no genera ni contiene snapshots o informes de auditoría.

@@ -119,7 +119,7 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 - ✅ backfill temporal de adquisición alcanzado para 12 estaciones;
 - ✅ Quality Audit v1 PRE completado: 12 estaciones (9 ACTIVE, 3 CLOSED), 11 WARN, 1 FAIL (IB09), 0 INCOMPLETE;
 - ✅ cobertura PRE ponderada 96,99 %: 75.494 días con dato de 77.840 esperados; 2.346 huecos;
-- 🟠 Quality Recovery / POST autorizado y en curso; aún no consta completado. Los 2.346 huecos siguen PENDING_RETRY / NOT_ATTEMPTED, intentos 0, sin CONFIRMED_NO_DATA;
+- 🟠 Quality Recovery R1 = PAUSED en 206/431 bloques por `UNEXPLAINED_CHANGE` IB07; POST = NOT GENERATED. El PRE sigue válido y conserva los 2.346 huecos PENDING_RETRY / NOT_ATTEMPTED;
 - 🟠 CATALOG-TZ: discrepancia sistemática snapshot local 31 frente a Info/ESTACIONES 30, pendiente de investigación semántica; no corregir automáticamente `estaciones_baleares.csv` ni usar el campo científicamente hasta conocer su significado. Por sí sola no degrada PRE ni bloquea certificación salvo evidencia de efecto en periodo/semántica;
 - ✅ saneamiento operativo posterior a v2.3.2: 12/12 CSV con modo 0644, SHA-256 PRE = POST 12/12, contenido raw intacto;
 - ✅ v2.3.2 desplegada y validada; lógica correctora de permisos incluida desde esa versión;
@@ -129,7 +129,7 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 
 IB09 permanece FAIL porque el CSV raw conserva la observación 2005-10-23, anterior a la Fecha_Instalacion oficial 2005-10-24; su Fecha_Baja oficial es 2018-10-10. La fila no se elimina y queda fuera del periodo oficial.
 
-La ejecución actual de SIAR Sync terminó por ahora. datos_siar_baleares/ contiene 12 CSV canónicos. El resultado PRE y los formatos se documentan en docs/siar/quality.md y docs/siar/sync-status.md.
+La ejecución actual de SIAR Sync terminó por ahora. IB07 tiene Fecha_Baja oficial 2012-11-13; el HEAD previo terminaba en 2012-11-12 y aparece una fila nueva 2012-11-13, cuyo origen de escritura no está demostrado. No se clasifica la fila como válida ni inválida. `FORENSIC-IB07-001` está autorizado y R1 permanece detenido hasta resolverlo.
 
 ### Criterio de salida
 
@@ -171,9 +171,9 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - ✅ ausencia de login confirmada;
 - ✅ contrato E2E SIAR demostrado y `LIVE-IB04 #2` completado; PR #14 fusionada;
 - ✅ permanent runtime preflight PASS: service user, almacenamiento base, release pattern, configuración y TLS bundle permanente validados;
-- 🟠 permanent smoke run autorizado, resultado pendiente;
-- 🟠 semántica exacta del horizonte pendiente;
-- 🟠 cadencia de publicación pendiente.
+- ✅ `SMOKE-FC-001 = PASS` (IB04 + Aguacate; run/capture completos, TLS, hashes/schemas, permisos y SGID validados; HTML sensible omitido; raw/tmp vacío);
+- ✅ `BACKUP-FC-001 = PASS` (rclone 1.75.2, Google Drive + crypt, copy, restore independiente, SHA256SUMS, schemas, ZIP/CSV y COMPLETE remoto validados);
+- 🟠 confirmar recuperabilidad del material crypt fuera del servidor; completar `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y backup del multi-smoke; scheduler experimental después;
 
 ### Raw Forecast Capturer — v0.1 implementado
 
@@ -189,7 +189,7 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - ✅ integración en `main`;
 - ✅ `source.source_issue_at = null`.
 
-El código actual está en `forecast_collector/`. `LIVE-IB04 #2` está completo; el capturador aún no está desplegado.
+El código actual está en `forecast_collector/`. `LIVE-IB04 #2` está completo. No hay scheduler, captura periódica ni multiestación.
 
 Arquitectura aprobada:
 
@@ -216,12 +216,12 @@ Decisiones:
 - sin base de datos obligatoria;
 - cookies/CSRF solo en memoria;
 - datos fuera de Git;
-- raíz prevista `/srv/siar-forecast/raw`;
-- frecuencia experimental 08:00 / 14:00 / 20:00 Europe/Madrid.
+- raíz operativa `/srv/siar-forecast/raw`, aprovisionada y validada;
+- frecuencia propuesta para scheduler experimental futuro (scheduler = NO): 08:00 / 14:00 / 20:00 Europe/Madrid.
 
 ### Infraestructura permanente y siguiente gate
 
-El release preparado es e850827e24cff11ae46f51c9bc3e8a2f36b0d2da, con Python 3.14.4. El permanent runtime preflight está en PASS. La infraestructura física validada incluye:
+`SMOKE-FC-001 = PASS` y `BACKUP-FC-001 = PASS`. Runtime permanente como `siar-forecast`; release funcional `e850827e24cff11ae46f51c9bc3e8a2f36b0d2da`, Python 3.14.4. Infraestructura física validada:
 
 - usuario de servicio siar-forecast;
 - /srv/siar-forecast/raw/{runs,tmp} creado con permisos base y SGID validados;
@@ -230,15 +230,15 @@ El release preparado es e850827e24cff11ae46f51c9bc3e8a2f36b0d2da, con Python 3.1
 - TLS bundle permanente validado;
 - runtime independiente del home validado.
 
-Pendiente:
+Resultados y gates siguientes:
 
-- 🟠 ejecutar y revisar el permanent smoke run, ya autorizado;
-- 🟠 configurar y validar rclone/off-site backup;
-- 🟠 configurar scheduler experimental solo después del backup;
-- ⚪ determinar cadencia real y semántica D+N;
-- ⚪ decidir frecuencia definitiva y parser/normalización posterior.
+- `/opt/siar-forecast` y `/etc/siar-forecast` operativos; `/srv/siar-forecast/raw` aprovisionado y validado;
+- smoke: TLS verificado; hashes/schemas PASS; permisos `2770/0660` + SGID PASS; `html_persistence = omitted_sensitive`; raw/tmp vacío;
+- backup: contenido, nombres y directorios cifrados con rclone crypt; `rclone copy` (no `sync`); restore independiente, SHA256SUMS, schemas, ZIP/CSV y COMPLETE remoto PASS;
+- 🟠 confirmar material crypt recuperable fuera del servidor; completar `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y backup del multi-smoke; scheduler experimental después;
+- ⚪ determinar cadencia real, semántica D+N y parser/normalización posterior.
 
-El Collector no está desplegado de forma periódica. La FASE 2 permanece abierta.
+Scheduler = NO; captura periódica = NO; multiestación = NO. El Collector no está desplegado de forma periódica. La FASE 2 permanece abierta.
 
 ### Criterio de salida
 
@@ -277,8 +277,8 @@ Variables prioritarias:
 
 ### Tracks AEMET
 
-- ✅ **Track A — ACCEPTED:** AEMET municipal daily latest forecast → captura prospectiva append-only → futuro benchmark Hargreaves.
-- 🟠 **Track B — RESEARCH:** el feed exacto de AEMET utilizado por SIAR no está demostrado.
+- ✅ **Track A — ACCEPTED:** AEMET municipal daily latest forecast → captura prospectiva append-only → futuro benchmark Hargreaves. Estado: `AEMET-A1 = BLOCKED_TRANSPORT`, `AEMET-A2 = PASS`, `AEMET-A3 = NOT READY`. Credencial disponible; bloqueo de transporte. Endpoint OpenData sin validación empírica.
+- 🟠 **TRACK-B = OPEN:** el feed exacto de AEMET utilizado por SIAR no está demostrado.
 
 Límites de Track A:
 
@@ -569,10 +569,10 @@ No constituye una fase final; acompaña a todas las demás.
 ### Próximos puntos
 
 - ✅ `INC-INFRA-001` resuelta; `init: true` validado durante 265 checkpoints Git.
-- 🟠 backup raw forecast;
-- 🟠 proveedor off-site OneDrive o Google Drive;
-- ⚪ checksums/manifest;
-- ⚪ prueba periódica de restauración.
+- ✅ `BACKUP-FC-001 = PASS`: rclone 1.75.2, Google Drive crypt, `copy`, restore independiente y checksums validados;
+- 🟠 confirmar recuperabilidad del material crypt fuera del servidor;
+- 🟠 backup del multi-smoke antes de scheduler;
+- ⚪ backup periódico y su verificación;
 
 ---
 
@@ -584,9 +584,11 @@ A fecha 2026-10-12:
 FASE 1
 Quality Audit PRE ✅
    ↓
-Quality Recovery / POST 🟠
+Quality Recovery R1 PAUSED · 206/431 · UNEXPLAINED_CHANGE IB07 🟠
    ↓
-certificación observacional 🟠
+FORENSIC-IB07-001 autorizado; resolver origen antes de reanudar R1 🟠
+   ↓
+POST y certificación observacional 🟠
 
 La auditoría no interpola ni reescribe CSV raw. Recovery no interpolará, imputará, borrará ni editará manualmente observaciones; los registros reales devueltos por SIAR para fechas ausentes pueden incorporarse mediante el mecanismo canónico de SIAR Sync.
 
@@ -597,18 +599,28 @@ E2E / LIVE-IB04 #2 ✅
    ↓
 infra preflight permanente ✅
    ↓
-permanent smoke run 🟠
+SMOKE-FC-001 PASS ✅
    ↓
-backup off-site
+BACKUP-FC-001 PASS ✅
    ↓
-scheduler experimental
+confirmar crypt fuera del servidor 🟠
+   ↓
+FC-STATIONS-001 → FC-MULTI-SMOKE-001 🟠
+   ↓
+backup multi-smoke 🟠
+   ↓
+scheduler experimental (después)
 
 FASE 3
-AEMET Track A: producto municipal aceptado ✅
+AEMET-A1 BLOCKED_TRANSPORT 🟠
+   ↓
+AEMET-A2 PASS ✅
+   ↓
+AEMET-A3 NOT READY 🟠
    ↓
 contrato raw empírico / diseño Collector 🟠
 
-Track B: investigar feed AEMET exacto usado por SIAR 🟠
+TRACK-B OPEN 🟠
 ```
 
 Las fases 1, 2 y 3 permanecen abiertas. AEMET Track A no equivale a un forecast puntual de estación SIAR ni demuestra histórico de emisiones.

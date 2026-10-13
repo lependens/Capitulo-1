@@ -421,7 +421,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 | Área                      | Estado                           |
 | ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟠 12 estaciones; Quality Audit v1 PRE completado, cobertura ponderada 96,99 %; Recovery / POST y certificación pendientes |
+| Datos históricos SIAR     | 🟠 PRE válido; Recovery R1 pausado 206/431 por `UNEXPLAINED_CHANGE` IB07; POST no generado |
 | SIAR Sync                 | 🟢 v2.3.3; 12 CSV en 0644 con contenido raw intacto tras saneamiento |
 | Control de cobertura      | 🟢 Implementado                  |
 | Validación de datos       | 🟢 Implementado                  |
@@ -432,13 +432,13 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Redes neuronales          | 🟢 Primera etapa implementada    |
 | Dataset científico        | 🟡 Próxima etapa                 |
 | Nuevos modelos ML         | 🟡 Próxima etapa                 |
-| Forecast Collector        | 🟠 E2E/LIVE-IB04 #2 completos; runtime preflight PASS; smoke autorizado pendiente; backup y scheduler pendientes |
+| Forecast Collector        | 🟠 `SMOKE-FC-001` y `BACKUP-FC-001` PASS; sin scheduler, captura periódica ni multiestación |
 | Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
 | Predicción propia de ET₀  | ⚪ Futura                         |
 | Aplicación web            | ⚪ Futura                         |
 | Kc / necesidades de riego | ⚪ Futura                         |
 
-Raw Forecast Capturer v0.1 está implementado en `main` (PR #8); el gate sintético pasó 29 tests. El contrato E2E y `LIVE-IB04 #2` están completos. El release permanente superó el preflight, pero el smoke run aún está pendiente de resultado; rclone/off-site backup y scheduler no están configurados. El Collector todavía no funciona de forma periódica.
+Raw Forecast Capturer v0.1 está implementado en `main` (PR #8); el gate sintético pasó 29 tests. El contrato E2E y `LIVE-IB04 #2` están completos. `SMOKE-FC-001` y `BACKUP-FC-001` están PASS; siguen pendientes la confirmación de recuperabilidad del material crypt fuera del servidor, `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y el backup del multi-smoke. Scheduler, captura periódica y multiestación siguen en NO.
 
 ---
 

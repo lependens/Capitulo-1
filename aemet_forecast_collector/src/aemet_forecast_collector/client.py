@@ -34,8 +34,10 @@ class AemetClient:
         timeout_seconds: float = 30,
         fetcher: Callable[[str, Mapping[str, str], float], HttpResponse] = http_get,
         clock: Callable[[], datetime] = utc_now,
+        api_key_expires_at: str | None = None,
     ):
         self._api_key = api_key
+        self._api_key_expires_at = api_key_expires_at
         self._timeout_seconds = timeout_seconds
         self._fetcher = fetcher
         self._clock = clock
@@ -98,6 +100,22 @@ class AemetClient:
         if not self._api_key:
             outcome.errors.append("AEMET_API_KEY missing from runtime environment")
             return outcome
+        if self._api_key_expires_at is not None:
+            try:
+                raw_expiry = self._api_key_expires_at.strip()
+                expiry = datetime.fromisoformat(raw_expiry.replace("Z", "+00:00"))
+                if expiry.tzinfo is None or expiry.utcoffset() is None:
+                    raise ValueError("timezone required")
+            except (AttributeError, OverflowError, TypeError, ValueError):
+                outcome.errors.append("AEMET_API_KEY_EXPIRES_AT must be a timezone-aware ISO-8601 timestamp")
+                return outcome
+            now = self._clock()
+            if now.tzinfo is None or now.utcoffset() is None:
+                outcome.errors.append("AEMET_API_KEY_EXPIRES_AT cannot be checked against a naive runtime clock")
+                return outcome
+            if expiry <= now:
+                outcome.errors.append("AEMET API key renewal required")
+                return outcome
 
         wrapper_url = ENDPOINT.format(municipality_id=target.municipality_id)
         wrapper_response = self._request(wrapper_url, {"Accept": "application/json", "api_key": self._api_key})
@@ -126,6 +144,10 @@ class AemetClient:
         if not isinstance(wrapper, dict):
             outcome.artifacts["wrapper.raw"] = wrapper_response.body
             outcome.errors.append("wrapper JSON root is not an object")
+            return outcome
+        if wrapper.get("estado") != 200:
+            outcome.artifacts["wrapper.raw"] = wrapper_response.body
+            outcome.errors.append("wrapper estado is not 200")
             return outcome
         datos_url = wrapper.get("datos")
         if not isinstance(datos_url, str) or not datos_url:
@@ -156,7 +178,7 @@ class AemetClient:
         try:
             # Parse JSON regardless of MIME type; raw bytes are already retained.
             payload = parse_json_bytes(payload_response.body, dict(payload_response.headers))
-            summary = summarize_payload(payload)
+            summary = summarize_payload(payload, target.municipality_id)
         except Exception:
             outcome.errors.append("payload JSON or forecast structure is invalid")
             return outcome

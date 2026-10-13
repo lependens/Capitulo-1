@@ -51,6 +51,8 @@ export AEMET_API_KEY
 
 It is never written to configuration, metadata, raw files, or error messages. The program does not print request headers. HTTP 401/403 responses are summarized safely; renew or replace an expired key out of band.
 
+Optionally set `AEMET_API_KEY_EXPIRES_AT` in the runtime environment as a timezone-aware ISO-8601 timestamp (for example, `2027-06-01T00:00:00Z`). If absent, expiry is unknown and capture is allowed. A malformed value fails closed; an expired value prevents requests and reports that key renewal is required. The expiry value is not stored, and renewal is manual.
+
 The example config contains the initial target:
 
 ```text

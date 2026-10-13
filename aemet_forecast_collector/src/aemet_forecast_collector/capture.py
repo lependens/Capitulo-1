@@ -20,9 +20,12 @@ def capture_run(
     api_key: str | None = None,
     fetcher: Callable = http_get,
     now: Callable[[], datetime] = utc_now,
+    api_key_expires_at: str | None = None,
 ) -> Path:
     if api_key is None:
         api_key = os.environ.get("AEMET_API_KEY")
+    if api_key_expires_at is None:
+        api_key_expires_at = os.environ.get("AEMET_API_KEY_EXPIRES_AT")
     started = now()
     started_iso = iso_utc(started)
     run_id = new_run_id(started)
@@ -32,7 +35,13 @@ def capture_run(
         for target in config.targets:
             station_started = now()
             capture_id = new_capture_id(target.station_code, station_started)
-            outcome = AemetClient(api_key, config.request_timeout_seconds, fetcher, now).capture(target)
+            outcome = AemetClient(
+                api_key,
+                config.request_timeout_seconds,
+                fetcher,
+                now,
+                api_key_expires_at=api_key_expires_at,
+            ).capture(target)
             finished = now()
             status = "complete" if outcome.complete else ("partial" if outcome.artifacts else "failed")
             artifact_records = {

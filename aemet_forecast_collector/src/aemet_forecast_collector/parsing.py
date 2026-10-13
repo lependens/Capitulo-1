@@ -94,12 +94,14 @@ def _collect_periods(value: Any, output: list[str]) -> None:
             _collect_periods(item, output)
 
 
-def summarize_payload(payload: Any) -> dict[str, Any]:
-    if not isinstance(payload, list) or not payload or not all(isinstance(root, dict) for root in payload):
-        raise PayloadContractError("payload root must be a non-empty list of objects")
+def summarize_payload(payload: Any, expected_municipality_id: str | None = None) -> dict[str, Any]:
+    if not isinstance(payload, list) or len(payload) != 1 or not isinstance(payload[0], dict):
+        raise PayloadContractError("payload root must contain exactly one object")
 
     roots = payload
     root = roots[0]
+    if expected_municipality_id is not None and root.get("id") != expected_municipality_id:
+        raise PayloadContractError("payload municipality id does not match configured target")
     issue_time_raw = root.get("elaborado")
     if not isinstance(issue_time_raw, str) or not issue_time_raw.strip():
         raise PayloadContractError("payload elaborado field is missing, empty or not a string")

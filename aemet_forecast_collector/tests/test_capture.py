@@ -47,8 +47,8 @@ def _json(value, encoding="ISO-8859-15"):
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode(encoding)
 
 
-def _wrapper(data_url="https://opendata.aemet.es/opendata/sh/1be9d7ec"):
-    return _json({"descripcion": "exito", "estado": 200, "datos": data_url, "metadatos": "https://opendata.aemet.es/opendata/sh/meta"})
+def _wrapper(data_url="https://opendata.aemet.es/opendata/sh/1be9d7ec", estado=200):
+    return _json({"descripcion": "exito", "estado": estado, "datos": data_url, "metadatos": "https://opendata.aemet.es/opendata/sh/meta"})
 
 
 class SequenceFetcher:
@@ -160,6 +160,50 @@ def test_missing_api_key_does_not_make_a_request_or_persist_a_credential(tmp_pat
     assert metadata["http"] == {"wrapper": None, "payload": None}
 
 
+def test_expired_api_key_makes_zero_http_calls(tmp_path, monkeypatch):
+    monkeypatch.setenv("AEMET_API_KEY_EXPIRES_AT", "2026-10-13T05:35:20Z")
+    fetcher = SequenceFetcher()
+    capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    assert fetcher.calls == []
+
+
+def test_expired_api_key_returns_only_safe_renewal_error(tmp_path, monkeypatch):
+    monkeypatch.setenv("AEMET_API_KEY_EXPIRES_AT", "2026-10-13T05:35:20Z")
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=SequenceFetcher(), now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    assert metadata["capture"]["status"] == "failed"
+    assert metadata["errors"] == ["AEMET API key renewal required"]
+    assert KEY not in json.dumps(metadata)
+
+
+def test_future_api_key_expiry_allows_capture_without_persisting_key_or_expiry(tmp_path, monkeypatch):
+    expiry = "2026-10-13T05:35:22Z"
+    monkeypatch.setenv("AEMET_API_KEY_EXPIRES_AT", expiry)
+    fetcher, _, _ = _successful_fetcher()
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    assert metadata["capture"]["status"] == "complete"
+    assert len(fetcher.calls) == 2
+    assert expiry not in json.dumps(metadata)
+    assert KEY not in json.dumps(metadata)
+    assert not any(KEY.encode() in path.read_bytes() for path in run_path.rglob("*.*") if path.is_file())
+    assert all(KEY not in error for error in metadata["errors"])
+
+
+def test_invalid_api_key_expiry_fails_closed_with_safe_configuration_error(tmp_path, monkeypatch):
+    invalid_expiry = "not-a-valid-timestamp"
+    monkeypatch.setenv("AEMET_API_KEY_EXPIRES_AT", invalid_expiry)
+    fetcher = SequenceFetcher()
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    assert fetcher.calls == []
+    assert metadata["capture"]["status"] == "failed"
+    assert metadata["errors"] == ["AEMET_API_KEY_EXPIRES_AT must be a timezone-aware ISO-8601 timestamp"]
+    serialized = json.dumps(metadata)
+    assert KEY not in serialized
+    assert invalid_expiry not in serialized
+
+
 @pytest.mark.parametrize("wrapper_body", [b"not json", _json({"descripcion": "exito", "estado": 200})])
 def test_malformed_or_missing_datos_wrapper_is_partial_and_preserved(tmp_path, wrapper_body):
     fetcher = SequenceFetcher(HttpResponse(200, {"Content-Type": "application/json"}, wrapper_body))
@@ -184,6 +228,39 @@ def test_malformed_payload_is_preserved_as_partial(tmp_path):
     assert metadata["capture"]["status"] == "partial"
     assert next(run_path.rglob("payload.raw")).read_bytes() == bad_payload
     assert metadata["payload_structure"] is None
+
+
+def test_wrapper_internal_estado_must_be_200_before_payload_fetch(tmp_path):
+    wrapper_body = _wrapper(estado=500)
+    fetcher = SequenceFetcher(HttpResponse(200, {"Content-Type": "application/json"}, wrapper_body))
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    assert metadata["capture"]["status"] == "partial"
+    assert metadata["errors"] == ["wrapper estado is not 200"]
+    assert next(run_path.rglob("wrapper.raw")).read_bytes() == wrapper_body
+    assert len(fetcher.calls) == 1
+    assert metadata["http"]["payload"] is None
+
+
+def test_payload_municipality_id_must_match_configured_target(tmp_path):
+    payload = _payload()
+    payload[0]["id"] = "07041"
+    fetcher, _, payload_bytes = _successful_fetcher(payload=payload)
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    assert metadata["capture"]["status"] == "partial"
+    assert metadata["payload_structure"] is None
+    assert next(run_path.rglob("payload.raw")).read_bytes() == payload_bytes
+
+
+def test_payload_with_multiple_municipality_roots_cannot_be_complete(tmp_path):
+    payload = _payload() + _payload()
+    fetcher, _, payload_bytes = _successful_fetcher(payload=payload)
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    assert metadata["capture"]["status"] == "partial"
+    assert metadata["payload_structure"] is None
+    assert next(run_path.rglob("payload.raw")).read_bytes() == payload_bytes
 
 
 @pytest.mark.parametrize("invalid_payload", [

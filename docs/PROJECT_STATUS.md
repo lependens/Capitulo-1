@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Última actualización:** 2026-10-12  
+**Última actualización:** 2026-10-13\
 **Repositorio principal:** `lependens/Capitulo-1`  
 **Rol de este documento:** punto de recuperación rápido del estado real del proyecto.
 
@@ -126,7 +126,7 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | Machine Learning | ⚪ | no priorizar todavía | después de datasets reproducibles |
 | Web / API final | ⚪ | futura | después de modelos y validación |
 | Kc / ETc / riego | ⚪ | futura | etapa de producto |
-| Backup externo | 🟢 | `BACKUP-FC-001 = PASS` con rclone crypt en Google Drive y restore independiente validado | confirmar recuperabilidad del material crypt fuera del servidor; repetir tras multi-smoke antes del scheduler |
+| Backup externo | 🟠 | `BACKUP-FC-001 = PASS`; copia off-site y restore validados; recuperación ante pérdida total del servidor aún pendiente | confirmar recuperabilidad del material crypt fuera del servidor; repetir tras multi-smoke antes del scheduler |
 
 ---
 
@@ -246,7 +246,7 @@ La auditoría PRE de los 12 CSV canónicos está completada. El cálculo usa los
 | Huecos PRE | 2.346 |
 | Cobertura ponderada | 96,99 % |
 
-Los 2.346 huecos del PRE se mantienen como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`; no se ha declarado ningún `CONFIRMED_NO_DATA`. Quality Recovery R1 está `PAUSED` en el checkpoint 206/431 bloques por `UNEXPLAINED_CHANGE` en IB07; `POST = NOT GENERATED`.
+En el snapshot PRE, los 2.346 huecos quedaron registrados como `PENDING_RETRY` / `NOT_ATTEMPTED` / `attempt_count=0`. El PRE no declaró ningún `CONFIRMED_NO_DATA`; estos estados pertenecen al snapshot inmutable y no describen necesariamente el estado operativo actual de R1. Quality Recovery R1 está `PAUSED` en el checkpoint 206/431 bloques por `UNEXPLAINED_CHANGE` en IB07; `POST = NOT GENERATED`.
 
 **IB09 permanece FAIL:** la fecha oficial de instalación es 2005-10-24 y la fecha oficial de baja 2018-10-10; el CSV raw contiene una fila de 2005-10-23. La fila se conserva íntegra y queda fuera del periodo oficial. No se ha corregido ni reescrito el CSV.
 

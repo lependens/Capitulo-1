@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Última actualización:** 2026-10-12  
+**Última actualización:** 2026-10-13\
 **Objetivo:** definir las fases del proyecto, sus dependencias y los criterios para considerarlas terminadas.
 
 > Este documento describe hacia dónde va el proyecto.  
@@ -578,7 +578,7 @@ No constituye una fase final; acompaña a todas las demás.
 
 # Ruta crítica actual
 
-A fecha 2026-10-12:
+A fecha 2026-10-13:
 
 ```text
 FASE 1

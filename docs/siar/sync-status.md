@@ -1,6 +1,6 @@
 # Estado de sincronización SIAR — Baleares
 
-**Actualizado:** 2026-10-12  
+**Actualizado:** 2026-10-13\
 **Versión SIAR Sync en producción:** v2.3.3
 **Backfill temporal:** alcanzado para las 12 estaciones
 **Quality Audit v1 PRE:** COMPLETADO — válido

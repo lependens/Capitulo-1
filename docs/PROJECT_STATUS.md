@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Última actualización:** 2026-10-12  
+**Última actualización:** 2026-10-13\
 **Repositorio principal:** `lependens/Capitulo-1`  
 **Rol de este documento:** punto de recuperación rápido del estado real del proyecto.
 
@@ -113,20 +113,20 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 
 | Componente | Estado | Situación actual | Próximo hito |
 |---|---|---|---|
-| SIAR Sync | 🟢 | v2.3.3 desplegada y validada; ejecución actual terminada por ahora | Quality Recovery / POST autorizado y en curso |
+| SIAR Sync | 🟢 | v2.3.3 desplegada y validada; ejecución actual terminada por ahora | resolver `FORENSIC-IB07-001` antes de reanudar Quality Recovery R1 |
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
-| Datos históricos SIAR | 🟠 | Quality Audit v1 PRE completado: 12 estaciones, cobertura ponderada 96,99 %; recuperación/POST y certificación pendientes | Quality Recovery / POST y certificación observacional |
+| Datos históricos SIAR | 🟠 | Quality Audit PRE válido; Quality Recovery R1 pausado en 206/431 bloques por `UNEXPLAINED_CHANGE` IB07; POST no generado | `FORENSIC-IB07-001` y resolución del origen de escritura |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
-| GitHub / monorepo | 🟢 | PR #1–#15 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
-| Forecast SIAR | 🟢 | E2E y LIVE-IB04 #2 completos; permanent runtime preflight PASS | permanent smoke run autorizado, resultado pendiente |
-| Raw Forecast Capturer | 🟠 | v0.1 fusionado; runtime permanente preparado, sin ejecución periódica | smoke run; después backup off-site y scheduler experimental |
-| AEMET forecast | 🟠 | Track A aceptado: forecast municipal diario más reciente; Track B en investigación | cerrar contrato raw Track A y estudiar feed AEMET usado por SIAR |
+| GitHub / monorepo | 🟢 | PR #1–#16 fusionadas; PR #9/#10 reorganizaron código y datos históricos bajo `legacy/` | mantener estado consolidado |
+| Forecast SIAR | 🟢 | `SMOKE-FC-001 = PASS`; `BACKUP-FC-001 = PASS` | confirmar recuperabilidad crypt fuera del servidor; `FC-STATIONS-001` |
+| Raw Forecast Capturer | 🟠 | v0.1 fusionado; smoke y backup single-station PASS; sin scheduler, captura periódica ni multiestación | confirmar material crypt fuera del servidor; `FC-STATIONS-001`; `FC-MULTI-SMOKE-001` y backup; después scheduler experimental |
+| AEMET forecast | 🟠 | `AEMET-A1 = BLOCKED_TRANSPORT`; `AEMET-A2 = PASS`; `AEMET-A3 = NOT READY`; `TRACK-B = OPEN`. Credencial disponible; bloqueo de transporte | resolver transporte sin afirmar validación empírica de OpenData; continuar TRACK-B |
 | Dataset científico | ⚪ | aún no consolidado | después de asegurar adquisición |
 | ET₀ / modelos físicos | 🟡 | existe trabajo previo legacy | revisión científica posterior |
 | Machine Learning | ⚪ | no priorizar todavía | después de datasets reproducibles |
 | Web / API final | ⚪ | futura | después de modelos y validación |
 | Kc / ETc / riego | ⚪ | futura | etapa de producto |
-| Backup externo | 🟠 | rclone/off-site pendiente | configurar y validar backup antes del scheduler |
+| Backup externo | 🟠 | `BACKUP-FC-001 = PASS`; copia off-site y restore validados; recuperación ante pérdida total del servidor aún pendiente | confirmar recuperabilidad del material crypt fuera del servidor; repetir tras multi-smoke antes del scheduler |
 
 ---
 
@@ -246,9 +246,11 @@ La auditoría PRE de los 12 CSV canónicos está completada. El cálculo usa los
 | Huecos PRE | 2.346 |
 | Cobertura ponderada | 96,99 % |
 
-Los 2.346 huecos se mantienen como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. No se ha declarado ningún `CONFIRMED_NO_DATA`. Quality Recovery / POST está autorizado y en curso; aún no consta como completado.
+En el snapshot PRE, los 2.346 huecos quedaron registrados como `PENDING_RETRY` / `NOT_ATTEMPTED` / `attempt_count=0`. El PRE no declaró ningún `CONFIRMED_NO_DATA`; estos estados pertenecen al snapshot inmutable y no describen necesariamente el estado operativo actual de R1. Quality Recovery R1 está `PAUSED` en el checkpoint 206/431 bloques por `UNEXPLAINED_CHANGE` en IB07; `POST = NOT GENERATED`.
 
 **IB09 permanece FAIL:** la fecha oficial de instalación es 2005-10-24 y la fecha oficial de baja 2018-10-10; el CSV raw contiene una fila de 2005-10-23. La fila se conserva íntegra y queda fuera del periodo oficial. No se ha corregido ni reescrito el CSV.
+
+IB07: `Fecha_Baja` oficial = 2012-11-13; el HEAD previo terminaba en 2012-11-12 y ahora aparece una fila de 2012-11-13. El origen de la escritura aún no está demostrado. No se declara la fila válida ni inválida. `FORENSIC-IB07-001` está autorizado; R1 permanece detenido hasta resolver este hallazgo.
 
 Hallazgo CATALOG-TZ pendiente de investigación semántica: el huso del snapshot local es 31 y el de Info/ESTACIONES es 30. No se corregirá automáticamente `estaciones_baleares.csv` ni se usará ese campo científicamente hasta conocer su significado. Por sí sola, esta discrepancia no degrada el resultado PRE ni bloquea la certificación observacional, salvo que se demuestre que afecta al periodo o a la semántica de los datos.
 
@@ -364,7 +366,7 @@ Fusionó en `main` la implementación del capturador bajo `forecast_collector/`;
 
 ### PR #14 — contrato E2E y live test
 
-Fusionada. El contrato E2E SIAR y `LIVE-IB04 #2` están completos. La infraestructura permanente superó el preflight; el smoke run está autorizado y pendiente de resultado. Rclone/off-site backup está pendiente, no hay scheduler configurado y el Collector no opera de forma periódica.
+Fusionada. El contrato E2E SIAR y `LIVE-IB04 #2` están completos. Runtime permanente, `SMOKE-FC-001` y `BACKUP-FC-001` están validados. No hay scheduler, captura periódica ni operación multiestación.
 
 ### PR #9 y PR #10 — reorganización legacy
 
@@ -426,9 +428,11 @@ Regla provisional:
 
 v0.1 está implementado en `forecast_collector/` y fusionado en `main` mediante PR #8. El gate técnico previo al merge pasó **29 tests**. La validación sintética cubre JSON Schema, guard rail de secretos, lectura segura de ZIP, SHA-256, estados `complete` / `partial` / `failed`, append-only y publicación atómica. `source.source_issue_at` es `null`.
 
-El contrato E2E SIAR está demostrado, PR #14 está fusionada y `LIVE-IB04 #2` está completo. El release preparado es `e850827e24cff11ae46f51c9bc3e8a2f36b0d2da`, con Python 3.14.4. El permanent runtime preflight pasó. El permanent smoke run está autorizado y pendiente de resultado; rclone/off-site backup está pendiente y no hay scheduler configurado. El Collector no está desplegado periódicamente.
+El contrato E2E SIAR está demostrado, PR #14 está fusionada y `LIVE-IB04 #2` está completo. `SMOKE-FC-001 = PASS` para IB04 + Aguacate: run y capture completos, TLS verificado, hashes/schemas PASS, permisos `2770/0660` + SGID PASS, `html_persistence = omitted_sensitive` y `raw/tmp` vacío.
 
-La infraestructura física validada incluye el usuario de servicio `siar-forecast`, `/srv/siar-forecast/raw/{runs,tmp}`, permisos base/SGID, patrón de releases en `/opt/siar-forecast`, configuración en `/etc/siar-forecast`, TLS bundle permanente y runtime independiente de `/home`.
+`BACKUP-FC-001 = PASS`: rclone 1.75.2 a Google Drive con rclone crypt (contenido, nombres y directorios cifrados), `rclone copy` sin `sync`, restore independiente PASS, SHA256SUMS, schemas, ZIP/CSV y `COMPLETE` remoto validados.
+
+El runtime permanente corre como `siar-forecast`, con release funcional `e850827e24cff11ae46f51c9bc3e8a2f36b0d2da` y Python 3.14.4. `/opt/siar-forecast` y `/etc/siar-forecast` están operativos; `/srv/siar-forecast/raw` está aprovisionado y validado. Confirmar la recuperabilidad del material crypt fuera del servidor sigue pendiente. Scheduler = NO, captura periódica = NO y multiestación = NO.
 
 Responsabilidad:
 
@@ -474,15 +478,15 @@ hashes
 - SHA-256 de artefactos;
 - datos legibles posteriormente sin Collector ni base de datos.
 
-Raíz propuesta, todavía no aprovisionada y pendiente de coordinación con 02:
+Raíz operativa aprovisionada y validada:
 
 ```text
 /srv/siar-forecast/raw
 ```
 
-No hay almacenamiento creado bajo `/srv`; su provisión y el backup off-site siguen pendientes.
+`/srv/siar-forecast/raw/{runs,tmp}` está aprovisionado y validado; `BACKUP-FC-001` pasó. Queda pendiente confirmar material crypt recuperable fuera del servidor.
 
-Frecuencia experimental aprobada:
+Frecuencia propuesta para un futuro scheduler experimental (scheduler = NO; aún no hay captura periódica):
 
 ```text
 08:00
@@ -511,8 +515,8 @@ Volumen estimado inicial:
 
 La línea AEMET se divide en dos tracks:
 
-- **Track A — ACCEPTED:** AEMET municipal daily latest forecast → captura append-only prospectiva → futuro benchmark Hargreaves.
-- **Track B — RESEARCH:** no se ha demostrado cuál es el feed AEMET exacto utilizado por SIAR.
+- **Track A — ACCEPTED:** producto municipal diario más reciente → captura prospectiva append-only → futuro benchmark Hargreaves. Estado operativo: `AEMET-A1 = BLOCKED_TRANSPORT`, `AEMET-A2 = PASS`, `AEMET-A3 = NOT READY`. La credencial está disponible; el bloqueo actual es de transporte, no de credencial. El endpoint OpenData no se declara validado empíricamente.
+- **Track B — OPEN:** sigue abierta la investigación del feed AEMET exacto utilizado por SIAR.
 
 Límites del producto municipal aceptado para Track A:
 
@@ -593,29 +597,29 @@ Para una futura base DuckDB:
 
 ### Alta prioridad
 
-- completar Quality Recovery / POST y certificar científicamente cobertura, validez y huecos; el PRE mantiene 2.346 fechas pendientes de consulta. Investigar CATALOG-TZ como hallazgo semántico no bloqueante por sí solo;
-- completar el permanent smoke run ya autorizado y configurar rclone/off-site backup antes del scheduler experimental.
+- resolver `FORENSIC-IB07-001`; mantener R1 pausado hasta demostrar el origen de la fila IB07 del 2012-11-13 y reanudar Quality Recovery después; POST aún no generado;
+- confirmar material crypt recuperable fuera del servidor; completar `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y backup del multi-smoke antes de considerar scheduler experimental;
 
 ### No bloqueantes inmediatos
 
 - validar la cadencia real y la semántica D+n del forecast;
-- completar el smoke run autorizado, validar backup off-site y configurar scheduler experimental antes de cualquier operación periódica;
+- confirmar material crypt recuperable fuera del servidor; completar `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y backup del multi-smoke antes de configurar scheduler experimental;
 - mantener Track B de AEMET en investigación y avanzar después con dataset científico reproducible, ET₀, ML y aplicación final.
 
 ## 16. Próximos pasos recomendados
 
 ```text
-1. Completar Quality Recovery / POST; no interpolar, imputar, borrar ni editar manualmente observaciones. Los registros reales devueltos por SIAR para fechas ausentes pueden incorporarse mediante el mecanismo canónico de SIAR Sync.
-2. Revisar los resultados POST y certificar el periodo observacional; investigar CATALOG-TZ sin corregir automáticamente `estaciones_baleares.csv` ni usar el campo científicamente hasta conocer su significado.
-3. Ejecutar el permanent smoke run autorizado y revisar su resultado
-4. Configurar rclone/off-site backup y validarlo
-5. Configurar scheduler experimental solo tras superar backup
+1. Resolver `FORENSIC-IB07-001`; mantener Quality Recovery R1 pausado hasta demostrar el origen del cambio IB07 del 2012-11-13. Después reanudar R1 y generar POST.
+2. Revisar POST y certificar el periodo observacional; CATALOG-TZ sigue como hallazgo semántico separado y no bloqueante por sí solo.
+3. Confirmar material crypt recuperable fuera del servidor.
+4. Completar `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y backup del multi-smoke.
+5. Configurar scheduler experimental solo después de superar esos gates
 6. Observar la operación y medir cadencia/semántica D+n
 7. Cerrar el contrato raw prospectivo de AEMET Track A; continuar Track B en investigación
 8. ET₀, ML y producto web/API/riego
 ```
 
-Quality Audit v1 PRE está completado; Recovery / POST y certificación siguen abiertos. El permanent runtime preflight de Forecast pasó, mientras que el smoke run autorizado aún espera resultado, rclone/off-site backup y scheduler siguen pendientes, y no hay operación periódica.
+Quality Audit PRE sigue válido. Quality Recovery R1 está pausado en 206/431 bloques por `UNEXPLAINED_CHANGE` IB07 y POST no se ha generado. Forecast `SMOKE-FC-001` y `BACKUP-FC-001` están PASS; scheduler, captura periódica y multiestación siguen en NO. Próximos gates: forense IB07, confirmar recuperabilidad crypt externa, multiestación, backup del multi-smoke y después scheduler experimental.
 
 ## 17. Protocolo de actualización de este documento
 

@@ -10,7 +10,7 @@ from .client import AemetClient
 from .config import Config
 from .ids import iso_utc, new_capture_id, new_run_id, utc_now
 from .metadata import validate_capture_metadata, validate_run_metadata
-from .secrets import contains_secret, redact_metadata
+from .secret_safety import contains_secret, redact_metadata
 from .storage import create_run_stage, discard_stage, publish_run, write_capture
 from .transport import HttpResponse, http_get
 

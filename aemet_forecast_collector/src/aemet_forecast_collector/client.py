@@ -8,7 +8,7 @@ from typing import Any, Callable, Mapping
 from .config import Target
 from .ids import iso_utc, utc_now
 from .parsing import decode_entity, header_value, parse_json_bytes, summarize_payload
-from .secrets import contains_secret, is_safe_aemet_data_url, safe_url
+from .secret_safety import contains_secret, is_safe_aemet_data_url, safe_url
 from .transport import HttpResponse, http_get
 
 

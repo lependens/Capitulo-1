@@ -4,7 +4,7 @@ Capa reproducible de observaciones SIAR Baleares: validación científica por m�
 
 La forense queda **RESOLVED_FOR_V1** por decisión de Dirección 00 del 2026-10-19. Radiacion se interpreta directamente en MJ m⁻² día⁻¹ y VelViento en m/s, con convención SIAR de viento a 2 m. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones registradas, no bloqueos. Una evidencia positiva de altura distinta de 2 m requiere resolver el cálculo PM afectado.
 
-El objetivo es **READY_FOR_DATASET_V1**. La declaración de preparación integrada depende de las pruebas, CI y revisión de esta entrega; no se afirma aquí que hayan pasado ni que exista merge final. No se ha ejecutado el Dataset Observational v1 definitivo. Su construcción y ejecución esperan Quality POST y handoff autorizado de 00.
+**ET0-BASELINES-PREP = READY_FOR_DATASET_V1.** Implementación integrada, 48 pruebas matemáticas/sintéticas locales PASS y CI científica PASS con paquete instalado en Python 3.11, 3.12 y 3.13. Las evidencias de validación constan en el [estado de misión](docs/mission_status.md). No se ha generado el Dataset Observational v1 definitivo: su construcción y ejecución oficial esperan Quality POST y handoff autorizado de 00.
 
 ## Instalación y ayuda
 

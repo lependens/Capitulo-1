@@ -1,6 +1,6 @@
 # Contratos científicos v1
 
-Decisión 00, 2026-10-19: forense **RESOLVED_FOR_V1**. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones no bloqueantes. Preparación integrada pendiente de verificación de pruebas/CI y revisión; no se afirma que exista Dataset Observational v1 publicado o Quality POST entregado.
+Decisión 00, 2026-10-19: forense **RESOLVED_FOR_V1**. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones no bloqueantes. Preparación integrada **READY_FOR_DATASET_V1**, con pruebas, revisión y CI verificadas en el estado de misión. Esto no afirma que exista Dataset Observational v1 publicado o Quality POST entregado.
 
 ## Autoridad y handoff de Quality
 

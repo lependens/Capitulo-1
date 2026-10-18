@@ -31,11 +31,13 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 ## Estado actual y componentes
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
-- [Hoja de ruta](docs/ROADMAP.md) — fases, dependencias y próximos hitos.
+- [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
+- [Hitos del proyecto](docs/MILESTONES.md) — decisiones y resultados materiales, registro append-only.
 - [Calidad SIAR](docs/siar/quality.md) — política y formatos de Quality Audit v1.
 - [Estado de sincronización SIAR](docs/siar/sync-status.md) — alcance temporal y certificación pendiente.
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
-- [Forecast Collector](forecast_collector/README.md) — estado y límites del capturador raw v0.1.
+- [Forecast SIAR](forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
+- [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
 
 ## 2.1 Objetivos
@@ -198,10 +200,14 @@ El proyecto actual se organiza en varias capas:
 Capitulo-1/
 ├── siar-sync/
 ├── forecast_collector/
+├── aemet_forecast_collector/
 ├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
-├── data_quality/siar/         # reservado para informes; aún vacío de auditorías
+├── data_quality/siar/         # sin artefactos Quality versionados; PRE externo, POST pendiente
 ├── legacy/                    # código y datos históricos
 ├── docs/
+│   ├── PROJECT_STATUS.md
+│   ├── ROADMAP.md
+│   ├── MILESTONES.md
 │   └── siar/
 ├── estaciones_baleares.csv
 └── README.md
@@ -421,7 +427,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 | Área                      | Estado                           |
 | ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟠 PRE válido; Recovery R1 pausado 206/431 por `UNEXPLAINED_CHANGE` IB07; POST no generado |
+| Datos históricos SIAR     | 🟠 PRE completo; R1 histórico; R2 autónoma en ejecución; POST y Quality closeout pendientes |
 | SIAR Sync                 | 🟢 v2.3.3; 12 CSV en 0644 con contenido raw intacto tras saneamiento |
 | Control de cobertura      | 🟢 Implementado                  |
 | Validación de datos       | 🟢 Implementado                  |
@@ -432,13 +438,14 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Redes neuronales          | 🟢 Primera etapa implementada    |
 | Dataset científico        | 🟡 Próxima etapa                 |
 | Nuevos modelos ML         | 🟡 Próxima etapa                 |
-| Forecast Collector        | 🟠 `SMOKE-FC-001` y `BACKUP-FC-001` PASS; sin scheduler, captura periódica ni multiestación |
+| Forecast Collector SIAR   | 🟠 runtime permanente y `/srv` operativos; `SMOKE-FC-001` y `BACKUP-FC-001` PASS; scheduler periódico aún NO |
+| AEMET Forecast Collector | 🟠 Track A fusionado (#18–#20); A1/A2 PASS, A3 COMPLETE; confirmación E2E final pendiente por timeout operacional; Track B OPEN |
 | Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
 | Predicción propia de ET₀  | ⚪ Futura                         |
 | Aplicación web            | ⚪ Futura                         |
 | Kc / necesidades de riego | ⚪ Futura                         |
 
-Raw Forecast Capturer v0.1 está implementado en `main` (PR #8); el gate sintético pasó 29 tests. El contrato E2E y `LIVE-IB04 #2` están completos. `SMOKE-FC-001` y `BACKUP-FC-001` están PASS; siguen pendientes la confirmación de recuperabilidad del material crypt fuera del servidor, `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y el backup del multi-smoke. Scheduler, captura periódica y multiestación siguen en NO.
+Los collectors SIAR y AEMET avanzan en paralelo al cierre Quality. Forecast SIAR tiene runtime permanente, Google Drive + rclone crypt y restore demostrados; quedan scheduler y backup/DR. AEMET Track A incorpora canonicalización municipal y permisos POSIX; queda confirmar E2E final y continuar con despliegue prospectivo y backup. Un timeout operacional aislado no demuestra un defecto del Collector. No esperamos a terminar los modelos para empezar a capturar forecasts.
 
 ---
 
@@ -486,37 +493,16 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-La infraestructura de datos históricos constituye actualmente la base sobre la que se desarrollarán las siguientes fases.
+El trabajo actual es paralelo: Quality R2 → POST → Dataset Observacional v1; Forecast SIAR → scheduler y backup/DR; AEMET → confirmación E2E final, despliegue prospectivo y backup. Un `INVALID_RESPONSE` aislado no bloquea globalmente R2.
 
-El flujo previsto es:
-
-```text
-          SIAR
-           ↓
-       SIAR Sync
-           ↓
-    Datos históricos
-           ↓
-   Dataset científico
-           ↓
-     ┌─────┴─────┐
-     ↓           ↓
-    ET₀          ML
-     │           │
-     └─────┬─────┘
-           ↓
-      Predicción
-           ↓
-       Aplicación
-           ↓
-         Riego
-```
-
-El siguiente objetivo práctico es consolidar el dataset y comenzar la nueva fase de modelado y predicción sin comprometer la infraestructura de adquisición ya construida.
+La secuencia científica posterior es Dataset v1 → FAO-56 PM → Hargreaves → baselines comparables → ML. La conservación prospectiva de emisiones forecast comienza al superar los gates propios de cada capturador, sin esperar a los modelos. El estado recuperable y sus hitos están en [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md).
 
 ---
 
 ## Navegación rápida
+
+- **Estado e hitos:** [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md), [MILESTONES](docs/MILESTONES.md).
+- **Capturadores:** [Forecast SIAR](forecast_collector/README.md), [AEMET Track A](aemet_forecast_collector/README.md).
 
 * **Objetivos:** [`docs_1.0_Objetivos alcanzables.md`](docs_1.0_Objetivos%20alcanzables.md)
 * **Obtención de datos:** [`docs_1.1_Obtención de datos.md`](docs_1.1_Obtenci%C3%B3n%20de%20datos.md)

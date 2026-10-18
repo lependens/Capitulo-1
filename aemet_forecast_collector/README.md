@@ -29,7 +29,11 @@ The municipality forecast represents the municipal capital. `spatial_match = "mu
 
 ### Implementation and operational boundary
 
-PR #18 merged the Track A Collector, PR #19 merged municipality-id comparison, and PR #20 merged POSIX ancestor permissions. `AEMET-A1 = PASS`, `AEMET-A2 = PASS`, and `AEMET-A3 = COMPLETE`. Final E2E confirmation in the target runtime is still pending after an operational timeout. That timeout is not evidence of a Collector defect and does not revoke those completed milestones; no final E2E PASS or periodic deployment is claimed. The next gates are final E2E confirmation, prospective deployment and backup. Track B, investigation of the exact AEMET feed used by SIAR, remains OPEN.
+PR #18 merged the Track A Collector, PR #19 merged municipality-id comparison, and PR #20 merged POSIX ancestor permissions. `AEMET-A1 = PASS`, `AEMET-A2 = PASS`, and `AEMET-A3 = COMPLETE`. `AEMET-TRACK-A-STABILIZE = PASS`; final AEMET E2E = `DEMONSTRATED`. The next operational milestone is `AEMET-PROSPECTIVE-PILOT`.
+
+The pilot is handed to workstream 02 only after `SIAR-FORECAST-PILOT = RUNNING`; this is a handoff condition, not a claim that the SIAR pilot is already running. The initial target is IB04 → Palma → municipality `07040`.
+
+The future pilot sequence is validated Collector → permanent runtime → `/opt` + `/etc` → independent `/srv/aemet-forecast/raw` → rclone crypt backup → validated restore → experimental scheduler → prospective capture. E2E demonstration alone does not provision or deploy that sequence. Pilot scope excludes ET0, D+n, scientific normalization and SIAR/AEMET integration (all NO); Track B remains OPEN.
 
 See the [consolidated project status](../docs/PROJECT_STATUS.md), [milestones](../docs/MILESTONES.md), [AEMET OpenData API documentation](https://opendata.aemet.es/dist/) and AEMET's [municipal forecast interpretation](https://www.aemet.es/es/eltiempo/prediccion/municipios/horas/abertura-id10002/ayuda).
 
@@ -96,7 +100,7 @@ The complete run is assembled in a temporary sibling directory, manifests are wr
 | All directories in the published run/capture tree | `2770` | YES | `0` |
 | Files in the published tree | `0660` | Not applicable | `0` |
 
-Thus the complete `data_root/runs/YYYY/MM/DD` chain and the published directories share the same group policy, rather than only the final run directory. The parent of `data_root` must already exist as a normal directory; the package does not provision permanent infrastructure or change directories outside the managed chain. This is the POSIX policy, not a claim about Windows permissions or completion of the final runtime E2E test.
+Thus the complete `data_root/runs/YYYY/MM/DD` chain and the published directories share the same group policy, rather than only the final run directory. The parent of `data_root` must already exist as a normal directory; the package does not provision permanent infrastructure or change directories outside the managed chain. This POSIX policy does not provision the future pilot runtime or define Windows permissions.
 
 Capture states are:
 

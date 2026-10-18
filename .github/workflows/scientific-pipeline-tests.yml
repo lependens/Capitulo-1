@@ -1,0 +1,34 @@
+name: Scientific pipeline tests
+
+on:
+  pull_request:
+    paths:
+      - "scientific_pipeline/**"
+      - ".github/workflows/scientific-pipeline-tests.yml"
+  push:
+    branches: [main]
+    paths:
+      - "scientific_pipeline/**"
+      - ".github/workflows/scientific-pipeline-tests.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  scientific-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install scientific package
+        run: python -m pip install ./scientific_pipeline
+      - name: Mathematical and synthetic integration tests
+        run: python -m unittest discover -s scientific_pipeline/tests -v
+      - name: CLI smoke test
+        run: siar-science --help

@@ -1,8 +1,11 @@
 # Contratos científicos preparatorios v1
 
-Estado: **BLOCKED_UNITS**. Especificación preparatoria, no Dataset Observational v1 publicado. No certifica
-Quality POST, no cambia sus reglas y no genera resultados sobre observaciones
-reales. Las pruebas deben utilizar ejemplos sintéticos.
+Estado refinado tras UNITS-OFFLINE-FORENSIC: **WIND_HEIGHT_UNVERIFIED** para PM y
+**PROVENANCE_PENDING** para certificación. La interpretación MJ m⁻² día⁻¹ y m/s
+está sólidamente respaldada para los snapshots auditados; ya no se trata como
+ambigüedad de escala. Especificación preparatoria, no Dataset v1 publicado ni
+certificación POST. El experimento forense autorizado es diagnóstico y separado
+de la futura ejecución científica. Las pruebas matemáticas usan casos sintéticos.
 
 ## Autoridad y handoff de Quality
 
@@ -112,13 +115,20 @@ Evidencia primaria consultada el 18-10-2026:
   describe estructura de 2 m para estaciones propiedad del MAPA. No demuestra
   por sí sola altura ni historial del sensor de cada estación autonómica.
 
-`docs_1.2` asume m/s y MJ/m² y viento a 2 m. SIAR Sync solicita diarios con
-`DatosCalculados=true`, pero no fija ni registra unidad en esos parámetros.
-Por tanto **no está demostrada la unidad crítica del snapshot por el mero
-nombre de columna o por plausibilidad de valores**. Exigir evidencia del
-proveedor/configuración de adquisición vinculada a estaciones, fechas y hashes;
-registrar `units_provenance` en el paquete futuro. No usar una correlación con
-EtPMon para inferir unidades o decidir una conversión.
+`docs_1.1` documenta las unidades de salida de adquisición; `docs_1.2`, PM,
+PM2 y la calculadora las usan coherentemente sin conversión. El contraste amplio
+de cuatro hipótesis en snapshots canónicos y legacy, estratificado por estación,
+año y condiciones, refuerza esa evidencia. Ver [informe forense](units_offline_forensic.md)
+y [búsqueda offline](units_offline_evidence.md). La interpretación es Radiacion
+MJ m⁻² día⁻¹ y VelViento m/s: **no aplicar ×0.0864 ni /3.6** a esos snapshots.
+La conclusión combina fuentes; no se elige por menor error contra EtPMon.
+
+SIAR Sync no conserva configuración física del proveedor. Esa limitación de
+certificación se registra en `units_provenance` por separado de la interpretación:
+referencias documentales y hashes del experimento, alcance de los snapshots,
+estado de certificación y evidencia de origen todavía pendiente. No convertir
+esa ausencia de certificado en una ambigüedad física que la auditoría ya reduce;
+tampoco inventar un certificado a partir de una coincidencia numérica.
 
 El catálogo local proporciona latitud DMS y altitud para las 12 estaciones.
 Contrastar identidad, coordenadas, altitud y vigencia antes del handoff; preservar
@@ -127,23 +137,20 @@ desde esta capa: no usar XUTM/YUTM/Huso para derivar latitud. La altura de vient
 debe estar documentada; si difiere de 2 m, normalizar explícitamente mediante
 FAO-56, sin cambiar el raw.
 
-**STOP científico para uso real:** si el handoff no demuestra radiación, viento
-o metadatos requeridos por PM, elevar a 00 y mantener ejecución real bloqueada.
-Las funciones matemáticas y sus pruebas sintéticas pueden verificarse mientras
-se obtiene evidencia. No declarar READY_FOR_DATASET_V1 incondicional con esa
-incertidumbre abierta.
+**STOP PM específico:** altura efectiva del viento aún no acreditada por
+estación/periodo. El experimento supone 2 m en todas las hipótesis y no puede
+resolver ese metadato. Su ausencia no bloquea las matemáticas ni la preparación
+HS basada en temperaturas/Ra. Mantener certificación y handoff POST pendientes
+como requisitos distintos; todavía no declarar READY_FOR_DATASET_V1 integrado.
 
-Resolución concreta requerida: entregar evidencia de configuración de la cuenta/
-servicio API utilizado por SIAR Sync y adquisiciones históricas, o confirmación
-del proveedor aplicable a esos mismos datos y periodos. Debe precisar unidad de
-`VelViento` y si `Radiacion` es energía diaria integrada o potencia media;
-la unidad W/m² por sí sola no permite decidir una integración temporal.
-Vincular la evidencia a los hashes y periodos de los CSV POST, identificando
-posibles cambios de configuración históricos. Verificar también altura de
-anemómetro por estación/periodo. Una descarga nueva bajo configuración conocida
-solo prueba los bytes nuevos: no certifica automáticamente todos los bytes
-históricos ni autoriza reemplazar raw. El bloqueo impide integrar/ejecutar
-baselines reales y afirmar READY; no requiere alterar Quality ni el esquema raw.
+Resolución concreta restante: ficha instrumental o declaración oficial de
+alcance suficiente sobre altura de anemómetro y su vigencia por estación.
+Completar procedencia con evidencia verificable de adquisición cuando exista,
+vinculada a los hashes POST. No se requiere consultar la API para elegir entre
+las dos escalas ya contrastadas. Una descarga nueva solo acredita sus bytes,
+no todo el histórico, y no autoriza reemplazar raw. Si futuros lotes contradicen
+el contrato físico, reabrir el análisis para esos lotes sin transformar los
+actuales por conjetura. No se altera Quality ni el esquema de 23 columnas.
 
 ## QC y elegibilidad independientes
 
@@ -166,6 +173,7 @@ No se hereda el filtro global ±3σ ni un `dropna` sobre todas las columnas.
 |---|---|
 | PM | Fecha, latitud, altitud, altura de viento; TempMax/Min, HumedadMax/Min, VelViento y Radiacion válidos |
 | Hargreaves-Samani Ra | Fecha, latitud, TempMax/Min válidos; rango térmico no negativo |
+| Evaluación de un modelo | Predicción finita y EtPMon finita y admitida por política de referencia |
 
 Para la ejecución diaria FAO-56 estándar, calcular la temperatura media de
 cálculo como `(TempMax + TempMin) / 2`, según la recomendación de estandarización
@@ -174,7 +182,6 @@ Conservar `TempMedia` SIAR y registrar esta elección como parámetro del métod
 no sobrescribirla ni confundirla con la media de extremos. La misma convención
 se propone para HS v1. Una variante con media horaria/SIAR debe identificarse
 por separado y no elegirse para reducir el error frente a EtPMon.
-| Evaluación de un modelo | Predicción finita y EtPMon finita y admitida por política de referencia |
 
 EtPMon ausente no impide calcular ninguno de los dos modelos. Radiacion ausente
 impide PM pero no Hargreaves. HumedadMedia ausente no impide PM cuando están

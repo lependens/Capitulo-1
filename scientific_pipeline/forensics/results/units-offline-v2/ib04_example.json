@@ -1,0 +1,818 @@
+[
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad1_Wind1",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 3.205124538171836,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8359383124414371,
+      "rn": 10.159405883326102,
+      "rnl": 5.239824116673899
+    },
+    "historical_placeholder_metadata": {
+      "et0": 3.214339259752004,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8333236979651415,
+      "rn": 10.183162806545523,
+      "rnl": 5.216067193454476
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad1_Wind2",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 2.689195790618385,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8359383124414371,
+      "rn": 10.159405883326102,
+      "rnl": 5.239824116673899
+    },
+    "historical_placeholder_metadata": {
+      "et0": 2.7030905241541587,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8333236979651415,
+      "rn": 10.183162806545523,
+      "rnl": 5.216067193454476
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad2_Wind1",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.2784485826054834,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07222507019494018,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.272037101059233,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07199916750418824,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad2_Wind2",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 0.4164024936643822,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07222507019494018,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    },
+    "historical_placeholder_metadata": {
+      "et0": 0.41391601393842997,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07199916750418824,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad1_Wind1",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 3.200714959020628,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8359383124414371,
+      "rn": 10.158107457956689,
+      "rnl": 5.2411225420433105
+    },
+    "historical_placeholder_metadata": {
+      "et0": 3.2099078988551155,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8333236979651415,
+      "rn": 10.181870268127872,
+      "rnl": 5.217359731872127
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad1_Wind2",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 2.6819234835200234,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8359383124414371,
+      "rn": 10.158107457956689,
+      "rnl": 5.2411225420433105
+    },
+    "historical_placeholder_metadata": {
+      "et0": 2.695805350290891,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8333236979651415,
+      "rn": 10.181870268127872,
+      "rnl": 5.217359731872127
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad2_Wind1",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.8572551118328975,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07222507019494018,
+      "rn": 3.030345580427662,
+      "rnl": -1.6998521084276619
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.8545602266296344,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07199916750418824,
+      "rn": 3.0323986872264523,
+      "rnl": -1.7019052152264522
+    }
+  },
+  {
+    "corpus": "canonical_snapshot",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad2_Wind2",
+    "source": "datos_siar_baleares/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.0959832453351632,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07222507019494018,
+      "rn": 3.030345580427662,
+      "rnl": -1.6998521084276619
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.0972648382229597,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07199916750418824,
+      "rn": 3.0323986872264523,
+      "rnl": -1.7019052152264522
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad1_Wind1",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 3.205124538171836,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8359383124414371,
+      "rn": 10.159405883326102,
+      "rnl": 5.239824116673899
+    },
+    "historical_placeholder_metadata": {
+      "et0": 3.214339259752004,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8333236979651415,
+      "rn": 10.183162806545523,
+      "rnl": 5.216067193454476
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad1_Wind2",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 2.689195790618385,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8359383124414371,
+      "rn": 10.159405883326102,
+      "rnl": 5.239824116673899
+    },
+    "historical_placeholder_metadata": {
+      "et0": 2.7030905241541587,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8333236979651415,
+      "rn": 10.183162806545523,
+      "rnl": 5.216067193454476
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad2_Wind1",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.2784485826054834,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07222507019494018,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.272037101059233,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07199916750418824,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad2_Wind2",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 0.4164024936643822,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07222507019494018,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    },
+    "historical_placeholder_metadata": {
+      "et0": 0.41391601393842997,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07199916750418824,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad1_Wind1",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 3.200714959020628,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8359383124414371,
+      "rn": 10.158107457956689,
+      "rnl": 5.2411225420433105
+    },
+    "historical_placeholder_metadata": {
+      "et0": 3.2099078988551155,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8333236979651415,
+      "rn": 10.181870268127872,
+      "rnl": 5.217359731872127
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad1_Wind2",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 2.6819234835200234,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8359383124414371,
+      "rn": 10.158107457956689,
+      "rnl": 5.2411225420433105
+    },
+    "historical_placeholder_metadata": {
+      "et0": 2.695805350290891,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8333236979651415,
+      "rn": 10.181870268127872,
+      "rnl": 5.217359731872127
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad2_Wind1",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.8572551118328975,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07222507019494018,
+      "rn": 3.030345580427662,
+      "rnl": -1.6998521084276619
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.8545602266296344,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07199916750418824,
+      "rn": 3.0323986872264523,
+      "rnl": -1.7019052152264522
+    }
+  },
+  {
+    "corpus": "legacy_calculated",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad2_Wind2",
+    "source": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.0959832453351632,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07222507019494018,
+      "rn": 3.030345580427662,
+      "rnl": -1.6998521084276619
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.0972648382229597,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07199916750418824,
+      "rn": 3.0323986872264523,
+      "rnl": -1.7019052152264522
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad1_Wind1",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 3.205124538171836,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8359383124414371,
+      "rn": 10.159405883326102,
+      "rnl": 5.239824116673899
+    },
+    "historical_placeholder_metadata": {
+      "et0": 3.214339259752004,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8333236979651415,
+      "rn": 10.183162806545523,
+      "rnl": 5.216067193454476
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad1_Wind2",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 2.689195790618385,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8359383124414371,
+      "rn": 10.159405883326102,
+      "rnl": 5.239824116673899
+    },
+    "historical_placeholder_metadata": {
+      "et0": 2.7030905241541587,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8333236979651415,
+      "rn": 10.183162806545523,
+      "rnl": 5.216067193454476
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad2_Wind1",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.2784485826054834,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07222507019494018,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.272037101059233,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07199916750418824,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "legacy_pm2",
+    "hypothesis": "Rad2_Wind2",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 0.4164024936643822,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07222507019494018,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    },
+    "historical_placeholder_metadata": {
+      "et0": 0.41391601393842997,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07199916750418824,
+      "rn": -0.015610977647859459,
+      "rnl": 1.3461044496478594
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad1_Wind1",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 3.200714959020628,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8359383124414371,
+      "rn": 10.158107457956689,
+      "rnl": 5.2411225420433105
+    },
+    "historical_placeholder_metadata": {
+      "et0": 3.2099078988551155,
+      "rs": 19.999,
+      "wind": 1.908,
+      "ratio": 0.8333236979651415,
+      "rn": 10.181870268127872,
+      "rnl": 5.217359731872127
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad1_Wind2",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 2.6819234835200234,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8359383124414371,
+      "rn": 10.158107457956689,
+      "rnl": 5.2411225420433105
+    },
+    "historical_placeholder_metadata": {
+      "et0": 2.695805350290891,
+      "rs": 19.999,
+      "wind": 0.53,
+      "ratio": 0.8333236979651415,
+      "rn": 10.181870268127872,
+      "rnl": 5.217359731872127
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad2_Wind1",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.8572551118328975,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07222507019494018,
+      "rn": 3.030345580427662,
+      "rnl": -1.6998521084276619
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.8545602266296344,
+      "rs": 1.7279136,
+      "wind": 1.908,
+      "ratio": 0.07199916750418824,
+      "rn": 3.0323986872264523,
+      "rnl": -1.7019052152264522
+    }
+  },
+  {
+    "corpus": "legacy_backup",
+    "kernel": "fao56_sensitivity",
+    "hypothesis": "Rad2_Wind2",
+    "source": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+    "source_line": 2,
+    "observation": 3.205964,
+    "inputs": {
+      "TempMedia": 12.515,
+      "TempMin": 6.471,
+      "TempMax": 19.09,
+      "HumedadMin": 42.18,
+      "HumedadMax": 96.6,
+      "VelViento": 1.908,
+      "Radiacion": 19.999,
+      "EtPMon": 3.205964
+    },
+    "catalog_metadata": {
+      "et0": 1.0959832453351632,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07222507019494018,
+      "rn": 3.030345580427662,
+      "rnl": -1.6998521084276619
+    },
+    "historical_placeholder_metadata": {
+      "et0": 1.0972648382229597,
+      "rs": 1.7279136,
+      "wind": 0.53,
+      "ratio": 0.07199916750418824,
+      "rn": 3.0323986872264523,
+      "rnl": -1.7019052152264522
+    }
+  }
+]

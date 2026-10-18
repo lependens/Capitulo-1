@@ -22,7 +22,7 @@
       "properties": {
         "id": {"type": "string"},
         "name": {"type": "string"},
-        "spatial_match": {"type": "string"}
+        "spatial_match": {"const": "municipal_capital"}
       }
     },
     "capture": {

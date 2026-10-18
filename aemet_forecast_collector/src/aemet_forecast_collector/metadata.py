@@ -25,6 +25,8 @@ def validate_capture_metadata(value: dict[str, Any]) -> None:
         raise ValueError("invalid station metadata")
     if not isinstance(municipality, dict) or set(municipality) != {"id", "name", "spatial_match"}:
         raise ValueError("invalid municipality metadata")
+    if municipality["spatial_match"] != "municipal_capital":
+        raise ValueError("municipality spatial_match must be municipal_capital")
     capture = value["capture"]
     if not isinstance(capture, dict) or capture.get("status") not in {"complete", "partial", "failed"}:
         raise ValueError("invalid capture status")

@@ -62,12 +62,15 @@ def load_config(path: str | Path | None = None) -> Config:
             raise ValueError("station_code contains unsupported path characters")
         if not re.fullmatch(r"\d{5}", municipality_id):
             raise ValueError("municipality_id must contain five digits")
+        spatial_match = _nonempty_string(item, "spatial_match")
+        if spatial_match != "municipal_capital":
+            raise ValueError("spatial_match must be municipal_capital")
         targets.append(Target(
             station_code=station_code,
             station_name=_nonempty_string(item, "station_name"),
             municipality_id=municipality_id,
             municipality_name=_nonempty_string(item, "municipality_name"),
-            spatial_match=_nonempty_string(item, "spatial_match"),
+            spatial_match=spatial_match,
         ))
 
     if not targets:

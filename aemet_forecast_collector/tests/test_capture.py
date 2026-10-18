@@ -3,11 +3,12 @@ import json
 from pathlib import Path
 
 import pytest
-from jsonschema import Draft202012Validator, FormatChecker
+from jsonschema import Draft202012Validator, FormatChecker, ValidationError
 
 from aemet_forecast_collector.capture import capture_run
 from aemet_forecast_collector.client import ENDPOINT
 from aemet_forecast_collector.config import Config, Target, load_config
+from aemet_forecast_collector.metadata import validate_capture_metadata
 from aemet_forecast_collector.parsing import declared_charset
 from aemet_forecast_collector.storage import verify_checksums
 from aemet_forecast_collector.transport import HttpResponse
@@ -384,3 +385,31 @@ def test_config_rejects_inline_api_key_and_loads_station_fixture(tmp_path):
     config_path.write_text(config_path.read_text() + f'api_key = "{KEY}"\n', encoding="utf-8")
     with pytest.raises(ValueError, match="runtime environment only"):
         load_config(config_path)
+
+
+@pytest.mark.parametrize("spatial_match", ["station_exact", "arbitrary"])
+def test_invalid_spatial_match_is_rejected_before_http(tmp_path, spatial_match):
+    config_path = tmp_path / "config.toml"
+    config_path.write_text(
+        'data_root = "../raw"\nrequest_timeout_seconds = 15\n'
+        '[[targets]]\nstation_code = "IB04"\nstation_name = "Son Ferriol"\n'
+        f'municipality_id = "07040"\nmunicipality_name = "Palma"\nspatial_match = "{spatial_match}"\n',
+        encoding="utf-8",
+    )
+    fetcher = SequenceFetcher()
+    with pytest.raises(ValueError, match="spatial_match must be municipal_capital"):
+        config = load_config(config_path)
+        capture_run(config, api_key=KEY, fetcher=fetcher)
+    assert fetcher.calls == []
+
+
+def test_station_exact_is_rejected_by_runtime_metadata_and_schema(tmp_path):
+    fetcher, _, _ = _successful_fetcher()
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    _, metadata = _metadata(run_path)
+    metadata["municipality"]["spatial_match"] = "station_exact"
+
+    with pytest.raises(ValueError, match="municipality spatial_match must be municipal_capital"):
+        validate_capture_metadata(metadata)
+    with pytest.raises(ValidationError):
+        _validate(metadata, "capture.schema.json")

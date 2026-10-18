@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import stat
 import tempfile
 from typing import Any
 
@@ -58,14 +59,53 @@ def _set_shared_permissions(path: Path) -> None:
     os.chmod(path, 0o2770)
 
 
+def _ensure_shared_directory(path: Path, *, create: bool) -> None:
+    if os.name == "nt":
+        if create:
+            path.mkdir(exist_ok=True)
+        elif not path.is_dir():
+            raise NotADirectoryError(f"expected directory: {path}")
+        return
+
+    if path.exists() or path.is_symlink():
+        mode = path.lstat().st_mode
+        if not stat.S_ISDIR(mode) or path.is_symlink():
+            raise NotADirectoryError(f"expected normal directory: {path}")
+    elif create:
+        path.mkdir()
+    else:
+        raise FileNotFoundError(f"directory does not exist: {path}")
+
+    os.chmod(path, 0o2770)
+    actual_mode = stat.S_IMODE(path.stat().st_mode)
+    if actual_mode != 0o2770:
+        raise PermissionError(f"could not enforce shared directory mode on {path}")
+
+
+def _prepare_data_root_chain(data_root: Path, date_part: list[str]) -> Path:
+    parent = data_root.parent
+    if not parent.exists() or parent.is_symlink() or not parent.is_dir():
+        raise NotADirectoryError("data_root parent must already exist as a normal directory")
+
+    chain = [
+        data_root,
+        data_root / "runs",
+        data_root / "runs" / date_part[0],
+        data_root / "runs" / date_part[0] / date_part[1],
+        data_root / "runs" / date_part[0] / date_part[1] / date_part[2],
+    ]
+    for path in chain:
+        _ensure_shared_directory(path, create=True)
+    return chain[-1]
+
+
 def create_run_stage(data_root: Path, started_at_utc: str, run_id: str) -> tuple[Path, Path]:
     if not _SAFE_ID.fullmatch(run_id):
         raise ValueError("run_id contains unsupported path characters")
     date_part = started_at_utc[:10].split("-")
     if len(date_part) != 3 or not all(part.isdigit() for part in date_part):
         raise ValueError("started_at_utc must begin with YYYY-MM-DD")
-    final_parent = data_root / "runs" / date_part[0] / date_part[1] / date_part[2]
-    final_parent.mkdir(parents=True, exist_ok=True)
+    final_parent = _prepare_data_root_chain(data_root, date_part)
     stage = Path(tempfile.mkdtemp(prefix=f".{run_id}.", dir=final_parent))
     return stage, final_parent / run_id
 

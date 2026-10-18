@@ -4,9 +4,14 @@
 No aplicar ×0.0864 ni /3.6 a estos snapshots. La conclusión combina el contrato
 documentado en docs_1.1/docs_1.2, el uso directo legacy, la búsqueda de conversiones
 y el contraste numérico amplio; no se selecciona una unidad por mínimo error.
-Se reduce el bloqueo científico a **WIND_HEIGHT_UNVERIFIED**; la procedencia
-completa sigue pendiente de certificación y se registra como requisito distinto.
-La preparación integrada sigue incompleta y PR #23 permanece DRAFT.
+**Cierre posterior de Dirección 00 (2026-10-19): RESOLVED_FOR_V1.**
+Se acepta el uso directo de VelViento como u2 según convención SIAR de 2 m.
+UNITS_PROVENANCE_PARTIAL y station_period_provenance no verificada de forma
+exhaustiva se conservan como limitaciones no bloqueantes. Los diagnósticos STOP
+preliminares de esta investigación quedan superados; solo evidencia positiva
+contradictoria exige revisión. Este informe conserva el experimento, sin generar
+Dataset v1 ni sus resultados finales. El cierre de integración se registra en
+mission_status.md, separado de la fecha del experimento forense.
 
 ## Alcance y reproducibilidad
 
@@ -268,24 +273,27 @@ IB04 2004-04-01: Radiacion=19.999, VelViento=1.908. El resultado 3.214339 corres
    del lote. Esa limitación administrativa no obliga a mantener como desconocida
    una interpretación física fuertemente corroborada. Debe conservarse y
    completarse en el handoff POST; no certifica ni invalida Quality desde aquí.
-3. **Wind sensor height: pendiente, bloqueo PM específico.** Ninguna de las cuatro
+3. **Wind sensor height: convención SIAR 2 m aceptada para v1.** Ninguna de las cuatro
    hipótesis varía altura; todas suponen 2 m al introducir u en la ecuación.
    Coincidir con EtPMon no demuestra altura real ni historia instrumental. Los
    catálogos locales no contienen ese campo y comentarios/plantillas no son
-   fichas de sensor. Falta evidencia por estación/periodo o una declaración
-   oficial de alcance suficiente. No aplicar conversión de altura sin ese dato.
+   fichas de sensor. La procedencia instrumental no exhaustiva se registra como
+   limitación, sin investigación estación×año ni STOP global. Solo evidencia
+   positiva de altura distinta exigiría una revisión versionada y resolución de
+   la transformación afectada. No convertir altura por conjetura.
 
 La documentación oficial ya consultada es compatible con MJ/m² y m/s en la
 interfaz diaria, pero su manual API no garantiza por sí solo esa configuración
 para el archivo histórico. Se combina como contexto, no como una certificación
 que no proporciona. No se consultó API ni web adicional durante esta misión.
 
-**Resultado:** retirar BLOCKED_UNITS como ambigüedad de escala de Radiacion y
-VelViento de estos snapshots; mantener **WIND_HEIGHT_UNVERIFIED** para el uso
-físico de u2 en PM y **PROVENANCE_PENDING** para certificación. La preparación
-operativa, integración, CI y Dataset v1 no quedan completados por esta auditoría.
-No se solicita una consulta adicional SIAR para discriminar estas dos unidades.
-PR #23 sigue DRAFT y no se fusiona.
+**Resultado forense, cerrado por 00:** RESOLVED_FOR_V1; no aplicar las dos
+conversiones alternativas. Usar VelViento como u2 directo con
+wind_height_assumption = 2 m / SIAR convention y station_period_provenance =
+not exhaustively verified. UNITS_PROVENANCE_PARTIAL no bloquea la preparación.
+La integración, CI y autorización de Dataset v1 se controlan por separado en
+mission_status.md. No se solicita consulta SIAR adicional ni más investigación
+histórica para discriminar estas unidades.
 
 Evidencia y búsqueda detallada: [units_offline_evidence.md](units_offline_evidence.md).
 Contrato actualizado: [contracts.md](contracts.md). Resultados agregados,

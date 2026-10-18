@@ -2,7 +2,13 @@
 
 Fecha: 2026-10-18. Árbol inspeccionado: `87d7cf5d00c8ca587e5208e2ec529455f7abc2c6` más archivos locales de trabajo. No se realizó ninguna consulta de red o API, no se ejecutaron adquisidores, no se alteraron observaciones, metadatos, código ni resultados. Este documento registra evidencia textual y estructural; el contraste numérico de hipótesis se entrega separadamente.
 
-## Conclusión
+## Decisión vigente 00 — 2026-10-19
+
+La investigación forense se cierra **RESOLVED_FOR_V1**. Se acepta Radiacion en MJ m⁻² día⁻¹ y VelViento en m/s, sin ×0.0864 ni /3.6, y uso directo del viento con **convención SIAR de 2 m**. No se exige continuar búsquedas históricas para habilitar v1. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` se mantienen como limitaciones de trazabilidad no bloqueantes. Solo una evidencia positiva de altura distinta de 2 m reabre ese punto y detiene el cálculo PM afectado hasta resolverlo.
+
+Las secciones que siguen conservan la evidencia y sus límites epistemológicos a fecha 2026-10-18; la ausencia de certificación instrumental exhaustiva que documentan **no es un STOP vigente**. Esta decisión no convierte las convenciones aceptadas en verificación instrumental por estación ni reescribe cifras o resultados forenses. Véanse [supuestos](assumptions.md) y [estado operativo](mission_status.md).
+
+## Conclusión de evidencia offline (2026-10-18)
 
 **Interpretación histórica explícita:** el proyecto identifica `VelViento` y `VelVientoMax` como m/s y `Radiacion` como MJ/m² en la documentación de adquisición. El cálculo diario legacy interpreta esta última como MJ m⁻² día⁻¹ y el viento como u₂ a 2 m. No son inferencias basadas solo en rangos de valores: existen declaraciones literales y usos directos en código.
 
@@ -84,6 +90,6 @@ La ausencia de un factor no descarta una escala aplicada por el proveedor o una 
 - `forecast_collector/` y `aemet_forecast_collector/` se revisaron en la búsqueda textual, pero sus contratos/capturas pertenecen a adquisiciones independientes. No se traslada de ellos una unidad a `datos_siar_baleares/`.
 - Los contratos y fórmulas de `scientific_pipeline/` fijan unidades normalizadas deseadas. Al haberse redactado en esta misión, no prueban el contrato histórico del proveedor ni sus instrumentos.
 
-## Resolución necesaria
+## Evidencia adicional que mejoraría procedencia (no bloqueante para v1)
 
-Debe distinguirse la interpretación física más respaldada por evidencia offline de la evidencia administrativa/instrumental aún ausente. Para cerrar procedencia hace falta un artefacto verificable que vincule unidades y agregación diaria con la adquisición efectiva y su vigencia. Para cerrar altura hace falta ficha o metadato instrumental por estación/periodo, o una declaración de alcance suficiente del proveedor. No se rellena esa ausencia suponiendo que altitud es altura del viento ni porque una función use la variable u₂.
+Debe distinguirse la interpretación física más respaldada por evidencia offline de la evidencia administrativa/instrumental aún ausente. Para completar la certificación de procedencia sería necesario un artefacto verificable que vincule unidades y agregación diaria con la adquisición efectiva y su vigencia. Para completar la verificación instrumental exhaustiva de altura sería necesaria ficha o metadato instrumental por estación/periodo, o una declaración de alcance suficiente del proveedor. No se rellena esa ausencia suponiendo que altitud es altura del viento ni porque una función use la variable u₂.

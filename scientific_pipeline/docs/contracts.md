@@ -1,63 +1,46 @@
-# Contratos científicos preparatorios v1
+# Contratos científicos v1
 
-Estado refinado tras UNITS-OFFLINE-FORENSIC: **WIND_HEIGHT_UNVERIFIED** para PM y
-**PROVENANCE_PENDING** para certificación. La interpretación MJ m⁻² día⁻¹ y m/s
-está sólidamente respaldada para los snapshots auditados; ya no se trata como
-ambigüedad de escala. Especificación preparatoria, no Dataset v1 publicado ni
-certificación POST. El experimento forense autorizado es diagnóstico y separado
-de la futura ejecución científica. Las pruebas matemáticas usan casos sintéticos.
+Decisión 00, 2026-10-19: forense **RESOLVED_FOR_V1**. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones no bloqueantes. Preparación integrada pendiente de verificación de pruebas/CI y revisión; no se afirma que exista Dataset Observational v1 publicado o Quality POST entregado.
 
 ## Autoridad y handoff de Quality
 
-`docs/siar/quality.md` conserva autoridad sobre los informes y estados de Quality.
-Los tres informes esperados son `siar_station_audit.csv`,
-`siar_missing_days.csv` y `siar_dataset_manifest.csv`. Actualmente el README de
-`data_quality/siar/` indica que no hay artefactos versionados y POST está pendiente.
-No sustituirlos por PRE ni fabricar filas para completar un contrato.
+`docs/siar/quality.md` conserva autoridad sobre estados e informes de Quality. La nueva capa no modifica adquisición, Quality, CSV canónicos ni legacy. El handoff autorizado después del cierre Quality es la entrada necesaria para construir el dataset definitivo; no se usa PRE como POST ni se fabrican artefactos.
 
-La construcción futura requiere autorización explícita en un handoff de Dirección
-00 después de Quality closeout. El adaptador científico consume, sin modificar,
-los informes entregados. Un handoff debe incluir:
+El JSON de handoff incluye:
 
-* `authorized: true`, identidad de autorización y fecha UTC verificables;
-* `quality_post: {id, sha256}` para identificar el paquete de evidencias;
-* rutas y SHA-256 de los tres informes originales y del catálogo contrastado;
-* `source_repo_sha` exacto y `source_data_hashes` (ruta relativa → SHA-256);
-* `official_periods` por estación, límites inclusivos y cutoff explícito de activas;
-* `statuses` por clave estación/fecha, derivados del informe de huecos POST;
-* evidencias de unidades y metadatos científicos, con alcance temporal explícito.
+| Campo | Contrato |
+|---|---|
+| `gate` | Literal `SIAR-QUALITY-CLOSEOUT` |
+| `authorized` | `true`; representa autorización existente de 00, no autoautorización del adaptador |
+| `dataset_id` | Identidad inmutable del dataset a construir |
+| `source_repo_sha` | Commit exacto de adquisición |
+| `units` | Unidades aceptadas para las variables de entrada |
+| `stations` | Metadatos identificados por código, latitud decimal y altitud; convenciones y evidencias disponibles |
+| `catalog` | `{path, sha256}` del snapshot de catálogo; hash igual a `estaciones_catalog_sha256` de POST |
+| `quality_post` | Objeto `{id, sha256, path}` que identifica el paquete POST JSON |
+| `source_data_hashes` | Mapa ruta canónica → SHA-256 de los bytes originales |
 
-`authorized` es una condición de entrada, no una forma de autorizarse a sí mismo.
-La implementación del adaptador no confiere autoridad a un JSON arbitrario. Debe
-comprobar hashes contra los bytes entregados y rechazar contradicciones entre
-informes, catálogo, fechas, estados y archivos. Las discrepancias se devuelven a
-00; nunca se corrigen silenciosamente ni se cambia el Quality Audit.
+Las rutas del handoff son relativas a su propio directorio. `quality_post.path` apunta a un paquete JSON con `phase: POST` y `reports`; sus tres claves son `siar_station_audit.csv`, `siar_missing_days.csv` y `siar_dataset_manifest.csv`, cada una con `{path, sha256}`. Las rutas de esos informes son relativas al directorio del paquete POST. Sus esquemas son los exactos de `docs/siar/quality.md`; no se crea un formato POST paralelo. Los periodos oficiales se obtienen de sus CSV, no de un calendario inventado o de la fecha extrema de un archivo observado. El catálogo verificado debe contener Codigo, Latitud (decimal o DMS compacto) y Altitud; comprobar correspondencia con los metadatos científicos, conservando la referencia y el hash. Altitud vacía puede conservarse como desconocida: impide PM, permite HS si sus otras entradas son válidas.
+
+Verificar hashes, identidad, columnas, unicidad, fechas, periodos, estados y correspondencia entre los tres informes, catálogo y fuentes. Las contradicciones se devuelven a 00; nunca se reparan silenciosamente. Un JSON arbitrario con `authorized: true` no acredita autoridad por sí mismo: la publicación y revisión del handoff forman parte del control de entrada.
 
 ## Dataset Observational v1
 
-Representación normalizada preparada: JSON UTF-8; `schema_version` vale
-`observational-v1`. No se fija una extensión de almacenamiento definitiva.
+Representación preparada: JSON UTF-8, `schema_version: observational-v1`. La construcción consume el handoff; no descarga datos ni escribe sobre sus fuentes.
 
 | Campo | Semántica |
 |---|---|
-| `dataset_id` | Identificador inmutable de una publicación; nunca reutilizar para bytes distintos |
-| `source_repo_sha` | Commit exacto de adquisición auditado |
-| `source_data_hashes` | Ruta relativa canónica → hash SHA-256 de bytes originales |
-| `quality_post` | Identidad y hash del paquete POST; conservar referencias individuales |
-| `units` | Unidades normalizadas esperadas; su declaración no demuestra unidades de adquisición |
-| `stations` | Código → latitud decimal, altitud en m, altura de viento en m; evidencia y vigencia |
-| `rows` | Filas únicas por `station_code,date`, orden estable estación/fecha |
+| `dataset_id` | Identificador inmutable, nunca reutilizado para bytes distintos |
+| `source_repo_sha` | Commit de adquisición auditado |
+| `source_data_hashes` | Hashes de fuentes originales |
+| `quality_post` | Identidad/hash del paquete POST y referencias conservadas |
+| `units` | Unidades normalizadas aceptadas; no certificación instrumental exhaustiva |
+| `stations` | Código → metadatos, convención de viento y evidencia disponible |
+| `rows` | Filas únicas por `station_code,date`, con orden estable |
 
-Las 12 estaciones previstas son IB01–IB11 e IB101. El conjunto final y sus
-periodos deben verificarse contra POST, sin inferirlos de la cobertura PRE.
+Las 12 estaciones previstas son IB01–IB11 e IB101. El conjunto y periodos definitivos se contrastan con POST. No generar inventario mediante `range(1,12)` porque omite IB101. No convertir altitud de estación en altura de sensor ni derivar latitud de UTM para resolver discrepancias ajenas a esta capa.
 
-Cada fila conserva `station_code`, `date` ISO YYYY-MM-DD, `values`,
-`observation_status`, `quality_status`, `quality_flags`, `provenance` y
-`source_data_sha`. La procedencia permite localizar archivo y fila originales
-sin confundir el SHA del archivo con un hash de registro. Los valores originales
-se conservan; el cálculo añade resultados separados y nunca sobrescribe EtPMon.
-
-`values` preserva las 23 columnas y su significado canónico:
+Cada fila conserva `station_code`, `date` ISO YYYY-MM-DD, `values`, `observation_status`, `quality_status`, `quality_flags`, `provenance` y `source_data_sha`. La procedencia permite identificar archivo/fila originales; el hash de un archivo no se presenta como hash de registro. `values` preserva las 23 columnas canónicas:
 
 ```text
 Fecha, TempMedia, TempMax, HorMinTempMax, TempMin, HorMinTempMin,
@@ -66,185 +49,56 @@ VelViento, DirViento, VelVientoMax, HorMinVelMax, DirVientoVelMax,
 Radiacion, Precipitacion, TempSuelo1, TempSuelo2, EtPMon, PePMon, Estacion
 ```
 
-`date` y `station_code` normalizados no reinterpretan `Fecha` y `Estacion`:
-se valida su correspondencia mediante catálogo y parsing explícito. Los HHMM
-son horas de extremos, no timestamps para geometría solar diaria. No usar
-`VelVientoMax` como sustituto de viento medio. `EtPMon` es ET₀ calculada y
-proporcionada por SIAR, referencia de comparación, no medición independiente
-de lisímetro ni verdad de terreno.
+Normalizar claves no reinterpreta silenciosamente Fecha/Estacion. HHMM identifica horas de extremos y no sustituye la fecha civil para geometría solar. Conservar `TempMedia` SIAR aunque el cálculo use media de extremos. EtPMon nunca se sobrescribe con ET₀ nueva.
 
-Una fila observada se conserva aunque tenga variables ausentes. Ausencias
-numéricas se representan mediante `null`, nunca cero ni NaN/Infinity JSON.
-No agregar registros meteorológicos inventados para cubrir el calendario.
-Duplicados de estación/fecha son error de integridad; no elegir arbitrariamente
-primera fila ni promediarla. El raw y el ledger siguen conservando la evidencia.
+Valores ausentes se serializan como `null`, no cero ni NaN/Infinity JSON. Conservar filas incompletas. Duplicados estación/fecha son error de integridad, sin promediar ni elegir una fila arbitrariamente. No añadir observaciones meteorológicas inventadas para completar el calendario.
 
 ### Calendario y estados
 
-El calendario/ledger complementa las filas observadas, sin simular observaciones.
-`OBSERVED` identifica una observación existente; `RECOVERED` una observación
-recuperada con evidencia POST. `CONFIRMED_NO_DATA` exige consulta válida con
-cero registros; `PENDING_RETRY` conserva incertidumbre y nunca se convierte en
-ausencia confirmada. `MISSING` significa que no hay fila en el snapshot y no
-autoriza inventar un resultado de consulta. `OUTSIDE_OFFICIAL_PERIOD` identifica
-fechas fuera del periodo y no aumenta el denominador de huecos.
+El ledger complementa las observaciones. `OBSERVED` identifica fila existente; `RECOVERED` recuperación acreditada; `CONFIRMED_NO_DATA` consulta válida con cero registros; `PENDING_RETRY` incertidumbre pendiente; `MISSING` ausencia en snapshot sin inventar resultado de consulta; `OUTSIDE_OFFICIAL_PERIOD` fecha fuera de periodo, excluida del denominador de huecos. Estos estados se toman de la evidencia POST.
 
-Si se representa una fecha sin observación en `rows`, `values` debe ser vacío o
-nulo, las dos elegibilidades son falsas y no se considera una fila observacional
-para cobertura ni métricas. Es preferible un ledger separado. Una observación
-raw fuera de periodo se conserva y marca, sin borrarla ni convertirla en hueco.
-No permitir una fila presente etiquetada `CONFIRMED_NO_DATA` o `PENDING_RETRY`
-sin resolver la contradicción del handoff.
+Las fechas sin observación se representan exclusivamente en `missing_days`, sin crear filas meteorológicas en `rows`. Las filas recuperadas permanecen en `rows` y su evidencia también puede constar en el ledger como RECOVERED. Una observación raw fuera de periodo se conserva y marca. Presencia de observación y estado `CONFIRMED_NO_DATA`/`PENDING_RETRY` contradictorios requieren resolver el handoff. El constructor adjunta QC científico y elegibilidad por método sin sustituir quality_flags o el dictamen POST. Los tokens numéricos no finitos del CSV se conservan semánticamente como null, con flag source_nonfinite por columna y procedencia que identifica los bytes originales; no se imputan valores.
 
-## Unidades y evidencia pendiente
+## Unidades, metadatos y limitaciones aceptadas
 
-Unidades normalizadas: temperatura `degC`; viento `m/s`; radiación
-`MJ/m2/day`; humedad `%`; altitud `m`; latitud `degrees`; presiones `kPa`;
-ET₀ `mm/day`. Conversiones deben declarar unidad de origen, fórmula y alcance.
-Latitud se convierte a radianes solo dentro de geometría solar.
+Unidades: temperatura `degC`, viento `m/s`, radiación `MJ/m2/day`, humedad `%`, altitud `m`, latitud `degrees`, presiones `kPa`, ET₀ `mm/day`. Para los snapshots auditados usar directamente Radiacion y VelViento: **sin ×0.0864 ni /3.6**.
 
-Evidencia primaria consultada el 18-10-2026:
+Viento a 2 m es la **convención SIAR aceptada para v1** por decisión 00. Ausencia de historial instrumental exhaustivo no bloquea PM. Conservar `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` en la trazabilidad y manifiestos. No llamar «verificado por estación/periodo» a una altura aceptada por convención.
 
-* El [Manual API SIAR v2.2, mayo 2025, pp. 8 y 14](https://servicio.mapa.gob.es/siarweb/documentos/manuales/ManualTecnico_WEB_API_SIAR.pdf)
-  documenta DMS y altitud en metros. Describe radiación diaria con unidad
-  dependiente de configuración y no fija inequívocamente la de viento diario.
-* La [consulta web diaria SIAR](https://servicio.mapa.gob.es/siarweb/consultaDatos/consultaDatos)
-  muestra m/s, radiación en MJ/m² y ET₀ en mm. Eso caracteriza esa interfaz,
-  pero no prueba la configuración de la API usada para el snapshot canónico.
-* La [descripción oficial de estaciones](https://servicio.mapa.gob.es/siarweb/masInformacion)
-  describe estructura de 2 m para estaciones propiedad del MAPA. No demuestra
-  por sí sola altura ni historial del sensor de cada estación autonómica.
+Una evidencia positiva de altura distinta de 2 m detiene PM para el ámbito afectado hasta resolución explícita. No se fuerza 2 m sobre evidencia contradictoria ni se aplica normalización silenciosa. HS sigue sujeto a su elegibilidad propia. Los nuevos lotes que contradigan unidades/convenciones deben revisarse; el cierre forense se refiere al ámbito auditado, no certifica cualquier fuente futura.
 
-`docs_1.1` documenta las unidades de salida de adquisición; `docs_1.2`, PM,
-PM2 y la calculadora las usan coherentemente sin conversión. El contraste amplio
-de cuatro hipótesis en snapshots canónicos y legacy, estratificado por estación,
-año y condiciones, refuerza esa evidencia. Ver [informe forense](units_offline_forensic.md)
-y [búsqueda offline](units_offline_evidence.md). La interpretación es Radiacion
-MJ m⁻² día⁻¹ y VelViento m/s: **no aplicar ×0.0864 ni /3.6** a esos snapshots.
-La conclusión combina fuentes; no se elige por menor error contra EtPMon.
+Fuentes y límites ya investigados: [manual API SIAR v2.2](https://servicio.mapa.gob.es/siarweb/documentos/manuales/ManualTecnico_WEB_API_SIAR.pdf), [consulta diaria SIAR](https://servicio.mapa.gob.es/siarweb/consultaDatos/consultaDatos), [descripción de estaciones SIAR](https://servicio.mapa.gob.es/siarweb/masInformacion), documentación histórica del proyecto y [búsqueda offline](units_offline_evidence.md). El [informe numérico forense](units_offline_forensic.md) se conserva sin reescribir sus cifras; su diagnóstico preliminar de bloqueo queda superado por decisión 00 del 2026-10-19. No se requiere continuar búsqueda histórica para avanzar v1.
 
-SIAR Sync no conserva configuración física del proveedor. Esa limitación de
-certificación se registra en `units_provenance` por separado de la interpretación:
-referencias documentales y hashes del experimento, alcance de los snapshots,
-estado de certificación y evidencia de origen todavía pendiente. No convertir
-esa ausencia de certificado en una ambigüedad física que la auditoría ya reduce;
-tampoco inventar un certificado a partir de una coincidencia numérica.
+## Matemáticas y QC por método
 
-El catálogo local proporciona latitud DMS y altitud para las 12 estaciones.
-Contrastar identidad, coordenadas, altitud y vigencia antes del handoff; preservar
-el snapshot y su hash. La discrepancia histórica `CATALOG-TZ` no se resuelve
-desde esta capa: no usar XUTM/YUTM/Huso para derivar latitud. La altura de viento
-debe estar documentada; si difiere de 2 m, normalizar explícitamente mediante
-FAO-56, sin cambiar el raw.
+Las fórmulas, constantes y decisiones completas están en [assumptions.md](assumptions.md). V1 fija:
 
-**STOP PM específico:** altura efectiva del viento aún no acreditada por
-estación/periodo. El experimento supone 2 m en todas las hipótesis y no puede
-resolver ese metadato. Su ausencia no bloquea las matemáticas ni la preparación
-HS basada en temperaturas/Ra. Mantener certificación y handoff POST pendientes
-como requisitos distintos; todavía no declarar READY_FOR_DATASET_V1 integrado.
+- PM diario FAO-56: Tcalc=(Tmax+Tmin)/2; G=0; albedo=0.23; γ=0.000665P; VPD a partir de humedad y temperaturas extremas, sin fallback; Rnl con σ=4.903·10⁻⁹ y Kelvin=T+273.16.
+- Nubosidad `1.35*min(Rs/Rso,1)-0.35`, sin floor inferior por defecto. Rso≤0 impide ese cálculo; ratios muy bajos, Rnl negativo y ET₀ negativa se marcan sin recorte silencioso.
+- HS fijo: `0.0023*0.408*Ra*(Tcalc+17.8)*sqrt(Tmax-Tmin)`. Sin ajuste, AHC o sustitución por Rs.
 
-Resolución concreta restante: ficha instrumental o declaración oficial de
-alcance suficiente sobre altura de anemómetro y su vigencia por estación.
-Completar procedencia con evidencia verificable de adquisición cuando exista,
-vinculada a los hashes POST. No se requiere consultar la API para elegir entre
-las dos escalas ya contrastadas. Una descarga nueva solo acredita sus bytes,
-no todo el histórico, y no autoriza reemplazar raw. Si futuros lotes contradicen
-el contrato físico, reabrir el análisis para esos lotes sin transformar los
-actuales por conjetura. No se altera Quality ni el esquema de 23 columnas.
+Separar integridad de origen, estado Quality, plausibilidad por variable, elegibilidad por método y diagnóstico de resultados. Las flags científicas derivadas no modifican Quality. No heredar ±3σ global ni `dropna` de todas las variables. Errores de identidad, fecha, duplicados, esquema o hash impiden una construcción válida; entradas ausentes o fuera de dominio generan motivos por método conservando su fila.
 
-## QC y elegibilidad independientes
-
-Separar cinco capas: integridad de origen; estado de Quality POST; plausibilidad
-por variable; elegibilidad por modelo; resultados del modelo. Las flags
-científicas son derivadas y no cambian el dictamen Quality original.
-
-Errores de integridad (identidad, fecha, duplicados, esquema, hash) impiden
-construcción certificada. Valores inválidos o ausentes producen flags por
-variable y motivos de no elegibilidad, conservando la fila.
-
-Reglas físicas mínimas: valores finitos, Tmin ≤ Tmax, humedad en [0,100],
-RHmin ≤ RHmax, viento y radiación no negativos; coordenadas válidas y altura
-de sensor válida. Inconsistencias de temperatura media respecto a extremos,
-Rs/Rso anómalo o ET₀ SIAR negativa se señalan; no aplicar winsorización ni
-recortes silenciosos. Umbrales estadísticos exploratorios no eliminan registros.
-No se hereda el filtro global ±3σ ni un `dropna` sobre todas las columnas.
-
-| Salida | Requisitos propios |
+| Operación | Entradas necesarias |
 |---|---|
-| PM | Fecha, latitud, altitud, altura de viento; TempMax/Min, HumedadMax/Min, VelViento y Radiacion válidos |
-| Hargreaves-Samani Ra | Fecha, latitud, TempMax/Min válidos; rango térmico no negativo |
-| Evaluación de un modelo | Predicción finita y EtPMon finita y admitida por política de referencia |
+| PM | Fecha, latitud, altitud, convención/evidencia de viento; TempMax/Min, HumedadMax/Min, VelViento, Radiacion válidos |
+| HS | Fecha, latitud y TempMax/Min válidos; rango térmico no negativo |
+| Evaluación | Predicción finita y EtPMon finita conforme a política de referencia registrada |
 
-Para la ejecución diaria FAO-56 estándar, calcular la temperatura media de
-cálculo como `(TempMax + TempMin) / 2`, según la recomendación de estandarización
-del [capítulo 3 FAO-56](https://www.fao.org/4/X0490E/x0490e07.htm).
-Conservar `TempMedia` SIAR y registrar esta elección como parámetro del método;
-no sobrescribirla ni confundirla con la media de extremos. La misma convención
-se propone para HS v1. Una variante con media horaria/SIAR debe identificarse
-por separado y no elegirse para reducir el error frente a EtPMon.
+TempMedia SIAR ausente no impide los baselines de media de extremos. Radiacion ausente excluye PM, no HS; HumedadMedia ausente no impide PM con extremos válidos; variables auxiliares o EtPMon ausentes no impiden predicción. Exigir Tmin≤Tmax, 0≤RHmin≤RHmax≤100 y viento/radiación no negativos. Errores de dominio no producen cero; una excepción queda registrada como fallo. Mantener ET₀ negativa y flags diagnósticas, sin convertir una flag informativa en exclusión encubierta.
 
-EtPMon ausente no impide calcular ninguno de los dos modelos. Radiacion ausente
-impide PM pero no Hargreaves. HumedadMedia ausente no impide PM cuando están
-los extremos requeridos. Variables auxiliares y precipitaciones ausentes no
-excluyen por sí solas baselines. Ningún fallback de humedad, imputación o
-calibración entra silenciosamente en v1.
+## Evaluación y particiones
 
-Cada método produce `eligible`, lista de motivos y resultado nullable para cada
-clave del dataset. Una excepción numérica se registra como fallo del método;
-no se convierte en cero. Comparaciones usan cohortes propias y, separadamente,
-intersección pareada PM/HS; registrar ambas selecciones y sus n evita comparar
-métricas calculadas sobre periodos distintos sin advertirlo.
+Error firmado=predicción−EtPMon. MAE, RMSE y MBE/bias en mm/día; R² predictivo=1−SSE/SST. R² no definido con n<2 o SST=0; cohortes vacías informan n=0, métricas `null` y motivo. Los ceros de referencia permanecen en esas métricas. La política v1 admite EtPMon finita y no negativa, Quality PASS/WARN y observación dentro de periodo oficial. Las referencias negativas se conservan y marcan, excluidas de métricas sin recortarlas. RRMSE/AARE no son necesarias en v1; si se añaden deben informar denominador y exclusiones cerca de cero.
 
-## Métricas y agrupaciones
+Publicar cohortes propias por modelo y cohorte pareada PM/HS, n y hashes de selección. Las métricas globales reúnen pares, no promedian RMSE/R² de estaciones. Desgloses por estación, año, mes y temporadas DJF/MAM/JJA/SON; diciembre se asigna al año siguiente en DJF. No presentar cohortes de distinto periodo como comparación pareada.
 
-Error firmado `prediction-reference`. `n` es número de pares finitos elegibles;
-MAE = media de |error|; RMSE = raíz de media de error²; bias/MBE = media de
-error. R² predictivo = 1 − SSE/SST, con SST centrado en la referencia; no es
-correlación de Pearson². R² es indefinido si n < 2 o SST=0. Cohorte vacía:
-n=0, métricas null y motivo explícito. Nunca devolver un R² perfecto artificial.
+PM y HS v1 no aprenden parámetros. Para calibración/ML futuros: cortes globales cronológicos TRAIN<VALIDATION<TEST fijados tras POST antes de ver errores, sin partición aleatoria ni fecha en distinta partición según estación. TRAIN ajusta AHC, escalas, filtros y demás transformaciones; VALIDATION selecciona; TEST se abre una vez tras congelar configuración. Estaciones cerradas sin cobertura test se reportan así. Las ventanas y objetivos futuros respetarán embargo acorde al horizonte. No aplicar filtros/coefs estimados en todo el histórico antes de dividirlo.
 
-MAE, RMSE y MBE en mm/día. Agregación global primaria reúne pares, sin promediar
-RMSE ni R² de estaciones. Puede ofrecerse media por estación como salida
-secundaria identificada. Agrupar por estación, año, mes y estación climática
-DJF/MAM/JJA/SON (hemisferio norte); para temporadas DJF, diciembre pertenece al
-año de enero/febrero. Definir esta convención antes de crear agrupaciones.
-RRMSE y AARE opcionales deben documentar denominadores y excluir/reportar
-referencias cercanas a cero según umbral previo; no se requieren para baseline v1.
+## Interfaz y manifiestos de ejecución
 
-## Separación temporal sin leakage
+Interfaz de módulo: `python -m siar_science`. `build-dataset` consume `--handoff` y escribe un archivo `--output` nuevo; requiere cierre autorizado. `validate`, `calculate-pm`, `calculate-hargreaves`, `evaluate` y `run-baselines` consumen `--dataset`, `--output` y opcionalmente `--pipeline-sha`. El SHA se obtiene del checkout cuando es posible; nunca inventarlo. `evaluate` requiere además uno o más `--predictions` repetibles, con artefactos `predictions.json` de cálculo previo que preserven identidad y hash del dataset y métodos sin solapamiento; no recalcula las predicciones. La semántica concreta de cada comando se documenta en el [README](../README.md) y su `--help`.
 
-PM y HS v1 tienen constantes publicadas sin parámetros aprendidos. Para futuras
-calibraciones, fijar cortes globales de calendario después de POST según
-cobertura, antes de observar errores: TRAIN < VALIDATION < TEST. No fijar hoy
-años específicos ni ordenar filas aleatoriamente. Ninguna fecha puede ocupar
-particiones distintas según estación; estaciones cerradas sin test se reportan
-con ausencia de cobertura, no se redistribuyen temporalmente.
+Las ejecuciones escriben un directorio nuevo sin sobrescribir resultados. Contiene `predictions.json`, `metrics.json` y `manifest.json`; en validación se conservan metadatos y elegibilidad por fila sin ET₀ calculada, con métricas vacías. Un resultado no calculable es `null` con motivo. Las rutas de outputs son relativas al directorio de ejecución y los hashes SHA-256 corresponden a bytes realmente escritos. Las predicciones transportan producer: identidad/hashes del código, parámetros, políticas, estado y referencias upstream; evaluate exige productor exitoso y parámetros coincidentes con el identificador versionado, y conserva esa autoría en el nuevo manifest. La cohorte paired exige siempre PM y HS, incluso al evaluar un solo modelo: si falta otro modelo su n es cero.
 
-Estimaciones estadísticas, escalados, selección de variables, umbrales aprendidos
-y AHC se ajustan únicamente con TRAIN. VALIDATION elige configuración; TEST se
-abre una sola vez tras congelar configuración. Toda transformación aprendida
-conserva hash, parámetros y fechas de ajuste. Ventanas derivadas respetan el
-tiempo; futuras variables objetivo necesitan embargo/gap acorde al horizonte.
-Los cortes, cobertura y reglas de elegibilidad se versionan. No aplicar al total
-histórico el filtro ±3σ o coeficientes ajustados antes de partir.
-
-## Run manifest futuro
-
-Una ejecución escribe en un directorio nuevo por `run_id` y no sobrescribe
-resultados previos. El manifest JSON identifica:
-
-* `schema_version`, `run_id`, timestamps UTC de inicio/fin y estado final;
-* `dataset_id`, hash del dataset, `source_data_hashes`, catálogo y Quality POST;
-* Git SHA del pipeline, indicador dirty, versión de paquete, Python y entorno;
-* métodos/versiones, constantes, unidades, parámetros y todas las políticas QC;
-* configuración completa y hash, particiones temporales y hash de cohortes;
-* hashes/rutas de predicciones, métricas, flags y logs de errores;
-* conteos por modelo: entrada, elegibles, calculados, fallidos y pares evaluados;
-* referencias metodológicas y limitaciones activas de la ejecución.
-
-Rutas relativas son respecto al directorio de ejecución. Hashes SHA-256 en
-hexadecimal minúscula; fechas UTC ISO 8601 terminadas en Z. No inventar commits
-ni sustituir metadatos desconocidos por valores plausibles. Una ejecución fallida
-conserva manifest con estado FAILED y diagnóstico, nunca resultados parciales
-etiquetados como éxito. Los resultados son comparación con SIAR y no validación
-contra mediciones independientes de ET₀.
+El manifiesto identifica dataset/hash, fuentes, POST/catálogo, SHA y estado del pipeline, versión/entorno, modelos/constantes/políticas, configuración, cohortes/particiones, conteos, timestamps UTC, archivos y hashes, flags y limitaciones activas. Registra la convención SIAR de 2 m y procedencia parcial. No presentar un SHA suministrado como prueba de checkout limpio ni un ensayo sintético como ejecución del dataset final. Un fallo debe quedar distinguido de éxito y no publicar resultados parciales etiquetados como completos.

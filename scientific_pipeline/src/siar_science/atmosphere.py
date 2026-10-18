@@ -73,5 +73,3 @@ def vapour_pressure_deficit(es_kpa: float, ea_kpa: float) -> float:
     if not 0 <= ea_kpa <= es_kpa:
         raise ValueError("vapour pressures must satisfy 0 <= ea <= es")
     return es_kpa - ea_kpa
-
-

@@ -1,0 +1,9 @@
+data_root = "/tmp/aemet-raw-data"
+request_timeout_seconds = 30
+
+[[targets]]
+station_code = "IB04"
+station_name = "Son Ferriol"
+municipality_id = "07040"
+municipality_name = "Palma"
+spatial_match = "municipal_capital"

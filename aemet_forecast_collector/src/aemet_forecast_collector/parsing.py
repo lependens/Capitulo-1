@@ -100,8 +100,17 @@ def summarize_payload(payload: Any, expected_municipality_id: str | None = None)
 
     roots = payload
     root = roots[0]
-    if expected_municipality_id is not None and root.get("id") != expected_municipality_id:
-        raise PayloadContractError("payload municipality id does not match configured target")
+    if expected_municipality_id is not None:
+        municipality_id = root.get("id")
+        canonical_municipality_id = None
+        if isinstance(municipality_id, str):
+            if len(municipality_id) == 5 and municipality_id.isascii() and municipality_id.isdecimal():
+                canonical_municipality_id = municipality_id
+        elif isinstance(municipality_id, int) and not isinstance(municipality_id, bool):
+            if 0 <= municipality_id <= 99999:
+                canonical_municipality_id = f"{municipality_id:05d}"
+        if canonical_municipality_id != expected_municipality_id:
+            raise PayloadContractError("payload municipality id does not match configured target")
     issue_time_raw = root.get("elaborado")
     if not isinstance(issue_time_raw, str) or not issue_time_raw.strip():
         raise PayloadContractError("payload elaborado field is missing, empty or not a string")

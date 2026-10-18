@@ -254,6 +254,48 @@ def test_payload_municipality_id_must_match_configured_target(tmp_path):
     assert next(run_path.rglob("payload.raw")).read_bytes() == payload_bytes
 
 
+@pytest.mark.parametrize(
+    ("payload_id", "expected_status"),
+    [
+        ("07040", "complete"),
+        (7040, "complete"),
+        (7041, "partial"),
+        (True, "partial"),
+        (None, "partial"),
+        (7040.0, "partial"),
+        ("7040", "partial"),
+        (-1, "partial"),
+        (100000, "partial"),
+        ([], "partial"),
+        ({}, "partial"),
+    ],
+)
+def test_payload_municipality_id_canonicalization_preserves_raw_and_metadata(
+    tmp_path, payload_id, expected_status
+):
+    payload = _payload()
+    payload[0]["id"] = payload_id
+    fetcher, _, payload_bytes = _successful_fetcher(payload=payload)
+
+    run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+    metadata_path, metadata = _metadata(run_path)
+    capture_dir = metadata_path.parent
+
+    assert metadata["capture"]["status"] == expected_status
+    assert metadata["municipality"] == {
+        "id": "07040",
+        "name": "Palma",
+        "spatial_match": "municipal_capital",
+    }
+    assert (capture_dir / "payload.raw").read_bytes() == payload_bytes
+    assert metadata["artifacts"]["payload"]["sha256"] == metadata["http"]["payload"]["sha256"]
+    assert verify_checksums(capture_dir) == []
+    assert verify_checksums(run_path) == []
+    assert not any(KEY.encode() in path.read_bytes() for path in run_path.rglob("*") if path.is_file())
+    if expected_status == "partial":
+        assert metadata["payload_structure"] is None
+
+
 def test_payload_with_multiple_municipality_roots_cannot_be_complete(tmp_path):
     payload = _payload() + _payload()
     fetcher, _, payload_bytes = _successful_fetcher(payload=payload)

@@ -110,10 +110,10 @@ La incorporación al repositorio no implicó despliegue ni sustitución del dire
 | TLS SIAR API | 🟢 | operativo con `SIAR_CA_BUNDLE`, manteniendo verificación TLS | retirar workaround cuando MAPA sirva una cadena compatible |
 | Datos históricos SIAR | 🟠 | PRE completo; R1 superado como etapa histórica; R2 en ejecución autónoma; POST pendiente | Quality closeout y Dataset Observacional v1 |
 | Docker / servidor | 🟢 | `init: true` canónico; INC-INFRA-001 resuelta | mantener `init: true` en `siar-sync/docker-compose.yml` |
-| GitHub / monorepo | 🟢 | PR #1–#20 fusionadas; collectors SIAR/AEMET y legacy separados | mantener estado y [hitos](MILESTONES.md) recuperables |
+| GitHub / monorepo | 🟢 | collectors SIAR/AEMET y legacy separados; PR #18–#20 fusionadas | mantener estado y [hitos](MILESTONES.md) recuperables |
 | Forecast SIAR | 🟢 | `SMOKE-FC-001 = PASS`; `BACKUP-FC-001 = PASS`; `/srv` operativo | scheduler experimental y cierre backup/DR |
 | Raw Forecast Capturer | 🟠 | runtime permanente validado; Google Drive + rclone crypt + restore demostrados; scheduler periódico = NO | cerrar gates operativos y comenzar captura prospectiva periódica |
-| AEMET forecast | 🟠 | Collector Track A fusionado (#18), canonicalización (#19), permisos POSIX (#20); A1/A2 PASS, A3 COMPLETE | confirmación E2E final pendiente por timeout operacional; después despliegue prospectivo + backup; Track B OPEN |
+| AEMET forecast | 🟠 | `AEMET-TRACK-A-STABILIZE = PASS`; AEMET final E2E = `DEMONSTRATED`; Collector validado | `AEMET-PROSPECTIVE-PILOT` a 02 solo después de `SIAR-FORECAST-PILOT = RUNNING`; Track B OPEN |
 | Dataset científico | 🟡 | Dataset Observacional v1 aún no generado; depende de Quality closeout | Dataset v1 → FAO-56 PM → Hargreaves → baselines → ML |
 | ET₀ / modelos físicos | 🟡 | existe trabajo previo legacy | revisión científica posterior |
 | Machine Learning | ⚪ | no priorizar todavía | después de datasets reproducibles |
@@ -526,12 +526,22 @@ El producto aceptado es AEMET municipal daily latest forecast, para captura pros
 | AEMET-A1 | PASS |
 | AEMET-A2 | PASS |
 | AEMET-A3 | COMPLETE |
-| Confirmación E2E final | Pendiente por timeout operacional |
+| AEMET-TRACK-A-STABILIZE | PASS |
+| AEMET final E2E | DEMONSTRATED |
+| Siguiente hito operacional | AEMET-PROSPECTIVE-PILOT |
 | Track B | OPEN |
 
 El flujo wrapper → `datos` → payload y el contrato municipal ya tienen evidencia. Se observó `id = 7040` como entero JSON frente al identificador configurado `"07040"`; la canonicalización solo compara y no altera raw. En POSIX, `data_root/runs/YYYY/MM/DD` y el árbol publicado usan `2770`, ficheros `0660`, SGID en directorios y permisos `other = 0`.
 
-La última confirmación E2E sigue pendiente por un timeout operacional; ese timeout no demuestra un defecto del Collector ni revoca los hitos A1/A2 PASS y A3 COMPLETE. El siguiente gate es confirmar el E2E en el runtime objetivo y preparar despliegue prospectivo con backup. No se declara operación periódica AEMET.
+### Handoff AEMET-PROSPECTIVE-PILOT
+
+`AEMET-TRACK-A-STABILIZE = PASS` y `AEMET final E2E = DEMONSTRATED`. La estabilización y validación del Collector quedan completadas; el siguiente hito es operacional.
+
+**Dependencia de asignación:** primero `SIAR-FORECAST-PILOT = RUNNING`; después 02 recibe `AEMET-PROSPECTIVE-PILOT`. Esta es una precondición del handoff, no una afirmación de que el piloto SIAR ya esté RUNNING.
+
+Objetivo futuro del piloto: Collector validado → runtime permanente → `/opt` + `/etc` → `/srv/aemet-forecast/raw` independiente de SIAR → backup rclone crypt → restore validado → scheduler experimental → captura prospectiva. El piloto inicial es **IB04 → Palma → municipio `07040`**. La demostración E2E no implica que esa infraestructura, backup o scheduler ya estén desplegados.
+
+Fuera de este hito: **ET0 = NO; D+n = NO; normalización científica = NO; integración SIAR/AEMET = NO. Track B = OPEN.**
 
 ### Track B — OPEN
 
@@ -612,8 +622,8 @@ Para una futura base DuckDB:
 ## 15. Gates abiertos y prioridades
 
 - **Observaciones / 01:** completar R2, generar y revisar POST, cerrar Quality y preparar Dataset Observacional v1. Un `INVALID_RESPONSE` aislado no detiene globalmente R2.
-- **Infraestructura y Forecast SIAR / 02:** cerrar gates de scheduler y backup/DR, con `/srv` y la prueba de backup ya operativos; no declarar captura periódica hasta validarla.
-- **AEMET / 04:** confirmar E2E final tras el timeout operacional y continuar con despliegue prospectivo y backup. Track B sigue OPEN.
+- **Infraestructura y Forecast SIAR / 02:** llevar `SIAR-FORECAST-PILOT` a RUNNING con sus gates de backup/DR; después recibir el piloto prospectivo AEMET.
+- **AEMET / 04:** estabilización PASS y E2E final DEMONSTRATED; siguiente hito `AEMET-PROSPECTIVE-PILOT`, con handoff a 02 condicionado al piloto SIAR RUNNING. Track B sigue OPEN.
 - **Ciencia:** mantener CATALOG-TZ como investigación semántica no bloqueante por sí sola; definir Dataset v1 y baselines antes de ML.
 
 ## 16. Trabajo paralelo y secuencia científica
@@ -621,14 +631,14 @@ Para una futura base DuckDB:
 | Workstream | Trabajo autónomo actual | Salida siguiente |
 |---|---|---|
 | 01 — Observaciones y Quality | R2 → POST → Quality closeout | Dataset Observacional v1 |
-| 02 — Plataforma y Forecast SIAR | scheduler + backup/DR | captura prospectiva periódica validada |
-| 04 — AEMET | confirmación E2E final | despliegue prospectivo + backup |
+| 02 — Plataforma y Forecast SIAR | SIAR-FORECAST-PILOT + backup/DR | llegar a RUNNING y después asumir AEMET-PROSPECTIVE-PILOT |
+| 04 — AEMET | estabilización PASS; E2E final DEMONSTRATED | handoff del piloto AEMET a 02 cuando SIAR-FORECAST-PILOT esté RUNNING |
 
 La adquisición prospectiva de forecasts no espera a que terminen Dataset v1, los baselines ni ML. Cada fuente comienza a conservar emisiones cuando supera sus propios gates de adquisición, seguridad y persistencia. El cierre observacional tampoco requiere que ambas fuentes forecast hayan terminado su despliegue.
 
 La secuencia científica es Dataset Observacional v1 → FAO-56 PM → Hargreaves → baselines comparables → ML. La semántica D+n, cadencia y correspondencia estación/municipio se validarán antes de construir comparativas predictivas.
 
-Quality PRE está completo, R1 es histórico, R2 está en ejecución y POST pendiente. Forecast SIAR conserva `SMOKE-FC-001` y `BACKUP-FC-001` PASS con scheduler periódico aún NO. AEMET Track A está fusionado, A1/A2 PASS y A3 COMPLETE, con confirmación E2E final pendiente; no se declaran cerradas las fases observacional ni de captura prospectiva.
+Quality PRE está completo, R1 es histórico, R2 está en ejecución y POST pendiente. Forecast SIAR conserva `SMOKE-FC-001` y `BACKUP-FC-001` PASS con scheduler periódico aún NO. AEMET tiene estabilización PASS y E2E final DEMONSTRATED; su piloto prospectivo pasa a 02 después del gate SIAR-FORECAST-PILOT RUNNING. No se declara todavía captura AEMET periódica ni integración científica.
 
 ## 17. Protocolo de actualización de este documento
 

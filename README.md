@@ -439,13 +439,13 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Dataset científico        | 🟡 Próxima etapa                 |
 | Nuevos modelos ML         | 🟡 Próxima etapa                 |
 | Forecast Collector SIAR   | 🟠 runtime permanente y `/srv` operativos; `SMOKE-FC-001` y `BACKUP-FC-001` PASS; scheduler periódico aún NO |
-| AEMET Forecast Collector | 🟠 Track A fusionado (#18–#20); A1/A2 PASS, A3 COMPLETE; confirmación E2E final pendiente por timeout operacional; Track B OPEN |
+| AEMET Forecast Collector | 🟠 estabilización PASS; E2E final DEMONSTRATED; siguiente AEMET-PROSPECTIVE-PILOT a 02 tras SIAR-FORECAST-PILOT RUNNING; Track B OPEN |
 | Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
 | Predicción propia de ET₀  | ⚪ Futura                         |
 | Aplicación web            | ⚪ Futura                         |
 | Kc / necesidades de riego | ⚪ Futura                         |
 
-Los collectors SIAR y AEMET avanzan en paralelo al cierre Quality. Forecast SIAR tiene runtime permanente, Google Drive + rclone crypt y restore demostrados; quedan scheduler y backup/DR. AEMET Track A incorpora canonicalización municipal y permisos POSIX; queda confirmar E2E final y continuar con despliegue prospectivo y backup. Un timeout operacional aislado no demuestra un defecto del Collector. No esperamos a terminar los modelos para empezar a capturar forecasts.
+Los collectors SIAR y AEMET avanzan en paralelo al cierre Quality. Forecast SIAR tiene runtime permanente, Google Drive + rclone crypt y restore demostrados; quedan scheduler y backup/DR. `AEMET-TRACK-A-STABILIZE = PASS` y AEMET final E2E = `DEMONSTRATED`; su próximo hito es `AEMET-PROSPECTIVE-PILOT`, que 02 recibe después de que `SIAR-FORECAST-PILOT` esté RUNNING. La validación del Collector no declara desplegado ese piloto. No esperamos a terminar los modelos para empezar a capturar forecasts.
 
 ---
 
@@ -493,7 +493,7 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-El trabajo actual es paralelo: Quality R2 → POST → Dataset Observacional v1; Forecast SIAR → scheduler y backup/DR; AEMET → confirmación E2E final, despliegue prospectivo y backup. Un `INVALID_RESPONSE` aislado no bloquea globalmente R2.
+El trabajo actual es paralelo: Quality R2 → POST → Dataset Observacional v1; Forecast SIAR → SIAR-FORECAST-PILOT y backup/DR; AEMET → handoff del piloto prospectivo a 02 cuando el piloto SIAR esté RUNNING. Un `INVALID_RESPONSE` aislado no bloquea globalmente R2.
 
 La secuencia científica posterior es Dataset v1 → FAO-56 PM → Hargreaves → baselines comparables → ML. La conservación prospectiva de emisiones forecast comienza al superar los gates propios de cada capturador, sin esperar a los modelos. El estado recuperable y sus hitos están en [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md).
 

@@ -28,8 +28,8 @@ Las fases 1, 2 y 3 están abiertas y avanzan en paralelo; no forman una cadena e
 | Workstream | Trabajo actual | Siguiente salida |
 |---|---|---|
 | 01 — Observaciones / Quality | R2 autónoma → POST → Quality closeout | Dataset Observacional v1 |
-| 02 — Forecast SIAR / infraestructura | scheduler + backup/DR | captura prospectiva periódica validada |
-| 04 — AEMET | confirmación E2E final | despliegue prospectivo + backup |
+| 02 — Forecast SIAR / infraestructura | SIAR-FORECAST-PILOT + backup/DR | llegar a RUNNING; después recibir AEMET-PROSPECTIVE-PILOT |
+| 04 — AEMET | estabilización PASS; E2E final DEMONSTRATED | handoff AEMET-PROSPECTIVE-PILOT a 02 tras SIAR-FORECAST-PILOT RUNNING |
 
 **No esperamos a terminar modelos para empezar a capturar forecasts.** Las emisiones prospectivas se conservan cuando cada capturador supera sus gates operativos, independientemente del calendario de los modelos. Dataset Observacional v1 depende del cierre Quality, no de terminar los despliegues forecast.
 
@@ -262,10 +262,18 @@ Variables prioritarias:
 
 - ✅ **Track A — Collector fusionado:** PR #18 incorporó `aemet_forecast_collector/`; PR #19 añadió canonicalización municipal y PR #20 permisos POSIX de ancestros.
 - ✅ `AEMET-A1 = PASS`; `AEMET-A2 = PASS`; `AEMET-A3 = COMPLETE`.
-- 🟠 Confirmación E2E final pendiente por timeout operacional. No demuestra un defecto del Collector ni revoca los gates anteriores; siguiente trabajo: confirmar E2E → despliegue prospectivo + backup.
+- ✅ `AEMET-TRACK-A-STABILIZE = PASS`; `AEMET final E2E = DEMONSTRATED`. Siguiente hito operacional: `AEMET-PROSPECTIVE-PILOT`.
 - 🟠 **Track B = OPEN:** no se ha demostrado el feed AEMET exacto utilizado por SIAR; su investigación es independiente de Track A.
 
 El payload observado contiene `id = 7040` (entero JSON) y la configuración usa `"07040"`; solo se canonicaliza para comparar, manteniendo raw intacto. La política POSIX es `2770` para `data_root/runs/YYYY/MM/DD` y árbol publicado, `0660` para ficheros, SGID en directorios y `other = 0`.
+
+### AEMET-PROSPECTIVE-PILOT — handoff operacional
+
+La asignación a 02 tiene una dependencia explícita: **primero `SIAR-FORECAST-PILOT = RUNNING`; después 02 recibe `AEMET-PROSPECTIVE-PILOT`**. No se declara cumplida esa precondición solo por haber demostrado E2E AEMET.
+
+Objetivo futuro: Collector validado → runtime permanente → `/opt` + `/etc` → `/srv/aemet-forecast/raw` independiente → backup rclone crypt → restore validado → scheduler experimental → captura prospectiva.
+
+Piloto inicial: **IB04 → Palma → municipio `07040`**. Permanecen fuera del hito: **ET0 = NO; D+n = NO; normalización científica = NO; integración SIAR/AEMET = NO; Track B = OPEN**. El diseño de despliegue se concreta al recibir el workstream 02 la misión; esta actualización no afirma que el piloto esté desplegado.
 
 Límites científicos de Track A:
 
@@ -274,7 +282,7 @@ Límites científicos de Track A:
 - no se ha demostrado recuperación de emisiones históricas;
 - no tiene todavía horizonte D+n ni timezone de emisión científicamente asignados.
 
-La implementación ya no es un trabajo pendiente. Los gates de E2E final, despliegue, backup y operación prospectiva mantienen la FASE 3 abierta.
+Collector y E2E final están validados. El handoff condicionado, runtime permanente, backup/restore, scheduler y captura prospectiva del piloto mantienen la FASE 3 abierta.
 
 ### Regla científica
 
@@ -296,7 +304,7 @@ Nunca utilizar observaciones futuras como inputs.
 Estado:
 
 ```text
-🟠 Track A fusionado; E2E final y operación prospectiva pendientes; Track B OPEN
+🟠 Estabilización PASS; E2E DEMONSTRATED; piloto prospectivo condicionado a SIAR-FORECAST-PILOT RUNNING; Track B OPEN
 ```
 
 ---
@@ -575,14 +583,14 @@ A fecha 2026-10-18:
 | Línea | Gates vigentes | Resultado buscado |
 |---|---|---|
 | 01 | PRE completo; R1 histórico; R2 autónoma → POST → Quality closeout | Dataset Observacional v1 |
-| 02 | smoke y backup PASS; scheduler + cobertura y backup/DR pendientes de cierre | captura prospectiva SIAR periódica |
-| 04 | Collector, canonicalización y permisos fusionados; A1/A2 PASS, A3 COMPLETE → confirmación E2E final | despliegue prospectivo AEMET + backup |
+| 02 | SIAR-FORECAST-PILOT + backup/DR → RUNNING | después recibir AEMET-PROSPECTIVE-PILOT |
+| 04 | AEMET-TRACK-A-STABILIZE PASS; E2E DEMONSTRATED | handoff del piloto AEMET a 02 después de SIAR-FORECAST-PILOT RUNNING |
 
 Un `INVALID_RESPONSE` aislado no bloquea globalmente R2. La auditoría no interpola ni reescribe CSV raw; Recovery solo incorpora registros reales de SIAR mediante el mecanismo canónico, sin imputar, borrar ni editar manualmente observaciones. CATALOG-TZ sigue como investigación semántica separada y no bloqueante por sí sola.
 
 Los workstreams avanzan autónomamente con objetivos, invariantes y STOP fijados por dirección. Resuelven los errores operativos en su propio ámbito y escalan arquitectura, seguridad, integridad raw o semántica científica.
 
-La captura de forecasts **no espera a los modelos**. El camino científico posterior es Dataset v1 → FAO-56 PM → Hargreaves → baselines → ML; después se abordarán validación predictiva y producto. Las fases 1, 2 y 3 siguen abiertas; ningún timeout operacional se registra como revocación automática de hitos ya demostrados.
+La captura de forecasts **no espera a los modelos**. El camino científico posterior es Dataset v1 → FAO-56 PM → Hargreaves → baselines → ML; después se abordarán validación predictiva y producto. Las fases 1, 2 y 3 siguen abiertas. El piloto prospectivo AEMET es un hito operacional independiente de ET0, D+n, normalización científica e integración SIAR/AEMET; Track B permanece OPEN.
 
 # Qué NO priorizar todavía
 

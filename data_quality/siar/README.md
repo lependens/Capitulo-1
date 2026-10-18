@@ -8,4 +8,6 @@ Esta carpeta queda reservada para los informes de Quality Audit v1:
 
 Sus columnas y reglas están definidas en [docs/siar/quality.md](../../docs/siar/quality.md). La situación de adquisición y el estado de certificación constan en [docs/siar/sync-status.md](../../docs/siar/sync-status.md).
 
-**Aún no hay informes ni snapshots.** No añadir aquí datos inventados ni modificar los CSV raw de `datos_siar_baleares/`. Esta carpeta solo recibirá salidas de una auditoría ejecutada y revisada posteriormente.
+**No hay todavía artefactos Quality versionados en esta carpeta.** Quality Audit PRE fue ejecutado externamente y preservado como evidencia; POST permanece pendiente. R1 es una etapa histórica superada y R2 está en ejecución autónoma. Esto no implica que la evidencia PRE no exista ni autoriza generar snapshots ficticios.
+
+La incorporación de artefactos PRE/POST requiere un cambio explícito revisado; este documento no incorpora copias ni resultados. No añadir datos inventados ni modificar los CSV raw de `datos_siar_baleares/`. Esta carpeta solo recibirá salidas de una auditoría ejecutada y revisada.

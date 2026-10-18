@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Última actualización:** 2026-10-13\
+**Última actualización:** 2026-10-18\
 **Objetivo:** definir las fases del proyecto, sus dependencias y los criterios para considerarlas terminadas.
 
 > Este documento describe hacia dónde va el proyecto.  
@@ -21,36 +21,19 @@
 
 ---
 
-## Visión de conjunto
+## Visión de conjunto — trabajo paralelo
 
-```text
-FASE 0
-Repositorio + infraestructura base
-        ↓
-FASE 1
-Observaciones SIAR / SIAR Sync
-        ├─────────────────────────────┐
-        ↓                             ↓
-FASE 2                        FASE 3
-Forecast SIAR                 Forecast meteorológico
-Raw Capture                   AEMET / otros inputs
-        └──────────────┬──────────────┘
-                       ↓
-                    FASE 4
-               Dataset científico
-                       ↓
-         ┌─────────────┴─────────────┐
-         ↓                           ↓
-      FASE 5                      FASE 6
-   ET₀ física/empírica              ML
-         └─────────────┬─────────────┘
-                       ↓
-                    FASE 7
-             Validación predictiva
-                       ↓
-                    FASE 8
-              Web / API / ETc / riego
-```
+Las fases 1, 2 y 3 están abiertas y avanzan en paralelo; no forman una cadena en la que cada adquisición deba esperar a la anterior.
+
+| Workstream | Trabajo actual | Siguiente salida |
+|---|---|---|
+| 01 — Observaciones / Quality | R2 autónoma → POST → Quality closeout | Dataset Observacional v1 |
+| 02 — Forecast SIAR / infraestructura | scheduler + backup/DR | captura prospectiva periódica validada |
+| 04 — AEMET | confirmación E2E final | despliegue prospectivo + backup |
+
+**No esperamos a terminar modelos para empezar a capturar forecasts.** Las emisiones prospectivas se conservan cuando cada capturador supera sus gates operativos, independientemente del calendario de los modelos. Dataset Observacional v1 depende del cierre Quality, no de terminar los despliegues forecast.
+
+Después, la secuencia científica es **Dataset v1 → FAO-56 PM → Hargreaves → baselines → ML**, seguida de validación predictiva y producto Web/API/ETc/riego. Las fases 4–8 desarrollan esa evolución.
 
 ---
 
@@ -119,7 +102,7 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 - ✅ backfill temporal de adquisición alcanzado para 12 estaciones;
 - ✅ Quality Audit v1 PRE completado: 12 estaciones (9 ACTIVE, 3 CLOSED), 11 WARN, 1 FAIL (IB09), 0 INCOMPLETE;
 - ✅ cobertura PRE ponderada 96,99 %: 75.494 días con dato de 77.840 esperados; 2.346 huecos;
-- 🟠 Quality Recovery R1 = PAUSED en 206/431 bloques por `UNEXPLAINED_CHANGE` IB07; POST = NOT GENERATED. El PRE sigue válido y conserva los 2.346 huecos PENDING_RETRY / NOT_ATTEMPTED;
+- 🟠 Quality Recovery: R1 superado como etapa histórica; R2 en ejecución autónoma; POST pendiente. Los 2.346 huecos y sus estados pertenecen al snapshot PRE inmutable, no al estado actual de R2;
 - 🟠 CATALOG-TZ: discrepancia sistemática snapshot local 31 frente a Info/ESTACIONES 30, pendiente de investigación semántica; no corregir automáticamente `estaciones_baleares.csv` ni usar el campo científicamente hasta conocer su significado. Por sí sola no degrada PRE ni bloquea certificación salvo evidencia de efecto en periodo/semántica;
 - ✅ saneamiento operativo posterior a v2.3.2: 12/12 CSV con modo 0644, SHA-256 PRE = POST 12/12, contenido raw intacto;
 - ✅ v2.3.2 desplegada y validada; lógica correctora de permisos incluida desde esa versión;
@@ -127,9 +110,9 @@ Mantener una copia histórica fiable y actualizable de las observaciones SIAR de
 - ✅ v2.3.3 canónica en GitHub tras PR #4;
 - ✅ INC-INFRA-001 resuelta y init: true canónico.
 
-IB09 permanece FAIL porque el CSV raw conserva la observación 2005-10-23, anterior a la Fecha_Instalacion oficial 2005-10-24; su Fecha_Baja oficial es 2018-10-10. La fila no se elimina y queda fuera del periodo oficial.
+IB09 tuvo resultado FAIL en PRE por la observación 2005-10-23 anterior a la Fecha_Instalacion oficial 2005-10-24 (Fecha_Baja 2018-10-10). Se preserva la evidencia histórica; el resultado POST aún no existe.
 
-La ejecución actual de SIAR Sync terminó por ahora. IB07 tiene Fecha_Baja oficial 2012-11-13; el HEAD previo terminaba en 2012-11-12 y aparece una fila nueva 2012-11-13, cuyo origen de escritura no está demostrado. No se clasifica la fila como válida ni inválida. `FORENSIC-IB07-001` está autorizado y R1 permanece detenido hasta resolverlo.
+El antecedente R1 de IB07 ya no define una pausa operativa vigente: R2 avanza autónomamente. Un `INVALID_RESPONSE` aislado se trata en el bloque o estación afectados y no bloquea globalmente R2. Esta actualización no infiere dictámenes nuevos sobre filas raw ni genera POST.
 
 ### Criterio de salida
 
@@ -149,7 +132,7 @@ Ampliación geográfica futura: SIAR Sync España no forma parte de la implement
 Estado:
 
 ```text
-🟠 Quality PRE completado; Recovery / POST y certificación pendientes
+🟠 PRE completo; R1 histórico; R2 en ejecución; POST y Quality closeout pendientes
 ```
 
 ---
@@ -189,7 +172,7 @@ Conservar cada emisión publicada por SIAR antes de que pueda desaparecer.
 - ✅ integración en `main`;
 - ✅ `source.source_issue_at = null`.
 
-El código actual está en `forecast_collector/`. `LIVE-IB04 #2` está completo. No hay scheduler, captura periódica ni multiestación.
+El código actual está en `forecast_collector/`. Runtime permanente, `SMOKE-FC-001` y `BACKUP-FC-001` están validados; el scheduler periódico aún NO está activo. La cobertura y el backup de ampliaciones deben verificarse antes de automatizarlas.
 
 Arquitectura aprobada:
 
@@ -238,7 +221,7 @@ Resultados y gates siguientes:
 - 🟠 confirmar material crypt recuperable fuera del servidor; completar `FC-STATIONS-001`, `FC-MULTI-SMOKE-001` y backup del multi-smoke; scheduler experimental después;
 - ⚪ determinar cadencia real, semántica D+N y parser/normalización posterior.
 
-Scheduler = NO; captura periódica = NO; multiestación = NO. El Collector no está desplegado de forma periódica. La FASE 2 permanece abierta.
+Scheduler periódico = NO. El workstream 02 continúa con scheduler, cobertura operativa y backup/DR; el PASS de la prueba de backup no cierra por sí solo la recuperación ante pérdida total del servidor. La FASE 2 permanece abierta.
 
 ### Criterio de salida
 
@@ -277,17 +260,21 @@ Variables prioritarias:
 
 ### Tracks AEMET
 
-- ✅ **Track A — ACCEPTED:** AEMET municipal daily latest forecast → captura prospectiva append-only → futuro benchmark Hargreaves. Estado: `AEMET-A1 = BLOCKED_TRANSPORT`, `AEMET-A2 = PASS`, `AEMET-A3 = NOT READY`. Credencial disponible; bloqueo de transporte. Endpoint OpenData sin validación empírica.
-- 🟠 **TRACK-B = OPEN:** el feed exacto de AEMET utilizado por SIAR no está demostrado.
+- ✅ **Track A — Collector fusionado:** PR #18 incorporó `aemet_forecast_collector/`; PR #19 añadió canonicalización municipal y PR #20 permisos POSIX de ancestros.
+- ✅ `AEMET-A1 = PASS`; `AEMET-A2 = PASS`; `AEMET-A3 = COMPLETE`.
+- 🟠 Confirmación E2E final pendiente por timeout operacional. No demuestra un defecto del Collector ni revoca los gates anteriores; siguiente trabajo: confirmar E2E → despliegue prospectivo + backup.
+- 🟠 **Track B = OPEN:** no se ha demostrado el feed AEMET exacto utilizado por SIAR; su investigación es independiente de Track A.
 
-Límites de Track A:
+El payload observado contiene `id = 7040` (entero JSON) y la configuración usa `"07040"`; solo se canonicaliza para comparar, manteniendo raw intacto. La política POSIX es `2770` para `data_root/runs/YYYY/MM/DD` y árbol publicado, `0660` para ficheros, SGID en directorios y `other = 0`.
 
-- el producto municipal no es un forecast puntual de una estación SIAR;
-- por sí solo no permite calcular FAO-56 Penman–Monteith completo;
-- no se ha demostrado histórico de emisiones;
-- todavía no tiene horizonte D+n asignado.
+Límites científicos de Track A:
 
-Contrato empírico raw y diseño del Collector para captura prospectiva siguen pendientes. Aceptar el producto para Track A no cierra la investigación de Track B ni completa la FASE 3.
+- el producto municipal representa la capital municipal, no un forecast puntual SIAR;
+- por sí solo no permite FAO-56 Penman–Monteith completo;
+- no se ha demostrado recuperación de emisiones históricas;
+- no tiene todavía horizonte D+n ni timezone de emisión científicamente asignados.
+
+La implementación ya no es un trabajo pendiente. Los gates de E2E final, despliegue, backup y operación prospectiva mantienen la FASE 3 abierta.
 
 ### Regla científica
 
@@ -309,16 +296,16 @@ Nunca utilizar observaciones futuras como inputs.
 Estado:
 
 ```text
-🟠 investigación
+🟠 Track A fusionado; E2E final y operación prospectiva pendientes; Track B OPEN
 ```
 
 ---
 
-# FASE 4 — Dataset científico
+# FASE 4 — Dataset Observacional v1 y datasets científicos
 
 ## Objetivo
 
-Separar adquisición raw de datos preparados para investigación.
+Separar adquisición raw de datos preparados para investigación. La primera entrega es Dataset Observacional v1, después de R2, POST y Quality closeout. No requiere esperar a que los forecasts operen periódicamente; sus emisiones se acumulan en paralelo para comparativas posteriores.
 
 Arquitectura prevista:
 
@@ -338,6 +325,7 @@ datasets versionados/reproducibles
 
 ### Trabajo previsto
 
+- 🟡 definir Dataset Observacional v1 con trazabilidad raw/Quality y criterios de inclusión explícitos;
 - ⚪ esquema científico;
 - ⚪ parser de observaciones;
 - ⚪ parser de forecast;
@@ -378,10 +366,14 @@ Estado:
 
 Establecer baselines científicos robustos y reproducibles.
 
-Métodos previstos:
+Orden de baselines después de Dataset v1:
 
-- FAO-56 Penman-Monteith;
-- Hargreaves-Samani;
+1. FAO-56 Penman–Monteith.
+2. Hargreaves-Samani.
+3. Comparación y validación formal de baselines antes de ML.
+
+Métodos y referencias adicionales:
+
 - otros métodos empíricos relevantes;
 - ET₀ proporcionada por SIAR como referencia/comparación.
 
@@ -576,54 +568,21 @@ No constituye una fase final; acompaña a todas las demás.
 
 ---
 
-# Ruta crítica actual
+# Rutas actuales en paralelo
 
-A fecha 2026-10-13:
+A fecha 2026-10-18:
 
-```text
-FASE 1
-Quality Audit PRE ✅
-   ↓
-Quality Recovery R1 PAUSED · 206/431 · UNEXPLAINED_CHANGE IB07 🟠
-   ↓
-FORENSIC-IB07-001 autorizado; resolver origen antes de reanudar R1 🟠
-   ↓
-POST y certificación observacional 🟠
+| Línea | Gates vigentes | Resultado buscado |
+|---|---|---|
+| 01 | PRE completo; R1 histórico; R2 autónoma → POST → Quality closeout | Dataset Observacional v1 |
+| 02 | smoke y backup PASS; scheduler + cobertura y backup/DR pendientes de cierre | captura prospectiva SIAR periódica |
+| 04 | Collector, canonicalización y permisos fusionados; A1/A2 PASS, A3 COMPLETE → confirmación E2E final | despliegue prospectivo AEMET + backup |
 
-La auditoría no interpola ni reescribe CSV raw. Recovery no interpolará, imputará, borrará ni editará manualmente observaciones; los registros reales devueltos por SIAR para fechas ausentes pueden incorporarse mediante el mecanismo canónico de SIAR Sync.
+Un `INVALID_RESPONSE` aislado no bloquea globalmente R2. La auditoría no interpola ni reescribe CSV raw; Recovery solo incorpora registros reales de SIAR mediante el mecanismo canónico, sin imputar, borrar ni editar manualmente observaciones. CATALOG-TZ sigue como investigación semántica separada y no bloqueante por sí sola.
 
-CATALOG-TZ (snapshot local 31 frente a Info/ESTACIONES 30) queda pendiente de investigación semántica, sin corrección automática. No se usará ese campo científicamente hasta conocer su significado. Por sí solo no degrada PRE ni bloquea certificación salvo que se demuestre un efecto en el periodo o la semántica de los datos.
+Los workstreams avanzan autónomamente con objetivos, invariantes y STOP fijados por dirección. Resuelven los errores operativos en su propio ámbito y escalan arquitectura, seguridad, integridad raw o semántica científica.
 
-FASE 2
-E2E / LIVE-IB04 #2 ✅
-   ↓
-infra preflight permanente ✅
-   ↓
-SMOKE-FC-001 PASS ✅
-   ↓
-BACKUP-FC-001 PASS ✅
-   ↓
-confirmar crypt fuera del servidor 🟠
-   ↓
-FC-STATIONS-001 → FC-MULTI-SMOKE-001 🟠
-   ↓
-backup multi-smoke 🟠
-   ↓
-scheduler experimental (después)
-
-FASE 3
-AEMET-A1 BLOCKED_TRANSPORT 🟠
-   ↓
-AEMET-A2 PASS ✅
-   ↓
-AEMET-A3 NOT READY 🟠
-   ↓
-contrato raw empírico / diseño Collector 🟠
-
-TRACK-B OPEN 🟠
-```
-
-Las fases 1, 2 y 3 permanecen abiertas. AEMET Track A no equivale a un forecast puntual de estación SIAR ni demuestra histórico de emisiones.
+La captura de forecasts **no espera a los modelos**. El camino científico posterior es Dataset v1 → FAO-56 PM → Hargreaves → baselines → ML; después se abordarán validación predictiva y producto. Las fases 1, 2 y 3 siguen abiertas; ningún timeout operacional se registra como revocación automática de hitos ya demostrados.
 
 # Qué NO priorizar todavía
 

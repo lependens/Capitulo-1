@@ -1,6 +1,6 @@
 # Estado de sincronización SIAR — Baleares
 
-**Actualizado:** 2026-10-13\
+**Actualizado:** 2026-10-18\
 **Versión SIAR Sync en producción:** v2.3.3
 **Backfill temporal:** alcanzado para las 12 estaciones
 **Quality Audit v1 PRE:** COMPLETADO — válido
@@ -20,13 +20,13 @@
 | Huecos PRE | 2.346 |
 | Cobertura ponderada | 96,99 % |
 
-En el snapshot PRE, los 2.346 huecos están registrados como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. El PRE no declaró ningún `CONFIRMED_NO_DATA`; Quality Recovery R1 está pausado y no se ha generado un POST.
+En el snapshot PRE, los 2.346 huecos quedaron registrados como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. El PRE no declaró ningún `CONFIRMED_NO_DATA`; esos estados son inmutables y no describen necesariamente la recuperación actual.
 
-Quality Recovery R1 = `PAUSED` en checkpoint 206/431 bloques; causa = `UNEXPLAINED_CHANGE` IB07; `POST = NOT GENERATED`. `FORENSIC-IB07-001` está autorizado y R1 permanece detenido hasta resolverlo.
+R1 queda superado como etapa histórica. **R2 está en ejecución autónoma; POST permanece pendiente.** Un `INVALID_RESPONSE` aislado se registra y trata dentro del ámbito afectado, sin bloquear globalmente R2. El cierre Quality requiere terminar la recuperación y revisar POST; esta actualización no genera artefactos ni certifica todavía el dataset.
 
-## Hallazgo `UNEXPLAINED_CHANGE` IB07
+## Antecedente histórico R1 — IB07
 
-IB07 tiene `Fecha_Baja` oficial **2012-11-13**. El HEAD previo terminaba en **2012-11-12** y ahora aparece una fila de **2012-11-13**. El origen de la escritura aún no está demostrado; no se declara la fila válida ni inválida. `FORENSIC-IB07-001` está autorizado. Quality Recovery R1 permanece detenido hasta resolverlo.
+El antecedente documentado de R1 fue: IB07 con `Fecha_Baja` oficial **2012-11-13**, HEAD previo hasta **2012-11-12** y una fila nueva de **2012-11-13**. El checkpoint 206/431 y `FORENSIC-IB07-001` pertenecen al historial de R1; no constituyen una pausa vigente de R2. Este resumen no infiere un nuevo dictamen científico sobre esa fila.
 
 ## Hallazgo IB09
 
@@ -35,7 +35,7 @@ El periodo oficial de IB09 es:
 - Fecha_Instalacion: **2005-10-24**
 - Fecha_Baja: **2018-10-10**
 
-El CSV raw conserva una fila fechada **2005-10-23**, anterior al inicio oficial. Se conserva sin cambios y se cuenta fuera del periodo oficial. Por este hallazgo IB09 mantiene el resultado **FAIL**; no se ha corregido ni eliminado la observación.
+El PRE detectó una fila raw fechada **2005-10-23**, anterior al inicio oficial; la conservó sin cambios y la contó fuera del periodo. Por ello IB09 tuvo resultado **FAIL en PRE**. Es un hallazgo del snapshot histórico; todavía no se dispone del resultado POST.
 
 ## Catálogo de estaciones
 
@@ -51,10 +51,10 @@ Resultado verificado:
 - **SHA-256 PRE = POST en 12/12**;
 - contenido raw sin cambios.
 
-No se reescribieron filas, esquema, fechas ni observaciones.
+Estas verificaciones corresponden al saneamiento puntual de permisos: no se reescribieron filas, esquema, fechas ni observaciones durante esa operación. No describen los posibles cambios de contenido producidos posteriormente por Recovery.
 
 ## Estado de adquisición
 
-Los CSV canónicos presentes son IB01–IB11 e IB101. Quality Audit PRE permanece válido. Quality Recovery R1 sigue pausado en 206/431 bloques por `UNEXPLAINED_CHANGE` IB07; `POST = NOT GENERATED`. `FORENSIC-IB07-001` está autorizado y R1 no debe reanudarse hasta resolver el hallazgo.
+Los CSV canónicos presentes son IB01–IB11 e IB101. PRE está completo, R1 es histórico, R2 avanza autónomamente y POST sigue pendiente. El siguiente hito es Quality closeout y, después, Dataset Observacional v1; la captura prospectiva de forecasts avanza en paralelo.
 
 Las políticas, reglas de clasificación y esquemas de informes están en [Quality Audit v1](quality.md). Este documento resume el estado comunicado; no genera ni contiene snapshots o informes de auditoría.

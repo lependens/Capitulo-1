@@ -8,7 +8,13 @@ v0.1 entered `main` through PR #8. PR #12 added the validated shared-group stora
 
 The SIAR E2E contract has been manually demonstrated for IB04 — Son Ferriol, Mallorca, Aguacate: `/inicio` → AJAX `/validarForm` → normal form POST `/calculo` → same-session GET `/exportCSV`. R34 demonstrated `C1 + G1 + G2` as a sufficient payload for the tested IB04/Aguacate `/calculo` scenario. The current example configuration conservatively retains the additional G3 fields (`sEstacion`, `chkComarca`, `comarcaSelect`); their presence is not evidence that they are required. `fechaInicial` and `fechaFinal` are intentionally absent. SIAR returned a ZIP containing one CSV with seven forecast rows and columns `Fecha`, `Kc`, `ET0`, `ETc`, `Pe`, and `ETc - Pe`; the HTML result and CSV agreed on dates and forecast values.
 
-`LIVE-IB04 #2` is complete and the SIAR E2E contract has been demonstrated; PR #14 is merged. This code adaptation is not deployed. Permanent storage under `/srv` and off-site backup remain pending coordination with 02; these are the next gates before deployment. Automated tests remain synthetic and do not contact SIAR.
+### Permanent runtime and backup
+
+The permanent runtime is validated as `siar-forecast`, with functional release `e850827e24cff11ae46f51c9bc3e8a2f36b0d2da` and Python 3.14.4. `/opt/siar-forecast` and `/etc/siar-forecast` are operational; `data_root = /srv/siar-forecast/raw` is provisioned and validated.
+
+`SMOKE-FC-001 = PASS` demonstrated a complete IB04/Aguacate run and capture, verified TLS, hashes/schemas, shared-group permissions and safe omission of sensitive HTML. `BACKUP-FC-001 = PASS` demonstrated Google Drive through rclone crypt and an independent restore with hashes/schemas validated. Backup uses `rclone copy`, not `sync`; raw remains outside Git. Recovery after total server loss still requires separately recoverable crypt material and is not implied by the backup test alone.
+
+The periodic scheduler is external and not active. Runtime and one-shot smoke validation do not mean periodic capture is deployed. Scheduler, coverage and backup/DR are the next operational workstream. Automated tests remain synthetic and do not contact SIAR. See the [consolidated project status](../docs/PROJECT_STATUS.md) for current gates.
 
 The example station and form values are configuration examples only. The SIAR E2E form contract was demonstrated for IB04; verify station configuration before a future capture. No secrets belong in the TOML file.
 

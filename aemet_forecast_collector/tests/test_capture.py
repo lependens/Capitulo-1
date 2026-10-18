@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 import json
+import os
 from pathlib import Path
+import stat
 
 import pytest
 from jsonschema import Draft202012Validator, FormatChecker, ValidationError
@@ -391,6 +393,64 @@ def test_each_run_is_append_only_for_same_or_changed_issue_payload(tmp_path, pay
         assert first_payload != second_payload
     else:
         assert first_payload == second_payload
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX permission semantics required")
+def test_posix_permissions_cover_data_root_ancestors_independent_of_umask(tmp_path):
+    data_root = tmp_path / "raw"
+    data_root.mkdir(mode=0o775)
+    os.chmod(data_root, 0o775)
+
+    original_umask = os.umask(0o077)
+    try:
+        first_fetcher, first_wrapper, first_payload = _successful_fetcher()
+        first_run = capture_run(_config(data_root), api_key=KEY, fetcher=first_fetcher, now=lambda: NOW)
+        second_fetcher, second_wrapper, second_payload = _successful_fetcher()
+        second_run = capture_run(_config(data_root), api_key=KEY, fetcher=second_fetcher, now=lambda: NOW)
+    finally:
+        os.umask(original_umask)
+
+    assert first_run != second_run
+    expected_ancestors = [
+        data_root,
+        data_root / "runs",
+        data_root / "runs" / "2026",
+        data_root / "runs" / "2026" / "10",
+        data_root / "runs" / "2026" / "10" / "13",
+    ]
+    for directory in expected_ancestors:
+        assert stat.S_IMODE(directory.stat().st_mode) == 0o2770
+        assert directory.stat().st_mode & stat.S_ISGID
+        assert stat.S_IMODE(directory.stat().st_mode) & 0o007 == 0
+
+    for run_path, wrapper_bytes, payload_bytes in (
+        (first_run, first_wrapper, first_payload),
+        (second_run, second_wrapper, second_payload),
+    ):
+        for path in [run_path, *[item for item in run_path.rglob("*") if item.is_dir()]]:
+            assert stat.S_IMODE(path.stat().st_mode) == 0o2770
+            assert path.stat().st_mode & stat.S_ISGID
+            assert stat.S_IMODE(path.stat().st_mode) & 0o007 == 0
+        for path in [item for item in run_path.rglob("*") if item.is_file()]:
+            assert stat.S_IMODE(path.stat().st_mode) == 0o660
+        capture_dir = next(run_path.glob("IB04/cap_*"))
+        assert (capture_dir / "wrapper.raw").read_bytes() == wrapper_bytes
+        assert (capture_dir / "payload.raw").read_bytes() == payload_bytes
+        assert verify_checksums(capture_dir) == []
+        assert verify_checksums(run_path) == []
+
+
+@pytest.mark.skipif(os.name == "nt", reason="POSIX filesystem object semantics required")
+def test_non_directory_in_data_root_chain_fails_before_http(tmp_path):
+    data_root = tmp_path / "raw"
+    data_root.mkdir()
+    (data_root / "runs").write_text("not a directory", encoding="utf-8")
+    fetcher = SequenceFetcher()
+
+    with pytest.raises(NotADirectoryError, match="expected normal directory"):
+        capture_run(_config(data_root), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
+
+    assert fetcher.calls == []
 
 
 def test_atomic_publication_failure_leaves_no_visible_run(tmp_path, monkeypatch):

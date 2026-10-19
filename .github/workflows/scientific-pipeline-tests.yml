@@ -4,11 +4,17 @@ on:
   pull_request:
     paths:
       - "scientific_pipeline/**"
+      - "data_quality/siar/**"
+      - "datos_siar_baleares/**"
+      - "estaciones_baleares.csv"
       - ".github/workflows/scientific-pipeline-tests.yml"
   push:
     branches: [main]
     paths:
       - "scientific_pipeline/**"
+      - "data_quality/siar/**"
+      - "datos_siar_baleares/**"
+      - "estaciones_baleares.csv"
       - ".github/workflows/scientific-pipeline-tests.yml"
 
 permissions:

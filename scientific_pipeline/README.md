@@ -29,6 +29,15 @@ python -m siar_science run-baselines --dataset ./derived/observational-v1.json -
 
 `build-dataset` verifica el gate `SIAR-QUALITY-CLOSEOUT`, autorización y hashes, los tres informes POST y las fuentes; genera un dataset nuevo. No descarga, repara o reescribe observaciones. El [contrato de handoff](docs/contracts.md) fija rutas, campos y correspondencia con los esquemas oficiales Quality.
 
+El handoff distingue dos SHA obligatorios: `audit_source_repo_sha` identifica el
+commit realmente auditado por POST y `source_repo_sha` la publicación canónica
+de los CSV, catálogo y POST. Pueden ser diferentes: los informes conservan su
+`repo_git_sha`, validado contra el primero, y la continuidad con el segundo se
+comprueba mediante los hashes de todos los archivos y del catálogo. El segundo
+no es el commit del propio handoff; este puede publicarse después, apuntando a
+una publicación canónica que ya contiene los artefactos. No se infiere el SHA
+auditado si falta y no se reescribe POST para hacerlos coincidir.
+
 `validate` verifica integridad y elegibilidad científica sin producir un valor ET₀ ficticio. `run-baselines` calcula ambos métodos y sus evaluaciones propias y pareadas en una ejecución. También se ofrecen etapas independientes:
 
 ```powershell
@@ -40,6 +49,11 @@ python -m siar_science evaluate --dataset ./derived/observational-v1.json --pred
 `evaluate` consume predicciones ya calculadas: `--predictions` es obligatorio y repetible. Cada archivo debe corresponder al mismo `dataset_id` y hash de bytes del dataset; los identificadores de método no pueden solaparse. Puede recibir el archivo combinado de `run-baselines` en lugar de los dos archivos individuales. No vuelve a calcular modelos para sustituir silenciosamente sus entradas.
 
 Los artefactos de predicción conservan la identidad del productor y su configuración. La evaluación verifica el estado exitoso y los parámetros versionados, conservando el origen de cada archivo aunque proceda de otra revisión compatible. Con un solo modelo, su cohorte propia sigue disponible y la cohorte pareada PM/HS tiene n=0.
+
+Dataset, manifiestos y predicciones conservan ambos SHA de procedencia; las
+métricas serializadas incluyen también ambos campos. La evaluación rechaza
+predicciones cuyos SHA auditado/canónico no correspondan al dataset. Esta
+separación no cambia PM, HS, QC, elegibilidad, unidades ni fórmulas de métricas.
 
 Los comandos con `--dataset` admiten opcionalmente `--pipeline-sha` con el SHA exacto de la implementación revisada. Sin esa opción se identifica el checkout disponible. No usar un identificador inventado ni interpretar un SHA declarado como certificado de árbol limpio.
 

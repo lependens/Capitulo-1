@@ -24,7 +24,7 @@ def dataset_fixture():
     third.update(date="2001-07-08")
     third["values"].update(Fecha="2001-07-08", EtPMon=None, TempMedia=None)
     return dict(schema_version="observational-v1", dataset_id="controlled-synthetic-only",
-                source_repo_sha="a"*40, source_data_hashes={"controlled-synthetic.csv": "b"*64},
+                audit_source_repo_sha="d"*40, source_repo_sha="a"*40, source_data_hashes={"controlled-synthetic.csv": "b"*64},
                 quality_post={"id": "SYNTHETIC-POST", "sha256": "c"*64}, units=dict(UNITS),
                 stations={"SYNTH": {"latitude_deg": 50.8, "altitude_m": 100}}, rows=[row, second, third],
                 missing_days=[dict(station_code="SYNTH", date="2001-07-09", observation_status="PENDING_RETRY")])

@@ -13,7 +13,8 @@ El JSON de handoff incluye:
 | `gate` | Literal `SIAR-QUALITY-CLOSEOUT` |
 | `authorized` | `true`; representa autorización existente de 00, no autoautorización del adaptador |
 | `dataset_id` | Identidad inmutable del dataset a construir |
-| `source_repo_sha` | Commit exacto de adquisición |
+| `audit_source_repo_sha` | SHA Git obligatorio de 40 caracteres hexadecimales: commit exacto utilizado por Quality Audit POST |
+| `source_repo_sha` | SHA Git obligatorio de 40 caracteres hexadecimales: publicación canónica que ya contiene las fuentes, el catálogo y Quality POST utilizados |
 | `units` | Unidades aceptadas para las variables de entrada |
 | `stations` | Metadatos identificados por código, latitud decimal y altitud; convenciones y evidencias disponibles |
 | `catalog` | `{path, sha256}` del snapshot de catálogo; hash igual a `estaciones_catalog_sha256` de POST |
@@ -24,6 +25,38 @@ Las rutas del handoff son relativas a su propio directorio. `quality_post.path` 
 
 Verificar hashes, identidad, columnas, unicidad, fechas, periodos, estados y correspondencia entre los tres informes, catálogo y fuentes. Las contradicciones se devuelven a 00; nunca se reparan silenciosamente. Un JSON arbitrario con `authorized: true` no acredita autoridad por sí mismo: la publicación y revisión del handoff forman parte del control de entrada.
 
+### Identidades auditada y canónica: contrato de dos SHA
+
+Los tres informes POST conservan su `repo_git_sha` original. El constructor exige
+`POST.repo_git_sha == handoff.audit_source_repo_sha` en cada registro, además de
+la trazabilidad común entre informes. No exige igualdad con `source_repo_sha`.
+Para el cierre comunicado por 00, el commit auditado es
+`18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865`; no se modifica POST para sustituirlo
+por un commit posterior.
+
+`audit_source_repo_sha` y `source_repo_sha` pueden ser distintos o iguales.
+La continuidad audit → canonical se demuestra para **todos** los archivos de la
+publicación: el conjunto de `source_data_hashes` debe coincidir con los archivos
+del manifest POST, cada hash debe ser igual a `canonical_sha256` y los bytes
+leídos deben producir ese mismo SHA-256. Para el cierre Baleares son los 12 CSV.
+Se conserva además `catalog.sha256 == estaciones_catalog_sha256` del POST y la
+verificación de bytes de catálogo, paquete y los tres informes. Separar los SHA
+Git no relaja ninguna comprobación de integridad.
+
+**Sin autorreferencia Git:** `source_repo_sha` no identifica el commit del propio
+handoff. Debe referenciar una publicación canónica anterior que ya contiene los
+12 CSV exactos, el catálogo correspondiente y Quality POST publicado. El handoff
+puede generarse/versionarse después y apuntar a ese commit. El constructor local
+verifica los bytes entregados contra POST; no inventa ni descubre el SHA de
+publicación, ni convierte por sí solo una declaración de commit en certificación
+institucional.
+
+Ambas identidades son obligatorias en el dataset normalizado. Un handoff o dataset
+sin `audit_source_repo_sha`, o con un SHA inválido, se rechaza sin inferirlo de
+`source_repo_sha`. Un artefacto anterior al cambio necesita la procedencia
+auditada explícita antes de validarse bajo este contrato; nunca modificar raw
+o POST para suplirla.
+
 ## Dataset Observational v1
 
 Representación preparada: JSON UTF-8, `schema_version: observational-v1`. La construcción consume el handoff; no descarga datos ni escribe sobre sus fuentes.
@@ -31,7 +64,8 @@ Representación preparada: JSON UTF-8, `schema_version: observational-v1`. La co
 | Campo | Semántica |
 |---|---|
 | `dataset_id` | Identificador inmutable, nunca reutilizado para bytes distintos |
-| `source_repo_sha` | Commit de adquisición auditado |
+| `audit_source_repo_sha` | Procedencia del audit: commit exacto preservado por Quality POST |
+| `source_repo_sha` | Procedencia de la publicación canónica de fuentes, catálogo y Quality POST; no commit del handoff |
 | `source_data_hashes` | Hashes de fuentes originales |
 | `quality_post` | Identidad/hash del paquete POST y referencias conservadas |
 | `units` | Unidades normalizadas aceptadas; no certificación instrumental exhaustiva |
@@ -102,3 +136,11 @@ Interfaz de módulo: `python -m siar_science`. `build-dataset` consume `--handof
 Las ejecuciones escriben un directorio nuevo sin sobrescribir resultados. Contiene `predictions.json`, `metrics.json` y `manifest.json`; en validación se conservan metadatos y elegibilidad por fila sin ET₀ calculada, con métricas vacías. Un resultado no calculable es `null` con motivo. Las rutas de outputs son relativas al directorio de ejecución y los hashes SHA-256 corresponden a bytes realmente escritos. Las predicciones transportan producer: identidad/hashes del código, parámetros, políticas, estado y referencias upstream; evaluate exige productor exitoso y parámetros coincidentes con el identificador versionado, y conserva esa autoría en el nuevo manifest. La cohorte paired exige siempre PM y HS, incluso al evaluar un solo modelo: si falta otro modelo su n es cero.
 
 El manifiesto identifica dataset/hash, fuentes, POST/catálogo, SHA y estado del pipeline, versión/entorno, modelos/constantes/políticas, configuración, cohortes/particiones, conteos, timestamps UTC, archivos y hashes, flags y limitaciones activas. Registra la convención SIAR de 2 m y procedencia parcial. No presentar un SHA suministrado como prueba de checkout limpio ni un ensayo sintético como ejecución del dataset final. Un fallo debe quedar distinguido de éxito y no publicar resultados parciales etiquetados como completos.
+
+Dataset, run manifest y artefactos `predictions.json` conservan ambos campos
+`audit_source_repo_sha` y `source_repo_sha`. Cada fila de métricas serializada
+conserva igualmente las dos identidades, sin modificar los cálculos de métricas;
+las colecciones vacías siguen vinculadas mediante el manifest del run. La
+evaluación verifica ambos SHA de los artefactos importados frente al dataset,
+además de su identidad y hash de bytes. Ningún output sustituye el SHA del audit
+por el de publicación ni por el SHA del código del pipeline.

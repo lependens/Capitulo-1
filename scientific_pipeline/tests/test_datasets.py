@@ -27,7 +27,7 @@ def csv_bytes(header, rows):
 def synthetic_dataset():
     values = {key: None for key in COLUMNS}
     values.update(Fecha="2020-02-29", Estacion="SYNTH", TempMedia=15, TempMin=10, TempMax=20)
-    return {"schema_version": "observational-v1", "dataset_id": "synthetic-only", "source_repo_sha": "a"*40,
+    return {"schema_version": "observational-v1", "dataset_id": "synthetic-only", "audit_source_repo_sha": "a"*40, "source_repo_sha": "a"*40,
             "source_data_hashes": {"synthetic.csv": "b"*64}, "quality_post": {"id": "SYNTH-POST", "sha256": "c"*64},
             "units": dict(UNITS), "stations": {"SYNTH": {"latitude_deg": 39.5, "altitude_m": None}},
             "rows": [{"station_code": "SYNTH", "date": "2020-02-29", "values": values,
@@ -116,6 +116,7 @@ class FutureHandoffTests(unittest.TestCase):
         self.package = {"phase": "POST", "reports": {}}
         self.handoff = {"gate": "SIAR-QUALITY-CLOSEOUT", "authorized": True, "dataset_id": "synthetic-closeout", "source_repo_sha": "a"*40, "source_data_hashes": {"synthetic.csv": digest(self.raw)}, "units": dict(UNITS), "stations": {"SYNTH": {"latitude_deg": 39.5, "altitude_m": None}}, "quality_post": {"id": "SYNTH-POST", "path": "post.json", "sha256": ""}, "units_provenance_status": "PARTIAL"}
         self.handoff["catalog"] = {"path": "catalog.csv", "sha256": digest(self.catalog_bytes)}
+        self.handoff["audit_source_repo_sha"] = "a"*40
         self.save()
 
     def save(self):
@@ -127,6 +128,89 @@ class FutureHandoffTests(unittest.TestCase):
         (self.base/"post.json").write_bytes(content)
         self.handoff["quality_post"]["sha256"] = digest(content)
         self.handoff_path.write_text(json.dumps(self.handoff), encoding="utf-8")
+
+    def expand_to_twelve_stations(self):
+        """Controlled tiny CSVs, not the canonical data or real POST artifacts."""
+        codes = [f"IB{i:02d}" for i in range(1, 12)] + ["IB101"]
+        templates = {name: copy.deepcopy(rows[0]) for name, rows in self.report_rows.items()}
+        self.catalog_bytes = csv_bytes(["Codigo", "Latitud", "Altitud"], [
+            {"Codigo": code, "Latitud": "393000000N", "Altitud": ""} for code in codes])
+        (self.base/"catalog.csv").write_bytes(self.catalog_bytes)
+        self.handoff["catalog"]["sha256"] = digest(self.catalog_bytes)
+        self.handoff["stations"] = {}
+        self.handoff["source_data_hashes"] = {}
+        self.report_rows = {name: [] for name in templates}
+        for code in codes:
+            raw = csv_bytes(COLUMNS, [dict(self.values, Estacion=code)])
+            path = code + ".csv"
+            (self.base/path).write_bytes(raw)
+            self.handoff["stations"][code] = {"latitude_deg": 39.5, "altitude_m": None}
+            self.handoff["source_data_hashes"][path] = digest(raw)
+            for name, template in templates.items():
+                record = dict(template, station_code=code, estaciones_catalog_sha256=digest(self.catalog_bytes))
+                if "canonical_file" in record:
+                    record.update(canonical_file=path, canonical_sha256=digest(raw), file_size_bytes=str(len(raw)))
+                self.report_rows[name].append(record)
+        self.save()
+
+    def test_dual_sha_matching_audit_and_equal_canonical_remain_valid(self):
+        self.expand_to_twelve_stations()
+        dataset = build_dataset(self.handoff_path)
+        self.assertEqual(len(dataset["source_data_hashes"]), 12)
+        self.assertEqual(dataset["audit_source_repo_sha"], "a"*40)
+        self.assertEqual(dataset["source_repo_sha"], "a"*40)
+
+    def test_dual_sha_distinct_commits_pass_with_twelve_matching_files(self):
+        self.expand_to_twelve_stations()
+        self.handoff["source_repo_sha"] = "e"*40
+        self.save()
+        before = {path.name: path.read_bytes() for path in self.base.iterdir()}
+        dataset = build_dataset(self.handoff_path)
+        self.assertEqual(dataset["audit_source_repo_sha"], "a"*40)
+        self.assertEqual(dataset["source_repo_sha"], "e"*40)
+        self.assertEqual(len(dataset["rows"]), 12)
+        self.assertEqual(dataset["source_data_hashes"], self.handoff["source_data_hashes"])
+        self.assertEqual(before, {path.name: path.read_bytes() for path in self.base.iterdir()})
+
+    def test_dual_sha_each_post_report_must_match_audited_commit(self):
+        self.expand_to_twelve_stations()
+        self.handoff["source_repo_sha"] = "e"*40
+        for name in self.report_rows:
+            with self.subTest(report=name):
+                self.report_rows[name][0]["repo_git_sha"] = "e"*40
+                self.save()
+                with self.assertRaisesRegex(ValueError, "audit_source_repo_sha"):
+                    build_dataset(self.handoff_path)
+                self.report_rows[name][0]["repo_git_sha"] = "a"*40
+
+    def test_dual_sha_checks_every_source_against_post_manifest(self):
+        self.expand_to_twelve_stations()
+        self.handoff["source_repo_sha"] = "e"*40
+        for path, expected_hash in list(self.handoff["source_data_hashes"].items()):
+            with self.subTest(source=path):
+                self.handoff["source_data_hashes"][path] = "f"*64
+                self.save()
+                with self.assertRaisesRegex(ValueError, "Source/manifest SHA mismatch"):
+                    build_dataset(self.handoff_path)
+                self.handoff["source_data_hashes"][path] = expected_hash
+
+    def test_dual_sha_missing_or_invalid_audit_identity_rejected(self):
+        for value in (None, "", "a"*39, "a"*41, "g"*40, True):
+            with self.subTest(value=value):
+                if value is None:
+                    self.handoff.pop("audit_source_repo_sha", None)
+                else:
+                    self.handoff["audit_source_repo_sha"] = value
+                self.save()
+                with self.assertRaisesRegex(ValueError, "audit_source_repo_sha"):
+                    build_dataset(self.handoff_path)
+                dataset = synthetic_dataset()
+                if value is None:
+                    dataset.pop("audit_source_repo_sha")
+                else:
+                    dataset["audit_source_repo_sha"] = value
+                with self.assertRaisesRegex(ValueError, "audit_source_repo_sha"):
+                    validate_dataset(dataset)
 
     def test_build_is_read_only_preserves_nulls_and_unknown_gap(self):
         before = {p.name: p.read_bytes() for p in self.base.iterdir()}

@@ -6,6 +6,9 @@ JSON package {phase: POST, reports: {filename: {path, sha256}}}. Report paths
 are relative to the package; source_data_hashes paths to the handoff. All three
 Quality Audit v1 reports are mandatory, even when the missing-days report is
 empty. A verified hash proves identity, not institutional authorization.
+audit_source_repo_sha identifies the audited commit; source_repo_sha identifies
+the canonical publication. They may differ: POST identities bind to the former,
+while source/catalog bytes must match the preserved POST hashes.
 """
 import csv
 from datetime import date, timedelta
@@ -38,6 +41,10 @@ def _hash(value, name="SHA-256"):
     _require(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value), "Invalid " + name)
 
 
+def _repo_sha(value, name):
+    _require(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{40}", value), "Invalid " + name)
+
+
 def _finite(value):
     return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
 
@@ -66,7 +73,8 @@ def validate_dataset(dataset):
     _require(isinstance(dataset, dict), "Dataset must be an object")
     _require(dataset.get("schema_version") == "observational-v1", "Unsupported dataset schema")
     _require(isinstance(dataset.get("dataset_id"), str) and dataset["dataset_id"].strip(), "Missing dataset_id")
-    _require(isinstance(dataset.get("source_repo_sha"), str) and re.fullmatch(r"[0-9a-f]{40}", dataset["source_repo_sha"]), "Invalid source_repo_sha")
+    _repo_sha(dataset.get("source_repo_sha"), "source_repo_sha")
+    _repo_sha(dataset.get("audit_source_repo_sha"), "audit_source_repo_sha")
     sources = dataset.get("source_data_hashes")
     _require(isinstance(sources, dict) and sources, "Missing source_data_hashes")
     for path, digest in sources.items():
@@ -193,6 +201,8 @@ def build_dataset(handoff_path):
     handoff_path = Path(handoff_path)
     handoff = _json(handoff_path)
     _require(isinstance(handoff, dict) and handoff.get("gate") == "SIAR-QUALITY-CLOSEOUT" and handoff.get("authorized") is True, "Authorized SIAR-QUALITY-CLOSEOUT handoff required")
+    _repo_sha(handoff.get("source_repo_sha"), "source_repo_sha")
+    _repo_sha(handoff.get("audit_source_repo_sha"), "audit_source_repo_sha")
     post = handoff.get("quality_post")
     package_bytes = _verified_bytes(handoff_path.parent, post)
     package = json.loads(package_bytes)
@@ -207,7 +217,7 @@ def build_dataset(handoff_path):
     _require(audits and manifests, "Empty Quality station/manifest reports")
     _require(isinstance(post.get("id"), str) and post["id"], "Missing POST id")
     for row in audits + manifests + missing:
-        _require(row["audit_id"] == post["id"] and row["repo_git_sha"] == handoff.get("source_repo_sha"), "Quality provenance mismatch")
+        _require(row["audit_id"] == post["id"] and row["repo_git_sha"] == handoff["audit_source_repo_sha"], "Quality audit_source_repo_sha provenance mismatch")
         _require(all(row[k] for k in COMMON.split(",")), "Missing Quality traceability")
         _require(all(row[k] == audits[0][k] for k in COMMON.split(",")), "Inconsistent Quality traceability")
     catalog = handoff.get("catalog")
@@ -231,7 +241,7 @@ def build_dataset(handoff_path):
         _require(station.get("altitude_m") == altitude, "Altitude/catalog mismatch")
     sources = handoff.get("source_data_hashes")
     _require(isinstance(sources, dict) and set(sources) == {row["canonical_file"] for row in manifests}, "Source file set differs from Quality manifest")
-    dataset = {key: handoff.get(key) for key in ("dataset_id", "source_repo_sha", "source_data_hashes", "units", "stations")}
+    dataset = {key: handoff.get(key) for key in ("dataset_id", "audit_source_repo_sha", "source_repo_sha", "source_data_hashes", "units", "stations")}
     dataset.update(schema_version="observational-v1", quality_post={"id": post["id"], "sha256": post["sha256"],
                    "path": str((handoff_path.parent/post["path"]).resolve()),
                    "reports": {name: {"path": str((package_base/entry["path"]).resolve()), "sha256": entry["sha256"]} for name, entry in reports.items()}},
@@ -257,6 +267,9 @@ def build_dataset(handoff_path):
         _require(_day(audit["active_cutoff_date"] if audit["station_state"] == "ACTIVE" else audit["fecha_baja"]) == end, "Official end mismatch")
         periods[code] = (start, end)
         path = manifest["canonical_file"]
+        # Audit -> canonical continuity is byte identity, not Git SHA equality.
+        _hash(sources[path], "source_data_hashes SHA-256")
+        _hash(manifest["canonical_sha256"], "POST canonical_sha256")
         _require(sources[path] == manifest["canonical_sha256"], "Source/manifest SHA mismatch")
         content = _verified_bytes(handoff_path.parent, {"path": path, "sha256": sources[path]})
         _require(len(content) == int(manifest["file_size_bytes"]), "Source size mismatch")

@@ -15,6 +15,8 @@ class PipelineTests(unittest.TestCase):
         original = deepcopy(dataset)
         result = calculate(dataset)
         self.assertEqual(dataset, original)
+        self.assertEqual(result["audit_source_repo_sha"], original["audit_source_repo_sha"])
+        self.assertEqual(result["source_repo_sha"], original["source_repo_sha"])
         self.assertEqual(len(result["rows"]), 3)
         self.assertEqual(result["missing_days"], original["missing_days"])
         rows = result["rows"]
@@ -35,6 +37,12 @@ class PipelineTests(unittest.TestCase):
             manifest = execute_run(path, root/"run")
             self.assertEqual(manifest["status"], "SUCCESS")
             self.assertEqual(manifest["dataset_sha256"], hashlib.sha256(content).hexdigest())
+            for key in ("audit_source_repo_sha", "source_repo_sha"):
+                self.assertEqual(manifest[key], dataset_fixture()[key])
+                predictions = json.loads((root/"run/predictions.json").read_text(encoding="utf-8"))
+                self.assertEqual(predictions[key], manifest[key])
+                scores = json.loads((root/"run/metrics.json").read_text(encoding="utf-8"))
+                self.assertTrue(all(score[key] == manifest[key] for score in scores))
             self.assertEqual(manifest["assumptions"]["wind_height_assumption"], "2 m / SIAR convention")
             self.assertEqual(manifest["counts"]["PM_FAO56_V1"]["calculated"], 2)
             self.assertEqual(manifest["counts"]["HS_RA_V1"]["calculated"], 3)
@@ -56,6 +64,8 @@ class PipelineTests(unittest.TestCase):
             manifest = execute_run(source, root/"evaluation", "evaluate", prediction_paths=[root/"pm/predictions.json", root/"hs/predictions.json"])
             self.assertEqual(manifest["status"], "SUCCESS")
             self.assertEqual(len(manifest["prediction_inputs"]), 2)
+            for key in ("audit_source_repo_sha", "source_repo_sha"):
+                self.assertEqual(manifest[key], dataset_fixture()[key])
             self.assertIn("source_files_sha256", manifest["prediction_inputs"][0]["producer"]["pipeline"])
             self.assertEqual((root/"evaluation/metrics.json").read_bytes(), (root/"all/metrics.json").read_bytes())
             single = execute_run(source, root/"single", "evaluate", prediction_paths=[root/"pm/predictions.json"])
@@ -69,6 +79,12 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(rejected["status"], "FAILED")
             self.assertIn("parameters", rejected["error"])
             self.assertIn("sha256", rejected["prediction_inputs"][0])
+            altered = json.loads((root/"pm/predictions.json").read_text(encoding="utf-8"))
+            altered["audit_source_repo_sha"] = "f"*40
+            (root/"wrong-audit-identity.json").write_bytes(json_bytes(altered))
+            rejected = execute_run(source, root/"audit-mismatch", "evaluate", prediction_paths=[root/"wrong-audit-identity.json"])
+            self.assertEqual(rejected["status"], "FAILED")
+            self.assertIn("repository provenance", rejected["error"])
             # Changing only dataset identity still invalidates predictions linkage.
             data = dataset_fixture()
             data["dataset_id"] += "-changed"

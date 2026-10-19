@@ -190,6 +190,8 @@ def _merge_predictions(dataset, paths, dataset_sha):
         if (not isinstance(artifact, dict) or artifact.get("schema_version") != "predictions-v1" or artifact.get("dataset_id") != dataset["dataset_id"]
                 or artifact.get("dataset_sha256") != dataset_sha):
             raise ValueError("Predictions belong to a different dataset or schema")
+        if any(artifact.get(key) != dataset[key] for key in ("audit_source_repo_sha", "source_repo_sha")):
+            raise ValueError("Prediction repository provenance mismatch")
         declared = artifact.get("methods")
         if not isinstance(declared, list) or not declared or any(m not in identifiers or m in used for m in declared) or len(set(declared)) != len(declared):
             raise ValueError("Unknown, duplicate or overlapping prediction methods")
@@ -264,6 +266,7 @@ def execute_run(dataset_path, output_path, command="run-baselines", pipeline_sha
         if digest(Path(dataset_path).read_bytes()) != dataset_sha:
             raise ValueError("Dataset changed during read")
         manifest.update(dataset_id=dataset["dataset_id"], dataset_sha256=dataset_sha,
+                        audit_source_repo_sha=dataset["audit_source_repo_sha"],
                         source_repo_sha=dataset["source_repo_sha"], source_data_hashes=dataset["source_data_hashes"],
                         quality_post=dataset["quality_post"], dataset_path=str(Path(dataset_path).resolve()))
         if "catalog" in dataset:
@@ -291,13 +294,16 @@ def execute_run(dataset_path, output_path, command="run-baselines", pipeline_sha
             failures += count["failed"]
             manifest["counts"][METHODS[method][0]] = count
         prediction_artifact = dict(schema_version="predictions-v1", dataset_id=dataset["dataset_id"],
-                                   dataset_sha256=dataset_sha, methods=manifest["methods"], rows=rows)
+                                   dataset_sha256=dataset_sha, audit_source_repo_sha=dataset["audit_source_repo_sha"],
+                                   source_repo_sha=dataset["source_repo_sha"], methods=manifest["methods"], rows=rows)
         prediction_artifact["producer"] = dict(run_id=manifest["run_id"], operation=command,
             status="FAILED" if failures else "SUCCESS", pipeline=code,
             parameters={METHODS[m][0]: manifest["parameters"][METHODS[m][0]] for m in methods},
             assumptions=manifest["assumptions"], policies=manifest["policies"],
             upstream=manifest.get("prediction_inputs", []))
         scores = evaluate(rows, prediction_fields=tuple(METHODS[m][1] for m in methods)) if command in ("run-baselines", "evaluate") else []
+        for score in scores:
+            score.update(audit_source_repo_sha=dataset["audit_source_repo_sha"], source_repo_sha=dataset["source_repo_sha"])
         for method in methods:
             manifest["counts"][METHODS[method][0]]["evaluated"] = manifest["cohorts"][METHODS[method][0] + ":evaluation"]["n"]
         for name, artifact in (("predictions.json", prediction_artifact), ("metrics.json", scores)):

@@ -1,0 +1,17 @@
+{
+  "phase": "POST",
+  "reports": {
+    "siar_station_audit.csv": {
+      "path": "siar_station_audit.csv",
+      "sha256": "afd25689ef92b1153cadde1b9ebaf11df1420058f2a79ac3432711f88af2d596"
+    },
+    "siar_missing_days.csv": {
+      "path": "siar_missing_days.csv",
+      "sha256": "d3d94b39e030af7f7e5da8e7ed6a1eb047043de97f55f487a5d9715ab96b63fc"
+    },
+    "siar_dataset_manifest.csv": {
+      "path": "siar_dataset_manifest.csv",
+      "sha256": "52aae3ce411d91ac58b7fb71a3ec18e0ea24374b33b25146b4515a448262fb60"
+    }
+  }
+}

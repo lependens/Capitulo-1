@@ -1,6 +1,6 @@
 # Estado de sincronización SIAR — Baleares
 
-**Actualizado:** 2026-10-18\
+**Actualizado:** 2026-10-19\
 **Versión SIAR Sync en producción:** v2.3.3
 **Backfill temporal:** alcanzado para las 12 estaciones
 **Quality Audit v1 PRE:** COMPLETADO — válido
@@ -22,24 +22,40 @@
 
 En el snapshot PRE, los 2.346 huecos quedaron registrados como `PENDING_RETRY`, `NOT_ATTEMPTED`, con `attempt_count=0`. El PRE no declaró ningún `CONFIRMED_NO_DATA`; esos estados son inmutables y no describen necesariamente la recuperación actual.
 
-R1 queda superado como etapa histórica. **R2 está en ejecución autónoma; POST permanece pendiente.** Un `INVALID_RESPONSE` aislado se registra y trata dentro del ámbito afectado, sin bloquear globalmente R2. El cierre Quality requiere terminar la recuperación y revisar POST; esta actualización no genera artefactos ni certifica todavía el dataset.
+## Quality Audit POST — COMPLETE
 
-## Antecedente histórico R1 — IB07
+El audit_id SIAR-QA-POST-20261018T233901Z está cerrado. El snapshot auditado corresponde a audit_source_repo_sha=18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865.
 
-El antecedente documentado de R1 fue: IB07 con `Fecha_Baja` oficial **2012-11-13**, HEAD previo hasta **2012-11-12** y una fila nueva de **2012-11-13**. El checkpoint 206/431 y `FORENSIC-IB07-001` pertenecen al historial de R1; no constituyen una pausa vigente de R2. Este resumen no infiere un nuevo dictamen científico sobre esa fila.
+| Métrica | Resultado |
+|---|---:|
+| Audit completeness | COMPLETE |
+| Días esperados | 77.840 |
+| Días observados | 75.495 |
+| Cobertura observacional | 96.987410 % |
+| RECOVERED | 1 |
+| CONFIRMED_NO_DATA | 2.345 |
+| PENDING_RETRY | 0 |
+| Unresolved evidence | 0 |
+| WARN | 11 |
+| FAIL | 1 (IB09, fila fuera del periodo oficial) |
+| INCOMPLETE | 0 |
+
+COMPLETE_BUT_INCOMPLETE_DATASET indica que la auditoría terminó y que la cobertura observacional es inferior al 100 % por fechas que SIAR confirmó sin registros. No significa que la auditoría esté incompleta. CONFIRMED_NO_DATA es terminal y válido para este cierre.
+
+Los artefactos originales, byte-preserved, están en [Quality POST](../../data_quality/siar/post/SIAR-QA-POST-20261018T233901Z/). Sus SHA-256 se verifican durante la publicación.
+## IB07 — recuperación incluida en POST
+
+Quality POST clasifica IB07 / 2012-11-13 como RECOVERED. El CSV completo preservado del snapshot Quality tiene SHA-256 8641cdf90697064fe07c505618d5a9921cf103e5fc1e1d06b28812b566786c68, igual a canonical_sha256 del manifest. Conserva 2.946 filas, 23 columnas y una sola fila para esa fecha. La publicación incorpora el CSV completo validado; no reconstruye la fila ni vuelve a consultar SIAR.
+
+La diferencia de contenido respecto al main de origen consiste únicamente en añadir la observación validada del 2012-11-13. La procedencia de la escritura original quedó sin resolver; una consulta independiente posterior confirmó que el contenido de la fila coincide con SIAR. La política de Recovery registró esta evidencia sin alterar otras observaciones.
 
 ## Hallazgo IB09
 
-El periodo oficial de IB09 es:
+El periodo oficial de IB09 comienza el 2005-10-24 y termina el 2018-10-10. La fila raw 2005-10-23 se conserva intacta y se clasifica científicamente como OUTSIDE_OFFICIAL_PERIOD; queda excluida del periodo científico oficial. El hallazgo produce el FAIL estructural de IB09 en Quality POST y no bloquea Dataset Observational v1 según la decisión de Dirección 00.
 
-- Fecha_Instalacion: **2005-10-24**
-- Fecha_Baja: **2018-10-10**
+## CATALOG-TZ-001
 
-El PRE detectó una fila raw fechada **2005-10-23**, anterior al inicio oficial; la conservó sin cambios y la contó fuera del periodo. Por ello IB09 tuvo resultado **FAIL en PRE**. Es un hallazgo del snapshot histórico; todavía no se dispone del resultado POST.
-
-## Catálogo de estaciones
-
-El hallazgo **CATALOG-TZ** (snapshot local `estaciones_baleares.csv`: huso **31**; `Info/ESTACIONES`: huso **30**) está pendiente de investigación semántica y se clasifica como sistemático, pero no bloqueante por sí solo. No se corregirá automáticamente el catálogo ni se usará ese campo científicamente hasta conocer su significado. Por sí solo no degrada el resultado PRE ni bloquea la certificación, salvo que se demuestre que afecta al periodo o a la semántica de los datos.
+CATALOG-TZ-001 = OPEN / NON_BLOCKING. El catálogo local informa Huso 31, mientras Info/ESTACIONES informa Huso 30 para 12/12 estaciones. Es un hallazgo semántico abierto y no bloqueante. No se modifica estaciones_baleares.csv ni se deriva una corrección científica durante esta publicación.
 
 ## Saneamiento operativo de permisos posterior a v2.3.2
 
@@ -55,6 +71,6 @@ Estas verificaciones corresponden al saneamiento puntual de permisos: no se rees
 
 ## Estado de adquisición
 
-Los CSV canónicos presentes son IB01–IB11 e IB101. PRE está completo, R1 es histórico, R2 avanza autónomamente y POST sigue pendiente. El siguiente hito es Quality closeout y, después, Dataset Observacional v1; la captura prospectiva de forecasts avanza en paralelo.
+Quality Audit POST está completo y no quedan PENDING_RETRY. Esta publicación canoniza los bytes auditados, los artefactos POST preservados y la documentación de cierre. No realiza nuevas consultas SIAR, no repite Recovery ni genera Dataset Observational v1. El handoff validado autorizará a 05 a consumir posteriormente siar-balears-observational-v1.
 
-Las políticas, reglas de clasificación y esquemas de informes están en [Quality Audit v1](quality.md). Este documento resume el estado comunicado; no genera ni contiene snapshots o informes de auditoría.
+Las políticas y reglas de auditoría permanecen en [Quality Audit v1](quality.md); este resumen registra el cierre POST aceptado y sus hallazgos.

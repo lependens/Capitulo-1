@@ -144,3 +144,27 @@ las colecciones vacías siguen vinculadas mediante el manifest del run. La
 evaluación verifica ambos SHA de los artefactos importados frente al dataset,
 además de su identidad y hash de bytes. Ningún output sustituye el SHA del audit
 por el de publicación ni por el SHA del código del pipeline.
+
+## Bytes contractuales y checkout reproducible
+
+El catálogo y los 12 CSV `datos_siar_baleares/IB*_datos_completos.csv`
+se materializan con LF mediante `.gitattributes`, incluso con
+`core.autocrlf=true`. Los informes POST publicados mantienen su regla `-text`
+y sus bytes exactos. La prueba sintética de checkout cubre ambas políticas.
+Un hash distinto sigue siendo **FAIL**: el builder no normaliza finales de
+línea ni acepta representaciones alternativas.
+
+En `source_repo_sha=63e413d82dec4cae09e562aa0266ca566b9d2863`, los bytes
+del blob Git del catálogo tienen SHA-256
+`98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357`.
+Los 12 blobs CSV también coinciden con los hashes del handoff autorizado y
+son LF. La conversión de checkout a CRLF causó el bloqueo previo del catálogo;
+la protección se limita a estos archivos contractuales demostrados.
+El fix no cambia sus blobs científicos, el POST ni el handoff.
+
+Para ejecutar, usar un checkout nuevo del pipeline corregido y copiar el
+handoff autorizado sin cambiar sus bytes junto a los CSV, preservando sus
+rutas relativas al catálogo y POST. Comprobar todos los hashes antes de
+construir. `source_repo_sha` sigue identificando la publicación canónica
+anterior; `pipeline_sha` identifica por separado el código del fix. No es el
+SHA de un commit que deba contener su propio handoff.

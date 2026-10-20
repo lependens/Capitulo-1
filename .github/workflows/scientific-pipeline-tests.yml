@@ -3,6 +3,7 @@ name: Scientific pipeline tests
 on:
   pull_request:
     paths:
+      - ".gitattributes"
       - "scientific_pipeline/**"
       - "data_quality/siar/**"
       - "datos_siar_baleares/**"
@@ -11,6 +12,7 @@ on:
   push:
     branches: [main]
     paths:
+      - ".gitattributes"
       - "scientific_pipeline/**"
       - "data_quality/siar/**"
       - "datos_siar_baleares/**"

@@ -1,1 +1,3 @@
 data_quality/siar/post/SIAR-QA-POST-20261018T233901Z/* -text
+estaciones_baleares.csv text eol=lf
+datos_siar_baleares/IB*_datos_completos.csv text eol=lf

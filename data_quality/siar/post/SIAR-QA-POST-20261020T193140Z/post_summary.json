@@ -1,0 +1,103 @@
+{
+  "audit_id": "SIAR-QA-POST-20261020T193140Z",
+  "audited_at_utc": "2026-10-20T19:40:51Z",
+  "repo_git_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "branch": "quality/recovery-20261012T085131Z",
+  "working_tree": "",
+  "pre_repo_sha": "e850827e24cff11ae46f51c9bc3e8a2f36b0d2da",
+  "pre_gap_count": 2346,
+  "raw_total_rows": 75496,
+  "official_period_station_days": 77840,
+  "observed_station_days": 75495,
+  "coverage_percent": 96.98741,
+  "gap_states": {
+    "RECOVERED": 1,
+    "PENDING_RETRY": 0,
+    "CONFIRMED_NO_DATA": 2345
+  },
+  "station_audit_statuses": {
+    "FAIL": 1,
+    "INCOMPLETE": 0,
+    "WARN": 11,
+    "PASS": 0
+  },
+  "global_audit_status": "FAIL",
+  "missing_output_rows": 2345,
+  "gap_ledger_rows": 2346,
+  "rows_outside_official_period_count": 1,
+  "recovery_queries": 2782,
+  "recovery_api_results": {
+    "R1/HTTP_ERROR": 2,
+    "R1/ZERO_ROWS": 429,
+    "R2/ZERO_ROWS": 2345,
+    "R2/INVALID_RESPONSE": 5,
+    "R2/HTTP_ERROR": 1
+  },
+  "quota_snapshots": 10,
+  "last_quota_snapshot": {
+    "audit_id": "SIAR-QA-POST-20261012T085131Z",
+    "phase": "R2",
+    "query_id": "QUOTA-INITIAL",
+    "station_code": "",
+    "range": "",
+    "expected_records": 1,
+    "query": "Info/ACCESOS",
+    "started_at_utc": "2026-10-18T20:50:16.565875Z",
+    "completed_at_utc": "2026-10-18T20:50:17.642704Z",
+    "http_requests": [
+      {
+        "timestamp_utc": "2026-10-18T20:50:16.565951Z",
+        "path": "/Info/ACCESOS",
+        "http_status": 200,
+        "exception": ""
+      }
+    ],
+    "api_result": "OK",
+    "quota_raw": {
+      "MaxAccesosMinuto": 5,
+      "NumAccesosMinutoActual": 1,
+      "MaxAccesosDia": 7200,
+      "NumAccesosDiaActual": 1010,
+      "MaxRegistrosMinuto": 100,
+      "RegistrosAcumuladosMinuto": 0,
+      "MaxRegistrosDia": 10000,
+      "RegistrosAcumuladosDia": 606
+    },
+    "quota": {
+      "peticiones_minuto": 1,
+      "max_peticiones_minuto": 5,
+      "peticiones_dia": 1010,
+      "max_peticiones_dia": 7200,
+      "registros_minuto": 0,
+      "max_registros_minuto": 100,
+      "registros_dia": 606,
+      "max_registros_dia": 10000
+    },
+    "error": null
+  },
+  "catalog_tz_001": {
+    "local_huso": "31",
+    "official_huso": "30",
+    "stations_affected": 12,
+    "evidence": "official_evidence/catalog_tz_001_evidence.csv"
+  },
+  "pre_artifact_sha256": {
+    "siar_station_audit.csv": "ffa01ca0313bf7416729caf36cd0737cd2221bb71a75bb28d4fa6d58a5136efa",
+    "siar_missing_days.csv": "e172c213725dde7425470bb08321004690a25580efa55122219147a88888edd7",
+    "siar_dataset_manifest.csv": "de57553e02bece7bd9f0bbd4688451639fe16fdb60b8b51e5e855f2351a72169"
+  },
+  "raw_inventory": "raw_final_inventory.csv",
+  "no_second_gap_pass": true,
+  "dataset_baleares_v1_closed": false,
+  "gate": "STOP after POST; no second pass or raw edits",
+  "supersedes_audit_id": "SIAR-QA-POST-20261018T233901Z",
+  "superseding_reason": "Recovered IB07 ledger row was omitted; preserve complete persisted recovery ledger history.",
+  "superseding_artifact_sha256": {
+    "siar_station_audit.csv": "e444cebf4165939c24cb0e9c132b241363bb60b0808e4403e1cf2ac33bd6be7d",
+    "siar_missing_days.csv": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969",
+    "siar_dataset_manifest.csv": "b37c6ef2cf47f4ac7ac7308d0414b39429c5a35c352ec09581f9f4751468337b",
+    "post_report.md": "383317b2635e720533b89250b6f5bac3cd1a7e1b17f47ed318246afeeedfe1dd"
+  },
+  "independent_review_result": "PASS",
+  "independent_review_assertions": 2438
+}

@@ -1,6 +1,10 @@
 # Informes de calidad SIAR
 
-El Quality Audit POST aceptado está preservado byte a byte en [post/SIAR-QA-POST-20261018T233901Z/](post/SIAR-QA-POST-20261018T233901Z/):
+## Corrección superseding del ledger
+
+El POST original SIAR-QA-POST-20261018T233901Z permanece preservado byte a byte. La versión vigente para el ledger es [SIAR-QA-POST-20261020T193140Z](post/SIAR-QA-POST-20261020T193140Z/), que lo supersedes y restaura la fila persistida IB07 / 2012-11-13 = RECOVERED. La causa y el fix reproducible están en [ledger-correction.md](ledger-correction.md). Los estados y la semántica de auditoría no cambiaron.
+
+El POST original, ahora superseded, permanece preservado byte a byte en [post/SIAR-QA-POST-20261018T233901Z/](post/SIAR-QA-POST-20261018T233901Z/):
 
 - siar_station_audit.csv
 - siar_missing_days.csv
@@ -10,7 +14,7 @@ El Quality Audit POST aceptado está preservado byte a byte en [post/SIAR-QA-POS
 
 El audit_id es SIAR-QA-POST-20261018T233901Z; su audit_source_repo_sha es 18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865.
 
-## Resultado aceptado
+## Resultado del POST original (superseded)
 
 - Audit completeness: COMPLETE
 - Observational completeness: 96.987410 % (75.495 de 77.840 días)

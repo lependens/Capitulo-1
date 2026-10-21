@@ -1,5 +1,9 @@
 # Estado de sincronización SIAR — Baleares
 
+## Corrección de ledger POST — COMPLETE
+
+El POST original SIAR-QA-POST-20261018T233901Z está preservado y superseded por SIAR-QA-POST-20261020T193140Z. Se corrigió el generador para retener las filas del ledger de Recovery persistido aunque la fecha RECOVERED ya no figure entre las ausencias del auditor. El estado de auditoría y sus métricas permanecen: Audit completeness COMPLETE; observacional 96.987410 %; evidencia sin resolver 0; RECOVERED 1; CONFIRMED_NO_DATA 2,345; PENDING_RETRY 0. Ver [informe de corrección](../../data_quality/siar/ledger-correction.md).
+
 **Actualizado:** 2026-10-19\
 **Versión SIAR Sync en producción:** v2.3.3
 **Backfill temporal:** alcanzado para las 12 estaciones

@@ -6,6 +6,9 @@ Source: https://www.fao.org/4/X0490E/x0490e07.htm
 import math
 from .solar import _finite
 
+VPD_ABS_TOL_KPA = 1e-12
+VPD_REL_TOL = 0.0
+
 
 def _temperature(value: float) -> None:
     _finite("temperature_c", value)
@@ -67,9 +70,18 @@ def actual_vapour_pressure(tmin_c: float, tmax_c: float,
 
 
 def vapour_pressure_deficit(es_kpa: float, ea_kpa: float) -> float:
-    """es − ea [kPa]; reject inconsistent pressures rather than clip."""
+    """es − ea [kPa]; only a roundoff-sized negative deficit becomes zero.
+
+    Absolute tolerance 1e-12 kPa, relative tolerance zero. This covers the
+    1–2 ULP excess from RHmin=RHmax=100 without changing either pressure.
+    Positive deficits are returned unchanged; real inconsistencies still fail.
+    """
     _finite("es_kpa", es_kpa)
     _finite("ea_kpa", ea_kpa)
-    if not 0 <= ea_kpa <= es_kpa:
+    if es_kpa < 0 or ea_kpa < 0:
+        raise ValueError("vapour pressures must satisfy 0 <= ea <= es")
+    if ea_kpa > es_kpa:
+        if math.isclose(ea_kpa, es_kpa, rel_tol=VPD_REL_TOL, abs_tol=VPD_ABS_TOL_KPA):
+            return 0.0
         raise ValueError("vapour pressures must satisfy 0 <= ea <= es")
     return es_kpa - ea_kpa

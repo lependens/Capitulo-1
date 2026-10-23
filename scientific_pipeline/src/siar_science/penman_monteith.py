@@ -15,7 +15,7 @@ from .atmosphere import (
     _temperature, _extremes, atmospheric_pressure, psychrometric_constant,
     saturation_vapour_pressure, mean_saturation_vapour_pressure,
     saturation_vapour_pressure_slope, actual_vapour_pressure,
-    vapour_pressure_deficit,
+    vapour_pressure_deficit, VPD_ABS_TOL_KPA, VPD_REL_TOL,
 )
 
 PM_FAO56_V1 = "PM_FAO56_V1"
@@ -28,6 +28,8 @@ PM_FAO56_V1_PARAMETERS = {
     "cloud_ratio_upper_cap": 1.0, "cloud_ratio_lower_floor": None,
     "tmean_convention": "(Tmax+Tmin)/2",
     "wind_policy": "SIAR 2m convention; explicit other height STOP",
+    "vpd_roundoff": {"abs_tol_kpa": VPD_ABS_TOL_KPA, "rel_tol": VPD_REL_TOL,
+                     "policy": "ea>es within tolerance gives VPD=0; pressures unchanged; otherwise error"},
 }
 
 

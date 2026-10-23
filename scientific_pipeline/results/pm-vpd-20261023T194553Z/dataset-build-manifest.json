@@ -1,0 +1,229 @@
+{
+  "status": "PASS",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "dataset_bytes": 105841839,
+  "dataset_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\dataset.json",
+  "created_at_utc": "2026-10-21T06:00:42.484119+00:00",
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "pipeline_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "quality_post": {
+    "id": "SIAR-QA-POST-20261020T193140Z",
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\quality-post-package.json",
+    "reports": {
+      "siar_dataset_manifest.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_dataset_manifest.csv",
+        "sha256": "b37c6ef2cf47f4ac7ac7308d0414b39429c5a35c352ec09581f9f4751468337b"
+      },
+      "siar_missing_days.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_missing_days.csv",
+        "sha256": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969"
+      },
+      "siar_station_audit.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_station_audit.csv",
+        "sha256": "e444cebf4165939c24cb0e9c132b241363bb60b0808e4403e1cf2ac33bd6be7d"
+      }
+    },
+    "sha256": "a2d1293fcc54254769dbc80c7105b08b4b03b6a14392df0a4e5ef19b4ef51d07"
+  },
+  "catalog": {
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\estaciones_baleares.csv",
+    "sha256": "98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357"
+  },
+  "source_data_hashes": {
+    "IB01_datos_completos.csv": "dfadf1ec335d7af040a7caab65c73761ac555fa050e7bb75ffb7a4376b750c53",
+    "IB02_datos_completos.csv": "a65ba9913d1649fb86fb61b574630e9706154b4f2ad4ac11246b301740d78891",
+    "IB03_datos_completos.csv": "bf44c363acdc01673c5dd7bc847283bc7620d7af70ba91267608707c730c638d",
+    "IB04_datos_completos.csv": "2745c212a45078ba2010aaab637c40d56949f7fa50e9946dbe6763d008a11199",
+    "IB05_datos_completos.csv": "8ee97684d962169db1e3949c02e4a277b683ca0211ccea158e11382bd4905432",
+    "IB06_datos_completos.csv": "48731bd993a2116bea75fdb779788a1a71505563e1d9cdae8d9a7d5817907cb2",
+    "IB07_datos_completos.csv": "8641cdf90697064fe07c505618d5a9921cf103e5fc1e1d06b28812b566786c68",
+    "IB08_datos_completos.csv": "cfe4f124793139ea9b55f147209733fc74ef9e274272ff8bf9ad6115bf4c14cc",
+    "IB09_datos_completos.csv": "2cbd9bb289404264fc78dad21322562d9d22b64ce4bbc87e51512ca763ea7a8a",
+    "IB101_datos_completos.csv": "b2c91aa0c6b8836cba868243ad565755c97f21703e081baae40c66e0f810179a",
+    "IB10_datos_completos.csv": "9295b9b071ad6239301544cce1618cec065bae1e6ff7106e4fa0c5def1f69c47",
+    "IB11_datos_completos.csv": "bee7da8bdd401bbbf801517861d02f4e0b7e1296cf3229f924cba1c2bec01e07"
+  },
+  "units": {
+    "altitude": "m",
+    "humidity": "%",
+    "radiation": "MJ/m2/day",
+    "temperature": "degC",
+    "wind": "m/s"
+  },
+  "stations": {
+    "IB01": {
+      "altitude_m": 120.0,
+      "latitude_deg": 39.01,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB02": {
+      "altitude_m": 78.0,
+      "latitude_deg": 39.683611111111105,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB03": {
+      "altitude_m": 79.0,
+      "latitude_deg": 39.545833333333334,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB04": {
+      "altitude_m": 8.0,
+      "latitude_deg": 39.56222222222222,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB05": {
+      "altitude_m": 82.0,
+      "latitude_deg": 39.47527777777778,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB06": {
+      "altitude_m": 4.0,
+      "latitude_deg": 39.80277777777778,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB07": {
+      "altitude_m": 44.0,
+      "latitude_deg": 39.780277777777776,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB08": {
+      "altitude_m": 40.0,
+      "latitude_deg": 40.00361111111111,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB09": {
+      "altitude_m": 105.0,
+      "latitude_deg": 39.697222222222216,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB10": {
+      "altitude_m": 30.0,
+      "latitude_deg": 39.551111111111105,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB101": {
+      "altitude_m": 21.0,
+      "latitude_deg": 39.96527777777778,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    },
+    "IB11": {
+      "altitude_m": 7.0,
+      "latitude_deg": 38.72694444444445,
+      "station_period_provenance": "not exhaustively verified",
+      "wind_height_basis": "SIAR convention accepted for v1",
+      "wind_height_m": 2.0
+    }
+  },
+  "assumptions": {
+    "station_period_provenance": "not exhaustively verified",
+    "units_interpretation": "RESOLVED_FOR_V1",
+    "units_provenance": "UNITS_PROVENANCE_PARTIAL",
+    "wind_height_assumption": "2 m / SIAR convention"
+  },
+  "handoff_sha256": "2b47f9802edbc33d71916701df57237092f563f0fe527fbfe401faf522a724ed",
+  "preflight_sha256": "97dd55da9b4844be04c21896f642388ee69ce8cae3b8fe6fbee611de4b3b03c8",
+  "counts": {
+    "stations": 12,
+    "rows": 75496,
+    "official_period_observations": 75495,
+    "confirmed_no_data": 2345,
+    "recovered": 1,
+    "pending_retry": 0,
+    "outside_period": 1
+  },
+  "observation_status": {
+    "OBSERVED": 75494,
+    "RECOVERED": 1,
+    "OUTSIDE_OFFICIAL_PERIOD": 1
+  },
+  "missing_ledger_status": {
+    "CONFIRMED_NO_DATA": 2345,
+    "RECOVERED": 1
+  },
+  "eligibility": {
+    "pm": {
+      "eligible": 70896,
+      "reasons": {
+        "missing_or_nonfinite:TempMin": 108,
+        "missing_or_nonfinite:TempMax": 109,
+        "missing_or_nonfinite:HumedadMin": 110,
+        "missing_or_nonfinite:HumedadMax": 118,
+        "missing_or_nonfinite:VelViento": 78,
+        "missing_or_nonfinite:Radiacion": 47,
+        "not_observed_in_official_period": 1,
+        "source_quality_not_accepted": 4423
+      }
+    },
+    "hargreaves": {
+      "eligible": 70979,
+      "reasons": {
+        "missing_or_nonfinite:TempMin": 108,
+        "missing_or_nonfinite:TempMax": 109,
+        "not_observed_in_official_period": 1,
+        "source_quality_not_accepted": 4423
+      }
+    }
+  },
+  "quality_status_by_station": {
+    "IB01": {
+      "WARN": 7716
+    },
+    "IB02": {
+      "WARN": 7697
+    },
+    "IB03": {
+      "WARN": 7873
+    },
+    "IB04": {
+      "WARN": 7729
+    },
+    "IB05": {
+      "WARN": 7834
+    },
+    "IB06": {
+      "WARN": 7862
+    },
+    "IB07": {
+      "WARN": 2946
+    },
+    "IB08": {
+      "WARN": 7123
+    },
+    "IB09": {
+      "FAIL": 4423
+    },
+    "IB10": {
+      "WARN": 7007
+    },
+    "IB101": {
+      "WARN": 249
+    },
+    "IB11": {
+      "WARN": 7037
+    }
+  }
+}

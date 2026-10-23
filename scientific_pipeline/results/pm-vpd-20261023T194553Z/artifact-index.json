@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "pipeline_sha": "39c101e5999245eb15e3c6c1c867d90b4ac44468",
+  "quality_post_id": "SIAR-QA-POST-20261020T193140Z",
+  "configuration_sha256": "f57604749e986cfd0286fa83d726acdfe86e684c2a467b602c5f45444c75a53c",
+  "result_manifest_sha256": "872ce9dfa01102fe68e27cde2c63b22769f8963c6e569b582cebf6e7cef8b1e4",
+  "run_started_at_utc": "2026-10-23T19:48:53.843799Z",
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "dataset_external": {
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\dataset.json",
+    "sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb"
+  },
+  "files": {
+    "baselines/manifest.json": {
+      "sha256": "872ce9dfa01102fe68e27cde2c63b22769f8963c6e569b582cebf6e7cef8b1e4",
+      "bytes": 8706
+    },
+    "baselines/metrics.json": {
+      "sha256": "f50dceb724454b767b474252caf74521a2cd20c63f909757f117c2e44066bff8",
+      "bytes": 560942
+    },
+    "baselines/predictions.json": {
+      "sha256": "4a858e1a5aafc73b398da82e492c843deaa28f2af8b62a35c9bf80cd8c98a0b9",
+      "bytes": 146442242
+    },
+    "impact-before-merge.json": {
+      "sha256": "3094f4f9c34102a362513b25de1e2ffe4e77331acccff9d0e117bf70d14e431b",
+      "bytes": 1467
+    },
+    "metrics-aggregated.csv": {
+      "sha256": "ebb04298bff92e841a8eac64d110bca3363bed386164b8984075a607ac70cbb7",
+      "bytes": 754038
+    },
+    "result-summary.json": {
+      "sha256": "a7cdf7af544b66f53c4a73b910a3a7b94cb593aef3a7912b13f593033cd8929c",
+      "bytes": 22064
+    }
+  }
+}

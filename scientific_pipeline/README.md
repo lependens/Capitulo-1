@@ -4,7 +4,7 @@ Capa reproducible de observaciones SIAR Baleares: validación científica por m�
 
 La forense queda **RESOLVED_FOR_V1** por decisión de Dirección 00 del 2026-10-19. Radiacion se interpreta directamente en MJ m⁻² día⁻¹ y VelViento en m/s, con convención SIAR de viento a 2 m. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones registradas, no bloqueos. Una evidencia positiva de altura distinta de 2 m requiere resolver el cálculo PM afectado.
 
-**ET0-BASELINES-PREP = READY_FOR_DATASET_V1.** Implementación integrada, 48 pruebas matemáticas/sintéticas locales PASS y CI científica PASS con paquete instalado en Python 3.11, 3.12 y 3.13. Las evidencias de validación constan en el [estado de misión](docs/mission_status.md). No se ha generado el Dataset Observational v1 definitivo: su construcción y ejecución oficial esperan Quality POST y handoff autorizado de 00.
+**Estado vigente — 2026-10-23:** Dataset Observational v1 construido/validado desde POST corregido SIAR-QA-POST-20261020T193140Z y handoff autorizado. Primera ejecución oficial PM_FAO56_V1 / HS_RA_V1 **PASS**, publicada mediante PR #31. El fix numérico de PR #30 tiene 62 tests PASS y CI 3.11/3.12/3.13. El gate anterior ET0-BASELINES-PREP = READY_FOR_DATASET_V1 y sus 48 tests son hitos históricos, no una espera vigente de POST. [Resultados oficiales](results/pm-vpd-20261023T194553Z/README.md) y [estado de misión](docs/mission_status.md).
 
 ## Instalación y ayuda
 
@@ -17,9 +17,9 @@ python -m siar_science --help
 
 No se necesitan credenciales SIAR ni acceso a la API para ejecutar la capa sobre entradas locales autorizadas. La interfaz está implementada y dispone de ayuda por comando con `--help`.
 
-## Flujo previsto
+## Interfaz y reproducción
 
-Los siguientes son ejemplos de uso futuro; las rutas son ilustrativas y no indican que los artefactos finales ya existan. No ejecutar la construcción definitiva hasta recibir el handoff de cierre Quality. Los outputs deben ser rutas nuevas.
+Los siguientes ejemplos usan rutas ilustrativas; no son las rutas reales del dataset y run ya producidos. Para reproducir, utilizar el handoff autorizado, POST corregido, blobs fuente y hashes identificados en el informe oficial; crear destinos nuevos sin sobrescritura. Esta documentación no lanza una nueva ejecución.
 
 ```powershell
 python -m siar_science build-dataset --handoff ./handoff/quality-closeout.json --output ./derived/observational-v1.json
@@ -58,6 +58,8 @@ separación no cambia PM, HS, QC, elegibilidad, unidades ni fórmulas de métric
 Los comandos con `--dataset` admiten opcionalmente `--pipeline-sha` con el SHA exacto de la implementación revisada. Sin esa opción se identifica el checkout disponible. No usar un identificador inventado ni interpretar un SHA declarado como certificado de árbol limpio.
 
 ## Resultados y trazabilidad
+
+El JSON completo del dataset y predictions.json masivo se preservan localmente; Git contiene evidencia compacta, metrics.json y manifest.json. [Dónde consultar datos/resultados](../docs/DATA_LOCATIONS.md). Dataset SHA256: `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`.
 
 Cada comando de ejecución crea un directorio nuevo con:
 

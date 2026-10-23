@@ -31,9 +31,9 @@ The municipality forecast represents the municipal capital. `spatial_match = "mu
 
 PR #18 merged the Track A Collector, PR #19 merged municipality-id comparison, and PR #20 merged POSIX ancestor permissions. `AEMET-A1 = PASS`, `AEMET-A2 = PASS`, and `AEMET-A3 = COMPLETE`. `AEMET-TRACK-A-STABILIZE = PASS`; final AEMET E2E = `DEMONSTRATED`. The next operational milestone is `AEMET-PROSPECTIVE-PILOT`.
 
-The pilot is handed to workstream 02 only after `SIAR-FORECAST-PILOT = RUNNING`; this is a handoff condition, not a claim that the SIAR pilot is already running. The initial target is IB04 → Palma → municipality `07040`.
+Current operational gate (2026-10-23, latest direction report): the pilot was paused after the storage incident. Reactivate Track A prospectively after **SIAR-FORECAST-CAPTURE = RUNNING**, demonstrated by one real automatic SIAR cycle. This supersedes the earlier requirement to wait for SIAR-FORECAST-PILOT RUNNING. It does not depend on SIAR Sync, which remains HOLD. The initial target is IB04 → Palma → municipality `07040`. No new RUNNING or historical reconstruction is claimed.
 
-The future pilot sequence is validated Collector → permanent runtime → `/opt` + `/etc` → independent `/srv/aemet-forecast/raw` → rclone crypt backup → validated restore → experimental scheduler → prospective capture. E2E demonstration alone does not provision or deploy that sequence. Pilot scope excludes ET0, D+n, scientific normalization and SIAR/AEMET integration (all NO); Track B remains OPEN.
+Reactivation must verify permanent runtime/configuration, independent `/srv/aemet-forecast/raw`, rclone crypt backup, restore and experimental scheduler against current operational evidence. Every relevant new raw capture requires external backup. E2E demonstration alone does not prove that paused timers resumed or that new captures are already backed up. Pilot scope excludes ET0, D+n, scientific normalization and SIAR/AEMET integration (all NO); Track B remains OPEN.
 
 See the [consolidated project status](../docs/PROJECT_STATUS.md), [milestones](../docs/MILESTONES.md), [AEMET OpenData API documentation](https://opendata.aemet.es/dist/) and AEMET's [municipal forecast interpretation](https://www.aemet.es/es/eltiempo/prediccion/municipios/horas/abertura-id10002/ayuda).
 

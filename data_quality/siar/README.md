@@ -1,5 +1,13 @@
 # Informes de calidad SIAR
 
+## Estado vigente — 23/10/2026
+
+Quality completeness COMPLETE; serie observacional INCOMPLETE por ausencias SIAR confirmadas. POST vigente [SIAR-QA-POST-20261020T193140Z](post/SIAR-QA-POST-20261020T193140Z/): 75.496 filas raw, 75.495 oficiales, cobertura 96.987410 %, ledger 2.346 = 1 RECOVERED + 2.345 CONFIRMED_NO_DATA + 0 PENDING_RETRY. IB07/2012-11-13 F2 verificado 23/23; IB09/2005-10-23 preservado fuera de periodo; CATALOG-TZ-001 OPEN / NON_BLOCKING.
+
+Publicación canónica `2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9`; SHA auditado `18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865`. Dataset v1 ya construido/validado y run PM/HS oficial PASS: [datos y resultados](../../docs/DATA_LOCATIONS.md).
+
+**Historia preservada:** el resumen original comunicado abajo incluía RECOVERED=1, pero su CSV ledger omitía esa fila; no utilizar esos hashes originales como contrato vigente. La corrección superseding es la autoridad. Ningún artefacto POST se modifica en esta actualización.
+
 ## Corrección superseding del ledger
 
 El POST original SIAR-QA-POST-20261018T233901Z permanece preservado byte a byte. La versión vigente para el ledger es [SIAR-QA-POST-20261020T193140Z](post/SIAR-QA-POST-20261020T193140Z/), que lo supersedes y restaura la fila persistida IB07 / 2012-11-13 = RECOVERED. La causa y el fix reproducible están en [ledger-correction.md](ledger-correction.md). Los estados y la semántica de auditoría no cambiaron.

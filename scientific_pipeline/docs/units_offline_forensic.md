@@ -1,5 +1,7 @@
 # UNITS-OFFLINE-FORENSIC — conclusión consolidada
 
+> **Evidencia histórica preservada — actualización 23/10/2026.** Este informe describe la investigación offline y sus decisiones fechadas; no es el estado operativo actual del dataset. Las esperas de POST/ejecución pertenecen a esa etapa. Dataset v1 y la ejecución oficial PM/HS ya están PASS, con [resultados posteriores](../results/pm-vpd-20261023T194553Z/README.md). No se reescriben cifras forenses ni resultados legacy.
+
 **Interpretación respaldada: Radiacion en MJ m⁻² día⁻¹ y VelViento en m/s.**
 No aplicar ×0.0864 ni /3.6 a estos snapshots. La conclusión combina el contrato
 documentado en docs_1.1/docs_1.2, el uso directo legacy, la búsqueda de conversiones

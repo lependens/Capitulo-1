@@ -1,5 +1,8 @@
 # 1.3 Análisis de Errores y Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 Este documento combina el análisis de errores de los modelos empíricos (Penman-Monteith estándar, cielo claro, Hargreaves, Valiantzas, ajustados) con la implementación de **Redes Neuronales Artificiales (ANN)** para estimar la evapotranspiración de referencia (ET₀). Los errores se calculan frente a los valores de referencia de Penman-Monteith (PM) proporcionados por el SIAR, para las estaciones IB01 a IB05. Las métricas evaluadas son:
 - **MSE**: Mean Squared Error (mm²/día²)
 - **RRMSE**: Root Mean Squared Error relativo (adimensional)
@@ -128,3 +131,13 @@ El TFG evaluó los modelos empíricos Hargreaves (HGR), Valiantzas (HG), y Hargr
   - **Número de estaciones**: TFG usa 11 estaciones, Python solo 5. Incluir IB06-IB11 en Python podría aumentar errores ligeramente (si esas estaciones tienen más variabilidad), acercándose al TFG.
 - **Conclusión**: Los resultados de Python son coherentes con el TFG (mismas tendencias), con mejoras esperadas (~6-37% en métricas) debido a datos actualizados y depuración estricta. Para alinear más, genera datos para IB06-IB11 y compara subperíodos comunes (ej. hasta 2020).
 
+
+---
+
+## ACTUALIZACIÓN 23/10/2026 — ANN histórica y trabajo científico vigente
+
+Los modelos, entrenamientos y métricas anteriores son **HISTÓRICO / LEGACY** y no representan una ANN v1 validada con el nuevo dataset. No se regeneran modelos ni se atribuyen a la nueva arquitectura resultados históricos.
+
+Quality está cerrado con POST corregido; Dataset Observational v1 construido/validado y primera ejecución oficial PM/HS PASS ([evidencia](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md)). Antes de nuevos modelos: auditar Valiantzas → VALIANTZAS_V1 → comparar baselines clásicos; después estadística/regresión, árboles, boosting y ANN.
+
+Cualquier aprendizaje futuro exige split cronológico TRAIN < VALIDATION < TEST, transformaciones y parámetros aprendidos solo en TRAIN. No reutilizar AHC ni filtros ajustados sobre toda la serie como evidencia fuera de muestra. [ROADMAP](docs/ROADMAP.md).

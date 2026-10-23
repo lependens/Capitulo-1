@@ -14,7 +14,9 @@ The permanent runtime is validated as `siar-forecast`, with functional release `
 
 `SMOKE-FC-001 = PASS` demonstrated a complete IB04/Aguacate run and capture, verified TLS, hashes/schemas, shared-group permissions and safe omission of sensitive HTML. `BACKUP-FC-001 = PASS` demonstrated Google Drive through rclone crypt and an independent restore with hashes/schemas validated. Backup uses `rclone copy`, not `sync`; raw remains outside Git. Recovery after total server loss still requires separately recoverable crypt material and is not implied by the backup test alone.
 
-The periodic scheduler is external and not active. Runtime and one-shot smoke validation do not mean periodic capture is deployed. Scheduler, coverage and backup/DR are the next operational workstream. Automated tests remain synthetic and do not contact SIAR. See the [consolidated project status](../docs/PROJECT_STATUS.md) for current gates.
+As of the latest operational report supplied by direction (documented 2026-10-23), timers were paused after the storage incident. Reactivation is independent of SIAR Sync, which remains HOLD. One demonstrated real automatic cycle establishes SIAR-FORECAST-CAPTURE = RUNNING; at least two automatic cycles establish SIAR-FORECAST-PILOT = RUNNING. These gates are pending evidence, not inferred from timer configuration. Do not reconstruct emissions missed during the pause. Every relevant new raw capture requires external backup. Automated tests remain synthetic and do not contact SIAR. See the [consolidated project status](../docs/PROJECT_STATUS.md) for current gates.
+
+FC-STATIONS-001 passed; the multi-smoke attempted nine ACTIVE stations, with eight complete and IB08 failed. Operational targets are IB01, IB02, IB03, IB04, IB05, IB06, IB10 and IB11. IB08 remains officially ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL, monitored separately without blocking those eight; the exact internal SIAR/MAPA cause is not established.
 
 The example station and form values are configuration examples only. The SIAR E2E form contract was demonstrated for IB04; verify station configuration before a future capture. No secrets belong in the TOML file.
 
@@ -30,7 +32,7 @@ cp config/config.example.toml config/config.toml
 siar-forecast-raw capture --config config/config.toml
 ```
 
-The command performs one run and exits. Scheduling is deliberately external and not included. The approved experimental cadence is about 08:00, 14:00 and 20:00 Europe/Madrid, configurable by whichever scheduler may later be approved.
+The command performs one run and exits. Scheduling is deliberately external and not included. The approved experimental cadence is about 08:00, 14:00 and 20:00 Europe/Madrid, subject to the external scheduler's reactivation and cycle validation.
 
 ## Storage layout
 

@@ -1,5 +1,8 @@
 # 1.2 Depuración y Verificación de Datos Meteorológicos: Guía Paso a Paso
 
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 > **Contexto histórico.** Las secciones iniciales conservan la metodología legacy utilizada durante el desarrollo original, con sus scripts, inventario y decisiones de depuración. No constituyen instrucciones vigentes de ejecución. La implementación científica vigente desde octubre de 2026 se explica en la actualización final de este documento y en [scientific_pipeline/](scientific_pipeline/README.md), autoridad técnica detallada.
 
 **Objetivo**
@@ -370,3 +373,27 @@ Los ejemplos del [README técnico](scientific_pipeline/README.md) muestran una i
 - **Resultados científicos v1 = todavía no generados.**
 
 La actualización de `docs_1.3_Análisis errores.md` corresponde a una etapa posterior: Quality POST → Dataset Observational v1 → PM_FAO56_V1 y HS_RA_V1 → resultados reproducibles. Hasta entonces permanece como análisis histórico legacy; esta misión no reinterpreta sus tablas ni anticipa nuevas conclusiones.
+
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Dataset y ejecución oficial v1 disponibles
+
+Las afirmaciones de la actualización de 19/10 sobre POST, dataset y ejecución oficial pendientes son **HISTÓRICAS / SUPERADAS**. Quality está COMPLETE con POST corregido SIAR-QA-POST-20261020T193140Z. Dataset siar-balears-observational-v1 fue construido y validado estructuralmente PASS; SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`.
+
+El dataset conserva 75.496 filas raw, 75.495 oficiales, 1 OUTSIDE_OFFICIAL_PERIOD y ledger de 2.346 = 2.345 CONFIRMED_NO_DATA + 1 RECOVERED. No interpola, imputa ni crea filas meteorológicas ausentes; mantiene 23 columnas, Quality, estados y provenance.
+
+**PM-VPD-FLOAT-TOLERANCE-AND-BASELINES = PASS**, publicado mediante PR #31 después del fix PR #30. En tres fechas IB10 con RHmin=RHmax=100 %, ea superaba es en ~2.22e-16 a 4.44e-16 kPa por redondeo. La tolerancia explícita absoluta 1e-12 kPa, relativa 0.0, trata solo ese exceso con presiones finitas/no negativas; fuera del margen se conserva el error y VPD positivo no se altera. No modifica raw, dataset, Quality, humedad ni presiones; parámetros y tests están documentados en [supuestos](scientific_pipeline/docs/assumptions.md).
+
+PM calculó 70.896 y HS 70.979 predicciones, 0 fallos; pares evaluables propios 70.861 y 70.912, intersección 70.861. Los [resultados oficiales](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) conservan métricas, cohortes y hashes. No son los diagnósticos forenses ni los resultados legacy anteriores. EtPMon sigue siendo referencia SIAR calculada, sin independencia instrumental.
+
+LIMITACIONES ABIERTAS: IB09 conserva 4.423 filas pero la política heredada Quality FAIL de estación excluye todas de evaluación, incluidas 4.422 oficiales; muestra corta IB101; UNITS_PROVENANCE_PARTIAL y viento 2 m por convención sin verificación instrumental exhaustiva. No se cambian estas reglas en esta actualización.
+
+**Valiantzas = LEGACY / FUTURE BASELINE REVIEW.** La variante histórica documentada es:
+```text
+ET0_val = 0.408 * 0.0135 * 0.338 * Ra *
+          (Tmax - Tmin)^0.3 * (1 - RH/100)^0.2 * (T + 17.8)
+RH histórico = HumedadMedia
+```
+Su presencia en la bitácora no la valida como baseline v1. Próxima secuencia: auditar fórmula/unidades/inputs → VALIANTZAS_V1 reproducible → comparar PM/HS/Valiantzas → modelos posteriores. PM_FAO56_V1 y HS_RA_V1 siguen sin calibración, AHC ni ML.
+
+[Ubicaciones](docs/DATA_LOCATIONS.md) distingue evidencia compacta Git del dataset y run completos locales; no se mueve ni regenera ningún artefacto. La implementación y el contrato científico siguen bajo scientific_pipeline/.

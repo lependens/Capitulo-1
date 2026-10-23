@@ -1,5 +1,7 @@
 # Auditoría científica del legado ET₀
 
+> **Evidencia histórica preservada — actualización 23/10/2026.** Este informe describe la investigación offline y sus decisiones fechadas; no es el estado operativo actual del dataset. Las esperas de POST/ejecución pertenecen a esa etapa. Dataset v1 y la ejecución oficial PM/HS ya están PASS, con [resultados posteriores](../results/pm-vpd-20261023T194553Z/README.md). No se reescriben cifras forenses ni resultados legacy.
+
 Fecha: 2026-10-18. Base de investigación: main `6f1dd95c415730ec29843055d3a32a7ac5a636ad`.
 
 ## Alcance y estado

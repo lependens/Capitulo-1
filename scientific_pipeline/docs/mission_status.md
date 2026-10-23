@@ -1,8 +1,26 @@
 # ET0-BASELINES-PREP — estado de integración
 
+## Estado vigente — 23/10/2026
+
+**Dataset Observational v1 construido/validado PASS. Primera ejecución oficial PM/HS PASS.** La espera de POST y handoff descrita en el registro de preparación inferior es HISTÓRICA / SUPERADA.
+
+- POST vigente: SIAR-QA-POST-20261020T193140Z; publicación canónica 2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9; auditado 18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865.
+- Dataset SHA256: 0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb.
+- PR #30: tolerancia VPD explícita 1e-12 kPa absoluta / 0 relativa, sin cambios en dataset o Quality.
+- PR #31: PM-VPD-FLOAT-TOLERANCE-AND-BASELINES PASS; 62 tests y CI 3.11/3.12/3.13 PASS según evidencia publicada.
+- PM: 70.896 calculadas / 70.861 evaluadas / 0 fallos. HS: 70.979 / 70.912 / 0 fallos. Paired n=70.861.
+- Mantener limitaciones de referencia SIAR, procedencia parcial, viento convencional, exclusión IB09 por FAIL y muestra IB101.
+
+[Informe oficial, métricas y artefactos](../results/pm-vpd-20261023T194553Z/README.md). No se modifican ni regeneran resultados en esta actualización documental. Valiantzas permanece LEGACY / FUTURE BASELINE REVIEW; los siguientes gates metodológicos constan en [ROADMAP](../../docs/ROADMAP.md).
+
+## Registro histórico de preparación — 19/10/2026
+
+El texto siguiente conserva la evidencia y las condiciones de aquella entrega. Las menciones de dataset/ejecución pendientes se refieren al estado del 19/10, superado por el resultado vigente anterior.
+
+
 Fecha: 2026-10-19 (Europe/Madrid). Decisión de Dirección 00: cerrar forense y avanzar preparación integrada.
 
-## Estado vigente
+## Estado de preparación al 19/10/2026
 
 - Forense: **RESOLVED_FOR_V1**.
 - Interpretación aceptada: Radiacion MJ m⁻² día⁻¹; VelViento m/s; lectura directa, sin ×0.0864 ni /3.6.

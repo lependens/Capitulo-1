@@ -1,5 +1,8 @@
 # 2.1 Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 Este documento explica paso a paso cómo se implementaron las **Redes Neuronales Artificiales (ANN)** para estimar la evapotranspiración de referencia **ET₀**, replicando la metodología del TFG original, pero adaptada a **Python/Keras con TensorFlow**. Se integra como continuación natural del documento:
 
 **`docs_1.2_Tratamiento de datos y cálculo de estimaciones.md`**
@@ -173,3 +176,12 @@ model.fit(X_train_scaled, y_train_scaled, epochs=30, batch_size=128, verbose=0)
 - Aplicar redes LSTM para series temporales. 
 
 Este tutorial es reproducible; ajusta `estaciones` para más datos. ¡Ejecuta y compárteme `nn_errors_summary.csv` para analizar! 😊
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Contexto histórico de TensorFlow
+
+La implementación ANN y sus resultados anteriores se conservan como **HISTÓRICO / LEGACY**. No constituyen nuevos resultados ML sobre Dataset Observational v1.
+
+El dataset actual está construido/validado desde POST corregido y la ejecución oficial PM/HS está PASS, con [resultados reproducibles](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md). Valiantzas sigue pendiente de auditoría y baseline reproducible antes de una comparación de tres métodos y del avance a ML.
+
+Las futuras redes se evaluarán con partición temporal sin leakage y parámetros/transformaciones ajustados exclusivamente en TRAIN. Esta actualización no instala TensorFlow, entrena modelos ni modifica artefactos científicos. [Estado vigente](docs/PROJECT_STATUS.md).

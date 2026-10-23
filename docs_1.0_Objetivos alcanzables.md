@@ -1,5 +1,8 @@
 # Objetivos alcanzables
 
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 Este documento recoge pequeños objetivos que sean **realistas y alcanzables**, con resultados próximos y fáciles de ejecutar. La idea es crear una base sólida de trabajo en Python, siguiendo la metodología y el hilo del TFG, pero con herramientas modernas y flexibles.
 
 ---
@@ -492,3 +495,13 @@ Cada etapa deberá poder validarse independientemente antes de utilizarse como e
 ---
 
 > Siguiendo estos objetivos paso a paso, se logra un flujo de trabajo completo: desde la obtención de datos hasta la creación de modelos y dashboards interactivos, todo en Python, con resultados concretos en cada etapa y posibilidad de expansión futura.
+
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Objetivos alcanzados y próximos gates
+
+**VIGENTE:** Quality cerrado con POST corregido SIAR-QA-POST-20261020T193140Z; Dataset Observational v1 construido/validado; primera ejecución oficial PM_FAO56_V1 y HS_RA_V1 PASS publicada en PR #31. Las metas anteriores de construir dataset y preparar esos baselines ya están alcanzadas; sus resultados están en [la publicación científica](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md).
+
+**PENDIENTE:** auditar fórmula/unidades/inputs de Valiantzas → VALIANTZAS_V1 reproducible → comparación PM/HS/Valiantzas → nuevos modelos con split temporal sin leakage. ANN, producto Web/API, ET₀+Kc, ETc y riego siguen como evolución futura.
+
+**OPERACIÓN:** SIAR Sync v2.3.3 está HOLD hasta alignment e incremental 2026 demostrado. Forecast SIAR y AEMET son independientes de ese HOLD; timers pausados según último parte. Un ciclo SIAR real permite CAPTURE RUNNING y reactivar AEMET; dos permiten PILOT RUNNING. No reconstruir emisiones perdidas. Ver [ROADMAP](docs/ROADMAP.md).

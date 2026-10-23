@@ -30,14 +30,19 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
+**Actualizado: 2026-10-23.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico.
+
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
 - [Hitos del proyecto](docs/MILESTONES.md) — decisiones y resultados materiales, registro append-only.
 - [Calidad SIAR](docs/siar/quality.md) — política y formatos de Quality Audit v1.
-- [Estado de sincronización SIAR](docs/siar/sync-status.md) — alcance temporal y certificación pendiente.
+- [Estado de sincronización SIAR](docs/siar/sync-status.md) — Quality cerrado, POST corregido y runtime Sync HOLD.
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
 - [Forecast SIAR](forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
+- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — PM/HS v1 y evidencia reproducible.
+- [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
+- [Auditoría documental](docs/DOCUMENTATION_AUDIT_2026-10.md) — inconsistencias corregidas y límites de la revisión.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
 
 ## 2.1 Objetivos
@@ -202,7 +207,8 @@ Capitulo-1/
 ├── forecast_collector/
 ├── aemet_forecast_collector/
 ├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
-├── data_quality/siar/         # sin artefactos Quality versionados; PRE externo, POST pendiente
+├── data_quality/siar/         # POST original y POST corregido versionados
+├── scientific_pipeline/      # paquete científico y evidencia oficial compacta PM/HS
 ├── legacy/                    # código y datos históricos
 ├── docs/
 │   ├── PROJECT_STATUS.md
@@ -213,11 +219,13 @@ Capitulo-1/
 └── README.md
 ```
 
-El backfill temporal de adquisición ha alcanzado las 12 estaciones: IB01–IB11 e IB101 tienen su CSV canónico. La certificación científica de calidad sigue pendiente; el alcance temporal alcanzado no implica que cada día tenga datos ni que el conjunto esté certificado.
+El backfill temporal de adquisición ha alcanzado las 12 estaciones: IB01–IB11 e IB101 tienen su CSV canónico. Quality está COMPLETE con POST corregido; la cobertura observacional es 96.987410 % por 2.345 ausencias SIAR confirmadas. No equivale a observaciones completas para todos los días ni a validación instrumental exhaustiva.
 
 ---
 
-# 4. Etapa actual — 2026
+# 4. Evolución de la infraestructura — contexto 2026
+
+**Estado vigente:** SIAR-SYNC-RUNTIME HOLD hasta production alignment e incremental 2026 demostrado. El snapshot científico 2025 ya está cerrado. Las capacidades enumeradas debajo no significan que la adquisición rutinaria esté actualmente activa.
 
 Durante 2026 el proyecto ha dejado de centrarse únicamente en scripts independientes y ha comenzado a desarrollar una infraestructura reproducible.
 
@@ -239,11 +247,13 @@ Sus funciones principales son:
 * automatización;
 * control mediante Git.
 
-La adquisición histórica debe mantenerse estable mientras se desarrollan las siguientes etapas.
+La reactivación de Sync exige sus gates propios; no condiciona la captura prospectiva de Forecast.
 
 ---
 
-# 5. Próximas etapas
+# 5. Perspectiva histórica de las siguientes etapas
+
+Esta sección conserva el planteamiento original. Dataset v1 y la primera ejecución oficial PM/HS ya existen; la secuencia vigente está en ROADMAP e incorpora auditoría Valiantzas antes de nuevos modelos. Parquet/DuckDB siguen siendo opciones derivadas, no requisitos del raw.
 
 ## 5.1 Dataset científico
 
@@ -423,29 +433,24 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 ---
 
-# 7. Estado general
+# 7. Estado general — 23/10/2026
 
-| Área                      | Estado                           |
-| ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟠 PRE completo; R1 histórico; R2 autónoma en ejecución; POST y Quality closeout pendientes |
-| SIAR Sync                 | 🟢 v2.3.3; 12 CSV en 0644 con contenido raw intacto tras saneamiento |
-| Control de cobertura      | 🟢 Implementado                  |
-| Validación de datos       | 🟢 Implementado                  |
-| Docker                    | 🟢 Implementado                  |
-| Git / trazabilidad        | 🟢 Implementado                  |
-| ET₀ Penman-Monteith       | 🟢 Implementado inicialmente     |
-| Métodos empíricos         | 🟢 Implementado inicialmente     |
-| Redes neuronales          | 🟢 Primera etapa implementada    |
-| Dataset científico        | 🟡 Próxima etapa                 |
-| Nuevos modelos ML         | 🟡 Próxima etapa                 |
-| Forecast Collector SIAR   | 🟠 runtime permanente y `/srv` operativos; `SMOKE-FC-001` y `BACKUP-FC-001` PASS; scheduler periódico aún NO |
-| AEMET Forecast Collector | 🟠 estabilización PASS; E2E final DEMONSTRATED; siguiente AEMET-PROSPECTIVE-PILOT a 02 tras SIAR-FORECAST-PILOT RUNNING; Track B OPEN |
-| Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
-| Predicción propia de ET₀  | ⚪ Futura                         |
-| Aplicación web            | ⚪ Futura                         |
-| Kc / necesidades de riego | ⚪ Futura                         |
+| Área | Estado |
+|---|---|
+| Quality SIAR | COMPLETE; POST corregido SIAR-QA-POST-20261020T193140Z |
+| Datos observacionales | 75.496 filas raw; 75.495 oficiales; 2.345 ausencias confirmadas, 1 RECOVERED; cobertura 96.987410 % |
+| Dataset Observational v1 | Construido/validado PASS; JSON completo preservado localmente |
+| PM_FAO56_V1 / HS_RA_V1 | Primera ejecución oficial PASS, publicada en PR #31 |
+| Valiantzas | LEGACY / FUTURE BASELINE REVIEW; auditoría e implementación reproducible pendientes |
+| SIAR Sync v2.3.3 | HOLD hasta alignment e incremental 2026 demostrado |
+| Forecast SIAR | Runtime/raw/backup/restore demostrados; timers pausados según último parte; gates CAPTURE/PILOT pendientes |
+| AEMET Track A | E2E DEMONSTRATED; pausado; reactivar tras SIAR-FORECAST-CAPTURE RUNNING |
+| AEMET Track B | OPEN |
+| Storage Toshiba | CLOSED_OPERATIONALLY / MONITORING; preservación externa PASS |
+| ANN y dashboards legacy | Historia preservada, sin convertir resultados antiguos en v1 |
+| ML nuevo / Web/API / Kc / ETc / riego | Futuro después de baselines comparables y validación |
 
-Los collectors SIAR y AEMET avanzan en paralelo al cierre Quality. Forecast SIAR tiene runtime permanente, Google Drive + rclone crypt y restore demostrados; quedan scheduler y backup/DR. `AEMET-TRACK-A-STABILIZE = PASS` y AEMET final E2E = `DEMONSTRATED`; su próximo hito es `AEMET-PROSPECTIVE-PILOT`, que 02 recibe después de que `SIAR-FORECAST-PILOT` esté RUNNING. La validación del Collector no declara desplegado ese piloto. No esperamos a terminar los modelos para empezar a capturar forecasts.
+SIAR Forecast puede reactivarse aunque SIAR Sync siga HOLD. Un ciclo automático real demuestra CAPTURE RUNNING; al menos dos, PILOT RUNNING. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
 
 ---
 
@@ -493,11 +498,9 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-El trabajo actual es paralelo: Quality R2 → POST → Dataset Observacional v1; Forecast SIAR → SIAR-FORECAST-PILOT y backup/DR; AEMET → handoff del piloto prospectivo a 02 cuando el piloto SIAR esté RUNNING. Un `INVALID_RESPONSE` aislado no bloquea globalmente R2.
+Quality y Dataset v1 ya están cerrados/construidos; los resultados oficiales PM/HS están publicados. Siguiente trabajo científico: auditar Valiantzas → VALIANTZAS_V1 → comparación PM/HS/Valiantzas → modelos estadísticos y ML sin leakage.
 
-La secuencia científica posterior es Dataset v1 → FAO-56 PM → Hargreaves → baselines comparables → ML. La conservación prospectiva de emisiones forecast comienza al superar los gates propios de cada capturador, sin esperar a los modelos. El estado recuperable y sus hitos están en [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md).
-
----
+En paralelo: reactivar Forecast SIAR y AEMET con sus gates propios, asegurar backup de nuevos raw y resolver alignment/incremental 2026 antes de levantar HOLD en Sync. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
 
 ## Navegación rápida
 

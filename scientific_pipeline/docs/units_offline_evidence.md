@@ -1,5 +1,7 @@
 # Unidades observacionales SIAR: evidencia forense offline
 
+> **Evidencia histórica preservada — actualización 23/10/2026.** Este informe describe la investigación offline y sus decisiones fechadas; no es el estado operativo actual del dataset. Las esperas de POST/ejecución pertenecen a esa etapa. Dataset v1 y la ejecución oficial PM/HS ya están PASS, con [resultados posteriores](../results/pm-vpd-20261023T194553Z/README.md). No se reescriben cifras forenses ni resultados legacy.
+
 Fecha: 2026-10-18. Árbol inspeccionado: `87d7cf5d00c8ca587e5208e2ec529455f7abc2c6` más archivos locales de trabajo. No se realizó ninguna consulta de red o API, no se ejecutaron adquisidores, no se alteraron observaciones, metadatos, código ni resultados. Este documento registra evidencia textual y estructural; el contraste numérico de hipótesis se entrega separadamente.
 
 ## Decisión vigente 00 — 2026-10-19

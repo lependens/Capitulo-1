@@ -4,7 +4,11 @@ Componente FastAPI para consultar SIAR y sincronizar los CSV diarios de estacion
 
 ## Estado de producción
 
-Producción continúa desplegada desde `/home/josep/siar-sync`. La versión v2.3.2 se desplegó y validó como corrección funcional intermedia; v2.3.3 es la versión productiva actual, desplegada y validada. La sincronización de esta copia canónica en GitHub no despliega ni sustituye la instancia activa. GitHub queda pendiente de esta PR.
+**Actualizado: 2026-10-23. SIAR-SYNC-RUNTIME = HOLD.** v2.3.2 y v2.3.3 fueron desplegadas y validadas; v2.3.3 es la versión canónica en GitHub, no una PR pendiente. El despliegue conocido está en `/home/josep/siar-sync`; esta copia no sustituye ni actualiza producción.
+
+El diagnóstico comunicado por 02 conserva un checkout residual de datos `quality/recovery-20261012T085131Z`, HEAD `18e6d893...`. El snapshot científico 2025 ya está cerrado y main contiene su recuperación. El worker tiene target default 2025-12-31; todavía no hay modo incremental 2026 demostrado desde último dato útil hasta actualidad sin reabrir huecos históricos. /start podría intentar aproximadamente 1.958 huecos históricos de activas.
+
+El panel mezcla historical gaps y current/prospective lag; tampoco aplica correctamente Fecha_Baja a cerradas aunque el worker sí. Reactivación condicionada a **SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026**. Forecast SIAR/AEMET no dependen de levantar este HOLD. Ver [estado maestro](../docs/PROJECT_STATUS.md).
 
 El worker productivo v2.3.3 tiene SHA-256:
 
@@ -26,4 +30,6 @@ Este workaround puede retirarse cuando MAPA sirva una cadena TLS compatible con 
 
 ## Compose
 
-`docker-compose.yml` conserva el montaje relativo `../:/app/Capitulo-1` para esta estructura del monorepo. No ejecutes este Compose como despliegue de producción. La instancia activa continúa usando `/home/josep/siar-sync` hasta que exista una decisión y un procedimiento de despliegue independientes.
+`docker-compose.yml` conserva el montaje relativo `../:/app/Capitulo-1` para esta estructura del monorepo. No ejecutes este Compose como despliegue de producción. El despliegue conocido, actualmente HOLD, utiliza `/home/josep/siar-sync` hasta que exista una decisión y un procedimiento de despliegue independientes.
+
+`init: true` es requisito canónico del servicio; INC-INFRA-001 quedó resuelta. El worker conserva autenticación dinámica, bloques ≤7 días, esquema 23 columnas, escritura atómica, reintentos y persistencia local aunque falle Git.

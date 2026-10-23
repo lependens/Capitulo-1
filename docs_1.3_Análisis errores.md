@@ -1,5 +1,8 @@
 > Nota histórica: la aplicación Dash asociada a este análisis se desplegó en Render y fue retirada en octubre de 2026.
 
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 
 
 # 1.3 Análisis de Errores
@@ -204,3 +207,12 @@ Los modelos incluyen PM Estándar, PM Cielo Claro, Hargreaves Ra (con radiación
   - Comparar subperíodos comunes (ej. hasta 2020) para aislar el efecto temporal.
   - Verificar HGRs del TFG vs. Hargreaves Rs en Python para completar la comparación.
 - Futuros análisis podrían explorar AHC estacionales o por región para mejorar la precisión.
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Alcance de este análisis histórico
+
+Las tablas, AHC y comparaciones anteriores permanecen **HISTÓRICO / LEGACY**. No se reetiquetan como resultados v1 ni se usan para inferir mejoras causales. Pearson² y el RRMSE histórico no deben confundirse con R² predictivo y RMSE en mm/día; AHC dentro de muestra no demuestra generalización.
+
+Quality POST corregido y Dataset Observational v1 ya están construidos/validados. Posteriormente la misión **PM-VPD-FLOAT-TOLERANCE-AND-BASELINES = PASS** publicó mediante PR #31 [resultados oficiales PM_FAO56_V1 / HS_RA_V1](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md). Ese informe, sus métricas y manifiesto son la autoridad actual; esta actualización solo enlaza la evidencia, sin añadir tablas ni reinterpretar los resultados anteriores.
+
+Valiantzas histórico sigue LEGACY / FUTURE BASELINE REVIEW. No es un tercer resultado v1. La futura comparación exige auditoría metodológica, implementación reproducible y cohortes explícitas. Las [limitaciones vigentes](docs/PROJECT_STATUS.md) incluyen EtPMon calculada SIAR, IB09 excluida por Quality FAIL y procedencia instrumental parcial.

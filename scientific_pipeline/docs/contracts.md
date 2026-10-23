@@ -1,6 +1,6 @@
 # Contratos científicos v1
 
-Decisión 00, 2026-10-19: forense **RESOLVED_FOR_V1**. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones no bloqueantes. Preparación integrada **READY_FOR_DATASET_V1**, con pruebas, revisión y CI verificadas en el estado de misión. Esto no afirma que exista Dataset Observational v1 publicado o Quality POST entregado.
+Decisión 00, 2026-10-19: forense **RESOLVED_FOR_V1**. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones no bloqueantes. Preparación integrada **READY_FOR_DATASET_V1**, con pruebas, revisión y CI verificadas en el estado de misión. Esta frase describía el gate de preparación del 19/10. A 23/10, POST corregido entregado, Dataset Observational v1 construido/validado y primera ejecución oficial PM/HS PASS; [evidencia publicada](../results/pm-vpd-20261023T194553Z/README.md). El contrato sigue aplicando a reconstrucciones y nuevos lotes; no autoautoriza handoffs.
 
 ## Autoridad y handoff de Quality
 

@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "operation": "pre-merge full-series impact comparison, not official rerun",
+  "timestamp_utc": "2026-10-23T19:47:01.861497+00:00",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "candidate_sha": "ce290bee14f6803bc0f865401a0240f83d8e9d6a",
+  "previous_predictions_sha256": "19177c60b2c411a69532d668fd7eebb2e390e6a9f0b43c9970edfcbfec9669ec",
+  "n": 75496,
+  "unchanged_rows": 75493,
+  "changed_rows": [
+    {
+      "station": "IB10",
+      "date": "2022-12-13",
+      "changed_fields": [
+        "eligibility",
+        "model_diagnostics",
+        "ET0_FAO56"
+      ],
+      "previous_pm": null,
+      "candidate_pm": 0.5491411650502768
+    },
+    {
+      "station": "IB10",
+      "date": "2022-12-31",
+      "changed_fields": [
+        "eligibility",
+        "model_diagnostics",
+        "ET0_FAO56"
+      ],
+      "previous_pm": null,
+      "candidate_pm": 0.6543749142905066
+    },
+    {
+      "station": "IB10",
+      "date": "2023-03-08",
+      "changed_fields": [
+        "eligibility",
+        "model_diagnostics",
+        "ET0_FAO56"
+      ],
+      "previous_pm": null,
+      "candidate_pm": 1.7721005893587936
+    }
+  ],
+  "input_values_unchanged": true,
+  "hs_predictions_unchanged": true,
+  "eligibility_unchanged": true,
+  "counts": {
+    "pm": {
+      "CALCULATED": 70896,
+      "INELIGIBLE": 4600
+    },
+    "hargreaves": {
+      "CALCULATED": 70979,
+      "INELIGIBLE": 4517
+    }
+  }
+}

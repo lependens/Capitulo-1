@@ -1,0 +1,176 @@
+{
+  "assumptions": {
+    "radiation_input": "Radiacion MJ/m2/day directly; no *0.0864",
+    "reference": "EtPMon supplied/calculated by SIAR; not independent ground truth",
+    "station_period_provenance": "not exhaustively verified",
+    "units_interpretation": "RESOLVED_FOR_V1",
+    "units_provenance": "UNITS_PROVENANCE_PARTIAL",
+    "wind_height_assumption": "2 m / SIAR convention",
+    "wind_input": "VelViento used directly as u2; no /3.6"
+  },
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "catalog": {
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\estaciones_baleares.csv",
+    "sha256": "98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357"
+  },
+  "cohorts": {
+    "HS_RA_V1": {
+      "n": 70979,
+      "sha256": "517221493be6c51a40eedc379ff38d19532b13c7ff2178ccc7c07e89ebc34da4"
+    },
+    "HS_RA_V1:evaluation": {
+      "n": 70912,
+      "sha256": "cec417bac9d01ee4b4fe5d7db6b724c5486388a59a0c77c829a461c58a15c20a"
+    },
+    "PM_FAO56_V1": {
+      "n": 70896,
+      "sha256": "2776f5ee2ecf0f34c3d16826ffc2245464c85a96118793ce5c8088c57e5ac38e"
+    },
+    "PM_FAO56_V1:evaluation": {
+      "n": 70861,
+      "sha256": "4e9050b9466844b901d244061005d188f2bb48d63c43b81091182ffcf55f4b7b"
+    },
+    "paired_evaluation": {
+      "n": 70861,
+      "sha256": "4e9050b9466844b901d244061005d188f2bb48d63c43b81091182ffcf55f4b7b"
+    },
+    "paired_predictions": {
+      "n": 70896,
+      "sha256": "2776f5ee2ecf0f34c3d16826ffc2245464c85a96118793ce5c8088c57e5ac38e"
+    }
+  },
+  "command": "run-baselines",
+  "configuration_sha256": "f57604749e986cfd0286fa83d726acdfe86e684c2a467b602c5f45444c75a53c",
+  "counts": {
+    "HS_RA_V1": {
+      "calculated": 70979,
+      "eligible": 70979,
+      "evaluated": 70912,
+      "failed": 0,
+      "input": 75496
+    },
+    "PM_FAO56_V1": {
+      "calculated": 70896,
+      "eligible": 70896,
+      "evaluated": 70861,
+      "failed": 0,
+      "input": 75496
+    }
+  },
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\dataset.json",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "finished_at_utc": "2026-10-23T19:49:44.813948Z",
+  "methods": [
+    "PM_FAO56_V1",
+    "HS_RA_V1"
+  ],
+  "outputs": {
+    "metrics.json": {
+      "path": "metrics.json",
+      "sha256": "f50dceb724454b767b474252caf74521a2cd20c63f909757f117c2e44066bff8"
+    },
+    "predictions.json": {
+      "path": "predictions.json",
+      "sha256": "4a858e1a5aafc73b398da82e492c843deaa28f2af8b62a35c9bf80cd8c98a0b9"
+    }
+  },
+  "parameters": {
+    "HS_RA_V1": {
+      "coefficient": 0.0023,
+      "output_clipping": false,
+      "radiation": "Ra MJ m-2 day-1",
+      "radiation_to_evaporation": 0.408,
+      "temperature_offset_c": 17.8,
+      "temperature_range_exponent": 0.5,
+      "tmean_convention": "(Tmax+Tmin)/2"
+    },
+    "PM_FAO56_V1": {
+      "albedo": 0.23,
+      "cloud_ratio_lower_floor": null,
+      "cloud_ratio_upper_cap": 1.0,
+      "kelvin_offset_aerodynamic": 273.0,
+      "kelvin_offset_longwave": 273.16,
+      "psychrometric_coefficient": 0.000665,
+      "radiation_to_evaporation": 0.408,
+      "soil_heat_flux_mj_m2_day": 0.0,
+      "stefan_boltzmann_mj_k4_m2_day": 4.903e-09,
+      "tmean_convention": "(Tmax+Tmin)/2",
+      "vpd_roundoff": {
+        "abs_tol_kpa": 1e-12,
+        "policy": "ea>es within tolerance gives VPD=0; pressures unchanged; otherwise error",
+        "rel_tol": 0.0
+      },
+      "wind_policy": "SIAR 2m convention; explicit other height STOP"
+    }
+  },
+  "pipeline": {
+    "dirty": false,
+    "git_sha": "39c101e5999245eb15e3c6c1c867d90b4ac44468",
+    "git_sha_source": "provided",
+    "package_matches_checkout": true,
+    "package_version": "0.1.0",
+    "python_version": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+    "source_files_sha256": {
+      "__init__.py": "ed64cc28515a24ecc7a1df2376588a27c3e9ad7d7d0161f8c4f4fb63dcda60f4",
+      "__main__.py": "935a1c1166b0c1ea35a82256345000bf2c73ded718d77773bc27a71ecce28f7d",
+      "atmosphere.py": "f82fc1d390fbcd2e75a26d2a7da8cd060b5becbb4ed1743c3941a7b9e8fbe080",
+      "cli.py": "3198422ca133ba60ea9fed0be01b1907669b772a78b86944fb794dfc94b8b8fb",
+      "datasets.py": "b30347212a0501b3a9cc30092f1bb3d70ae766c224a6b9772d0bf1d1d4c2c00e",
+      "hargreaves.py": "537226aef26d7b23494ac401e6e2ad9cd678158a818539ce32cbdf0ef9b76e5e",
+      "metrics.py": "faeeb4d829ca7df921eec17bc849a95b71671e3185804195b829664a35be98a2",
+      "penman_monteith.py": "c0549b37c53224871cd4ee0ea252bd08951a5d97b4973d6577b42a469e4a6db3",
+      "pipeline.py": "adb49487db71b84f42ec06c39a067766cc3573fde06c606ce0ca598bd5912ef7",
+      "quality.py": "0ff747b92715139878bb5a99bc171712994b5d5f7d04a61cb6123c946b8a98ad",
+      "solar.py": "224428e2baeb41a8cdad123de95866047e58d67f5eefd24333c72ea37c76b5b1"
+    }
+  },
+  "policies": {
+    "metrics": "n,MAE,RMSE,bias=prediction-reference,R2=1-SSE/SST; own and paired cohorts",
+    "negative_predictions": "retain signed output and flag; no clipping",
+    "reference_policy": "finite nonnegative EtPMon; zero included; PASS/WARN and in official period",
+    "row_policy": "preserve all observations and source values; no imputation or sigma filter",
+    "seasons": "northern DJF/MAM/JJA/SON; December belongs to next season-year",
+    "split": "uncalibrated v1; future TRAIN<VALIDATION<TEST, global calendar cuts after POST",
+    "temperature": "(TempMax+TempMin)/2; SIAR TempMedia preserved",
+    "version": "SCIENTIFIC_QC_V1"
+  },
+  "quality_post": {
+    "id": "SIAR-QA-POST-20261020T193140Z",
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\quality-post-package.json",
+    "reports": {
+      "siar_dataset_manifest.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_dataset_manifest.csv",
+        "sha256": "b37c6ef2cf47f4ac7ac7308d0414b39429c5a35c352ec09581f9f4751468337b"
+      },
+      "siar_missing_days.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_missing_days.csv",
+        "sha256": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969"
+      },
+      "siar_station_audit.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_station_audit.csv",
+        "sha256": "e444cebf4165939c24cb0e9c132b241363bb60b0808e4403e1cf2ac33bd6be7d"
+      }
+    },
+    "sha256": "a2d1293fcc54254769dbc80c7105b08b4b03b6a14392df0a4e5ef19b4ef51d07"
+  },
+  "run_id": "run-aa2786cc294045ff93159b45376c5255",
+  "schema_version": "science-run-v1",
+  "source_data_hashes": {
+    "IB01_datos_completos.csv": "dfadf1ec335d7af040a7caab65c73761ac555fa050e7bb75ffb7a4376b750c53",
+    "IB02_datos_completos.csv": "a65ba9913d1649fb86fb61b574630e9706154b4f2ad4ac11246b301740d78891",
+    "IB03_datos_completos.csv": "bf44c363acdc01673c5dd7bc847283bc7620d7af70ba91267608707c730c638d",
+    "IB04_datos_completos.csv": "2745c212a45078ba2010aaab637c40d56949f7fa50e9946dbe6763d008a11199",
+    "IB05_datos_completos.csv": "8ee97684d962169db1e3949c02e4a277b683ca0211ccea158e11382bd4905432",
+    "IB06_datos_completos.csv": "48731bd993a2116bea75fdb779788a1a71505563e1d9cdae8d9a7d5817907cb2",
+    "IB07_datos_completos.csv": "8641cdf90697064fe07c505618d5a9921cf103e5fc1e1d06b28812b566786c68",
+    "IB08_datos_completos.csv": "cfe4f124793139ea9b55f147209733fc74ef9e274272ff8bf9ad6115bf4c14cc",
+    "IB09_datos_completos.csv": "2cbd9bb289404264fc78dad21322562d9d22b64ce4bbc87e51512ca763ea7a8a",
+    "IB101_datos_completos.csv": "b2c91aa0c6b8836cba868243ad565755c97f21703e081baae40c66e0f810179a",
+    "IB10_datos_completos.csv": "9295b9b071ad6239301544cce1618cec065bae1e6ff7106e4fa0c5def1f69c47",
+    "IB11_datos_completos.csv": "bee7da8bdd401bbbf801517861d02f4e0b7e1296cf3229f924cba1c2bec01e07"
+  },
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "started_at_utc": "2026-10-23T19:48:53.843799Z",
+  "status": "SUCCESS"
+}

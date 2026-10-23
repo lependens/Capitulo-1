@@ -81,6 +81,7 @@ PM/HS no aprenden parámetros. Cualquier calibración o ML futuro requiere separ
 
 ## Referencias de la entrega
 
+- [Primera ejecución oficial PM/HS: resultados, cohortes, hashes y limitaciones](results/pm-vpd-20261023T194553Z/README.md).
 - [Supuestos y diferencias con el legado](docs/assumptions.md).
 - [Contrato de dataset, handoff y ejecución](docs/contracts.md).
 - [Estado de misión y condiciones pendientes](docs/mission_status.md).

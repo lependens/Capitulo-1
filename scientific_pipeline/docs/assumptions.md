@@ -60,6 +60,17 @@ Las diferencias respecto a PM2 legacy son intencionales: Tcalc de extremos en lu
 
 ET₀=**0.0023·0.408**·Ra·(Tcalc+17.8)·√(Tmax−Tmin), con Ra en MJ m⁻² día⁻¹ y Tcalc=(Tmax+Tmin)/2. Sin calibración AHC, sustitución de Ra por Rs ni ajuste estacional. Latitud y fecha son necesarias para Ra; radiación medida, humedad y viento no lo son. Valores negativos se conservan y marcan. Diferencias térmicas negativas o entradas no finitas son motivos explícitos de no elegibilidad.
 
+## Valiantzas v1 (decisión 2026-10-24)
+
+Se adopta la composición Martí et al. (2024), Ecs.1b+3: **0.001861704 Ra
+(Tmax−Tmin)^0.3 (1.001−HumedadMedia/100)^0.2 (Tcalc+17.8)**. Ra se expresa
+en MJ/m²/día; el coeficiente incluye 0.408 para obtener mm/día.
+No se adopta literalmente la Ec.4 impresa ni el factor 1−RH/100 del legado.
+La [revisión metodológica](valiantzas_v1.md) fija fuentes, diferencias,
+dominios y límites. No cambia PM/HS ni los bytes de Dataset v1.
+La comparación principal nueva usa PM∩HS∩VAL; se conservan las cohortes
+propias, las tres intersecciones de dos métodos y la semántica PM/HS anterior.
+
 ## Selección, métricas y futuro aprendizaje
 
 Conservar cada fila y sus motivos por método; no aplicar ±3σ global ni exigir variables auxiliares ajenas al cálculo. EtPMon ausente no impide una predicción. Su ausencia sí impide formar un par de evaluación. Los ceros de referencia permanecen en MAE, RMSE, MBE y R².

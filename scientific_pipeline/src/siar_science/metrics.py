@@ -3,6 +3,14 @@ import math
 from collections import defaultdict
 from datetime import date
 
+CLASSICAL_FIELDS = ("ET0_FAO56", "ET0_Hargreaves", "ET0_Valiantzas")
+CLASSICAL_COHORTS = {
+    "PM_HS": CLASSICAL_FIELDS[:2],
+    "PM_VAL": (CLASSICAL_FIELDS[0], CLASSICAL_FIELDS[2]),
+    "HS_VAL": CLASSICAL_FIELDS[1:],
+    "PM_HS_VAL": CLASSICAL_FIELDS,
+}
+
 
 def reference_value(row):
     """Reference eligibility is distinct from prediction eligibility; zero valid."""
@@ -33,7 +41,7 @@ def metrics(observed, predicted):
                 r2=1-sse/sst if n >= 2 and sst > 0 else None)
 
 
-def evaluate(rows, prediction_fields=("ET0_FAO56", "ET0_Hargreaves")):
+def evaluate(rows, prediction_fields=("ET0_FAO56", "ET0_Hargreaves"), *, classical=False):
     """Each model's finite pairs; global is pooled, never mean of station scores.
 
     Seasons are northern meteorological DJF/MAM/JJA/SON. December belongs
@@ -56,8 +64,17 @@ def evaluate(rows, prediction_fields=("ET0_FAO56", "ET0_Hargreaves")):
         paired = [r for r in group if reference_value(r) is not None
                   and all(isinstance(r.get(m), (float, int)) and not isinstance(r.get(m), bool)
                           and math.isfinite(r[m]) for m in ("ET0_FAO56", "ET0_Hargreaves"))]
-        for cohort, selected in (("own", group), ("paired", paired)):
-            for method in prediction_fields:
+        cohorts = [("own", group, prediction_fields)]
+        if classical:
+            for name, fields in CLASSICAL_COHORTS.items():
+                selected = [r for r in group if reference_value(r) is not None and
+                            all(isinstance(r.get(f), (int, float)) and not isinstance(r.get(f), bool)
+                                and math.isfinite(r[f]) for f in fields)]
+                cohorts.append((name, selected, fields))
+        else:
+            cohorts.append(("paired", paired, prediction_fields))
+        for cohort, selected, fields in cohorts:
+            for method in fields:
                 score = metrics([reference_value(r) for r in selected], [r.get(method) for r in selected])
                 result.append(dict(group=kind, key=key, cohort=cohort, method=method, **score))
     return result

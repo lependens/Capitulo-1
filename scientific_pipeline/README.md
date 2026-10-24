@@ -83,6 +83,8 @@ PM/HS no aprenden parámetros. Cualquier calibración o ML futuro requiere separ
 
 ## Referencias de la entrega
 
+- [VALIANTZAS_V1: fórmula adoptada y revisión de unidades](docs/valiantzas_v1.md).
+
 - [Primera ejecución oficial PM/HS: resultados, cohortes, hashes y limitaciones](results/pm-vpd-20261023T194553Z/README.md).
 - [Supuestos y diferencias con el legado](docs/assumptions.md).
 - [Contrato de dataset, handoff y ejecución](docs/contracts.md).
@@ -92,3 +94,39 @@ PM/HS no aprenden parámetros. Cualquier calibración o ML futuro requiere separ
 - [Resultados numéricos forenses preservados](docs/units_offline_forensic.md), cuyo diagnóstico preliminar se interpreta con la decisión posterior de 00.
 
 Pruebas locales: `python -m unittest discover -s scientific_pipeline/tests -v`. La suite matemática y sintética verifica fórmulas publicadas, QC/eligibilidad, métricas, handoff/POST/catálogo, hashes, protección de outputs, procedencia y CLI. La CI científica ejecuta el paquete instalado y la CLI en Python 3.11, 3.12 y 3.13. El cierre y las evidencias verificadas se registran en el estado de misión.
+
+## Tercer baseline clásico y exportación
+
+`VALIANTZAS_V1` adopta Martí et al. (2024), Ecs.1b+3, con factor energético fijo
+0.408: coeficiente expandido **0.001861704**, factor de humedad
+**(1.001−HumedadMedia/100)^0.2**, Tcalc de extremos y Ra en MJ/m²/día.
+No utiliza radiación medida ni viento, y no se calibra contra EtPMon.
+La [decisión científica](docs/valiantzas_v1.md) documenta por qué no se traslada
+literalmente el coeficiente 0.004563 de la ecuación 4 a nuestra Ra energética.
+
+```powershell
+python -m siar_science calculate-valiantzas --dataset ./derived/observational-v1.json --output ./runs/v1-val
+python -m siar_science evaluate-classical --dataset ./derived/observational-v1.json --predictions ./runs/v1-baselines/predictions.json --predictions ./runs/v1-val/predictions.json --output ./runs/v1-classical
+```
+
+La segunda operación reutiliza predicciones oficiales PM/HS verificadas y
+conserva sus productores y hashes. Exige los tres métodos completos y sin
+solapamientos. `run-classical-baselines` permite calcular los tres juntos sobre
+entradas controladas o en una reproducción nueva. `run-baselines` y `evaluate`
+conservan la semántica PM/HS y `paired` anterior.
+
+La comparación nueva publica `own`, `PM_HS`, `PM_VAL`, `HS_VAL` y
+**`PM_HS_VAL`**, esta última principal para comparar los tres en las mismas
+fechas/estaciones. Cada intersección informa los modelos que la componen.
+Hay desgloses por estación, año, mes, temporada, estación-año y temporada-año,
+con denominadores y hashes de cohortes explícitos.
+
+`classical-baselines.csv` conserva todas las filas y 23 columnas originales,
+predicciones, motivos/flags y procedencia. UTF-8 con BOM, separador coma,
+decimal punto, `date` ISO, booleanos `true/false`, ausencias vacías y
+listas/objetos como JSON entrecomillado. `Fecha` original se preserva.
+En Excel español, usar **Datos → Desde texto/CSV** y elegir coma; en Power
+Query interpretar los decimales con configuración regional inglesa. En pandas:
+`read_csv(path, encoding="utf-8-sig")`. No se redondea ni rellena con ceros.
+El CSV facilita la inspección; los JSON siguen siendo los artefactos científicos.
+El manifest registra hash, formato, número de filas y configuración.

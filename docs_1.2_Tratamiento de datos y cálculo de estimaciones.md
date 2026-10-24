@@ -397,3 +397,26 @@ RH histórico = HumedadMedia
 Su presencia en la bitácora no la valida como baseline v1. Próxima secuencia: auditar fórmula/unidades/inputs → VALIANTZAS_V1 reproducible → comparar PM/HS/Valiantzas → modelos posteriores. PM_FAO56_V1 y HS_RA_V1 siguen sin calibración, AHC ni ML.
 
 [Ubicaciones](docs/DATA_LOCATIONS.md) distingue evidencia compacta Git del dataset y run completos locales; no se mueve ni regenera ningún artefacto. La implementación y el contrato científico siguen bajo scientific_pipeline/.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Tres baselines clásicos oficiales
+
+**VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS**. Supera el estado
+Valiantzas LEGACY / FUTURE BASELINE REVIEW de la actualización del 23/10;
+el texto y resultados históricos anteriores se conservan como tales.
+
+Se adopta Martí et al. (2024), Ecs.1b+3, con factor 0.408 y coeficiente
+expandido **0.001861704**, Ra en MJ/m²/día, `(1.001−RHmedia/100)^0.2` y
+Tcalc de extremos. [Decisión, fuentes y unidades](scientific_pipeline/docs/valiantzas_v1.md).
+No es transcripción literal de Ec.4 ni copia del factor 1−RH/100 legacy.
+Sin calibración local ni sustitución silenciosa de TempMedia original.
+
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`, intacto. Pipeline `4ac52e25c803cb2301316c5cb1353bf30cdb427a`
+([PR #33](https://github.com/lependens/Capitulo-1/pull/33)); 68 tests y CI Python 3.11/3.12/3.13 PASS.
+PM/HS mantienen exactamente predicciones y elegibilidad oficiales anteriores.
+VAL: 70.944 predicciones, 70.878 pares propios, 0 fallos.
+
+[Informe de ejecución, cohortes, desgloses, CSV y hashes](scientific_pipeline/results/classical-20261024T034529Z/README.md).
+EtPMon sigue siendo referencia calculada SIAR, no validación instrumental
+independiente. Se retienen IB09 Quality FAIL, IB101 corto, unidades/procedencia
+parcial y convención de viento 2 m; raw/Quality/Dataset sin cambios.

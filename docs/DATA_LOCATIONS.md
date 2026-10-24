@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Vigente: 2026-10-23.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Vigente: 2026-10-24.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|
@@ -12,7 +12,7 @@
 | Predicciones PM/HS | Run completo externo indicado por el productor | predictions.json masivo no incluido en evidencia Git compacta |
 | Métricas y manifiesto | [baselines/](../scientific_pipeline/results/pm-vpd-20261023T194553Z/baselines/) | metrics.json y manifest.json de bytes preservados; identidad y hashes en índice |
 | Índice del run | [artifact-index.json](../scientific_pipeline/results/pm-vpd-20261023T194553Z/artifact-index.json) | Identidades/hashes de artefactos completos y compactos |
-| Valiantzas | [Auditoría legacy](../scientific_pipeline/docs/legacy_audit.md) | Solo historia; VALIANTZAS_V1 y sus resultados todavía no existen |
+| Valiantzas y comparación clásica | [Resultados oficiales](../scientific_pipeline/results/classical-20261024T034529Z/README.md) | VALIANTZAS_V1, métricas/manifests en Git; CSV/JSON masivos externos con paths y hashes |
 | Forecast SIAR raw | `/srv/siar-forecast/raw/` en servidor | Operativo append-only; no se presupone dentro de Git |
 | Forecast AEMET raw | `/srv/aemet-forecast/raw/` en servidor | Wrapper/payload independientes; no se presupone dentro de Git |
 | Backups | Drive cifrado (rclone crypt), copia adicional PC/OneDrive | Restore independiente demostrado; OneDrive no se etiqueta backup auditado independiente |
@@ -49,3 +49,18 @@ Es una propuesta para acordar con el productor; no sustituye los paths reales an
 GitHub es autoridad para código/docs/evidencia versionable; los raw forecast y archivos científicos masivos requieren preservación externa. Cada nuevo raw prospectivo relevante debe quedar cubierto por backup externo. Usar rclone copy, no sync, verificar hashes y restore, y conservar material crypt recuperable fuera del servidor.
 
 STORAGE-DATA-PRESERVATION PASS: copia independiente fuera del Toshiba con 238/238 archivos de datos size/SHA256 PASS, 12/12 CSV contra POST y 242 archivos totales sin discrepancias. Copia descifrada preservada en PC personal. Esto no afirma que todo archivo nuevo futuro ya esté cubierto ni convierte OneDrive en un backup independientemente auditado.
+
+
+## Exportación clásica — 24/10/2026
+
+CSV completo con 75.496 filas preservado y verificado localmente:
+
+```text
+C:\Users\Josep\.codex\.chatgpt-projects\g-p-6ac0c6c1d8908191b03f324e51c278f1\scientific-results\classical-20261024T034529Z\comparison\classical-baselines.csv
+```
+
+SHA256 `66486b4138b7194ded3cd53f4d4d31f08e53ce3051d7c17ee43b30cdc957ed5f`.
+[Índice de hashes y ubicaciones](../scientific_pipeline/results/classical-20261024T034529Z/artifact-index.json).
+Pipeline comparación/VAL `4ac52e25c803cb2301316c5cb1353bf30cdb427a`; PM/HS conserva productor
+`39c101e5999245eb15e3c6c1c867d90b4ac44468`. No es un nuevo dataset ni se han movido
+artefactos anteriores. La verificación local no certifica backup externo nuevo.

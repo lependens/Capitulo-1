@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-10-23 (Europe/Madrid).** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-10-24 (Europe/Madrid).** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -9,7 +9,7 @@
 | Línea | Ya demostrado | Siguiente gate |
 |---|---|---|
 | Observaciones / Quality | POST corregido COMPLETE; 2.345 ausencias confirmadas, 0 PENDING_RETRY | Mantener snapshot cerrado; CATALOG-TZ-001 no bloqueante |
-| Ciencia | Dataset v1 construido/validado; ejecución oficial PM/HS PASS (PR #31) | Auditoría Valiantzas → VALIANTZAS_V1 → comparación clásica |
+| Ciencia | Dataset v1 y comparación oficial PM/HS/VAL PASS | Preservación y contrato temporal antes de calibración/ML |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
 | Forecast SIAR / 02 | Runtime, raw, backup/restore; 8 estaciones funcionales | Reactivar timers pausados → 1 ciclo real CAPTURE RUNNING → mínimo 2 PILOT RUNNING |
 | AEMET Track A / 02 | Collector y E2E DEMONSTRATED; piloto pausado | Tras SIAR-FORECAST-CAPTURE RUNNING, reactivar prospectivo |
@@ -85,9 +85,9 @@ Los resultados oficiales, cohortes y limitaciones están en [la ejecución publi
 
 Próxima secuencia:
 
-1. 🟠 Auditar fórmula, unidades e inputs de **Valiantzas**, actualmente LEGACY / FUTURE BASELINE REVIEW.
-2. 🟠 Implementar **VALIANTZAS_V1** reproducible y testeado, solo después de aprobar metodología.
-3. 🟠 Comparar **PM / HS / Valiantzas**: global, estación, año, mes, estación climática, cohortes propias y pareadas cuando corresponda.
+1. ✅ Fórmula y unidades auditadas; Martí et al. (2024), composición Ecs.1b+3 con conversión 0.408 aprobada.
+2. ✅ **VALIANTZAS_V1** implementado, 68 tests y CI PASS; PR #33.
+3. ✅ [Comparación oficial PM / HS / VAL y exportación CSV](../scientific_pipeline/results/classical-20261024T034529Z/README.md): cohortes propias, pares y triple, global/estación/año/mes/temporada.
 4. 🟠 Retener cobertura/limitaciones, especialmente IB09 excluida por FAIL y muestra corta IB101.
 5. Después avanzar a nuevos modelos.
 

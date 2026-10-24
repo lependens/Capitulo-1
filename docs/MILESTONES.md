@@ -44,3 +44,10 @@ Las fechas de PR corresponden al merge; para el parte operativo se usa fecha de 
 | 2026-10-23 | Dataset v1 construido/validado y primera ejecución oficial publicada | Dataset SHA256 0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb; PM/HS PASS, sin calibración. | [PR #31](https://github.com/lependens/Capitulo-1/pull/31), 76d531cd3dfe675bf1f2dac2c81eab1028e1c11e; [resultado](../scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) | Supera las esperas de POST/dataset de los hitos de preparación. Evidencia compacta Git y artefactos completos locales identificados. |
 | 2026-10-23 | Tolerancia numérica VPD incorporada | 1e-12 kPa absoluta, 0 relativa; tres filas IB10 corregidas, dataset/Quality intactos; 62 tests y CI PASS. | [PR #30](https://github.com/lependens/Capitulo-1/pull/30), 39c101e5999245eb15e3c6c1c867d90b4ac44468 | Corrige redondeo, sin nueva semántica ni calibración meteorológica. |
 | 2026-10-23 | Preservación de storage y desacoplamiento operacional, constancia de dirección | STORAGE-DATA-PRESERVATION PASS; Toshiba CLOSED_OPERATIONALLY / MONITORING; SIAR Sync HOLD; Forecast pausado a reactivar independientemente. | [PROJECT_STATUS](PROJECT_STATUS.md) | 1 ciclo SIAR real → CAPTURE RUNNING → AEMET; mínimo 2 → PILOT RUNNING. Supera la dependencia anterior de AEMET respecto al gate PILOT; no demuestra que los ciclos ya hayan pasado. |
+
+
+## Actualización 24/10/2026
+
+| Fecha | Hito | Resultado | PR / SHA o referencia | Significado |
+|---|---|---|---|---|
+| 2026-10-24 | VALIANTZAS_V1 y comparación clásica oficial | Martí Ecs.1b+3 con 0.408, sin calibración; 68 tests/CI PASS; CSV 75.496 filas verificado | [PR #33](https://github.com/lependens/Capitulo-1/pull/33), 4ac52e25c803cb2301316c5cb1353bf30cdb427a; [resultados](../scientific_pipeline/results/classical-20261024T034529Z/README.md) | Dataset/Quality/raw intactos; productores PM/HS previos preservados y tres métodos sobre cohorte común. |

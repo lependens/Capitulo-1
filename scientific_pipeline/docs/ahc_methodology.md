@@ -24,8 +24,11 @@ como escala empírica del método completo, conservando sus constantes y unidade
 | RATIO_SUMS | ΣPM/Σx | Igualar el total/promedio del periodo de ajuste |
 | OLS0, principal v1 | Σx·PM/Σx² | Reducir error cuadrático diario en TRAIN |
 
-No son intercambiables. Son medias de PM/x con pesos 1, x y x²,
-respectivamente (derivación algebraica). No se atribuye la media de cocientes
+No son intercambiables. Sobre x>0 son medias de PM/x con pesos 1, x y x²,
+respectivamente (derivación algebraica). Con x=0, OLS aporta cero a sus sumas
+y conserva el residual irreducible; RATIO_SUMS conserva y en su numerador,
+por lo que esa equivalencia de cocientes no se extiende a tales filas.
+No se atribuye la media de cocientes
 a la regresión descrita por Martí. Los otros dos estimandos se publican como
 sensibilidad TRAIN, **sin competir por TEST ni cambiar la pregunta primaria**.
 
@@ -70,6 +73,14 @@ La estabilidad para decidir se estudia solo en TRAIN, bloques 2004–2009 y
 2021–2025 se describen **después** del TEST, sin alimentar selección/refit.
 Esto evita que la exploración de estabilidad use el futuro como tuning.
 
+`protocol_sha256` identifica el JSON canónico ordenado de la configuración;
+`protocol_file_sha256` conserva además el hash de bytes del archivo leído.
+La política LF del directorio experiments estabiliza esos bytes en checkout.
+Dataset, fuentes, POST y artefactos se validan por sus hashes de bytes sin
+normalización. El commit inicial del protocolo precede a todos los ajustes;
+los mínimos por año/grupo y guardias de cobertura se completan antes de la
+primera calibración, con datos sintéticos y disponibilidad únicamente.
+
 ## Dominio, soporte y STOP predeclarados
 
 Parejas específicas por método: modelo y PM calculados, finitos/no negativos,
@@ -79,7 +90,8 @@ La evaluación conserva ceros de referencia y usa el mismo n para original/ajust
 
 Ajuste anual robusto: n≥900 y ≥3 años con ≥300 parejas y ≥45 en cada temporada.
 Se usa toda pareja TRAIN admisible cuando se cumple soporte; los años parciales
-no se borran. Grupo estacional: n≥180 y ≥3 años; mensual: n≥90 y ≥3 años.
+no se borran. Grupo estacional: n≥180 y ≥3 años con ≥45 parejas cada uno;
+mensual: n≥90 y ≥3 años con ≥20 parejas cada uno.
 Sin coeficiente: null con motivo, sin fallback regional ni imputación.
 
 Los umbrales siguientes son criterios pragmáticos preregistrados de revisión,

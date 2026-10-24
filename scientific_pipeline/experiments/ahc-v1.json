@@ -23,7 +23,9 @@
     "qualified_year_season_n": 45,
     "minimum_season_fit_n": 180,
     "minimum_month_fit_n": 90,
-    "minimum_group_years": 3
+    "minimum_group_years": 3,
+    "minimum_season_year_n": 45,
+    "minimum_month_year_n": 20
   },
   "stability_gate": {
     "minimum_robust_blocks": 2,
@@ -39,7 +41,8 @@
     "station_minimum_validation_n": 300,
     "prefer_simpler_on_tie": true,
     "fit_only_train": true,
-    "refit_train_plus_validation": false
+    "refit_train_plus_validation": false,
+    "require_full_validation_coverage": true
   },
   "coefficient_kinds": ["AHC_VALIDATED", "AHC_CLIMATOLOGY"],
   "primary_test_comparison": "original plus annual AHC_VALIDATED for HS, HG-Rs, VAL; PM unchanged; common cohort",

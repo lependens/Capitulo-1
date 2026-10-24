@@ -48,7 +48,8 @@ def eligibility(row, station, method):
     """
     aliases = {"pm": "pm", "PM_FAO56_V1": "pm",
                "hargreaves": "hargreaves", "HS_RA_V1": "hargreaves",
-               "valiantzas": "valiantzas", "VALIANTZAS_V1": "valiantzas"}
+               "valiantzas": "valiantzas", "VALIANTZAS_V1": "valiantzas",
+               "hargreaves_rs": "hargreaves_rs", "HG_RS_V1": "hargreaves_rs"}
     if method not in aliases:
         raise ValueError("Unknown scientific method: " + str(method))
     method = aliases[method]
@@ -61,11 +62,13 @@ def eligibility(row, station, method):
         reasons.append("invalid_date")
     values = row["values"]
     inputs = PM_INPUTS if method == "pm" else EXTREMES + (("HumedadMedia",) if method == "valiantzas" else ())
+    if method == "hargreaves_rs":
+        inputs = EXTREMES + ("Radiacion",)
     for key in inputs:
         value = values.get(key)
         if not finite(value):
             reasons.append("missing_or_nonfinite:" + key)
-        elif key in EXTREMES and value <= (-273.15 if method == "valiantzas" else -237.3):
+        elif key in EXTREMES and value <= (-273.15 if method in ("valiantzas", "hargreaves_rs") else -237.3):
             reasons.append("temperature_domain:" + key)
         elif key in HUMIDITY + ("HumedadMedia",) and not 0 <= value <= 100:
             reasons.append("humidity_out_of_range:" + key)
@@ -77,7 +80,7 @@ def eligibility(row, station, method):
         if values["HumedadMin"] > values["HumedadMax"]:
             reasons.append("humidity_order")
     lat = station.get("latitude_deg")
-    if not finite(lat) or not -90 < lat < 90:
+    if method != "hargreaves_rs" and (not finite(lat) or not -90 < lat < 90):
         reasons.append("invalid_latitude")
     if method == "pm":
         z = station.get("altitude_m")

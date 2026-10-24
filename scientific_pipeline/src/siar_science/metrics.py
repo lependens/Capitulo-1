@@ -10,6 +10,16 @@ CLASSICAL_COHORTS = {
     "HS_VAL": CLASSICAL_FIELDS[1:],
     "PM_HS_VAL": CLASSICAL_FIELDS,
 }
+FOUR_FIELDS = CLASSICAL_FIELDS + ("ET0_Hargreaves_Rs",)
+FOUR_COHORTS = dict(CLASSICAL_COHORTS, **{
+    "PM_HGRS": (FOUR_FIELDS[0], FOUR_FIELDS[3]),
+    "HS_HGRS": (FOUR_FIELDS[1], FOUR_FIELDS[3]),
+    "VAL_HGRS": FOUR_FIELDS[2:],
+    "PM_HS_HGRS": (FOUR_FIELDS[0], FOUR_FIELDS[1], FOUR_FIELDS[3]),
+    "PM_VAL_HGRS": (FOUR_FIELDS[0], FOUR_FIELDS[2], FOUR_FIELDS[3]),
+    "HS_VAL_HGRS": FOUR_FIELDS[1:],
+    "PM_HS_VAL_HGRS": FOUR_FIELDS,
+})
 
 
 def reference_value(row):
@@ -41,7 +51,7 @@ def metrics(observed, predicted):
                 r2=1-sse/sst if n >= 2 and sst > 0 else None)
 
 
-def evaluate(rows, prediction_fields=("ET0_FAO56", "ET0_Hargreaves"), *, classical=False):
+def evaluate(rows, prediction_fields=("ET0_FAO56", "ET0_Hargreaves"), *, classical=False, four=False):
     """Each model's finite pairs; global is pooled, never mean of station scores.
 
     Seasons are northern meteorological DJF/MAM/JJA/SON. December belongs
@@ -65,8 +75,8 @@ def evaluate(rows, prediction_fields=("ET0_FAO56", "ET0_Hargreaves"), *, classic
                   and all(isinstance(r.get(m), (float, int)) and not isinstance(r.get(m), bool)
                           and math.isfinite(r[m]) for m in ("ET0_FAO56", "ET0_Hargreaves"))]
         cohorts = [("own", group, prediction_fields)]
-        if classical:
-            for name, fields in CLASSICAL_COHORTS.items():
+        if classical or four:
+            for name, fields in (FOUR_COHORTS if four else CLASSICAL_COHORTS).items():
                 selected = [r for r in group if reference_value(r) is not None and
                             all(isinstance(r.get(f), (int, float)) and not isinstance(r.get(f), bool)
                                 and math.isfinite(r[f]) for f in fields)]

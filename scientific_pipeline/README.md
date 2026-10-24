@@ -83,6 +83,8 @@ PM/HS no aprenden parámetros. Cualquier calibración o ML futuro requiere separ
 
 ## Referencias de la entrega
 
+- [HG_RS_V1: cuarto baseline con Rs medida, contrato y unidades](docs/hargreaves_rs_v1.md).
+
 - [VALIANTZAS_V1: fórmula adoptada y revisión de unidades](docs/valiantzas_v1.md).
 
 - [Primera ejecución oficial PM/HS: resultados, cohortes, hashes y limitaciones](results/pm-vpd-20261023T194553Z/README.md).
@@ -132,7 +134,27 @@ El CSV facilita la inspección; los JSON siguen siendo los artefactos científic
 El manifest registra hash, formato, número de filas y configuración.
 
 
-## Ejecución oficial de los tres métodos — 24/10/2026
+## Cuarto baseline: Hargreaves con Rs medida
+
+`HG_RS_V1` usa **0.0135×0.408×Radiacion×(Tcalc+17.8)**, con Rs medida en
+MJ/m²/día y salida mm/día. Es independiente de HS_RA_V1: no usa Ra ni √TD.
+No requiere humedad ni viento; sí extremos térmicos para Tcalc y Rs válida.
+[Fórmula, fuentes, dominio, diferencias legacy y límites](docs/hargreaves_rs_v1.md).
+
+```powershell
+python -m siar_science calculate-hargreaves-rs --dataset ./derived/observational-v1.json --output ./runs/v1-hgrs
+python -m siar_science evaluate-four --dataset ./derived/observational-v1.json --predictions ./runs/v1-classical/predictions.json --predictions ./runs/v1-hgrs/predictions.json --output ./runs/v1-four
+```
+
+La evaluación importa las predicciones anteriores y conserva productores/hashes.
+`run-four-baselines` permite calcular los cuatro en una ejecución nueva.
+Se publican cohortes propias, seis pares, cuatro triples y la principal
+**PM_HS_VAL_HGRS**, con todos los desgloses habituales. Se conservan comandos
+y semántica de dos/tres métodos. El CSV de cuatro incorpora ET0_HG_RS_V1 y
+eligible/evaluated/eligibility_reasons_HGRS, sin perder filas, nulos o ceros.
+Cada output se escribe en un destino nuevo; Dataset v1 no se reconstruye.
+
+## Ejecución oficial de los tres métodos — 24/10/2026 (registro preservado)
 
 [Comparación PM/HS/VAL, métricas y CSV](results/classical-20261024T034529Z/README.md).
 VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS; Dataset v1 sin cambios.

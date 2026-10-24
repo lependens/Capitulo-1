@@ -13,17 +13,20 @@ from . import __version__
 from .atmosphere import actual_vapour_pressure
 from .datasets import read_dataset, validate_dataset
 from .hargreaves import HS_RA_V1, HS_RA_V1_PARAMETERS, hargreaves_samani
+from .hargreaves_rs import HG_RS_V1, HG_RS_V1_PARAMETERS, hargreaves_rs
 from .valiantzas import VALIANTZAS_V1, VALIANTZAS_V1_PARAMETERS, valiantzas, estimated_solar_radiation
 from .export import write_combined_csv
-from .metrics import CLASSICAL_COHORTS, evaluate, reference_value
+from .metrics import FOUR_COHORTS, evaluate, reference_value
 from .penman_monteith import PM_FAO56_V1, PM_FAO56_V1_PARAMETERS, fao56_daily, net_longwave_radiation
 from .quality import eligibility, scientific_flags, valiantzas_flags, finite
 from .solar import extraterrestrial_radiation, clear_sky_radiation
 
 METHODS = {"pm": (PM_FAO56_V1, "ET0_FAO56"), "hargreaves": (HS_RA_V1, "ET0_Hargreaves"),
-           "valiantzas": (VALIANTZAS_V1, "ET0_Valiantzas")}
+           "valiantzas": (VALIANTZAS_V1, "ET0_Valiantzas"),
+           "hargreaves_rs": (HG_RS_V1, "ET0_Hargreaves_Rs")}
+CLASSICAL_METHODS = ("pm", "hargreaves", "valiantzas")
 PARAMETERS = {PM_FAO56_V1: PM_FAO56_V1_PARAMETERS, HS_RA_V1: HS_RA_V1_PARAMETERS,
-              VALIANTZAS_V1: VALIANTZAS_V1_PARAMETERS}
+              VALIANTZAS_V1: VALIANTZAS_V1_PARAMETERS, HG_RS_V1: HG_RS_V1_PARAMETERS}
 ASSUMPTIONS = {
     "units_interpretation": "RESOLVED_FOR_V1",
     "units_provenance": "UNITS_PROVENANCE_PARTIAL",
@@ -89,12 +92,16 @@ def calculate(dataset, methods=("pm", "hargreaves")):
                     value = hargreaves_samani(tmean_c=tmean, tmin_c=tmin, tmax_c=tmax,
                                              ra_mj_m2_day=ra)
                     row["model_diagnostics"][HS_RA_V1] = dict(tmean_calc_c=tmean, ra_mj_m2_day=ra)
-                else:
+                elif method == "valiantzas":
                     ra = extraterrestrial_radiation(station["latitude_deg"], day)
                     inputs = dict(tmin_c=tmin, tmax_c=tmax, rhmean_pct=values["HumedadMedia"], ra_mj_m2_day=ra)
                     value = valiantzas(**inputs)
                     row["model_diagnostics"][VALIANTZAS_V1] = dict(tmean_calc_c=tmean, ra_mj_m2_day=ra,
                         rs_estimated_mj_m2_day=estimated_solar_radiation(**inputs))
+                else:
+                    value = hargreaves_rs(tmean_c=tmean, solar_radiation_mj_m2_day=values["Radiacion"])
+                    row["model_diagnostics"][HG_RS_V1] = dict(tmean_calc_c=tmean,
+                        rs_measured_mj_m2_day=values["Radiacion"])
                 if not finite(value):
                     raise ValueError("Nonfinite result")
                 row[field] = value
@@ -187,7 +194,7 @@ def _cohort_hashes(rows):
     evaluated = [[r["station_code"], r["date"]] for r in rows
                  if reference_value(r) is not None and all(finite(r.get(field)) for _, field in list(METHODS.values())[:2])]
     result["paired_evaluation"] = dict(n=len(evaluated), sha256=digest(json_bytes(sorted(evaluated))))
-    for cohort, fields in CLASSICAL_COHORTS.items():
+    for cohort, fields in FOUR_COHORTS.items():
         keys = [[r["station_code"], r["date"]] for r in rows if reference_value(r) is not None
                 and all(finite(r.get(field)) for field in fields)]
         result[cohort + ":evaluation"] = dict(n=len(keys), sha256=digest(json_bytes(sorted(keys))))
@@ -262,7 +269,7 @@ def execute_run(dataset_path, output_path, command="run-baselines", pipeline_sha
     Fatal validation/calculation failures leave a FAILED manifest and diagnostics.
     An existing output is rejected before any write. Dataset v1 is never built here.
     """
-    if command not in ("validate", "calculate-pm", "calculate-hargreaves", "calculate-valiantzas", "evaluate", "run-baselines", "run-classical-baselines", "evaluate-classical"):
+    if command not in ("validate", "calculate-pm", "calculate-hargreaves", "calculate-valiantzas", "calculate-hargreaves-rs", "evaluate", "run-baselines", "run-classical-baselines", "evaluate-classical", "run-four-baselines", "evaluate-four"):
         raise ValueError("Unknown operation")
     code = _identity(pipeline_sha)
     output = safe_new_output(output_path, directory=True)
@@ -287,17 +294,20 @@ def execute_run(dataset_path, output_path, command="run-baselines", pipeline_sha
         if "catalog" in dataset:
             manifest["catalog"] = dataset["catalog"]
         methods = {"validate": (), "calculate-pm": ("pm",), "calculate-hargreaves": ("hargreaves",),
-                   "calculate-valiantzas": ("valiantzas",), "run-classical-baselines": tuple(METHODS),
-                   "run-baselines": ("pm", "hargreaves"), "evaluate": (), "evaluate-classical": ()}[command]
-        if command in ("evaluate", "evaluate-classical"):
+                   "calculate-valiantzas": ("valiantzas",), "calculate-hargreaves-rs": ("hargreaves_rs",),
+                   "run-classical-baselines": CLASSICAL_METHODS, "run-four-baselines": tuple(METHODS),
+                   "run-baselines": ("pm", "hargreaves"), "evaluate": (), "evaluate-classical": (), "evaluate-four": ()}[command]
+        if command in ("evaluate", "evaluate-classical", "evaluate-four"):
             if not prediction_paths:
                 raise ValueError("evaluate requires --predictions from a completed calculation")
             manifest["prediction_input_paths"] = [str(Path(path).resolve()) for path in prediction_paths]
             manifest["prediction_inputs"] = [dict(path=str(Path(path).resolve()), sha256=digest(Path(path).read_bytes())) for path in prediction_paths]
             result, methods, inputs = _merge_predictions(dataset, prediction_paths, dataset_sha)
             manifest["prediction_inputs"] = inputs
-            if command == "evaluate-classical" and set(methods) != set(METHODS):
+            if command == "evaluate-classical" and set(methods) != set(CLASSICAL_METHODS):
                 raise ValueError("evaluate-classical requires all three versioned methods")
+            if command == "evaluate-four" and set(methods) != set(METHODS):
+                raise ValueError("evaluate-four requires all four versioned methods")
         else:
             result = calculate(dataset, methods)
         rows = result["rows"]
@@ -320,19 +330,20 @@ def execute_run(dataset_path, output_path, command="run-baselines", pipeline_sha
             assumptions=manifest["assumptions"], policies=manifest["policies"],
             upstream=manifest.get("prediction_inputs", []))
         classical = command in ("run-classical-baselines", "evaluate-classical")
-        scores = evaluate(rows, prediction_fields=tuple(METHODS[m][1] for m in methods), classical=classical) if command in ("run-baselines", "evaluate") or classical else []
+        four = command in ("run-four-baselines", "evaluate-four")
+        scores = evaluate(rows, prediction_fields=tuple(METHODS[m][1] for m in methods), classical=classical, four=four) if command in ("run-baselines", "evaluate") or classical or four else []
         for score in scores:
             score.update(audit_source_repo_sha=dataset["audit_source_repo_sha"], source_repo_sha=dataset["source_repo_sha"])
         for method in methods:
             manifest["counts"][METHODS[method][0]]["evaluated"] = manifest["cohorts"][METHODS[method][0] + ":evaluation"]["n"]
         for name, artifact in (("predictions.json", prediction_artifact), ("metrics.json", scores)):
             manifest["outputs"][name] = dict(path=name, sha256=_write(output/name, artifact))
-        if classical and not failures:
+        if (classical or four) and not failures:
             identity = {key: manifest[key] for key in ("dataset_id", "dataset_sha256", "audit_source_repo_sha", "source_repo_sha")}
             identity.update(quality_post_id=dataset["quality_post"]["id"], pipeline_sha=code["git_sha"],
                             run_id=manifest["run_id"], run_timestamp=manifest["started_at_utc"])
             name = "classical-baselines.csv"
-            write_combined_csv(output/name, rows, identity)
+            write_combined_csv(output/name, rows, identity, methods=tuple(methods))
             manifest["outputs"][name] = dict(path=name, sha256=digest((output/name).read_bytes()), rows=len(rows),
                 encoding="utf-8-sig", delimiter=",", decimal=".", null="empty", date="ISO 8601")
         manifest["status"] = "FAILED" if failures else "SUCCESS"

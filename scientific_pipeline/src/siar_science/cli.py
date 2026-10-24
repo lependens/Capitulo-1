@@ -10,12 +10,12 @@ from .pipeline import execute_run, json_bytes, safe_new_output
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="siar-science", description="SIAR observational ET0 baselines v1")
     sub = parser.add_subparsers(dest="command", required=True)
-    for command in ("validate", "calculate-pm", "calculate-hargreaves", "calculate-valiantzas", "evaluate", "run-baselines", "run-classical-baselines", "evaluate-classical"):
+    for command in ("validate", "calculate-pm", "calculate-hargreaves", "calculate-valiantzas", "calculate-hargreaves-rs", "evaluate", "run-baselines", "run-classical-baselines", "evaluate-classical", "run-four-baselines", "evaluate-four"):
         operation = sub.add_parser(command)
         operation.add_argument("--dataset", type=Path, required=True)
         operation.add_argument("--output", type=Path, required=True, help="New run directory")
         operation.add_argument("--pipeline-sha")
-        if command in ("evaluate", "evaluate-classical"):
+        if command in ("evaluate", "evaluate-classical", "evaluate-four"):
             operation.add_argument("--predictions", type=Path, required=True, action="append")
     build = sub.add_parser("build-dataset", help="Future authorized POST handoff only")
     build.add_argument("--handoff", type=Path, required=True)

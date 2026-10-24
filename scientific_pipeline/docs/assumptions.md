@@ -71,6 +71,14 @@ dominios y límites. No cambia PM/HS ni los bytes de Dataset v1.
 La comparación principal nueva usa PM∩HS∩VAL; se conservan las cohortes
 propias, las tres intersecciones de dos métodos y la semántica PM/HS anterior.
 
+## Hargreaves-Rs fijo (decisión 2026-10-24)
+
+HG_RS_V1: **0.0135×0.408×Radiacion×(Tcalc+17.8)**, con Rs medida en
+MJ/m²/día y salida mm/día. No usa Ra ni √TD, humedad o viento; sin ajuste local.
+Tcalc=(Tmax+Tmin)/2 y valores fuente preservados. [Contrato, fuentes y
+dominio](hargreaves_rs_v1.md). La comparación principal ampliada usa
+PM_HS_VAL_HGRS; las cohortes y ejecuciones de dos/tres métodos se conservan.
+
 ## Selección, métricas y futuro aprendizaje
 
 Conservar cada fila y sus motivos por método; no aplicar ±3σ global ni exigir variables auxiliares ajenas al cálculo. EtPMon ausente no impide una predicción. Su ausencia sí impide formar un par de evaluación. Los ceros de referencia permanecen en MAE, RMSE, MBE y R².

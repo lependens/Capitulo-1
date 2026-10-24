@@ -171,6 +171,24 @@ hash de cada salida. Su propio hash se publica en el cierre, evitando
 autorreferencia. UTF-8 BOM, coma, punto decimal, sin redondeo; ver importación
 Excel/Power Query en README. Directorios nuevos, sin sobrescritura.
 
+## Extensión HG_RS_V1 — cuatro métodos
+
+`calculate-hargreaves-rs` añade `HG_RS_V1` / `ET0_Hargreaves_Rs` con extremos
+térmicos y Radiacion medida; [contrato científico](hargreaves_rs_v1.md).
+No modifica Dataset v1, su esquema ni su SHA. `evaluate-four` exige exactamente
+los cuatro métodos exitosos y conserva los productores de los tres anteriores;
+`run-four-baselines` calcula los cuatro. Validación de dataset, ambos SHA,
+parámetros, hashes y protección contra sobrescritura siguen siendo obligatorios.
+Las cohortes propias y todas las intersecciones de dos/tres/cuatro métodos
+se identifican separadamente. `PM_HS_VAL_HGRS` es la principal; no se redefine
+la cohorte triple anterior ni `paired` PM/HS. Desgloses y métricas no cambian.
+
+El CSV de cuatro añade ET0_HG_RS_V1, eligible_HGRS, evaluated_HGRS y
+eligibility_reasons_HGRS. Los comandos de tres métodos conservan su esquema
+anterior; ningún output previo se sobreescribe. Se mantienen formato, nulos,
+ceros, estados, provenance y ambas identidades audit/canonical; manifest
+conserva dataset/source/POST/pipeline/config y hashes de todas las salidas.
+
 ## Bytes contractuales y checkout reproducible
 
 El catálogo y los 12 CSV `datos_siar_baleares/IB*_datos_completos.csv`

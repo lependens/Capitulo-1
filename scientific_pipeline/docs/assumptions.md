@@ -87,4 +87,10 @@ Error=predicción−EtPMon. MAE, RMSE y MBE/bias están en mm/día; R²=1−SSE/
 
 Publicar tanto cohorte propia por método como intersección pareada PM/HS, con n y hashes. Las métricas globales reúnen pares, sin promediar RMSE/R² por estación. Desgloses: estación, año, mes y temporada DJF/MAM/JJA/SON; diciembre pertenece al año de enero/febrero en DJF. La convención y los denominadores quedan en el manifiesto.
 
-Los baselines v1 no aprenden parámetros. Cualquier AHC, filtro aprendido, escalado o ML futuro requiere cortes globales cronológicos TRAIN<VALIDATION<TEST, fijados tras POST antes de consultar errores. Ningún día cambia de partición según estación; no se redistribuyen datos de estaciones cerradas para rellenar TEST. TRAIN estima, VALIDATION selecciona y TEST se abre una vez con configuración congelada. Sin partición aleatoria ni ajuste de umbrales sobre toda la serie.
+Los baselines v1 no aprenden parámetros. Los filtros aprendidos, escalado o ML futuro requieren cortes globales cronológicos TRAIN<VALIDATION<TEST, fijados tras POST antes de consultar errores. Ningún día cambia de partición según estación; no se redistribuyen datos de estaciones cerradas para rellenar TEST. TRAIN estima, VALIDATION selecciona y TEST se abre una vez con configuración congelada. Sin partición aleatoria ni ajuste de umbrales sobre toda la serie.
+
+## AHC-METHODOLOGY-REVIEW — alcance pendiente, 24/10/2026
+
+Los cuatro baselines v1 son sin calibración; no implementan AHC. Las recomendaciones previas de aplicar AHC solo en TRAIN no cierran su futura metodología. Dirección ha reservado una investigación específica: bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y AHC anual/estacional/mensual si procede.
+
+Si AHC se estima de datos es un parámetro calibrado. La revisión y el contrato de evaluación temporal definirán datos de ajuste y validación antes de implementar AHC_V1. Esta actualización no decide uso de todo el dataset frente a solo TRAIN, no aprueba evaluación in-sample como predictiva y no altera ninguna fórmula o parámetro baseline. [Secuencia vigente](../../docs/ROADMAP.md).

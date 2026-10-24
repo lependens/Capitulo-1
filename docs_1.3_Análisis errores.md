@@ -1,5 +1,7 @@
 > Nota histórica: la aplicación Dash asociada a este análisis se desplegó en Render y fue retirada en octubre de 2026.
 
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
 
 
@@ -298,3 +300,18 @@ Resultados reales de cohortes propias y comparación principal de cuatro:
 
 Los resultados históricos y de tres modelos anteriores permanecen preservados.
 No se interpretan como una comparación de cuatro ni como validación de AHC.
+
+
+---
+
+## CONSOLIDACIÓN 24/10/2026 — Interpretación de cuatro métodos y límites AHC
+
+Las tablas oficiales de cuatro anteriores se conservan como resultados publicados sobre Dataset v1, distintas de las tablas legacy y del AHC histórico. Autoridad de métricas/desgloses/hashes: [publicación de cuatro métodos](scientific_pipeline/results/four-classical-20261024T042250Z/README.md), PR #36; cohorte común PM_HS_VAL_HGRS **70.860**.
+
+HG-Rs mejora RMSE/R² respecto a VAL; VAL mejora MAE y bias absoluto. No se declara vencedor universal ni validación independiente frente a ET₀ instrumental: EtPMon es referencia calculada SIAR. HS-Ra usa temperatura/geometría solar; VAL añade humedad media; HG-Rs usa Rs medida; PM integra también humedad, viento y presión/altitud. La similitud de inputs puede favorecer concordancia, interpretación sin causalidad demostrada. Deben compararse también input requirements / operational availability y precisión alcanzable con menos variables.
+
+**AHC legacy:** mean(ET0_calc/ET0_empirical) por estación, calculado sobre toda la serie; multiplicación AHC×ET0_empirical y evaluación sobre los mismos días. Es HISTÓRICO / full-series / in-sample, no validación predictiva. Ningún baseline v1 incorpora ese ajuste.
+
+**AHC-METHODOLOGY-REVIEW pendiente:** distinguir coeficiente climatológico de estación de calibración predictiva, revisar bibliografía/estabilidad temporal y escalas anual/estacional/mensual antes de definir validación temporal e implementar AHC_V1. Si se estima de datos es parámetro calibrado; no se decide aquí todo el dataset frente a solo TRAIN ni se cierra la metodología.
+
+Antes de nuevos modelos, **PROJECT-ARTIFACT-BACKUP-V1** debe resolver preservación del dataset y outputs masivos que hoy permanecen fuera de Git. [Ubicaciones y CSV de 75.496 filas](docs/DATA_LOCATIONS.md).

@@ -1,5 +1,7 @@
 # Objetivos alcanzables
 
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
 
 
@@ -505,3 +507,14 @@ Cada etapa deberá poder validarse independientemente antes de utilizarse como e
 **PENDIENTE:** auditar fórmula/unidades/inputs de Valiantzas → VALIANTZAS_V1 reproducible → comparación PM/HS/Valiantzas → nuevos modelos con split temporal sin leakage. ANN, producto Web/API, ET₀+Kc, ETc y riego siguen como evolución futura.
 
 **OPERACIÓN:** SIAR Sync v2.3.3 está HOLD hasta alignment e incremental 2026 demostrado. Forecast SIAR y AEMET son independientes de ese HOLD; timers pausados según último parte. Un ciclo SIAR real permite CAPTURE RUNNING y reactivar AEMET; dos permiten PILOT RUNNING. No reconstruir emisiones perdidas. Ver [ROADMAP](docs/ROADMAP.md).
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Objetivos clásicos alcanzados y siguiente etapa
+
+Dataset v1 y Quality cerrado permanecen intactos. Los cuatro baselines oficiales **PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1** y su comparación son PASS (PR #30–#36). Las metas previas de auditar/implementar Valiantzas o preparar HG-Rs ya están superadas; [resultados de cuatro](scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+
+Siguiente orden: **PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN**. GitHub no contiene todos los bytes científicos; no se afirma que todos los artefactos externos estén respaldados.
+
+Forecast SIAR tiene timer ACTIVE y reconciliador activo; falta demostrar nuevo run automático y su backup/COMPLETE remoto. AEMET permanece disabled/inactive hasta CAPTURE RUNNING. SIAR Sync continúa HOLD; storage cerrado operacionalmente y SSD IN SERVICE. [Estado maestro](docs/PROJECT_STATUS.md).

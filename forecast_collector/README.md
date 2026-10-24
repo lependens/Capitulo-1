@@ -14,7 +14,13 @@ The permanent runtime is validated as `siar-forecast`, with functional release `
 
 `SMOKE-FC-001 = PASS` demonstrated a complete IB04/Aguacate run and capture, verified TLS, hashes/schemas, shared-group permissions and safe omission of sensitive HTML. `BACKUP-FC-001 = PASS` demonstrated Google Drive through rclone crypt and an independent restore with hashes/schemas validated. Backup uses `rclone copy`, not `sync`; raw remains outside Git. Recovery after total server loss still requires separately recoverable crypt material and is not implied by the backup test alone.
 
-As of the latest operational report supplied by direction (documented 2026-10-23), timers were paused after the storage incident. Reactivation is independent of SIAR Sync, which remains HOLD. One demonstrated real automatic cycle establishes SIAR-FORECAST-CAPTURE = RUNNING; at least two automatic cycles establish SIAR-FORECAST-PILOT = RUNNING. These gates are pending evidence, not inferred from timer configuration. Do not reconstruct emissions missed during the pause. Every relevant new raw capture requires external backup. Automated tests remain synthetic and do not contact SIAR. See the [consolidated project status](../docs/PROJECT_STATUS.md) for current gates.
+Latest direction report, 2026-10-24: **SIAR Forecast capture timer ACTIVE**. This supersedes the paused-timers report of 2026-10-23 and is independent of SIAR Sync HOLD. **SIAR-FORECAST-CAPTURE is not yet RUNNING**: first demonstrate a new real automatic capture → automatic backup → remote COMPLETE. One complete PASS cycle establishes CAPTURE RUNNING; at least two automatic PASS cycles establish PILOT RUNNING. Timer state alone is insufficient. Do not reconstruct emissions missed during the pause.
+
+The backup reconciler is **enabled/active every 15 minutes**, last observed Result success. It uses **rclone copy, never sync**, for published runs pending backup/verification under `/srv/siar-forecast/raw/runs/`, including complete/partial/failed. It excludes raw/tmp, SIAR Sync CSVs, general code, all of /etc and the rest of the server. This scope does not satisfy the broader PROJECT-ARTIFACT-BACKUP-V1 gate.
+
+Google/rclone OAuth application status is **Production**; reauthorization and CLI crypt listing PASS. Testing caused the specific seven-day token limit; Production plus a new authorization removes that limit, without guaranteeing tokens can never be invalidated. No config or secret values are published here. Runtime copy to crypt and independent restore passed with SHA256 MATCH, but that does not establish the pending new real-run automatic backup/COMPLETE chain.
+
+Every relevant new raw capture needs external backup. Full scientific artifacts and recoverable operational configuration need a separate preservation policy; not everything is claimed backed up. See [project status](../docs/PROJECT_STATUS.md) and [artifact locations](../docs/DATA_LOCATIONS.md). Automated tests remain synthetic and do not contact SIAR.
 
 FC-STATIONS-001 passed; the multi-smoke attempted nine ACTIVE stations, with eight complete and IB08 failed. Operational targets are IB01, IB02, IB03, IB04, IB05, IB06, IB10 and IB11. IB08 remains officially ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL, monitored separately without blocking those eight; the exact internal SIAR/MAPA cause is not established.
 
@@ -32,7 +38,7 @@ cp config/config.example.toml config/config.toml
 siar-forecast-raw capture --config config/config.toml
 ```
 
-The command performs one run and exits. Scheduling is deliberately external and not included. The approved experimental cadence is about 08:00, 14:00 and 20:00 Europe/Madrid, subject to the external scheduler's reactivation and cycle validation.
+The command performs one run and exits. Scheduling is deliberately external and not included. The approved experimental cadence is about 08:00, 14:00 and 20:00 Europe/Madrid, subject to external scheduler operation and real-cycle/backup validation. The 15-minute backup reconciler has a separate cadence.
 
 ## Storage layout
 

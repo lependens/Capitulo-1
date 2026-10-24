@@ -1,5 +1,7 @@
 # 2.1 Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
 
 
@@ -185,3 +187,12 @@ La implementación ANN y sus resultados anteriores se conservan como **HISTÓRIC
 El dataset actual está construido/validado desde POST corregido y la ejecución oficial PM/HS está PASS, con [resultados reproducibles](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md). Valiantzas sigue pendiente de auditoría y baseline reproducible antes de una comparación de tres métodos y del avance a ML.
 
 Las futuras redes se evaluarán con partición temporal sin leakage y parámetros/transformaciones ajustados exclusivamente en TRAIN. Esta actualización no instala TensorFlow, entrena modelos ni modifica artefactos científicos. [Estado vigente](docs/PROJECT_STATUS.md).
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Referencias oficiales y prioridad de preservación
+
+ANN/TensorFlow anterior permanece HISTÓRICO / LEGACY. Los cuatro baselines clásicos PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 y su comparación son PASS; [evidencia](scientific_pipeline/results/four-classical-20261024T042250Z/README.md). EtPMon es referencia calculada, no medición independiente.
+
+Antes de nuevos modelos: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. La revisión AHC no está cerrada y definirá estimación/validación en misión separada; no se decide aquí uso de todo el dataset frente a TRAIN. Ningún nuevo artefacto ML ni entrenamiento se genera en esta misión.

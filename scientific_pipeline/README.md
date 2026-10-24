@@ -73,13 +73,13 @@ Validación conserva las filas y sus metadatos de elegibilidad, con ET₀ sin ca
 
 ## Decisiones científicas
 
-Ambos baselines usan Tcalc=(Tmax+Tmin)/2, conservando TempMedia original. PM fija G=0, γ=0.000665P y albedo=0.23; calcula presiones de vapor con extremos térmicos y de humedad. La nubosidad de Rnl limita Rs/Rso por arriba a 1 y **no aplica floor inferior por defecto**. Los ratios extremos, Rnl negativo y ET₀ negativa se marcan; no se recorta el resultado a cero.
+Los cuatro baselines usan Tcalc=(Tmax+Tmin)/2, conservando TempMedia original. PM fija G=0, γ=0.000665P y albedo=0.23; calcula presiones de vapor con extremos térmicos y de humedad. La nubosidad de Rnl limita Rs/Rso por arriba a 1 y **no aplica floor inferior por defecto**. Los ratios extremos, Rnl negativo y ET₀ negativa se marcan; no se recorta el resultado a cero.
 
 HS usa el coeficiente fijo **0.0023·0.408**, Ra calculada, temperatura y rango térmico. No usa Rs medida ni coeficientes ajustados. La elegibilidad depende de sus propias entradas: humedad o radiación medidas ausentes pueden impedir PM y permitir HS; EtPMon ausente impide evaluación y permite predicción.
 
 Error=predicción−EtPMon. Se publican n, MAE, RMSE, MBE/bias y R² predictivo (1−SSE/SST), conservando los ceros de referencia. La referencia evaluable es finita, no negativa y procede de una observación aceptada dentro de periodo oficial; los valores negativos se preservan con flag y se excluyen de métricas. Se distinguen cohortes propias de cada modelo y la intersección pareada. EtPMon es una estimación SIAR de comparación, no verdad independiente de terreno. No se presentan las métricas históricas del legado como resultados de esta nueva implementación.
 
-PM/HS no aprenden parámetros. Cualquier calibración o ML futuro requiere separación cronológica global TRAIN<VALIDATION<TEST; filtros aprendidos, escalas y AHC se ajustan solo en TRAIN. No se reutiliza la calibración histórica dentro de muestra ni se divide aleatoriamente.
+Los cuatro baselines oficiales no aprenden parámetros. El AHC legacy full-series/in-sample no es validación predictiva. AHC-METHODOLOGY-REVIEW y el contrato temporal se resolverán en misión separada antes de AHC_V1: se distinguirán usos climatológicos y calibración predictiva, estabilidad temporal y posibles escalas anual/estacional/mensual. Si AHC se estima de datos es parámetro calibrado; esta PR no decide todo el dataset frente a solo TRAIN. La evaluación predictiva futura debe prevenir leakage y ML mantiene separación temporal y ajuste de transformaciones sin usar datos de evaluación.
 
 ## Referencias de la entrega
 
@@ -166,3 +166,9 @@ PM/HS importados de su ejecución oficial anterior; el productor original se con
 [HG_RS_V1 y comparación ampliada](results/four-classical-20261024T042250Z/README.md).
 70978 predicciones HG-Rs; 70912 evaluables; cohorte
 común de cuatro 70860. Dataset v1 y resultados anteriores intactos.
+
+## Siguiente gate: preservación y metodología AHC
+
+**PROJECT-ARTIFACT-BACKUP-V1 pendiente**: el dataset, predictions y CSV científicos masivos permanecen en el workspace Windows declarado por 05, no íntegramente en Git ni necesariamente en el servidor. [DATA_LOCATIONS](../docs/DATA_LOCATIONS.md) identifica bytes, índices y hashes. No se afirma backup completo por disponer de evidencia compacta versionada.
+
+Secuencia posterior: revisión AHC → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. Los cuatro baselines siguen sin calibración local y Dataset v1/raw/Quality intactos. El interés es contrastar accuracy against EtPMon con input requirements / operational availability; más inputs no garantizan mejor modelo ni causalidad.

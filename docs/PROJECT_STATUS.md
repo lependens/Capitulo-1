@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-24 (Europe/Madrid).** Fuente principal del estado vigente. Actualización científica sobre main `a0b440fa3ab92e4593be521e4e819c6421327656`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-10-24 (Europe/Madrid).** Fuente principal del estado vigente. Consolidación sobre main `9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -18,13 +18,13 @@
 |---|---|---|
 | Quality SIAR Baleares | COMPLETE; POST corregido publicado mediante PR #29; 12 estaciones | CATALOG-TZ-001 OPEN / NON_BLOCKING; completitud observacional distinta de completitud de auditoría |
 | Dataset Observational v1 | Construido y validado estructuralmente PASS; bytes preservados localmente | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
-| PM/HS v1 | Primera ejecución oficial PASS, publicada mediante PR #31 | Interpretar cohortes y limitaciones; no calibrar para reproducir EtPMon |
-| Comparación clásica | PM/HS/VAL/HG-Rs oficiales PASS; CSV verificado | Preservación y límites; sin calibración |
+| Cuatro baselines v1 | PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 oficiales PASS | Preservación de artefactos, AHC methodology review y contrato temporal antes de calibración |
+| Preservación científica | Dataset/JSON/CSV completos en workspace Windows de 05; Git solo contiene evidencia compacta | PROJECT-ARTIFACT-BACKUP-V1 pendiente; no afirmar backup completo del proyecto |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
-| SIAR Forecast | Collector, runtime, raw y backup/restore demostrados; timers pausados tras incidente según último parte | Un ciclo automático real → CAPTURE RUNNING; al menos dos → PILOT RUNNING |
-| AEMET Track A | E2E DEMONSTRATED; pausado tras incidente según último parte | Reactivación prospectiva después de SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
+| SIAR Forecast | Timer de captura ACTIVE; reconciliador enabled/active cada 15 min, último Result success | Nuevo run real automático → backup automático → COMPLETE remoto; después CAPTURE RUNNING, mínimo dos ciclos PILOT RUNNING |
+| AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
 | AEMET Track B | OPEN | Investigar feed AEMET exacto utilizado por SIAR, independientemente de Track A |
-| Storage Toshiba | CLOSED_OPERATIONALLY / MONITORING; preservación PASS | STOP de infraestructura ante señales nuevas verificadas |
+| Storage | Incidente CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE | Reabrir solo con nueva evidencia objetiva; sin plan de sustitución del SSD |
 | ML / producto | Futuro; modelos históricos en legacy | Baselines clásicos comparables y split temporal sin leakage antes de nuevos modelos |
 
 ## Observaciones y Quality: cierre vigente
@@ -67,13 +67,43 @@ SHA256 = 0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb
 
 Preserva 75.496 filas observacionales, 75.495 dentro de periodo y 1 exterior, más el ledger de 2.346 registros. Conserva las 23 columnas originales y añade estados, Quality, provenance y elegibilidad. No interpola, imputa ni fabrica meteorología para días ausentes.
 
-**Actualización posterior al punto de partida del encargo:** [PR #30](https://github.com/lependens/Capitulo-1/pull/30) resolvió el redondeo VPD de tres fechas IB10; [PR #31](https://github.com/lependens/Capitulo-1/pull/31) publicó **PM-VPD-FLOAT-TOLERANCE-AND-BASELINES = PASS**. Ya no se trata de una ejecución pendiente.
+### Cuatro baselines oficiales
 
-La tolerancia es absoluta 1e-12 kPa, relativa 0.0, solo para exceso ea>es con presiones finitas y no negativas; conserva rechazo fuera del margen y VPD positivos exactos. No altera datos, humedad, es, ea ni ecuaciones. Pipeline ejecutado: `39c101e5999245eb15e3c6c1c867d90b4ac44468`. Ver [supuestos](../scientific_pipeline/docs/assumptions.md).
+PR #30/#31: tolerancia numérica VPD y primera ejecución PM/HS; PR #33/#34: VALIANTZAS_V1 y comparación de tres; PR #35/#36: HG_RS_V1 y publicación de cuatro métodos. Dataset, raw y Quality permanecen intactos; no hay calibración local, AHC ni ML.
 
-PM calculó 70.896 predicciones y HS 70.979, con 0 fallos. Evaluación: PM 70.861 pares propios; HS 70.912; intersección 70.861. Se conservan 47 pares con EtPMon=0. Las [métricas oficiales y sus desgloses](../scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) son la autoridad de resultados; no se vuelven a calcular en esta misión.
+Pipeline HG-Rs/comparación: `a0b440fa3ab92e4593be521e4e819c6421327656`; publicación de cuatro métodos: `9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf`. **75 tests PASS; CI Python 3.11/3.12/3.13 PASS** según [evidencia oficial](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
 
-EtPMon es referencia calculada SIAR, no medida independiente de ET₀ real. Permanecen UNITS_PROVENANCE_PARTIAL, viento a 2 m por convención sin verificación instrumental exhaustiva, exclusión IB09 por FAIL, cohortes desiguales y muestra corta IB101. PM/HS son baselines sin ML, AHC ni calibración. VALIANTZAS_V1 y comparación clásica PASS el 24/10; sus resultados antiguos permanecen legacy. [Métricas y CSV](../scientific_pipeline/results/classical-20261024T034529Z/README.md).
+Comparación principal **PM_HS_VAL_HGRS, n=70.860**, misma cohorte para los cuatro. MAE/RMSE/bias en mm/día; error=predicción−EtPMon; R²=1−SSE/SST.
+
+| Método | n común | MAE | RMSE | bias / MBE | R² predictivo |
+|---|---:|---:|---:|---:|---:|
+| PM_FAO56_V1 | 70860 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| HS_RA_V1 | 70860 | 0.712843 | 0.874359 | +0.461627 | 0.746559 |
+| VALIANTZAS_V1 | 70860 | 0.455952 | 0.608984 | +0.168919 | 0.877055 |
+| HG_RS_V1 | 70860 | 0.471171 | 0.565637 | +0.275804 | 0.893935 |
+
+HG_RS_V1: 70.978 predicciones, 70.912 evaluables propios y 0 fallos. No confundir esa cohorte propia con la común de cuatro.
+
+HG-Rs obtiene mejor RMSE/R² que Valiantzas; Valiantzas obtiene mejor MAE y menor bias absoluto en esta cohorte. **No hay vencedor universal.** EtPMon es referencia calculada SIAR, no ET₀ instrumental independiente; la coincidencia PM↔EtPMon no es validación independiente.
+
+| Método | Información principal |
+|---|---|
+| PM_FAO56_V1 | Temperaturas, Rs medida, humedad, viento, presión/altitud y geometría |
+| HS_RA_V1 | Temperaturas y Ra geométrica; sin Rs medida ni humedad |
+| VALIANTZAS_V1 | Temperaturas, Ra y HumedadMedia; estima radiación empíricamente |
+| HG_RS_V1 | Rs medida y Tcalc; sin Ra, sqrt(TD), humedad o viento |
+
+Los cuatro usan Tcalc=(Tmax+Tmin)/2. HS conserva 0.0023×0.408×Ra×(Tcalc+17.8)×sqrt(Tmax−Tmin); HG-Rs usa 0.0135×0.408×Rs×(Tcalc+17.8). VAL v1 adopta Martí et al. (2024), Ecs.1b+3, factor energético 0.408, coeficiente expandido 0.001861704 y (1.001−RHmedia/100)^0.2; **la fórmula legacy no es su autoridad**. [Contrato VAL](../scientific_pipeline/docs/valiantzas_v1.md) y [HG-Rs](../scientific_pipeline/docs/hargreaves_rs_v1.md).
+
+Una mayor similitud de inputs con la referencia puede favorecer concordancia; es interpretación, no causalidad demostrada ni «más inputs siempre mejora». Separar accuracy against EtPMon de input requirements / operational availability. Sigue interesando qué precisión se consigue con menos variables.
+
+Permanecen UNITS_PROVENANCE_PARTIAL, viento 2 m por convención sin verificación instrumental exhaustiva, IB09 excluida por Quality FAIL, cohortes desiguales y periodo corto IB101. No se resuelven esas limitaciones al añadir métodos.
+
+### AHC: revisión separada, sin nueva metodología decidida
+
+El AHC legacy era mean(ET0_calc/ET0_empirical) por estación sobre toda la serie; después multiplicaba las estimaciones y evaluaba sobre los mismos días. Es **HISTÓRICO / full-series / in-sample**, no validación predictiva.
+
+**AHC-METHODOLOGY-REVIEW pendiente:** bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y opciones anual/estacional/mensual si procede. Si se estima de datos, AHC es un parámetro calibrado. La misión científica específica definirá estimación, datos de ajuste y validación temporal antes de AHC_V1; esta PR no decide todo el dataset frente a solo TRAIN.
 
 ## SIAR Sync: HOLD independiente del snapshot científico
 
@@ -89,44 +119,51 @@ Collector independiente en `forecast_collector/`, runtime permanente `/opt/siar-
 
 Ocho estaciones funcionales: IB01, IB02, IB03, IB04, IB05, IB06, IB10, IB11. IB08 sigue **ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL** por indisponibilidad externa observada en su combinación de catálogo; no bloquea las demás ni se transforma en CLOSED. No se conoce la causa interna exacta de SIAR/MAPA.
 
-Según el último parte, los timers quedaron **pausados tras el incidente**. Forecast puede reactivarse aunque SIAR Sync siga HOLD. No reconstruir emisiones perdidas durante la pausa.
+**Parte operativo vigente de Dirección 00 — 24/10:** timer SIAR Forecast **ACTIVE**. No se sigue presentando como pausado. Esto no demuestra por sí solo **SIAR-FORECAST-CAPTURE = RUNNING**.
 
-- **PENDIENTE:** 1 ciclo automático real demostrado → SIAR-FORECAST-CAPTURE = RUNNING.
-- **PENDIENTE:** mínimo 2 ciclos automáticos demostrados → SIAR-FORECAST-PILOT = RUNNING.
+El reconciliador de backup está **enabled / active**, cada **15 minutos**, último Result observado **success**. Usa **rclone copy, nunca sync**, y procesa runs publicados pendientes bajo `/srv/siar-forecast/raw/runs/`, incluidos complete, partial y failed. Excluye raw/tmp, CSV SIAR Sync, código general, /etc completo y resto del servidor. No es un backup global del proyecto.
 
-No se afirma que esos gates hayan pasado sin un parte posterior verificable. La cadencia experimental aprobada es 08:00 / 14:00 / 20:00 Europe/Madrid. source issue timestamp puede permanecer null; D+0…D+6 no está asignado. HTML puede ser persisted, omitted_sensitive o not_available; las evidencias permitidas se conservan según contrato.
+OAuth Google/rclone: application status **Production**, reauthorization **PASS**, CLI crypt listing **PASS**. El límite específico de siete días procedía de Testing y queda eliminado tras Production + nueva autorización; no significa que tokens nunca puedan invalidarse. Config reportada por 02, SHA256 `1c2f095f37082deaa94b3fcaeb3dfeaf19e917f3b5e6419d6725aafe9839b45c`; no publicar config ni secretos.
+
+Prueba runtime: copy to crypt PASS → independent restore PASS → SHA256 MATCH. **Falta demostrar un nuevo run Forecast SIAR real automático → backup automático → COMPLETE remoto.**
+
+- Ese primer ciclo completo PASS habilita **SIAR-FORECAST-CAPTURE = RUNNING**.
+- Al menos dos ciclos automáticos PASS habilitan **SIAR-FORECAST-PILOT = RUNNING**.
+
+Forecast es independiente de SIAR Sync HOLD. Cadencia experimental de captura 08:00/14:00/20:00 Europe/Madrid, distinta de la cadencia de reconciliación de 15 min. No reconstruir emisiones perdidas; source issue timestamp puede permanecer null y D+0…D+6 sigue sin asignarse. HTML persisted/omitted_sensitive/not_available según contrato.
 
 ## AEMET: Track A y Track B
 
 Track A E2E DEMONSTRATED; PR #18 Collector, #19 comparación id municipal, #20 permisos POSIX. Wrapper y payload raw append-only con bytes, timestamps y provenance preservados. IB04 Son Ferriol → Palma → municipio 07040 representa la capital municipal, no la estación exacta.
 
-Último parte: piloto **pausado tras el incidente**. La dependencia vigente es **SIAR-FORECAST-CAPTURE = RUNNING → reactivar AEMET Track A prospectivo**. No necesita SIAR Sync ni esperar a SIAR-FORECAST-PILOT RUNNING. Se conserva raw independiente en `/srv/aemet-forecast/raw/` y cada nueva captura relevante debe quedar cubierta por backup externo.
+Último parte 24/10: **capture timer disabled / inactive**. Backup AEMET se ejecuta después de cada intento de captura, success o failure; **no hay timer de backup independiente**. Por estar deshabilitada la captura, **new AEMET automatic backup = NOT ACTIVE**. La dependencia vigente es **SIAR-FORECAST-CAPTURE = RUNNING → reactivar AEMET Track A prospectivo**. No necesita SIAR Sync ni esperar a SIAR-FORECAST-PILOT RUNNING. Se conserva raw independiente en `/srv/aemet-forecast/raw/` y cada nueva captura relevante debe quedar cubierta por backup externo.
 
 No están demostrados ET₀, D+n, timezone científico de emisión, recuperación histórica ni entradas suficientes para PM completo. No se infiere timezone ni se integra científicamente con SIAR. **Track B = OPEN**, investigación del feed exacto usado por SIAR, independiente de Track A.
 
 ## Storage y preservación
 
-Toshiba: **CLOSED_OPERATIONALLY / MONITORING**, sin evidencia actual de fallo físico activo en el parte recibido. SMART PASS; sin sectores reasignados, Reported_Uncorrect, CRC errors ni error log; raíz rw y sin nuevos I/O/ext4 errors observados.
+Incidente de storage: **CLOSED_OPERATIONALLY / MONITORING**; **SSD = IN SERVICE**. El parte recibido no aporta evidencia actual de fallo físico activo del Toshiba. SMART PASS; sin sectores reasignados, Reported_Uncorrect, CRC errors ni error log; raíz rw y sin nuevos I/O/ext4 errors observados.
 
 **STORAGE-DATA-PRESERVATION = PASS:** copia independiente fuera del Toshiba, 238/238 archivos de datos size + SHA256 PASS, 12/12 CSV contra POST PASS y 242 archivos totales sin ausencias/discrepancias. Copia descifrada preservada en PC personal. No convierte el incidente cerrado en una línea activa del roadmap.
 
 STOP de infraestructura si reaparecen I/O error, emergency_ro, SMART warning, USB reset asociado o corrupción. Monitorización no equivale a prometer ausencia de fallos futuros.
 
-GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt cubre raw operativo y preservación; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. La recuperabilidad externa del material crypt y la cobertura de nuevos raw mantienen validaciones propias.
+GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt tiene copias verificadas de raw/preservación dentro de sus alcances demostrados; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. La recuperabilidad externa del material crypt y la cobertura de nuevos raw mantienen validaciones propias.
 
 ## Próximos gates y gobierno
 
-1. 02: reactivar Forecast SIAR, demostrar un ciclo automático y después dos; habilitar AEMET tras CAPTURE RUNNING, sin esperar SIAR Sync.
-2. 02: resolver alignment y modo incremental 2026 de SIAR Sync antes de levantar HOLD.
-3. Ciencia: preservar comparación PM/HS/VAL/HG-Rs y CSV publicados; retener limitaciones y definir partición temporal antes de cualquier calibración o ML.
-4. Después: modelos estadísticos, árboles, boosting y ANN con split temporal sin leakage.
-5. Forecast: acumular emisiones, resolver issue/valid time/D+n y datasets derivados antes de comparar con observaciones posteriores.
-6. Producto Web/API, ET₀+Kc, ETc y riego después de contratos y validaciones.
+1. **PROJECT-ARTIFACT-BACKUP-V1:** prioridad de preservación del dataset completo, handoff científico, scientific-results completos, CSV exports, predictions, manifests, futuros ML artifacts, raw Forecast y configuración operativa recuperable. 02 recibirá misión separada. **GitHub NO es una copia completa del proyecto científico y no se afirma backup de todos esos artefactos.**
+2. **AHC-METHODOLOGY-REVIEW**, después contrato de evaluación temporal, modelos calibrados simples, regresión/árboles/boosting y ANN más adelante. No saltar directamente de baselines a ANN.
+3. 02: demostrar nuevo ciclo SIAR real con backup automático/COMPLETE remoto; tras CAPTURE RUNNING reactivar AEMET. Dos ciclos para PILOT RUNNING.
+4. Resolver SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 antes de levantar HOLD, sin reabrir Recovery.
+5. Acumular forecast prospectivo → issue/valid time/D+n → datasets derivados → comparación con observaciones posteriores.
+6. Producto Web/API, ET₀+Kc, ETc y riego tras validación.
 
-Los workstreams trabajan autónomamente dentro de objetivos, invariantes y STOP fijados por dirección. Resuelven errores operativos localmente y escalan arquitectura, seguridad, integridad raw o semántica científica. Una evidencia nueva modifica el estado maestro con su fuente; no se infieren resultados operativos por la mera existencia de código o timers.
+Los workstreams trabajan autónomamente dentro de objetivos/invariantes/STOP. Escalar arquitectura, seguridad, integridad raw y semántica científica. Gates requieren evidencia: código/timer activo no equivalen a run/backups demostrados. Las ubicaciones y límites de preservación están en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
+## Registros de ampliación — trazabilidad
 
-## Comparación clásica oficial — 24/10/2026
+### Comparación clásica oficial — 24/10/2026
 
 [Resultado, cohortes, métricas, CSV y hashes](../scientific_pipeline/results/classical-20261024T034529Z/README.md).
 Dataset v1 intacto; PM/HS oficiales reutilizados; VAL 70.944 predicciones,
@@ -134,7 +171,7 @@ Dataset v1 intacto; PM/HS oficiales reutilizados; VAL 70.944 predicciones,
 Pipeline 4ac52e25c803cb2301316c5cb1353bf30cdb427a; ambas identidades audit/canonical preservadas.
 
 
-## Ampliación HG-Rs — 24/10/2026
+### Ampliación HG-Rs — 24/10/2026
 
 [Comparación de cuatro modelos y hashes](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
 HG_RS_V1 70978 calculadas, 70912 evaluables, 0 fallos;

@@ -6,7 +6,9 @@
 [Cuatro baselines y CSV](../results/four-classical-20261024T042250Z/README.md). PR #35; pipeline
 a0b440fa3ab92e4593be521e4e819c6421327656; 75 tests/CI Python 3.11/3.12/3.13 PASS.
 HG-Rs 70978 calculadas / 70912 evaluables / 0 fallos.
-Cohorte común de cuatro 70860; Dataset v1 intacto.
+Cohorte común de cuatro 70860; Dataset v1 intacto. Publicación oficial PR #36, SHA 9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf. Los registros inferiores de dos/tres métodos y preparación conservan su fecha; no son estados pendientes vigentes.
+
+Siguiente orden de dirección: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. La revisión AHC específica definirá estimación/validación; no se decide aquí todo el dataset frente a TRAIN. [ROADMAP](../../docs/ROADMAP.md).
 
 ## Registro preservado — tres métodos, 24/10/2026
 

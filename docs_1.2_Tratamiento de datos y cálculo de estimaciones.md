@@ -1,5 +1,7 @@
 # 1.2 Depuración y Verificación de Datos Meteorológicos: Guía Paso a Paso
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
 > **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
 
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
@@ -461,3 +463,18 @@ La comparación [oficial de cuatro](scientific_pipeline/results/four-classical-2
 **AHC-METHODOLOGY-REVIEW** revisará bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y escalas anual/estacional/mensual si procede. AHC estimado de datos es parámetro calibrado. Antes de AHC_V1 debe definirse validación temporal; esta misión no decide si usa todo el dataset o solo TRAIN. Las recomendaciones anteriores forman parte de su contexto histórico y no cierran esa revisión.
 
 Prioridad previa: **PROJECT-ARTIFACT-BACKUP-V1** para los artefactos masivos externos. Después revisión AHC → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. [ROADMAP](docs/ROADMAP.md) y [ubicaciones](docs/DATA_LOCATIONS.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — AHC validado y climatología diferenciada
+
+Las menciones anteriores de revisión AHC pendiente son históricas. **AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39, 86 tests y CI 3.11/3.12/3.13 PASS. El estimador vigente es **a=Σ(x·PM)/Σ(x²)**, OLS sin intercepto por estación, ET0_adjusted=a×x; referencia primaria PM_FAO56_V1, EtPMon secundaria calculada, ninguna ET medida.
+
+AHC_VALIDATED se ajusta solo TRAIN 2004–2015, se congela antes de VALIDATION 2016–2020 y TEST 2021–2025; sin refit TRAIN+VALIDATION ni random split. TEST retrospective_locked porque el histórico ya fue inspeccionado; no confirmación prospectiva nunca vista. [Metodología preregistrada](scientific_pipeline/docs/ahc_methodology.md).
+
+VALIDATION eligió HS annual, HG-Rs seasonal y VAL annual; mensual no justificó complejidad extra. No reseleccionar tras TEST. AHC_CLIMATOLOGY se calculó después de TEST con todo el histórico declarado hasta 2025, con identidad/finalidad separadas; no atribuirle métricas TEST. IB101 SHORT_SERIES_DESCRIPTIVE, deployable=false; IB09 UNAVAILABLE/FAIL.
+
+Estabilidad PASS no implica error estable todos los años: conservar empeoramientos como IB11/2025/HS RMSE 0.756→0.897, ≈+18.57 %. El mean(PM/x) full-series/in-sample legacy permanece histórico, no es OLS0 validado. [Resultados y métricas oficiales](scientific_pipeline/results/ahc-20261024T172400Z/README.md).
+
+PROJECT-ARTIFACT-BACKUP-V1 PASS cubre el snapshot remoto aceptado, sin proteger automáticamente nuevos resultados solo Windows. Contratos ML/visualización FROZEN, sin ML/ANN entrenado ni web construida. No se recalculan baselines ni raw/Quality/Dataset.

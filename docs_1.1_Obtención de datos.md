@@ -1,5 +1,7 @@
 # 1. Obtención de datos históricos y actuales de las estaciones meteorológicas de Baleares
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
 > **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
 
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
@@ -1574,3 +1576,18 @@ AEMET Track A E2E DEMONSTRATED, **capture timer disabled/inactive**. Su backup s
 **SIAR-SYNC-RUNTIME HOLD** sigue condicionado a production alignment e incremental 2026 demostrado, sin reabrir Recovery. Quality CLOSED/COMPLETE, POST corregido y Dataset v1 sin cambios. Storage incidente CLOSED_OPERATIONALLY / MONITORING, STORAGE-DATA-PRESERVATION PASS y SSD IN SERVICE; no hay roadmap de sustitución.
 
 Se han publicado cuatro baselines oficiales, con CSV científico completo fuera de Git. La nueva prioridad **PROJECT-ARTIFACT-BACKUP-V1** abarca dataset, handoff, scientific-results completos, predictions, exports, manifests, futuros ML artifacts, raw Forecast y configuración recuperable. El reconciliador limitado a runs SIAR no cubre todo ese alcance. [Dónde están los bytes y evidencias](docs/DATA_LOCATIONS.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Preservación externa aceptada, adquisición sin cambio
+
+**PROJECT-ARTIFACT-BACKUP-V1 PASS:** backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED; 82 scientific-results (1,421,919,603 bytes) y 46 SIAR published Raw = 128 archivos verificados. 221 entradas inventariadas no significa 221 respaldadas. Dataset v1 y CSV de cuatro métodos verifican sus SHA256 conocidos.
+
+cryptcheck PASS + restores independientes de 2 artefactos científicos y 2 referencias operativas, hashes PASS. La descarga completa redundante fue INTERRUPTED: no full-download verification PASS. Secret config/credentials excluidos; material crypt/OAuth OFF-SERVER, sin publicar valores.
+
+Preservación general de material ya ingerido: event-driven ingestion PASS (new=0, unchanged=9), daily reconciliation ENABLED. Es distinta del reconciliador SIAR Forecast de 15 min. Futuros resultados solo Windows NO están automáticamente protegidos: explicit transfer/ingestion → servidor → backup system → Drive crypt.
+
+La misión backup NO cambió SIAR Forecast: captura y reconciliador ACTIVE, nuevo run real automático + backup + COMPLETE remoto pendiente; no CAPTURE RUNNING nuevo. AEMET disabled/inactive, captures=0, gate=CLOSED, espera CAPTURE RUNNING. Sync HOLD e incremental/alignment pendientes. [Estado maestro](docs/PROJECT_STATUS.md).
+
+AHC temporal ya está PASS sin modificar raw/Quality/Dataset; preservación no es nueva adquisición ni normalización científica. [Dónde consultar bytes y evidencia](docs/DATA_LOCATIONS.md).

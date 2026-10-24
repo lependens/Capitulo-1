@@ -1,6 +1,6 @@
 # SIAR Science — ET₀ baselines v1
 
-Capa reproducible de observaciones SIAR Baleares: validación científica por método, Penman–Monteith diario FAO-56, Hargreaves–Samani fijo, VALIANTZAS_V1, Hargreaves-Rs y evaluación frente a EtPMon. Conserva valores originales y genera resultados derivados separados. No incorpora forecast, ML, AHC ni limpieza global ±3σ.
+Capa reproducible de observaciones SIAR Baleares: validación científica por método, Penman–Monteith diario FAO-56, Hargreaves–Samani fijo, VALIANTZAS_V1, Hargreaves-Rs y evaluación frente a EtPMon. Conserva valores originales y genera resultados derivados separados. Los cuatro baselines sin calibración se conservan; AHC tiene etapas/identidades separadas. No incorpora forecast, ML entrenado ni limpieza global ±3σ.
 
 La forense queda **RESOLVED_FOR_V1** por decisión de Dirección 00 del 2026-10-19. Radiacion se interpreta directamente en MJ m⁻² día⁻¹ y VelViento en m/s, con convención SIAR de viento a 2 m. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones registradas, no bloqueos. Una evidencia positiva de altura distinta de 2 m requiere resolver el cálculo PM afectado.
 
@@ -59,7 +59,7 @@ Los comandos con `--dataset` admiten opcionalmente `--pipeline-sha` con el SHA e
 
 ## Resultados y trazabilidad
 
-El JSON completo del dataset y predictions.json masivo se preservan localmente; Git contiene evidencia compacta, metrics.json y manifest.json. [Dónde consultar datos/resultados](../docs/DATA_LOCATIONS.md). Dataset SHA256: `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`.
+El dataset y outputs masivos tienen copia remota verificada dentro del scope PROJECT-ARTIFACT-BACKUP-V1 aceptado; Git sigue conteniendo solo evidencia compacta, métricas y manifests. Futuros outputs exclusivamente Windows requieren ingestión explícita. [Dónde consultar datos/resultados](../docs/DATA_LOCATIONS.md). Dataset SHA256: `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`.
 
 Cada comando de ejecución crea un directorio nuevo con:
 
@@ -79,7 +79,7 @@ HS usa el coeficiente fijo **0.0023·0.408**, Ra calculada, temperatura y rango 
 
 Error=predicción−EtPMon. Se publican n, MAE, RMSE, MBE/bias y R² predictivo (1−SSE/SST), conservando los ceros de referencia. La referencia evaluable es finita, no negativa y procede de una observación aceptada dentro de periodo oficial; los valores negativos se preservan con flag y se excluyen de métricas. Se distinguen cohortes propias de cada modelo y la intersección pareada. EtPMon es una estimación SIAR de comparación, no verdad independiente de terreno. No se presentan las métricas históricas del legado como resultados de esta nueva implementación.
 
-Los cuatro baselines oficiales no aprenden parámetros. El AHC legacy full-series/in-sample no es validación predictiva. AHC-METHODOLOGY-REVIEW y el contrato temporal se resolverán en misión separada antes de AHC_V1: se distinguirán usos climatológicos y calibración predictiva, estabilidad temporal y posibles escalas anual/estacional/mensual. Si AHC se estima de datos es parámetro calibrado; esta PR no decide todo el dataset frente a solo TRAIN. La evaluación predictiva futura debe prevenir leakage y ML mantiene separación temporal y ajuste de transformaciones sin usar datos de evaluación.
+Los cuatro baselines oficiales no aprenden parámetros. El AHC legacy full-series/in-sample no es validación predictiva. La revisión se cerró: AHC_VALIDATED es OLS0 ajustado solo en TRAIN y congelado; VALIDATION selecciona granularidad antes de TEST. AHC_CLIMATOLOGY usa el histórico completo declarado solo después de TEST, con identidad y finalidad distintas. No atribuir métricas TEST a climatología. La evaluación predictiva futura debe prevenir leakage y ML mantiene separación temporal y ajuste de transformaciones sin usar datos de evaluación.
 
 ## Referencias de la entrega
 
@@ -167,11 +167,13 @@ PM/HS importados de su ejecución oficial anterior; el productor original se con
 70978 predicciones HG-Rs; 70912 evaluables; cohorte
 común de cuatro 70860. Dataset v1 y resultados anteriores intactos.
 
-## Siguiente gate: preservación y metodología AHC
+## Estado AHC y preservación — 25/10/2026
 
-**PROJECT-ARTIFACT-BACKUP-V1 pendiente**: el dataset, predictions y CSV científicos masivos permanecen en el workspace Windows declarado por 05, no íntegramente en Git ni necesariamente en el servidor. [DATA_LOCATIONS](../docs/DATA_LOCATIONS.md) identifica bytes, índices y hashes. No se afirma backup completo por disponer de evidencia compacta versionada.
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39, pipeline 38503dbe8422982deeb3680bbc3e82fd950da4e1; **86 tests y CI 3.11/3.12/3.13 PASS**. OLS0 por estación contra PM, solo TRAIN 2004–2015; VALIDATION 2016–2020 y TEST 2021–2025 sin refit. TEST retrospective_locked; AHC_CLIMATOLOGY posterior a TEST y separado. [Resultados oficiales](results/ahc-20261024T172400Z/README.md).
 
-Secuencia posterior: revisión AHC → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. Los cuatro baselines siguen sin calibración local y Dataset v1/raw/Quality intactos. El interés es contrastar accuracy against EtPMon con input requirements / operational availability; más inputs no garantizan mejor modelo ni causalidad.
+**PROJECT-ARTIFACT-BACKUP-V1 PASS**: snapshot REMOTE_VERIFIED de 128 archivos, incluyendo scope científico y raw SIAR publicado; [DATA_LOCATIONS](../docs/DATA_LOCATIONS.md). La evidencia científica que aún dice «backup pendiente» refleja su publicación anterior al cierre de preservación y se mantiene inmutable. Futuros resultados solo Windows NO están automáticamente protegidos: requieren transferencia/ingestión al servidor. Daily reconciliation general para material ingerido, distinta de la reconciliación SIAR cada 15 min.
+
+Siguiente etapa: ML v1 bajo [contrato FROZEN/READY](docs/ml_experiment_contract.md); [visualization contract FROZEN/AVAILABLE TO 06](docs/visualization_contract.md). No ML/ANN entrenado ni web construida. No se reabren metodología AHC ni baselines ni se recalcula ciencia desde UI.
 
 ## Experimento AHC temporal versionado
 

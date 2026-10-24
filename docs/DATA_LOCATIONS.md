@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Vigente: 2026-10-24.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Vigente: 2026-10-25.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|
@@ -8,7 +8,7 @@
 | Catálogo reproducible | [estaciones_baleares.csv](../estaciones_baleares.csv) | Snapshot local; Info/ESTACIONES es autoridad a contrastar; Huso sigue con hallazgo abierto |
 | Quality vigente | [POST corregido](../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/) | Tres CSV, paquete POST, informe y certificación; supersedes original sin borrarlo |
 | POST original | [Snapshot superseded](../data_quality/siar/post/SIAR-QA-POST-20261018T233901Z/) | Historia preservada; no consumir su ledger como vigente |
-| Dataset Observational v1 | [Índice y paths del productor](../scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) | JSON observational-v1 completo preservado localmente; no está íntegro versionado en Git |
+| Dataset Observational v1 | [Índice y paths del productor](../scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) | JSON completo local y backup remoto SHA256 PASS en el scope aceptado; no está íntegro en Git |
 | Predicciones de cuatro métodos | [Run completo e índice](../scientific_pipeline/results/four-classical-20261024T042250Z/artifact-index.json) | predictions.json y CSV masivos externos; Git no es copia completa del proyecto científico |
 | Métricas y manifiesto de cuatro | [comparison/](../scientific_pipeline/results/four-classical-20261024T042250Z/comparison/) | metrics.json y manifest.json de bytes preservados; identidad y hashes en índice |
 | Índice del run vigente de cuatro | [artifact-index.json](../scientific_pipeline/results/four-classical-20261024T042250Z/artifact-index.json) | Identidades/hashes de artefactos completos y compactos |
@@ -81,11 +81,22 @@ Pipeline HG-Rs/comparación `a0b440fa3ab92e4593be521e4e819c6421327656`.
 Dataset v1 en su ubicación anterior, sin reconstrucción. El CSV de tres métodos
 y sus hashes siguen preservados; este es un output nuevo, no una sobrescritura.
 
-## PROJECT-ARTIFACT-BACKUP-V1 — PENDIENTE, prioridad de preservación
+## PROJECT-ARTIFACT-BACKUP-V1 — PASS
 
-Los artefactos masivos están declarados en el workspace Windows de 05; no necesariamente existen en servidor ni Git. El CSV de cuatro arriba tiene **75.496 filas** y SHA256 **f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44**. La verificación de ese output local y la evidencia compacta no certifican un backup externo.
+Parte de cierre de 02 comunicado por Dirección 00: snapshot **backup_20261024T215639Z_63d0ef01**, **REMOTE_VERIFIED**. **128 archivos verificados = 82 scientific-results + 46 SIAR published Raw**. Scientific-results: **1,421,919,603 bytes**. El inventario del servidor tiene **221 entries**: no afirmar que los 221 estén respaldados.
 
-02 recibirá misión separada para establecer preservación explícita de dataset completo, handoff científico, scientific-results completos, exports CSV, predictions, manifests, futuros artefactos ML, raw Forecast y configuración operativa recuperable. **No se afirma que todo esté respaldado.** GitHub es autoridad versionable, no copia completa del proyecto científico. Los paths existentes de 05 siguen siendo los declarados; la convención propuesta anterior no se materializa ni autoriza movimientos.
+Dataset v1 SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` y CSV cuatro métodos SHA256 `f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44`: verificación PASS.
+
+**cryptcheck PASS (128 archivos)** + restore independiente de **2 scientific artifacts y 2 operational references**, hashes PASS. Un intento redundante de verificación por descarga completa fue **INTERRUPTED**: **no declarar full-download verification PASS**. El snapshot se acepta por cryptcheck + restores independientes + SHA256 matches.
+
+Preservación general para artefactos científicos **ya ingeridos al servidor**: **event-driven ingestion PASS, new=0, unchanged=9** en la prueba reportada; **daily preservation reconciliation ENABLED**. Es distinta del reconciliador SIAR Forecast de runs publicados cada **15 minutos**.
+
+**LIMITACIÓN ABIERTA:** futuros resultados solo Windows = **NOT AUTOMATICALLY PROTECTED**. Requieren explicit transfer/ingestion → server preservation area → backup system → Drive crypt. No se garantiza todo resultado futuro ni se confunde inventario con cobertura.
+
+Secret config y credentials **EXCLUDED** del snapshot. Material de recuperación crypt/OAuth **OFF-SERVER**; no publicar rclone.conf, refresh token, OAuth tokens ni crypt passwords. Closeout operativo: `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, referencia sin copiar contenido.
+
+Toshiba ya no es la única copia **para los artefactos científicos y SIAR published Raw cubiertos por el snapshot verificado**. GitHub sigue siendo autoridad versionable, no copia íntegra de outputs masivos. Esta misión backup **no cambió Forecast**: timer captura y reconciliador ACTIVE; nuevo run automático real con backup/COMPLETE remoto aún pendiente. AEMET disabled/inactive, captures=0, gate=CLOSED, sin nuevos raw.
+
 
 ## Alcance real de backup operativo — parte 24/10
 
@@ -111,5 +122,15 @@ C:\Users\Josep\.codex\.chatgpt-projects\g-p-6ac0c6c1d8908191b03f324e51c278f1\sci
 TRAIN/VALIDATION/TEST/cierre tienen directorios separados. `test/daily_predictions.csv`
 conserva 75.496 filas (164.196.273 bytes). Métricas completas y desgloses
 mensuales/estacionales/anuales permanecen fuera de Git; manifests y evidencia
-compacta sí se versionan. No implica réplica en Linux ni backup independiente.
+compacta sí se versionan. Ese estado describe la publicación científica previa al cierre de preservación; posteriormente PROJECT-ARTIFACT-BACKUP-V1 PASS confirmó el scope remoto indicado arriba.
 La cadena de manifests identifica fuentes, POST, dataset, protocolo y productores.
+
+## AHC: ubicaciones y consumo vigente
+
+[Resultado AHC](../scientific_pipeline/results/ahc-20261024T172400Z/README.md), [índice de artefactos](../scientific_pipeline/results/ahc-20261024T172400Z/artifact-index.json) y manifests de TRAIN/VALIDATION/TEST/closeout identifican los bytes científicos. Los paths del productor Windows siguen siendo válidos como localización de origen; ya no significan que Toshiba/Windows sea la única copia del scope aceptado.
+
+TEST manifest SHA256: `502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e47434fc469`. Closeout manifest SHA256: `39be9d706f962722862c50ce6b25fad5d0e93a57d954c4b71aa77cfe5942d6cd`. La evidencia compacta del run y sus referencias a backup pendiente se conservan como snapshot anterior al cierre remoto; no se alteran manifests ni índices para cambiar la historia.
+
+El [contrato de visualización](../scientific_pipeline/docs/visualization_contract.md) está FROZEN/AVAILABLE TO 06: daily_predictions, métricas precalculadas, metadatos, cobertura, schemas y manifests. AHC_VALIDATED y AHC_CLIMATOLOGY tienen identidades separadas; el consumidor no recalcula ciencia ni usa climatología para atribuir métricas TEST.
+
+Para nuevos artefactos: **explicit transfer/ingestion → server preservation area → backup system → Drive crypt**. Receipt operativo de cierre `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, sin copiar contenido sensible. La documentación recoge el parte de 02, no una inspección nueva del servidor.

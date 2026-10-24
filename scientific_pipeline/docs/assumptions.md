@@ -89,8 +89,12 @@ Publicar tanto cohorte propia por método como intersección pareada PM/HS, con 
 
 Los baselines v1 no aprenden parámetros. Los filtros aprendidos, escalado o ML futuro requieren cortes globales cronológicos TRAIN<VALIDATION<TEST, fijados tras POST antes de consultar errores. Ningún día cambia de partición según estación; no se redistribuyen datos de estaciones cerradas para rellenar TEST. TRAIN estima, VALIDATION selecciona y TEST se abre una vez con configuración congelada. Sin partición aleatoria ni ajuste de umbrales sobre toda la serie.
 
-## AHC-METHODOLOGY-REVIEW — alcance pendiente, 24/10/2026
+## AHC y preservación: estado vigente 25/10/2026
 
-Los cuatro baselines v1 son sin calibración; no implementan AHC. Las recomendaciones previas de aplicar AHC solo en TRAIN no cierran su futura metodología. Dirección ha reservado una investigación específica: bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y AHC anual/estacional/mensual si procede.
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39; OLS0 por estación a=Σ(x·PM)/Σ(x²), TRAIN 2004–2015 únicamente, coeficientes congelados. VALIDATION 2016–2020 seleccionó HS annual / HG-Rs seasonal / VAL annual; TEST 2021–2025 retrospective_locked, sin refit ni reselección. [Metodología](ahc_methodology.md) y [evidencia](../results/ahc-20261024T172400Z/README.md).
 
-Si AHC se estima de datos es un parámetro calibrado. La revisión y el contrato de evaluación temporal definirán datos de ajuste y validación antes de implementar AHC_V1. Esta actualización no decide uso de todo el dataset frente a solo TRAIN, no aprueba evaluación in-sample como predictiva y no altera ninguna fórmula o parámetro baseline. [Secuencia vigente](../../docs/ROADMAP.md).
+AHC_CLIMATOLOGY se calcula después de TEST con todo el histórico declarado hasta 2025; identidad separada y sin atribución de métricas TEST. El legacy mean-ratio full-series/in-sample sigue siendo historia. Los cuatro baselines, raw, Quality y Dataset no cambian.
+
+**PROJECT-ARTIFACT-BACKUP-V1 PASS** según cierre de 02 comunicado por Dirección 00; snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED, 128 archivos. Los artefactos científicos cubiertos ya tienen preservación externa; no implica que cualquier resultado futuro solo Windows esté automáticamente protegido. Requiere transferencia/ingestión explícita y reconciliación diaria para lo ingerido. [Alcance, pruebas y límites](../../docs/DATA_LOCATIONS.md).
+
+ML contract FROZEN/READY FOR FUTURE EXPERIMENTS y visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida.

@@ -1,6 +1,17 @@
 # ET0-BASELINES-PREP — estado de integración
 
-## Estado vigente — cuatro métodos, 24/10/2026
+## AHC y preservación: estado vigente 25/10/2026
+
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39; OLS0 por estación a=Σ(x·PM)/Σ(x²), TRAIN 2004–2015 únicamente, coeficientes congelados. VALIDATION 2016–2020 seleccionó HS annual / HG-Rs seasonal / VAL annual; TEST 2021–2025 retrospective_locked, sin refit ni reselección. [Metodología](ahc_methodology.md) y [evidencia](../results/ahc-20261024T172400Z/README.md).
+
+AHC_CLIMATOLOGY se calcula después de TEST con todo el histórico declarado hasta 2025; identidad separada y sin atribución de métricas TEST. El legacy mean-ratio full-series/in-sample sigue siendo historia. Los cuatro baselines, raw, Quality y Dataset no cambian.
+
+**PROJECT-ARTIFACT-BACKUP-V1 PASS** según cierre de 02 comunicado por Dirección 00; snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED, 128 archivos. Los artefactos científicos cubiertos ya tienen preservación externa; no implica que cualquier resultado futuro solo Windows esté automáticamente protegido. Requiere transferencia/ingestión explícita y reconciliación diaria para lo ingerido. [Alcance, pruebas y límites](../../docs/DATA_LOCATIONS.md).
+
+ML contract FROZEN/READY FOR FUTURE EXPERIMENTS y visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida.
+
+
+## Registro de cuatro métodos — 24/10/2026
 
 **HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
 [Cuatro baselines y CSV](../results/four-classical-20261024T042250Z/README.md). PR #35; pipeline
@@ -8,7 +19,7 @@ a0b440fa3ab92e4593be521e4e819c6421327656; 75 tests/CI Python 3.11/3.12/3.13 PASS
 HG-Rs 70978 calculadas / 70912 evaluables / 0 fallos.
 Cohorte común de cuatro 70860; Dataset v1 intacto. Publicación oficial PR #36, SHA 9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf. Los registros inferiores de dos/tres métodos y preparación conservan su fecha; no son estados pendientes vigentes.
 
-Siguiente orden de dirección: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. La revisión AHC específica definirá estimación/validación; no se decide aquí todo el dataset frente a TRAIN. [ROADMAP](../../docs/ROADMAP.md).
+Orden histórico de preparación previo al cierre AHC/backup: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos posteriores; esos gates se superaron según el estado vigente superior. [ROADMAP](../../docs/ROADMAP.md).
 
 ## Registro preservado — tres métodos, 24/10/2026
 

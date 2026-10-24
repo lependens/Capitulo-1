@@ -1,5 +1,7 @@
 > Nota histórica: la aplicación Dash asociada a este análisis se desplegó en Render y fue retirada en octubre de 2026.
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
 > **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
 
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
@@ -349,3 +351,28 @@ Pipeline `38503dbe8422982deeb3680bbc3e82fd950da4e1`, PR #38,
 Contratos ML/visualización definidos, sin entrenar ML/ANN ni construir Web.
 La preservación externa de artefactos masivos sigue pendiente; este cierre
 científico no certifica PROJECT-ARTIFACT-BACKUP-V1. [Handoff para 03](scientific_pipeline/docs/ahc_handoff_03.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Lectura de resultados AHC temporales
+
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**; [tablas oficiales y hashes](scientific_pipeline/results/ahc-20261024T172400Z/README.md). No confundir las tablas legacy anteriores de mean(PM/x), full-series/in-sample, con el ajuste validado **OLS0 a=Σ(x·PM)/Σ(x²)** solo TRAIN.
+
+TRAIN 2004–2015, VALIDATION 2016–2020 y TEST 2021–2025, globales; sin refit TRAIN+VALIDATION. TEST **retrospective_locked**, no prospectivo nunca visto. Referencia primaria PM_FAO56_V1, SIAR EtPMon secundaria calculada; no ET instrumental independiente.
+
+TEST común contra PM **n=15.958**, ajustes anuales (MAE/RMSE/bias en mm/día):
+
+| Método | MAE | RMSE | bias | R² |
+|---|---:|---:|---:|---:|
+| HS_RA_AHC_VALIDATED | 0.504081 | 0.638838 | 0.230566 | 0.860481 |
+| HG_RS_AHC_VALIDATED | 0.318930 | 0.414241 | 0.003436 | 0.941338 |
+| VALIANTZAS_AHC_VALIDATED | 0.392259 | 0.523955 | 0.166835 | 0.906149 |
+
+VALIDATION seleccionó HS annual, HG-Rs seasonal y VAL annual. HG_RS_AHC_VALIDATED_SELECTED estacional, TEST n=15.958: MAE 0.306919, RMSE 0.401392, bias −0.011504, R² 0.944921. Mensual no justifica más complejidad; no reseleccionar tras TEST ni sustituir el benchmark anual.
+
+Estabilidad PASS: CV muestral máximo 6.612 %, max/min 1.164415. No garantiza mejoras cada año; **IB11/2025/HS RMSE 0.756→0.897, ≈+18.57 %** se conserva. No recalibrar para ocultar empeoramientos.
+
+AHC_CLIMATOLOGY usa todo el histórico declarado hasta 2025 solo después de TEST, separado de AHC_VALIDATED; no atribuir sus coeficientes a métricas TEST. IB101 SHORT_SERIES_DESCRIPTIVE/deployable=false; IB09 UNAVAILABLE/Quality FAIL; IB07 sin validación/test posterior al cierre.
+
+El cierre de preservación posterior confirma PROJECT-ARTIFACT-BACKUP-V1 PASS para su snapshot y scope, sin alterar evidencia científica publicada. [Ubicaciones](docs/DATA_LOCATIONS.md). ML/visualización tienen contrato congelado, sin nuevos modelos ni producto implementados.

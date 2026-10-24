@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-10-24.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico.
+**Actualizado: 2026-10-25.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -42,7 +42,8 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
 - [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines clásicos v1 y evidencia reproducible.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
-- [Auditoría documental vigente](docs/REPO_AUDIT_2026-10-24.md) — reconciliación de evidencias y límites.
+- [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — estado vigente y límites de preservación.
+- [Auditoría documental 24/10](docs/REPO_AUDIT_2026-10-24.md) — registro histórico de la etapa anterior.
 - [Auditoría documental 23/10](docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
 
@@ -434,15 +435,16 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 ---
 
-# 7. Estado general — 24/10/2026
+# 7. Estado general — 25/10/2026
 
 | Área | Estado |
 |---|---|
 | Quality SIAR | COMPLETE; POST corregido SIAR-QA-POST-20261020T193140Z |
 | Datos observacionales | 75.496 filas raw; 75.495 oficiales; 2.345 ausencias confirmadas, 1 RECOVERED; cobertura 96.987410 % |
-| Dataset Observational v1 | Construido/validado PASS; JSON completo preservado localmente |
+| Dataset Observational v1 | Construido/validado PASS; backup SHA256 PASS en snapshot aceptado |
 | Cuatro baselines oficiales | PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1 PASS; comparación común n=70.860 (PR #36) |
-| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 pendiente; artefactos masivos fuera de Git, no todos certificados con backup |
+| AHC temporal | AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS; OLS0 TRAIN, TEST retrospective_locked; climatología separada |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS; snapshot REMOTE_VERIFIED, 128 archivos; nuevos outputs solo Windows requieren ingestión |
 | SIAR Sync v2.3.3 | HOLD hasta alignment e incremental 2026 demostrado |
 | Forecast SIAR | Timer ACTIVE; reconciliador cada 15 min enabled/active; OAuth Production; nuevo run real → backup automático → COMPLETE remoto pendiente |
 | AEMET Track A | E2E DEMONSTRATED; captura disabled/inactive, nuevo backup automático NOT ACTIVE; reactivar tras CAPTURE RUNNING |
@@ -499,7 +501,9 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-Quality CLOSED/COMPLETE y Dataset v1 PASS; [cuatro baselines oficiales y comparación](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) PASS. Siguiente orden: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN después. La revisión AHC definirá estimación y validación; no se decide aquí todo el dataset frente a TRAIN.
+Quality CLOSED/COMPLETE y Dataset v1 PASS; [cuatro baselines oficiales y comparación](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) PASS. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS. Contrato ML FROZEN/READY: linear/regularized regression → trees → random forest/extra trees → boosting → ANN después. Visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida.
+
+El snapshot remoto protege 82 archivos scientific-results y 46 SIAR published Raw; futuros resultados que sigan solo Windows **no están automáticamente protegidos** y requieren transferencia/ingestión. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 
 En paralelo: demostrar un nuevo ciclo Forecast SIAR real con backup automático y COMPLETE remoto; reactivar AEMET tras CAPTURE RUNNING, asegurar backup de nuevos raw y resolver alignment/incremental 2026 antes de levantar HOLD en Sync. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
 

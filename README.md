@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-10-23.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico.
+**Actualizado: 2026-10-24.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -40,9 +40,10 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
 - [Forecast SIAR](forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
-- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — PM/HS v1 y evidencia reproducible.
+- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines clásicos v1 y evidencia reproducible.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
-- [Auditoría documental](docs/DOCUMENTATION_AUDIT_2026-10.md) — inconsistencias corregidas y límites de la revisión.
+- [Auditoría documental vigente](docs/REPO_AUDIT_2026-10-24.md) — reconciliación de evidencias y límites.
+- [Auditoría documental 23/10](docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
 
 ## 2.1 Objetivos
@@ -433,24 +434,24 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 ---
 
-# 7. Estado general — 23/10/2026
+# 7. Estado general — 24/10/2026
 
 | Área | Estado |
 |---|---|
 | Quality SIAR | COMPLETE; POST corregido SIAR-QA-POST-20261020T193140Z |
 | Datos observacionales | 75.496 filas raw; 75.495 oficiales; 2.345 ausencias confirmadas, 1 RECOVERED; cobertura 96.987410 % |
 | Dataset Observational v1 | Construido/validado PASS; JSON completo preservado localmente |
-| PM_FAO56_V1 / HS_RA_V1 | Primera ejecución oficial PASS, publicada en PR #31 |
-| Valiantzas | LEGACY / FUTURE BASELINE REVIEW; auditoría e implementación reproducible pendientes |
+| Cuatro baselines oficiales | PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1 PASS; comparación común n=70.860 (PR #36) |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 pendiente; artefactos masivos fuera de Git, no todos certificados con backup |
 | SIAR Sync v2.3.3 | HOLD hasta alignment e incremental 2026 demostrado |
-| Forecast SIAR | Runtime/raw/backup/restore demostrados; timers pausados según último parte; gates CAPTURE/PILOT pendientes |
-| AEMET Track A | E2E DEMONSTRATED; pausado; reactivar tras SIAR-FORECAST-CAPTURE RUNNING |
+| Forecast SIAR | Timer ACTIVE; reconciliador cada 15 min enabled/active; OAuth Production; nuevo run real → backup automático → COMPLETE remoto pendiente |
+| AEMET Track A | E2E DEMONSTRATED; captura disabled/inactive, nuevo backup automático NOT ACTIVE; reactivar tras CAPTURE RUNNING |
 | AEMET Track B | OPEN |
-| Storage Toshiba | CLOSED_OPERATIONALLY / MONITORING; preservación externa PASS |
+| Storage | CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE |
 | ANN y dashboards legacy | Historia preservada, sin convertir resultados antiguos en v1 |
 | ML nuevo / Web/API / Kc / ETc / riego | Futuro después de baselines comparables y validación |
 
-SIAR Forecast puede reactivarse aunque SIAR Sync siga HOLD. Un ciclo automático real demuestra CAPTURE RUNNING; al menos dos, PILOT RUNNING. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
+SIAR Forecast mantiene timer ACTIVE aunque SIAR Sync siga HOLD. El primer ciclo real automático con backup automático y COMPLETE remoto demuestra CAPTURE RUNNING; al menos dos ciclos PASS, PILOT RUNNING. Un timer activo no demuestra esos gates. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
 
 ---
 
@@ -498,9 +499,9 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-Quality y Dataset v1 ya están cerrados/construidos; los resultados oficiales PM/HS están publicados. Siguiente trabajo científico: auditar Valiantzas → VALIANTZAS_V1 → comparación PM/HS/Valiantzas → modelos estadísticos y ML sin leakage.
+Quality CLOSED/COMPLETE y Dataset v1 PASS; [cuatro baselines oficiales y comparación](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) PASS. Siguiente orden: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN después. La revisión AHC definirá estimación y validación; no se decide aquí todo el dataset frente a TRAIN.
 
-En paralelo: reactivar Forecast SIAR y AEMET con sus gates propios, asegurar backup de nuevos raw y resolver alignment/incremental 2026 antes de levantar HOLD en Sync. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
+En paralelo: demostrar un nuevo ciclo Forecast SIAR real con backup automático y COMPLETE remoto; reactivar AEMET tras CAPTURE RUNNING, asegurar backup de nuevos raw y resolver alignment/incremental 2026 antes de levantar HOLD en Sync. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
 
 ## Navegación rápida
 

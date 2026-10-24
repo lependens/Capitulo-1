@@ -9,9 +9,9 @@
 | Quality vigente | [POST corregido](../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/) | Tres CSV, paquete POST, informe y certificación; supersedes original sin borrarlo |
 | POST original | [Snapshot superseded](../data_quality/siar/post/SIAR-QA-POST-20261018T233901Z/) | Historia preservada; no consumir su ledger como vigente |
 | Dataset Observational v1 | [Índice y paths del productor](../scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) | JSON observational-v1 completo preservado localmente; no está íntegro versionado en Git |
-| Predicciones PM/HS | Run completo externo indicado por el productor | predictions.json masivo no incluido en evidencia Git compacta |
-| Métricas y manifiesto | [baselines/](../scientific_pipeline/results/pm-vpd-20261023T194553Z/baselines/) | metrics.json y manifest.json de bytes preservados; identidad y hashes en índice |
-| Índice del run | [artifact-index.json](../scientific_pipeline/results/pm-vpd-20261023T194553Z/artifact-index.json) | Identidades/hashes de artefactos completos y compactos |
+| Predicciones de cuatro métodos | [Run completo e índice](../scientific_pipeline/results/four-classical-20261024T042250Z/artifact-index.json) | predictions.json y CSV masivos externos; Git no es copia completa del proyecto científico |
+| Métricas y manifiesto de cuatro | [comparison/](../scientific_pipeline/results/four-classical-20261024T042250Z/comparison/) | metrics.json y manifest.json de bytes preservados; identidad y hashes en índice |
+| Índice del run vigente de cuatro | [artifact-index.json](../scientific_pipeline/results/four-classical-20261024T042250Z/artifact-index.json) | Identidades/hashes de artefactos completos y compactos |
 | Valiantzas y comparación clásica | [Resultados oficiales](../scientific_pipeline/results/classical-20261024T034529Z/README.md) | VALIANTZAS_V1, métricas/manifests en Git; CSV/JSON masivos externos con paths y hashes |
 | Forecast SIAR raw | `/srv/siar-forecast/raw/` en servidor | Operativo append-only; no se presupone dentro de Git |
 | Forecast AEMET raw | `/srv/aemet-forecast/raw/` en servidor | Wrapper/payload independientes; no se presupone dentro de Git |
@@ -25,7 +25,8 @@ dataset_sha256 = 0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bb
 quality_post = SIAR-QA-POST-20261020T193140Z
 audit_source_repo_sha = 18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865
 source_repo_sha = 2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9
-pipeline_sha = 39c101e5999245eb15e3c6c1c867d90b4ac44468
+original_pm_hs_pipeline_sha = 39c101e5999245eb15e3c6c1c867d90b4ac44468
+four_method_pipeline_sha = a0b440fa3ab92e4593be521e4e819c6421327656
 ```
 
 El productor registra el dataset completo bajo `scientific-results/dataset-v1-20261021T055924Z/dataset.json` y el run bajo `scientific-results/pm-vpd-20261023T194553Z/baselines/` dentro de su workspace Windows. Las rutas absolutas exactas están en el README del resultado enlazado arriba. Son localizaciones declaradas por 05 y respaldadas por manifiestos; esta misión documental no accede a ese disco ni certifica su disponibilidad actual.
@@ -79,3 +80,17 @@ SHA256 `f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44`.
 Pipeline HG-Rs/comparación `a0b440fa3ab92e4593be521e4e819c6421327656`.
 Dataset v1 en su ubicación anterior, sin reconstrucción. El CSV de tres métodos
 y sus hashes siguen preservados; este es un output nuevo, no una sobrescritura.
+
+## PROJECT-ARTIFACT-BACKUP-V1 — PENDIENTE, prioridad de preservación
+
+Los artefactos masivos están declarados en el workspace Windows de 05; no necesariamente existen en servidor ni Git. El CSV de cuatro arriba tiene **75.496 filas** y SHA256 **f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44**. La verificación de ese output local y la evidencia compacta no certifican un backup externo.
+
+02 recibirá misión separada para establecer preservación explícita de dataset completo, handoff científico, scientific-results completos, exports CSV, predictions, manifests, futuros artefactos ML, raw Forecast y configuración operativa recuperable. **No se afirma que todo esté respaldado.** GitHub es autoridad versionable, no copia completa del proyecto científico. Los paths existentes de 05 siguen siendo los declarados; la convención propuesta anterior no se materializa ni autoriza movimientos.
+
+## Alcance real de backup operativo — parte 24/10
+
+Reconciliador SIAR Forecast enabled/active cada 15 min, último Result success. rclone copy (no sync) sobre runs publicados pendientes en `/srv/siar-forecast/raw/runs/`, incluidos complete/partial/failed; excluye raw/tmp, CSV Sync, código general, /etc completo y resto del servidor.
+
+OAuth Production, reauthorization PASS y CLI crypt listing PASS; copy/restore independiente SHA256 MATCH. Eso todavía no demuestra **nuevo run real automático → backup automático → COMPLETE remoto**; es el gate pendiente. El límite específico de siete días de OAuth Testing está eliminado, sin garantizar que tokens nunca puedan invalidarse. No versionar config/secretos.
+
+AEMET: backup tras cada intento de captura (success/failure), sin timer independiente. Con capture timer disabled/inactive, nuevo backup automático AEMET NOT ACTIVE. Se habilitará reactivación tras SIAR-FORECAST-CAPTURE RUNNING. Estado y gates en [PROJECT_STATUS](PROJECT_STATUS.md).

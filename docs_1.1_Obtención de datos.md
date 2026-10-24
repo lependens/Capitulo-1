@@ -1,5 +1,7 @@
 # 1. Obtención de datos históricos y actuales de las estaciones meteorológicas de Baleares
 
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
 
 
@@ -1555,3 +1557,20 @@ AEMET Track A E2E DEMONSTRATED; piloto IB04 → Palma → municipio 07040, capit
 Toshiba CLOSED_OPERATIONALLY / MONITORING y STORAGE-DATA-PRESERVATION PASS: 238/238 archivos de datos por size/SHA256, 12/12 CSV contra POST y 242 archivos totales sin discrepancias; copia descifrada en PC fuera del Toshiba. No hubo evidencia actual de fallo físico activo en el parte recibido. Cualquier nuevo I/O error/emergency_ro/SMART warning/USB reset asociado/corrupción activa STOP de infraestructura.
 
 Cada nuevo raw prospectivo relevante requiere backup externo. GitHub es autoridad de código/docs/artefactos versionables; Drive cifrado conserva raw/preservación; PC/OneDrive es copia adicional, sin atribuir auditoría independiente a OneDrive. Adquisición, ciencia, modelado y producto siguen separados.
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Timer activo y alcance real de preservación
+
+Las menciones de timers Forecast SIAR pausados de las actualizaciones anteriores son históricas. **Parte 02 comunicado por Dirección 00 el 24/10: timer SIAR Forecast ACTIVE**; reconciliador **enabled/active cada 15 min**, último Result success. Procesa runs publicados pendientes complete/partial/failed bajo /srv/siar-forecast/raw/runs/ mediante rclone copy, no sync. Excluye raw/tmp, CSV SIAR Sync, código, /etc completo y resto del servidor.
+
+OAuth Google/rclone está **Production**, reauthorization y CLI crypt listing PASS. Testing causaba el límite específico de siete días; Production con nueva autorización lo elimina, sin garantizar que tokens nunca puedan invalidarse. Copy a crypt y restore independiente PASS, SHA256 MATCH; no se publica configuración ni secretos.
+
+Todavía falta **nuevo run Forecast SIAR real automático → backup automático → COMPLETE remoto**. Primer ciclo completo PASS → SIAR-FORECAST-CAPTURE RUNNING; al menos dos → SIAR-FORECAST-PILOT RUNNING. El timer activo no basta. Ocho estaciones funcionales; IB08 continúa ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL sin bloquear las demás. No reconstruir emisiones perdidas, asignar D+n ni inventar issue timestamp.
+
+AEMET Track A E2E DEMONSTRATED, **capture timer disabled/inactive**. Su backup se dispara tras cada intento success/failure y no tiene timer independiente: nuevo backup automático NOT ACTIVE mientras no haya captura. Gate vigente: CAPTURE RUNNING → reactivar AEMET; no depende de SIAR Sync.
+
+**SIAR-SYNC-RUNTIME HOLD** sigue condicionado a production alignment e incremental 2026 demostrado, sin reabrir Recovery. Quality CLOSED/COMPLETE, POST corregido y Dataset v1 sin cambios. Storage incidente CLOSED_OPERATIONALLY / MONITORING, STORAGE-DATA-PRESERVATION PASS y SSD IN SERVICE; no hay roadmap de sustitución.
+
+Se han publicado cuatro baselines oficiales, con CSV científico completo fuera de Git. La nueva prioridad **PROJECT-ARTIFACT-BACKUP-V1** abarca dataset, handoff, scientific-results completos, predictions, exports, manifests, futuros ML artifacts, raw Forecast y configuración recuperable. El reconciliador limitado a runs SIAR no cubre todo ese alcance. [Dónde están los bytes y evidencias](docs/DATA_LOCATIONS.md).

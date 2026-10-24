@@ -1,5 +1,7 @@
 # 1.3 Análisis de Errores y Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
 
 
@@ -141,3 +143,14 @@ Los modelos, entrenamientos y métricas anteriores son **HISTÓRICO / LEGACY** y
 Quality está cerrado con POST corregido; Dataset Observational v1 construido/validado y primera ejecución oficial PM/HS PASS ([evidencia](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md)). Antes de nuevos modelos: auditar Valiantzas → VALIANTZAS_V1 → comparar baselines clásicos; después estadística/regresión, árboles, boosting y ANN.
 
 Cualquier aprendizaje futuro exige split cronológico TRAIN < VALIDATION < TEST, transformaciones y parámetros aprendidos solo en TRAIN. No reutilizar AHC ni filtros ajustados sobre toda la serie como evidencia fuera de muestra. [ROADMAP](docs/ROADMAP.md).
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Cuatro referencias clásicas antes de nuevos modelos
+
+Los modelos ANN anteriores siguen HISTÓRICO / LEGACY. Dataset v1 y **PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1**, con comparación común n=70.860, ya están PASS ([resultados](scientific_pipeline/results/four-classical-20261024T042250Z/README.md)). No queda implementar esos baselines como etapa previa.
+
+El siguiente orden es **preservación de artefactos científicos → AHC-METHODOLOGY-REVIEW → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN después**. No se inicia entrenamiento ni se reetiquetan modelos históricos.
+
+AHC legacy full-series/in-sample no demuestra generalización. La misión AHC específica definirá usos climatológicos/predictivos y validación antes de AHC_V1; esta actualización no decide todo el dataset frente a TRAIN. ML mantiene separación temporal sin leakage. [ROADMAP](docs/ROADMAP.md).

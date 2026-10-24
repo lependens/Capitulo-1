@@ -9,10 +9,10 @@
 | Línea | Ya demostrado | Siguiente gate |
 |---|---|---|
 | Observaciones / Quality | POST corregido COMPLETE; 2.345 ausencias confirmadas, 0 PENDING_RETRY | Mantener snapshot cerrado; CATALOG-TZ-001 no bloqueante |
-| Ciencia | Dataset v1 y comparación oficial PM/HS/VAL/HG-Rs PASS | Preservación y contrato temporal antes de calibración/ML |
+| Ciencia | Dataset v1 y cuatro baselines oficiales PASS | PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → temporal evaluation contract |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
-| Forecast SIAR / 02 | Runtime, raw, backup/restore; 8 estaciones funcionales | Reactivar timers pausados → 1 ciclo real CAPTURE RUNNING → mínimo 2 PILOT RUNNING |
-| AEMET Track A / 02 | Collector y E2E DEMONSTRATED; piloto pausado | Tras SIAR-FORECAST-CAPTURE RUNNING, reactivar prospectivo |
+| Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
+| AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
 | AEMET Track B | Investigación independiente OPEN | Identificar feed exacto usado por SIAR |
 
 **La captura prospectiva no espera a los modelos ni a reactivar SIAR Sync.** No reconstruir emisiones perdidas durante la pausa. El incidente Toshiba está CLOSED_OPERATIONALLY / MONITORING; no es una nueva fase activa.
@@ -41,13 +41,14 @@ SIAR Sync España sigue siendo futuro, sin implementación actual.
 
 ✅ Collector append-only; sesión/CSRF/cálculo/exportZIP/CSV; guard rail de secretos, HTML sensible omitible, ZIP seguro, SHA-256, schemas y publicación atómica. Runtime permanente /opt + /etc + /srv/siar-forecast/raw con identidad dedicada. SMOKE-FC-001, BACKUP-FC-001 y FC-STATIONS-001 PASS; multi-smoke 8 completas de 9 intentadas.
 
-Último parte operativo: timers pausados tras incidente. Próximos gates:
+Último parte 24/10: **timer SIAR Forecast ACTIVE** y reconciliador **enabled/active cada 15 minutos**, último Result success. OAuth Production + reauthorization/crypt listing PASS elimina el límite específico de siete días de Testing; no garantiza tokens eternos. Copy to crypt + restore independiente + SHA256 MATCH demostrados.
 
-1. 🟠 Reactivación prospectiva independiente de SIAR Sync.
-2. 🟠 Un ciclo automático real con evidencia → **SIAR-FORECAST-CAPTURE RUNNING**.
-3. 🟠 Al menos dos ciclos automáticos → **SIAR-FORECAST-PILOT RUNNING**.
-4. 🟠 Asegurar backup externo de cada nuevo raw relevante y recuperabilidad del material crypt.
-5. 🟠 Acumular observación operacional y comprobar cobertura/cadencia, sin asignar D+n prematuramente.
+1. 🟠 Demostrar **nuevo run real automático → backup automático → COMPLETE remoto**; primer ciclo completo PASS → SIAR-FORECAST-CAPTURE RUNNING.
+2. 🟠 Al menos dos ciclos automáticos PASS → SIAR-FORECAST-PILOT RUNNING.
+3. 🟠 Mantener cobertura de backup de nuevos raw y recuperabilidad externa.
+4. 🟠 Acumular observación operacional y validar cadencia/semántica sin asignar D+n.
+
+Reconciliador: rclone copy (no sync), solo runs publicados pendientes en /srv/siar-forecast/raw/runs/, con estados complete/partial/failed. Excluye raw/tmp, CSV Sync, código, /etc completo y resto del servidor. No satisface por sí solo PROJECT-ARTIFACT-BACKUP-V1 ni acredita el ciclo real todavía pendiente.
 
 Target funcional: IB01, IB02, IB03, IB04, IB05, IB06, IB10, IB11. IB08 sigue ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL, vigilada aparte; no bloquea las ocho ni se etiqueta CLOSED. Cadencia experimental 08:00 / 14:00 / 20:00 Europe/Madrid.
 
@@ -57,7 +58,7 @@ source issue time puede ser null; D+0…D+6 y recuperación histórica de emisio
 
 ✅ Track A municipal diario OpenData: E2E DEMONSTRATED, estabilización PASS. PR #18/#19/#20: collector, id municipal y permisos POSIX. Conserva wrapper.raw y payload.raw sin modificar bytes; id 7040 se compara canónicamente con 07040 sin editar raw.
 
-Piloto IB04 → Palma → municipio 07040, capital municipal, no punto exacto de estación. Último parte: pausado tras incidente.
+Piloto IB04 → Palma → municipio 07040, capital municipal, no punto exacto de estación. Último parte: **capture timer disabled/inactive**. El backup se ejecuta tras cada intento de captura, success o failure; no existe timer independiente. Con captura deshabilitada, **new AEMET automatic backup = NOT ACTIVE**.
 
 **Dependencia vigente:** SIAR-FORECAST-CAPTURE RUNNING → reactivar AEMET Track A. Se supera la dependencia antigua de esperar SIAR-FORECAST-PILOT RUNNING; nunca depende de SIAR Sync.
 
@@ -75,29 +76,30 @@ Conserva 75.496 observaciones raw, 23 columnas, una fila exterior, ledger y prov
 
 🟠 Mantener preservación, identidad y acceso; revisar convención de resultados con el productor antes de mover archivos. scientific-results/observational-v1/{dataset,baselines,exports} es solo una propuesta, no un despliegue ni un movimiento aprobado.
 
-## Fase 5 — Baselines clásicos y comparación
+## Fase 5 — Cuatro baselines clásicos oficiales: PASS
 
-✅ PM_FAO56_V1 y HS_RA_V1 implementados y primera ejecución oficial PASS, publicada en PR #31 tras fix numérico PR #30. 62 tests PASS y CI 3.11/3.12/3.13 según evidencia publicada. Dataset y Quality intactos durante el fix.
+✅ PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 implementados y oficiales, sin calibración local. PR #30/#31 PM/HS, #33/#34 Valiantzas y tres métodos, #35/#36 HG-Rs y cuatro métodos. Dataset/raw/Quality intactos. Pipeline HG-Rs `a0b440fa3ab92e4593be521e4e819c6421327656`; publicación `9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf`. **75 tests y CI 3.11/3.12/3.13 PASS**.
 
-PM y HS usan Tcalc=(Tmax+Tmin)/2. PM: G=0, gamma=0.000665 P, albedo 0.23, viento m/s bajo convención SIAR 2 m, radiación MJ/m²/día. HS: 0.0023 × 0.408 × Ra × (Tcalc+17.8) × sqrt(Tmax−Tmin), sin radiación medida ni calibración.
+[Resultados y contrato de comparación](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md): cohorte común PM_HS_VAL_HGRS n=70.860, cohortes propias, pares/triples y desgloses. No queda implementar Valiantzas/HG-Rs como siguiente tarea.
 
-Los resultados oficiales, cohortes y limitaciones están en [la ejecución publicada](../scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md). No comparar métricas legacy con v1 como si compartieran máscara, periodo o metodología. EtPMon es calculada SIAR, no observación independiente.
+HG-Rs tiene mejor RMSE/R² que VAL y VAL mejor MAE/bias en la cohorte común; no hay vencedor universal. La mayor similitud de inputs con EtPMon puede favorecer concordancia, sin causalidad demostrada. Separar accuracy against EtPMon de input requirements / operational availability; sigue importando precisión con menos variables. EtPMon no es ET₀ instrumental independiente.
 
-Próxima secuencia:
+## Fase 6 — Preservación, AHC y evaluación antes de modelos nuevos
 
-1. ✅ Fórmula y unidades auditadas; Martí et al. (2024), composición Ecs.1b+3 con conversión 0.408 aprobada.
-2. ✅ **VALIANTZAS_V1** implementado, 68 tests y CI PASS; PR #33.
-3. ✅ [Comparación oficial PM / HS / VAL y exportación CSV](../scientific_pipeline/results/classical-20261024T034529Z/README.md): cohortes propias, pares y triple, global/estación/año/mes/temporada.
-4. 🟠 Retener cobertura/limitaciones, especialmente IB09 excluida por FAIL y muestra corta IB101.
-5. Después avanzar a nuevos modelos.
+Orden vigente:
 
-No copiar resultados antiguos ni calibrar constantes para reducir artificialmente el error SIAR. UNITS_PROVENANCE_PARTIAL y procedencia instrumental no exhaustiva siguen como limitaciones, no STOP global.
+1. 🟠 **PROJECT-ARTIFACT-BACKUP-V1:** política explícita para Dataset Observational v1 completo, handoff, scientific-results completos, CSV exports, predictions, manifests, future ML artifacts, raw Forecast y configuración operativa recuperable. Misión separada a 02; no se afirma que ya estén respaldados. GitHub no es copia completa del proyecto científico.
+2. 🟠 **AHC-METHODOLOGY-REVIEW:** revisar bibliografía; distinguir coeficiente climatológico de estación de calibración predictiva; estudiar estabilidad temporal y AHC anual/estacional/mensual si procede.
+3. 🟠 **Temporal evaluation contract:** definir objetivos, datos de ajuste, particiones y validación temporal antes de AHC_V1 o cualquier modelo calibrado. No decidir en esta PR si AHC usa toda la serie o solo TRAIN; se resuelve en la misión científica específica.
+4. ⚪ Modelos calibrados simples.
+5. ⚪ Regresión / árboles / boosting.
+6. ⚪ ANN después, sin salto inmediato desde los cuatro baselines.
 
-## Fase 6 — Modelos estadísticos y ML
+AHC estimado de datos es un parámetro calibrado. El AHC legacy mean(ET0_calc/ET0_empirical), calculado por estación sobre toda la serie y evaluado en los mismos días, es **HISTÓRICO / full-series / in-sample**; no demuestra validación predictiva. No cerrar todavía AHC v1 ni reetiquetar coeficientes históricos.
 
-⚪ Regresión y estadística simple → árboles → boosting → ANN más adelante. Usar partición temporal global TRAIN < VALIDATION < TEST, sin leakage. Transformaciones, filtros aprendidos, escalas y cualquier AHC se ajustan exclusivamente en TRAIN. Definir particiones y objetivos antes de ajustar; no reutilizar la calibración in-sample histórica como validación.
+El contrato futuro debe prevenir leakage y distinguir uso climatológico/descriptivo de evaluación predictiva. Las reglas de aprendizaje de ML continúan exigiendo separación temporal y ajuste de transformaciones sin usar evaluación; su aplicación específica a AHC queda pendiente de la revisión.
 
-Salida: comparación reproducible frente a baselines clásicos con métricas n/MAE/RMSE/bias/R², cobertura y provenance, no solo una mejora agregada sin cohorte.
+Salida: comparación reproducible de precisión, cobertura y requisitos de inputs, no una mejora agregada sin cohorte. Retener IB09 FAIL, IB101 corto y procedencia instrumental parcial como limitaciones.
 
 ## Fase 7 — Evaluación predictiva
 
@@ -111,11 +113,11 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 
 ## Infraestructura, backups y STOP
 
-STORAGE-DATA-PRESERVATION PASS; Toshiba CLOSED_OPERATIONALLY / MONITORING. 238/238 archivos de datos size/SHA256 y 12/12 CSV contra POST PASS; 242 archivos totales sin ausencias/discrepancias. No se reabre como proyecto activo por mantener monitorización.
+STORAGE-DATA-PRESERVATION PASS; incidente CLOSED_OPERATIONALLY / MONITORING; **SSD IN SERVICE**. No crear un roadmap de sustitución del SSD; reabrir solo con nueva evidencia objetiva. 238/238 archivos de datos size/SHA256 y 12/12 CSV contra POST PASS; 242 archivos totales sin ausencias/discrepancias. No se reabre como proyecto activo por mantener monitorización.
 
 STOP ante nueva evidencia de I/O error, emergency_ro, SMART warning, USB reset asociado o corrupción. Mantener GitHub para código/docs/artefactos versionables, Drive cifrado para raw/preservación y copia adicional PC/OneDrive. OneDrive no se etiqueta backup auditado independiente sin prueba expresa.
 
-Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
+**PROJECT-ARTIFACT-BACKUP-V1** amplía el alcance a artefactos científicos/ML y configuración recuperable, además de raw Forecast. El reconciliador actual no respalda todo el proyecto. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
 
 ## Gobierno y actualización
 
@@ -126,5 +128,4 @@ Los workstreams resuelven problemas operativos dentro de objetivos/invariantes/S
 
 ✅ HG_RS_V1 con Rs medida incorporado y ejecutado sin calibración;
 [comparación oficial de cuatro métodos y CSV](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md), 75 tests/CI PASS.
-PM/HS/VAL y Dataset v1 intactos. Próximo gate científico: definir objetivo y
-partición temporal antes de cualquier ajuste o ML; esta misión no los inicia.
+PM/HS/VAL y Dataset v1 intactos. Próximos gates: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → temporal evaluation contract → modelos calibrados simples; esta misión no los implementa.

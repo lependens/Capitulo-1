@@ -127,7 +127,7 @@ Error firmado=predicción−EtPMon. MAE, RMSE y MBE/bias en mm/día; R² predict
 
 Publicar cohortes propias por modelo y cohorte pareada PM/HS, n y hashes de selección. Las métricas globales reúnen pares, no promedian RMSE/R² de estaciones. Desgloses por estación, año, mes y temporadas DJF/MAM/JJA/SON; diciembre se asigna al año siguiente en DJF. No presentar cohortes de distinto periodo como comparación pareada.
 
-PM y HS v1 no aprenden parámetros. Para calibración/ML futuros: cortes globales cronológicos TRAIN<VALIDATION<TEST fijados tras POST antes de ver errores, sin partición aleatoria ni fecha en distinta partición según estación. TRAIN ajusta AHC, escalas, filtros y demás transformaciones; VALIDATION selecciona; TEST se abre una vez tras congelar configuración. Estaciones cerradas sin cobertura test se reportan así. Las ventanas y objetivos futuros respetarán embargo acorde al horizonte. No aplicar filtros/coefs estimados en todo el histórico antes de dividirlo.
+Los cuatro baselines v1 no aprenden parámetros. Para calibración/ML futuros: cortes globales cronológicos TRAIN<VALIDATION<TEST fijados tras POST antes de ver errores, sin partición aleatoria ni fecha en distinta partición según estación. Para ML, TRAIN ajusta escalas, filtros y demás transformaciones; VALIDATION selecciona; TEST se abre una vez tras congelar configuración. Estaciones cerradas sin cobertura test se reportan así. Las ventanas y objetivos futuros respetarán embargo acorde al horizonte. Para evaluación predictiva de ML, no aplicar filtros/coefs estimados en todo el histórico antes de dividirlo.
 
 ## Interfaz y manifiestos de ejecución
 
@@ -212,3 +212,9 @@ rutas relativas al catálogo y POST. Comprobar todos los hashes antes de
 construir. `source_repo_sha` sigue identificando la publicación canónica
 anterior; `pipeline_sha` identifica por separado el código del fix. No es el
 SHA de un commit que deba contener su propio handoff.
+
+## Gate futuro AHC y preservación — 24/10/2026
+
+**PROJECT-ARTIFACT-BACKUP-V1** precede a nuevos artefactos/modelos: dataset completo, handoff, scientific-results, exports, predictions, manifests, futuros ML, raw Forecast y configuración recuperable requieren política explícita. La evidencia compacta Git no acredita una copia completa. [Ubicaciones](../../docs/DATA_LOCATIONS.md).
+
+**AHC-METHODOLOGY-REVIEW** es una misión científica separada. Revisará coeficiente climatológico de estación frente a calibración predictiva, bibliografía, estabilidad temporal y escalas anual/estacional/mensual si procede, y definirá validación antes de AHC_V1. AHC estimado de datos es parámetro calibrado; no se decide aquí todo el dataset frente a solo TRAIN. La prohibición de presentar AHC legacy full-series/in-sample como validación predictiva permanece. No cambian dataset, hashes, QC, elegibilidad, parámetros ni métricas de los cuatro baselines.

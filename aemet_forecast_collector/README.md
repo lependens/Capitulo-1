@@ -31,7 +31,9 @@ The municipality forecast represents the municipal capital. `spatial_match = "mu
 
 PR #18 merged the Track A Collector, PR #19 merged municipality-id comparison, and PR #20 merged POSIX ancestor permissions. `AEMET-A1 = PASS`, `AEMET-A2 = PASS`, and `AEMET-A3 = COMPLETE`. `AEMET-TRACK-A-STABILIZE = PASS`; final AEMET E2E = `DEMONSTRATED`. The next operational milestone is `AEMET-PROSPECTIVE-PILOT`.
 
-Current operational gate (2026-10-23, latest direction report): the pilot was paused after the storage incident. Reactivate Track A prospectively after **SIAR-FORECAST-CAPTURE = RUNNING**, demonstrated by one real automatic SIAR cycle. This supersedes the earlier requirement to wait for SIAR-FORECAST-PILOT RUNNING. It does not depend on SIAR Sync, which remains HOLD. The initial target is IB04 → Palma → municipality `07040`. No new RUNNING or historical reconstruction is claimed.
+Current direction report (2026-10-24): capture timer **disabled / inactive**. AEMET backup runs after every capture attempt, whether success or failure; there is **no independent backup timer**. With capture disabled, **new AEMET automatic backup = NOT ACTIVE**.
+
+Reactivate Track A after **SIAR-FORECAST-CAPTURE = RUNNING**, following a demonstrated new real automatic SIAR run with automatic backup and remote COMPLETE. It does not depend on SIAR Sync HOLD or require waiting for the separate PILOT gate. The initial target remains IB04 → Palma → municipality `07040`. This documentation does not reactivate a service.
 
 Reactivation must verify permanent runtime/configuration, independent `/srv/aemet-forecast/raw`, rclone crypt backup, restore and experimental scheduler against current operational evidence. Every relevant new raw capture requires external backup. E2E demonstration alone does not prove that paused timers resumed or that new captures are already backed up. Pilot scope excludes ET0, D+n, scientific normalization and SIAR/AEMET integration (all NO); Track B remains OPEN.
 

@@ -58,3 +58,15 @@ Las fechas de PR corresponden al merge; para el parte operativo se usa fecha de 
 | Fecha | Hito | Resultado | PR / SHA o referencia | Significado |
 |---|---|---|---|---|
 | 2026-10-24 | Hargreaves-Rs y cuatro baselines oficiales | 70978 predicciones HG-Rs; 70912 evaluables; CSV 75.496 filas verificado; 75 tests/CI PASS | [PR #35](https://github.com/lependens/Capitulo-1/pull/35), a0b440fa3ab92e4593be521e4e819c6421327656; [resultados](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md) | Sin calibración; Dataset/Quality/raw y resultados PM/HS/VAL anteriores intactos. |
+
+## Consolidación 24/10/2026 — cuatro baselines y nuevos gates
+
+Las entradas siguientes añaden resultados y decisiones posteriores; no reescriben los snapshots de preparación ni el parte operativo del 23/10.
+
+| Fecha | Hito | Resultado | PR / SHA o fuente | Significado |
+|---|---|---|---|---|
+| 2026-10-24 | VALIANTZAS_V1 y tres métodos oficiales | Martí Ecs.1b+3 con 0.408, factor 1.001, sin calibración local; comparación y CSV PASS. | [PR #33](https://github.com/lependens/Capitulo-1/pull/33), [PR #34](https://github.com/lependens/Capitulo-1/pull/34), publicación 0604fba37bf082f325b0bd9fe3c1b835253f8e0e | Supera «Valiantzas pendiente»; fórmula legacy no es autoridad v1. |
+| 2026-10-24 | HG_RS_V1 y comparación de cuatro oficiales | 70.978 predicciones HG-Rs, 70.912 evaluables, 0 fallos; común PM_HS_VAL_HGRS 70.860; 75 tests/CI PASS. | [PR #35](https://github.com/lependens/Capitulo-1/pull/35), pipeline a0b440fa3ab92e4593be521e4e819c6421327656; [PR #36](https://github.com/lependens/Capitulo-1/pull/36), publicación 9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf | Dataset/raw/Quality y resultados previos intactos; sin calibración ni vencedor universal. |
+| 2026-10-24 | OAuth Production y reconciliación SIAR — constancia operativa | Reauthorization/crypt listing PASS; copy+restore SHA256 MATCH; timer captura ACTIVE, reconciliador enabled/active cada 15 min, último Result success. | Parte de 02 comunicado por Dirección 00; [PROJECT_STATUS](PROJECT_STATUS.md) | Supera timers pausados y límite específico OAuth Testing; nuevo run real → backup automático → COMPLETE remoto sigue pendiente. |
+| 2026-10-24 | Prioridad PROJECT-ARTIFACT-BACKUP-V1 | Política ampliada pendiente para artefactos científicos completos, futuros ML, raw y configuración recuperable. | Decisión de Dirección 00; [DATA_LOCATIONS](DATA_LOCATIONS.md) | GitHub no es copia completa y reconciliador SIAR no cubre todo el proyecto; implementación separada por 02. |
+| 2026-10-24 | AHC-METHODOLOGY-REVIEW antes de modelos nuevos | Investigación separada y contrato temporal antes de AHC_V1; no decisión de datos de ajuste en esta PR. | Decisión de Dirección 00; [ROADMAP](ROADMAP.md) | Distinguir climatología/calibración predictiva y AHC legacy full-series/in-sample; ANN después de modelos simples. |

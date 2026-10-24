@@ -1,5 +1,7 @@
 # 1.2 Depuración y Verificación de Datos Meteorológicos: Guía Paso a Paso
 
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
 
 
@@ -440,3 +442,22 @@ Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb
 EtPMon calculada SIAR comparte Rs con PM/HG-Rs; no es validación instrumental
 independiente. Se conservan procedencia parcial, viento convencional 2 m,
 IB09 FAIL, IB101 corto y límites empíricos. Raw/Quality/Dataset sin cambios.
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Cuatro baselines y revisión AHC separada
+
+**VIGENTE:** PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 oficiales PASS; PR #33/#34 y #35/#36 completan las ampliaciones. **75 tests y CI 3.11/3.12/3.13 PASS**. Dataset v1, raw y Quality permanecen intactos. Las secciones anteriores de «Valiantzas pendiente» describen estados históricos.
+
+La autoridad VAL v1 es [valiantzas_v1.md](scientific_pipeline/docs/valiantzas_v1.md), Martí et al. (2024), Ecs.1b+3, conversión 0.408 y coeficiente expandido 0.001861704, con factor **(1.001−RHmedia/100)^0.2**. No usar la variante legacy con factor 1−RH/100 como autoridad vigente.
+
+[HG_RS_V1](scientific_pipeline/docs/hargreaves_rs_v1.md) usa **0.0135 × 0.408 × Rs_medida × (Tcalc+17.8)**, Tcalc=(Tmax+Tmin)/2, Rs en MJ/m²/día. No usa Ra, sqrt(TD), humedad ni viento; no es sustituir simplemente Ra por Rs dentro de HS. HS_RA_V1 sigue 0.0023×0.408×Ra×(Tcalc+17.8)×sqrt(TD), sin Rs medida ni humedad.
+
+La comparación [oficial de cuatro](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) usa PM_HS_VAL_HGRS **n=70.860**. HG-Rs mejora RMSE/R² respecto a VAL; VAL mejora MAE/bias en esa cohorte. No hay vencedor universal. La similitud de inputs con EtPMon puede favorecer concordancia; no es causalidad demostrada ni regla «más inputs siempre mejor». Separar precisión frente a referencia calculada SIAR de requisitos de inputs y disponibilidad operacional. EtPMon no es ET₀ instrumental independiente.
+
+**AHC legacy = mean(ET0_calc / ET0_empirical)** por estación sobre toda la serie; ET0_empirical_adjusted = AHC × ET0_empirical y evaluación en los mismos días: HISTÓRICO / full-series / in-sample, no validación predictiva.
+
+**AHC-METHODOLOGY-REVIEW** revisará bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y escalas anual/estacional/mensual si procede. AHC estimado de datos es parámetro calibrado. Antes de AHC_V1 debe definirse validación temporal; esta misión no decide si usa todo el dataset o solo TRAIN. Las recomendaciones anteriores forman parte de su contexto histórico y no cierran esa revisión.
+
+Prioridad previa: **PROJECT-ARTIFACT-BACKUP-V1** para los artefactos masivos externos. Después revisión AHC → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. [ROADMAP](docs/ROADMAP.md) y [ubicaciones](docs/DATA_LOCATIONS.md).

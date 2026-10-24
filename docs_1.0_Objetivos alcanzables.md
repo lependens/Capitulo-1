@@ -1,5 +1,7 @@
 # Objetivos alcanzables
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
 > **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
 
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
@@ -518,3 +520,14 @@ Dataset v1 y Quality cerrado permanecen intactos. Los cuatro baselines oficiales
 Siguiente orden: **PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN**. GitHub no contiene todos los bytes científicos; no se afirma que todos los artefactos externos estén respaldados.
 
 Forecast SIAR tiene timer ACTIVE y reconciliador activo; falta demostrar nuevo run automático y su backup/COMPLETE remoto. AEMET permanece disabled/inactive hasta CAPTURE RUNNING. SIAR Sync continúa HOLD; storage cerrado operacionalmente y SSD IN SERVICE. [Estado maestro](docs/PROJECT_STATUS.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Cierre AHC y preservación
+
+AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION y PROJECT-ARTIFACT-BACKUP-V1 están PASS; las metas pendientes del 24/10 quedan históricas. Raw/Quality/Dataset v1 permanecen intactos. [AHC oficial](scientific_pipeline/results/ahc-20261024T172400Z/README.md) distingue validación temporal de climatología y conserva las limitaciones.
+
+Siguiente etapa: ML v1 con contrato FROZEN/READY — regresión lineal/regularizada, árboles, RF/extra trees, boosting y ANN después. Visualization contract FROZEN/AVAILABLE TO 06; no modelos ML/ANN entrenados ni web construida.
+
+El snapshot remoto aceptado verifica 128 archivos; futuros artefactos científicos solo Windows requieren transferencia/ingestión explícita. [Ubicaciones y límites](docs/DATA_LOCATIONS.md). La misión backup no cambió Forecast: timer y reconciliador ACTIVE, ciclo real automático con backup/COMPLETE pendiente; AEMET disabled/inactive.

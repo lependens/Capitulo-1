@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-10-24 (Europe/Madrid).** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-10-25 (Europe/Madrid).** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -9,7 +9,8 @@
 | Línea | Ya demostrado | Siguiente gate |
 |---|---|---|
 | Observaciones / Quality | POST corregido COMPLETE; 2.345 ausencias confirmadas, 0 PENDING_RETRY | Mantener snapshot cerrado; CATALOG-TZ-001 no bloqueante |
-| Ciencia | Dataset v1 y cuatro baselines oficiales PASS | PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → temporal evaluation contract |
+| Ciencia | Dataset, cuatro baselines y AHC temporal PASS; ML/visualización FROZEN | ML v1: regresión lineal/regularizada → árboles → RF/extra trees → boosting → ANN después |
+| Preservación / 02 | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos remotos verificados | Ingestión explícita de futuros artefactos Windows; seguimiento continuo |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
 | Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
 | AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
@@ -72,7 +73,7 @@ ET₀ NO; D+n NO; timezone de emisión inferida NO; integración científica SIA
 
 ✅ Construido y validado estructuralmente con POST corregido y handoff autorizado. Dataset siar-balears-observational-v1; SHA256 **0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb**.
 
-Conserva 75.496 observaciones raw, 23 columnas, una fila exterior, ledger y provenance; no interpola, imputa ni fabrica meteorología. El JSON completo es un artefacto local preservado, no se afirma almacenado íntegro en Git. Referencias verificables en [ubicaciones](DATA_LOCATIONS.md).
+Conserva 75.496 observaciones raw, 23 columnas, una fila exterior, ledger y provenance; no interpola, imputa ni fabrica meteorología. El JSON completo tiene backup externo verificado en el snapshot aceptado; no está íntegro en Git. Referencias verificables en [ubicaciones](DATA_LOCATIONS.md).
 
 🟠 Mantener preservación, identidad y acceso; revisar convención de resultados con el productor antes de mover archivos. scientific-results/observational-v1/{dataset,baselines,exports} es solo una propuesta, no un despliegue ni un movimiento aprobado.
 
@@ -84,22 +85,25 @@ Conserva 75.496 observaciones raw, 23 columnas, una fila exterior, ledger y prov
 
 HG-Rs tiene mejor RMSE/R² que VAL y VAL mejor MAE/bias en la cohorte común; no hay vencedor universal. La mayor similitud de inputs con EtPMon puede favorecer concordancia, sin causalidad demostrada. Separar accuracy against EtPMon de input requirements / operational availability; sigue importando precisión con menos variables. EtPMon no es ET₀ instrumental independiente.
 
-## Fase 6 — Preservación, AHC y evaluación antes de modelos nuevos
+## Fase 6 — AHC cerrado y ML v1 preparado
 
-Orden vigente:
+✅ **AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39. OLS0 por estación a=Σ(x·PM)/Σ(x²), referencia primaria PM_FAO56_V1; EtPMon secundaria calculada. TRAIN 2004–2015, VALIDATION 2016–2020, TEST 2021–2025; ajuste solo TRAIN, sin refit TRAIN+VALIDATION. TEST retrospective_locked, no prospectivo nunca visto.
 
-1. 🟠 **PROJECT-ARTIFACT-BACKUP-V1:** política explícita para Dataset Observational v1 completo, handoff, scientific-results completos, CSV exports, predictions, manifests, future ML artifacts, raw Forecast y configuración operativa recuperable. Misión separada a 02; no se afirma que ya estén respaldados. GitHub no es copia completa del proyecto científico.
-2. 🟠 **AHC-METHODOLOGY-REVIEW:** revisar bibliografía; distinguir coeficiente climatológico de estación de calibración predictiva; estudiar estabilidad temporal y AHC anual/estacional/mensual si procede.
-3. 🟠 **Temporal evaluation contract:** definir objetivos, datos de ajuste, particiones y validación temporal antes de AHC_V1 o cualquier modelo calibrado. No decidir en esta PR si AHC usa toda la serie o solo TRAIN; se resuelve en la misión científica específica.
-4. ⚪ Modelos calibrados simples.
-5. ⚪ Regresión / árboles / boosting.
-6. ⚪ ANN después, sin salto inmediato desde los cuatro baselines.
+✅ VALIDATION eligió HS annual, HG-Rs seasonal y VAL annual; mensual no justifica complejidad extra. No reseleccionar tras TEST. AHC_CLIMATOLOGY se calculó después de TEST con todo el histórico hasta 2025 y permanece separado de métricas fuera de muestra. IB101 descriptivo corto, deployable=false; IB09 UNAVAILABLE/FAIL. Estabilidad PASS no garantiza mejora todos los años; conservar empeoramientos.
 
-AHC estimado de datos es un parámetro calibrado. El AHC legacy mean(ET0_calc/ET0_empirical), calculado por estación sobre toda la serie y evaluado en los mismos días, es **HISTÓRICO / full-series / in-sample**; no demuestra validación predictiva. No cerrar todavía AHC v1 ni reetiquetar coeficientes históricos.
+✅ **PROJECT-ARTIFACT-BACKUP-V1 PASS**, snapshot REMOTE_VERIFIED de 128 archivos; no es un gate pendiente. Daily reconciliation ENABLED y event-driven ingestion PASS para material ya ingerido al servidor. Futuros resultados solo Windows requieren transferencia explícita; no están automáticamente protegidos.
 
-El contrato futuro debe prevenir leakage y distinguir uso climatológico/descriptivo de evaluación predictiva. Las reglas de aprendizaje de ML continúan exigiendo separación temporal y ajuste de transformaciones sin usar evaluación; su aplicación específica a AHC queda pendiente de la revisión.
+✅ [ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS**; [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**.
 
-Salida: comparación reproducible de precisión, cobertura y requisitos de inputs, no una mejora agregada sin cohorte. Retener IB09 FAIL, IB101 corto y procedencia instrumental parcial como limitaciones.
+Próximos experimentos ML v1, sin modelos entrenados todavía:
+
+1. ⚪ Linear / regularized regression.
+2. ⚪ Trees.
+3. ⚪ Random forest / extra trees.
+4. ⚪ Boosting.
+5. ⚪ ANN después.
+
+Cada ejecución congela presupuesto/candidatos/semillas y selección antes de entrenar. Conservar TEST retrospectivo; confirmación prospectiva exige datos posteriores y protocolo nuevo. No volver a cerrar metodología AHC ni repetir búsqueda de estimador como si siguiera pendiente.
 
 ## Fase 7 — Evaluación predictiva
 
@@ -109,7 +113,7 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 
 ## Fase 8 — Producto
 
-⚪ Web/API → ET₀ + Kc → ETc → necesidades de riego. Separar adquisición, procesamiento científico, modelado y producto. Los prototipos ANN y dashboards legacy conservan valor histórico, sin considerarse implementación productiva validada.
+**06 Web / Visualization / API** puede consumir el contrato de visualización congelado y artefactos científicos publicados **sin recalcular ciencia**. La web no está construida. Evolución futura: Web/API → ET₀ + Kc → ETc → necesidades de riego. Separar adquisición, procesamiento científico, modelado y producto. Los prototipos ANN y dashboards legacy conservan valor histórico, sin considerarse implementación productiva validada.
 
 ## Infraestructura, backups y STOP
 
@@ -117,7 +121,9 @@ STORAGE-DATA-PRESERVATION PASS; incidente CLOSED_OPERATIONALLY / MONITORING; **S
 
 STOP ante nueva evidencia de I/O error, emergency_ro, SMART warning, USB reset asociado o corrupción. Mantener GitHub para código/docs/artefactos versionables, Drive cifrado para raw/preservación y copia adicional PC/OneDrive. OneDrive no se etiqueta backup auditado independiente sin prueba expresa.
 
-**PROJECT-ARTIFACT-BACKUP-V1** amplía el alcance a artefactos científicos/ML y configuración recuperable, además de raw Forecast. El reconciliador actual no respalda todo el proyecto. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
+**PROJECT-ARTIFACT-BACKUP-V1 PASS:** snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED; 82 archivos científicos (1,421,919,603 bytes) + 46 SIAR published Raw = 128 verificados. 221 inventariados no significa 221 respaldados. cryptcheck + restores independientes + hashes PASS; descarga completa redundante INTERRUPTED, no full-download PASS. Secret config/credentials excluidos; crypt/OAuth OFF-SERVER.
+
+Event-driven ingestion PASS (new=0, unchanged=9) y daily reconciliation ENABLED protegen artefactos ya ingeridos al servidor; futuros resultados solo Windows necesitan transferencia/ingestión. El reconciliador SIAR de 15 min es distinto y no cambia el gate de nuevo run automático con backup/COMPLETE remoto. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
 
 ## Gobierno y actualización
 
@@ -128,4 +134,4 @@ Los workstreams resuelven problemas operativos dentro de objetivos/invariantes/S
 
 ✅ HG_RS_V1 con Rs medida incorporado y ejecutado sin calibración;
 [comparación oficial de cuatro métodos y CSV](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md), 75 tests/CI PASS.
-PM/HS/VAL y Dataset v1 intactos. Próximos gates: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → temporal evaluation contract → modelos calibrados simples; esta misión no los implementa.
+PM/HS/VAL y Dataset v1 intactos. AHC y backup ya están PASS; siguientes experimentos ML v1 bajo contrato congelado, con preservación continua y consumo por 06 sin recalcular ciencia.

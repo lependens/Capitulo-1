@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-24 (Europe/Madrid).** Fuente principal del estado vigente. Consolidación sobre main `9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-10-25 (Europe/Madrid).** Fuente principal del estado vigente. Consolidación AHC/backup sobre main `d15bbffac99164994aa884c1a47dc680d54e66af`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -17,15 +17,15 @@
 | Área | Estado vigente | Próximo gate o límite |
 |---|---|---|
 | Quality SIAR Baleares | COMPLETE; POST corregido publicado mediante PR #29; 12 estaciones | CATALOG-TZ-001 OPEN / NON_BLOCKING; completitud observacional distinta de completitud de auditoría |
-| Dataset Observational v1 | Construido y validado estructuralmente PASS; bytes preservados localmente | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
-| Cuatro baselines v1 | PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 oficiales PASS | Preservación de artefactos, AHC methodology review y contrato temporal antes de calibración |
-| Preservación científica | Dataset/JSON/CSV completos en workspace Windows de 05; Git solo contiene evidencia compacta | PROJECT-ARTIFACT-BACKUP-V1 pendiente; no afirmar backup completo del proyecto |
+| Dataset Observational v1 | Construido/validado PASS; SHA256 verificado en snapshot remoto aceptado | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
+| Ciencia ET₀ | Cuatro baselines y AHC temporal PASS; contratos ML/visualización congelados | ML v1 futuro; ANN después; no modelos entrenados ni web construida |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos REMOTE_VERIFIED | Nuevos resultados solo Windows requieren transferencia/ingestión explícita |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
 | SIAR Forecast | Timer de captura ACTIVE; reconciliador enabled/active cada 15 min, último Result success | Nuevo run real automático → backup automático → COMPLETE remoto; después CAPTURE RUNNING, mínimo dos ciclos PILOT RUNNING |
 | AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
 | AEMET Track B | OPEN | Investigar feed AEMET exacto utilizado por SIAR, independientemente de Track A |
 | Storage | Incidente CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE | Reabrir solo con nueva evidencia objetiva; sin plan de sustitución del SSD |
-| ML / producto | Futuro; modelos históricos en legacy | Baselines clásicos comparables y split temporal sin leakage antes de nuevos modelos |
+| ML / producto | ML contract FROZEN/READY; visualization contract FROZEN/AVAILABLE TO 06 | No ML/ANN entrenado ni web construida; consumir artefactos publicados sin recalcular ciencia |
 
 ## Observaciones y Quality: cierre vigente
 
@@ -99,11 +99,30 @@ Una mayor similitud de inputs con la referencia puede favorecer concordancia; es
 
 Permanecen UNITS_PROVENANCE_PARTIAL, viento 2 m por convención sin verificación instrumental exhaustiva, IB09 excluida por Quality FAIL, cohortes desiguales y periodo corto IB101. No se resuelven esas limitaciones al añadir métodos.
 
-### AHC: revisión separada, sin nueva metodología decidida
+### AHC — metodología y validación temporal PASS
 
-El AHC legacy era mean(ET0_calc/ET0_empirical) por estación sobre toda la serie; después multiplicaba las estimaciones y evaluaba sobre los mismos días. Es **HISTÓRICO / full-series / in-sample**, no validación predictiva.
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION = PASS**, PR #38/#39, pipeline `38503dbe8422982deeb3680bbc3e82fd950da4e1`, publicación `d15bbffac99164994aa884c1a47dc680d54e66af`. **86 tests y CI Python 3.11/3.12/3.13 PASS**. [Resultado oficial](../scientific_pipeline/results/ahc-20261024T172400Z/README.md). Raw, Quality, Dataset v1 y cuatro baselines intactos.
 
-**AHC-METHODOLOGY-REVIEW pendiente:** bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y opciones anual/estacional/mensual si procede. Si se estima de datos, AHC es un parámetro calibrado. La misión científica específica definirá estimación, datos de ajuste y validación temporal antes de AHC_V1; esta PR no decide todo el dataset frente a solo TRAIN.
+AHC_VALIDATED: **a=Σ(x·PM)/Σ(x²)**, OLS sin intercepto por estación; **ET0_adjusted=a×x**. Referencia primaria PM_FAO56_V1; EtPMon secundaria calculada SIAR, ninguna ET medida independiente. Legacy mean(PM/x), full-series/in-sample, queda HISTÓRICO.
+
+Cortes globales cronológicos **TRAIN 2004–2015 / VALIDATION 2016–2020 / TEST 2021–2025**. Ajuste solo TRAIN, congelado antes de VALIDATION/TEST; sin random split ni refit TRAIN+VALIDATION. TEST **retrospective_locked**, no test prospectivo nunca visto porque el histórico ya fue inspeccionado.
+
+TEST común contra PM, **n=15.958**, ajustes anuales; MAE/RMSE/bias en mm/día:
+
+| Método | MAE | RMSE | bias | R² |
+|---|---:|---:|---:|---:|
+| HS_RA_AHC_VALIDATED | 0.504081 | 0.638838 | 0.230566 | 0.860481 |
+| HG_RS_AHC_VALIDATED | 0.318930 | 0.414241 | 0.003436 | 0.941338 |
+| VALIANTZAS_AHC_VALIDATED | 0.392259 | 0.523955 | 0.166835 | 0.906149 |
+
+VALIDATION seleccionó **HS-Ra annual / HG-Rs seasonal / Valiantzas annual**. HG_RS_AHC_VALIDATED_SELECTED estacional: TEST n=15.958, MAE 0.306919, RMSE 0.401392, bias −0.011504, R² 0.944921. Mensual no justificó complejidad adicional; no reseleccionar después de TEST ni sustituir el benchmark anual.
+
+Estabilidad **PASS**, CV muestral máximo **6.612 %**, max/min **1.164415**. No equivale a estabilidad del error: se conservan empeoramientos, **IB11/2025/HS RMSE 0.756→0.897 (≈+18.57 %)**.
+
+**AHC_CLIMATOLOGY** solo se calculó después de completar TEST usando todo el histórico declarado hasta 2025. Identidad separada: descripción climatológica y posible coeficiente operativo futuro, nunca fuente de métricas TEST ni sustituto de coeficientes TRAIN. IB101 **SHORT_SERIES_DESCRIPTIVE, deployable=false**; IB09 **UNAVAILABLE / Quality FAIL**; IB07 sin validación/test posterior al cierre.
+
+[ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS** y [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**. ML sigue DESIGN_ONLY_NO_MODELS_TRAINED; el protocolo de cada ejecución debe cerrar presupuesto/candidatos/semillas antes de ajustar. No ML/ANN entrenado ni web construida. 06 consume artefactos publicados sin recalcular ciencia.
+
 
 ## SIAR Sync: HOLD independiente del snapshot científico
 
@@ -148,18 +167,33 @@ Incidente de storage: **CLOSED_OPERATIONALLY / MONITORING**; **SSD = IN SERVICE*
 
 STOP de infraestructura si reaparecen I/O error, emergency_ro, SMART warning, USB reset asociado o corrupción. Monitorización no equivale a prometer ausencia de fallos futuros.
 
-GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt tiene copias verificadas de raw/preservación dentro de sus alcances demostrados; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. La recuperabilidad externa del material crypt y la cobertura de nuevos raw mantienen validaciones propias.
+GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt tiene copias verificadas de raw/preservación dentro de sus alcances demostrados; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. El material crypt/OAuth de recuperación está confirmado OFF-SERVER; no publicar secretos. La cobertura de futuros resultados requiere ingestión explícita.
+
+## PROJECT-ARTIFACT-BACKUP-V1 — PASS
+
+Parte de cierre de 02 comunicado por Dirección 00: snapshot **backup_20261024T215639Z_63d0ef01**, **REMOTE_VERIFIED**. **128 archivos verificados = 82 scientific-results + 46 SIAR published Raw**. Scientific-results: **1,421,919,603 bytes**. El inventario del servidor tiene **221 entries**: no afirmar que los 221 estén respaldados.
+
+Dataset v1 SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` y CSV cuatro métodos SHA256 `f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44`: verificación PASS.
+
+**cryptcheck PASS (128 archivos)** + restore independiente de **2 scientific artifacts y 2 operational references**, hashes PASS. Un intento redundante de verificación por descarga completa fue **INTERRUPTED**: **no declarar full-download verification PASS**. El snapshot se acepta por cryptcheck + restores independientes + SHA256 matches.
+
+Preservación general para artefactos científicos **ya ingeridos al servidor**: **event-driven ingestion PASS, new=0, unchanged=9** en la prueba reportada; **daily preservation reconciliation ENABLED**. Es distinta del reconciliador SIAR Forecast de runs publicados cada **15 minutos**.
+
+**LIMITACIÓN ABIERTA:** futuros resultados solo Windows = **NOT AUTOMATICALLY PROTECTED**. Requieren explicit transfer/ingestion → server preservation area → backup system → Drive crypt. No se garantiza todo resultado futuro ni se confunde inventario con cobertura.
+
+Secret config y credentials **EXCLUDED** del snapshot. Material de recuperación crypt/OAuth **OFF-SERVER**; no publicar rclone.conf, refresh token, OAuth tokens ni crypt passwords. Closeout operativo: `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, referencia sin copiar contenido.
+
+Toshiba ya no es la única copia **para los artefactos científicos y SIAR published Raw cubiertos por el snapshot verificado**. GitHub sigue siendo autoridad versionable, no copia íntegra de outputs masivos. Esta misión backup **no cambió Forecast**: timer captura y reconciliador ACTIVE; nuevo run automático real con backup/COMPLETE remoto aún pendiente. AEMET disabled/inactive, captures=0, gate=CLOSED, sin nuevos raw.
 
 ## Próximos gates y gobierno
 
-1. **PROJECT-ARTIFACT-BACKUP-V1:** prioridad de preservación del dataset completo, handoff científico, scientific-results completos, CSV exports, predictions, manifests, futuros ML artifacts, raw Forecast y configuración operativa recuperable. 02 recibirá misión separada. **GitHub NO es una copia completa del proyecto científico y no se afirma backup de todos esos artefactos.**
-2. **AHC-METHODOLOGY-REVIEW**, después contrato de evaluación temporal, modelos calibrados simples, regresión/árboles/boosting y ANN más adelante. No saltar directamente de baselines a ANN.
-3. 02: demostrar nuevo ciclo SIAR real con backup automático/COMPLETE remoto; tras CAPTURE RUNNING reactivar AEMET. Dos ciclos para PILOT RUNNING.
-4. Resolver SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 antes de levantar HOLD, sin reabrir Recovery.
-5. Acumular forecast prospectivo → issue/valid time/D+n → datasets derivados → comparación con observaciones posteriores.
-6. Producto Web/API, ET₀+Kc, ETc y riego tras validación.
+1. **ML v1:** contrato congelado; linear/regularized regression → trees → random forest/extra trees → boosting → ANN después. No se afirma entrenamiento ni resultados ML.
+2. **06 Web / Visualization / API:** contrato FROZEN/AVAILABLE, consumo de tablas, schemas, métricas y linaje publicados sin recalcular ciencia. Producto todavía no construido.
+3. Infraestructura: SIAR Forecast real-run backup gate, AEMET reactivation tras CAPTURE RUNNING y SIAR Sync alignment/incremental 2026 siguen pendientes. La misión backup no los cambió.
+4. Preservación continua de nuevos artefactos mediante ingestión explícita; daily reconciliation para los ya ingeridos, 15 min para SIAR published raw.
+5. Issue/valid time/D+n y comparativas forecast científicas siguen separados de adquisición; Web/API, ET₀+Kc/ETc/riego después de validación.
 
-Los workstreams trabajan autónomamente dentro de objetivos/invariantes/STOP. Escalar arquitectura, seguridad, integridad raw y semántica científica. Gates requieren evidencia: código/timer activo no equivalen a run/backups demostrados. Las ubicaciones y límites de preservación están en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+AHC-METHODOLOGY-REVIEW y PROJECT-ARTIFACT-BACKUP-V1 ya no son pendientes: ambos PASS. Los workstreams operan dentro de objetivos/invariantes/STOP; se escalan arquitectura, seguridad, integridad raw y semántica científica.
 
 ## Registros de ampliación — trazabilidad
 

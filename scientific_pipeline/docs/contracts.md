@@ -213,8 +213,12 @@ construir. `source_repo_sha` sigue identificando la publicación canónica
 anterior; `pipeline_sha` identifica por separado el código del fix. No es el
 SHA de un commit que deba contener su propio handoff.
 
-## Gate futuro AHC y preservación — 24/10/2026
+## AHC y preservación: estado vigente 25/10/2026
 
-**PROJECT-ARTIFACT-BACKUP-V1** precede a nuevos artefactos/modelos: dataset completo, handoff, scientific-results, exports, predictions, manifests, futuros ML, raw Forecast y configuración recuperable requieren política explícita. La evidencia compacta Git no acredita una copia completa. [Ubicaciones](../../docs/DATA_LOCATIONS.md).
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39; OLS0 por estación a=Σ(x·PM)/Σ(x²), TRAIN 2004–2015 únicamente, coeficientes congelados. VALIDATION 2016–2020 seleccionó HS annual / HG-Rs seasonal / VAL annual; TEST 2021–2025 retrospective_locked, sin refit ni reselección. [Metodología](ahc_methodology.md) y [evidencia](../results/ahc-20261024T172400Z/README.md).
 
-**AHC-METHODOLOGY-REVIEW** es una misión científica separada. Revisará coeficiente climatológico de estación frente a calibración predictiva, bibliografía, estabilidad temporal y escalas anual/estacional/mensual si procede, y definirá validación antes de AHC_V1. AHC estimado de datos es parámetro calibrado; no se decide aquí todo el dataset frente a solo TRAIN. La prohibición de presentar AHC legacy full-series/in-sample como validación predictiva permanece. No cambian dataset, hashes, QC, elegibilidad, parámetros ni métricas de los cuatro baselines.
+AHC_CLIMATOLOGY se calcula después de TEST con todo el histórico declarado hasta 2025; identidad separada y sin atribución de métricas TEST. El legacy mean-ratio full-series/in-sample sigue siendo historia. Los cuatro baselines, raw, Quality y Dataset no cambian.
+
+**PROJECT-ARTIFACT-BACKUP-V1 PASS** según cierre de 02 comunicado por Dirección 00; snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED, 128 archivos. Los artefactos científicos cubiertos ya tienen preservación externa; no implica que cualquier resultado futuro solo Windows esté automáticamente protegido. Requiere transferencia/ingestión explícita y reconciliación diaria para lo ingerido. [Alcance, pruebas y límites](../../docs/DATA_LOCATIONS.md).
+
+ML contract FROZEN/READY FOR FUTURE EXPERIMENTS y visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida.

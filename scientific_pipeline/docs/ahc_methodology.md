@@ -1,5 +1,7 @@
 # AHC v1 — protocolo bloqueado antes del análisis de ajuste
 
+**Cierre vigente:** AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS, PR #38/#39; 86 tests/CI PASS, pipeline 38503dbe8422982deeb3680bbc3e82fd950da4e1. El protocolo preregistrado siguiente se conserva; no se reescribe después de TEST. [Resultados](../results/ahc-20261024T172400Z/README.md).
+
 ## Referencia y pregunta científica
 
 La misión estudia cuánto mejora una **escala multiplicativa por estación** la

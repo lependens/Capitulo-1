@@ -1,7 +1,9 @@
-# Contrato experimental para ML — propuesta v1
+# Contrato experimental para ML — v1
+
+**Estado documental vigente — 25/10/2026: FROZEN / READY FOR FUTURE EXPERIMENTS.** AHC temporal ya está PASS. Este contrato describe consumo/experimentos futuros: no ML/ANN entrenado ni web construida. No se sustituye el protocolo de ejecución que debe congelar presupuesto, candidatos y semillas antes de entrenar. [Estado maestro](../../docs/PROJECT_STATUS.md).
 
 Este contrato define experimentos futuros; **no declara modelos entrenados ni
-resultados ML**. Su ejecución queda posterior al cierre de AHC. El protocolo
+resultados ML**. El cierre AHC es PASS; la ejecución ML sigue siendo futura. El protocolo
 legible por máquina es [ml-v1-contract.json](../experiments/ml-v1-contract.json).
 La metodología AHC vigente se conserva en [ahc_methodology.md](ahc_methodology.md).
 ANN y la construcción de una interfaz web quedan fuera de esta fase.

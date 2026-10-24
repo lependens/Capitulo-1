@@ -1,5 +1,7 @@
 # 2.1 Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
 > **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
 
 > **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
@@ -196,3 +198,14 @@ Las futuras redes se evaluarán con partición temporal sin leakage y parámetro
 ANN/TensorFlow anterior permanece HISTÓRICO / LEGACY. Los cuatro baselines clásicos PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 y su comparación son PASS; [evidencia](scientific_pipeline/results/four-classical-20261024T042250Z/README.md). EtPMon es referencia calculada, no medición independiente.
 
 Antes de nuevos modelos: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. La revisión AHC no está cerrada y definirá estimación/validación en misión separada; no se decide aquí uso de todo el dataset frente a TRAIN. Ningún nuevo artefacto ML ni entrenamiento se genera en esta misión.
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Contratos listos y límites de nuevos artefactos
+
+AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION y PROJECT-ARTIFACT-BACKUP-V1 PASS; el contexto anterior de metodología/preservación pendientes queda histórico. [Contrato ML](scientific_pipeline/docs/ml_experiment_contract.md) FROZEN/READY, [visualización](scientific_pipeline/docs/visualization_contract.md) FROZEN/AVAILABLE TO 06. No ML/ANN entrenado ni web construida; TensorFlow anterior sigue legacy.
+
+Siguiente orden: regresión lineal/regularizada, árboles, RF/extra trees, boosting, ANN después. TEST AHC retrospective_locked, con ajuste solo TRAIN y climatología separada, no test prospectivo nunca visto. No reutilizar AHC_CLIMATOLOGY como si acreditara métricas TEST.
+
+Snapshot remoto aceptado cubre un scope concreto; futuros resultados exclusivamente Windows requieren transferencia/ingestión explícita al servidor antes de preservación automática. [DATA_LOCATIONS](docs/DATA_LOCATIONS.md).

@@ -1,5 +1,7 @@
 # Contrato de datos para visualización científica v1
 
+**Estado documental vigente — 25/10/2026: FROZEN / AVAILABLE TO 06.** AHC temporal ya está PASS. Este contrato describe consumo/experimentos futuros: no ML/ANN entrenado ni web construida. El consumidor utiliza las tablas/schemas del productor y no recalcula ciencia ni inventa agregados no publicados. [Estado maestro](../../docs/PROJECT_STATUS.md).
+
 El productor AHC genera una vista derivada para un futuro consumidor Web; esta misión **no construye la web**. Este contrato describe archivos del productor, sin afirmar que una ejecución concreta haya pasado: comprobar status, manifest y hashes del lote. Dataset, raw, Quality y baselines permanecen congelados. Ver [metodología AHC](ahc_methodology.md) y [contrato ML](ml_experiment_contract.md).
 
 ## Paquete, esquema y formato

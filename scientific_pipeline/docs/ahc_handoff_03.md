@@ -1,5 +1,7 @@
 # Handoff científico 05 → 03 — 24/10/2026
 
+> **Estado posterior de preservación — 25/10/2026.** El handoff del 24/10 conserva la situación de backup al publicar la ciencia. Después PROJECT-ARTIFACT-BACKUP-V1 cerró PASS: snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED, 128 archivos en el scope aceptado. La afirmación inferior de backup pendiente es histórica; [alcance y límites vigentes](../../docs/DATA_LOCATIONS.md). No se modifican sus métricas ni manifests.
+
 AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION = PASS.
 Autoridad: [resultados, tablas y hashes](../results/ahc-20261024T172400Z/README.md).
 Código PR #38; pipeline `38503dbe8422982deeb3680bbc3e82fd950da4e1`.

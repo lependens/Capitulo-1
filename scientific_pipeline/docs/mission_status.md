@@ -1,6 +1,13 @@
 # ET0-BASELINES-PREP — estado de integración
 
-## Estado vigente — 23/10/2026
+## Estado vigente — 24/10/2026
+
+**VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS**.
+[Resultados oficiales de tres métodos y CSV](../results/classical-20261024T034529Z/README.md).
+PR #33; pipeline 4ac52e25c803cb2301316c5cb1353bf30cdb427a; 68 tests y CI 3.11/3.12/3.13 PASS.
+VAL 70.944 predicciones / 70.878 evaluables / 0 fallos; Dataset v1 intacto.
+
+## Snapshot anterior — 23/10/2026 (histórico)
 
 **Dataset Observational v1 construido/validado PASS. Primera ejecución oficial PM/HS PASS.** La espera de POST y handoff descrita en el registro de preparación inferior es HISTÓRICA / SUPERADA.
 

@@ -145,6 +145,32 @@ evaluación verifica ambos SHA de los artefactos importados frente al dataset,
 además de su identidad y hash de bytes. Ningún output sustituye el SHA del audit
 por el de publicación ni por el SHA del código del pipeline.
 
+## Extensión clásica 2026-10-24
+
+`calculate-valiantzas` añade `VALIANTZAS_V1` / `ET0_Valiantzas` a los artefactos
+de resultados, con HumedadMedia y extremos térmicos, fecha y latitud como
+entradas independientes. La elegibilidad VAL se calcula en resultados;
+el dataset existente, su esquema y su SHA no se alteran. Parámetros/domino:
+[contrato metodológico](valiantzas_v1.md). Se mantienen los motivos PM/HS.
+
+`evaluate-classical` exige predicciones exitosas de los tres métodos, dataset
+y ambos SHA coincidentes, hashes del productor y parámetros versionados.
+No recalcula ni sustituye PM/HS importados. `run-classical-baselines` calcula
+los tres. Ambos publican cohortes own, PM_HS, PM_VAL, HS_VAL, PM_HS_VAL,
+con hashes de claves estación-fecha evaluables; PM_HS_VAL es la comparación
+principal. `paired_predictions` y `paired_evaluation` siguen significando PM/HS.
+No se reutiliza `paired` con un significado distinto.
+
+Se añade `classical-baselines.csv` con todas las filas/columnas originales,
+ET0_PM_FAO56_V1, ET0_HS_RA_V1, ET0_VALIANTZAS_V1, eligible/evaluated/reasons
+para PM/HS/VAL, fechas, estación, estados, flags y provenance JSON. Las
+ausencias permanecen vacías y los ceros son ceros. Incluye dataset_id/SHA,
+ambos SHA audit/canonical, POST ID, pipeline SHA y run timestamp. El manifest
+conserva hashes POST/fuentes/catálogo, configuración, productores upstream y
+hash de cada salida. Su propio hash se publica en el cierre, evitando
+autorreferencia. UTF-8 BOM, coma, punto decimal, sin redondeo; ver importación
+Excel/Power Query en README. Directorios nuevos, sin sobrescritura.
+
 ## Bytes contractuales y checkout reproducible
 
 El catálogo y los 12 CSV `datos_siar_baleares/IB*_datos_completos.csv`

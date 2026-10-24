@@ -47,7 +47,8 @@ def eligibility(row, station, method):
     scientific_flags; undefined mathematical domains block the relevant method.
     """
     aliases = {"pm": "pm", "PM_FAO56_V1": "pm",
-               "hargreaves": "hargreaves", "HS_RA_V1": "hargreaves"}
+               "hargreaves": "hargreaves", "HS_RA_V1": "hargreaves",
+               "valiantzas": "valiantzas", "VALIANTZAS_V1": "valiantzas"}
     if method not in aliases:
         raise ValueError("Unknown scientific method: " + str(method))
     method = aliases[method]
@@ -59,13 +60,14 @@ def eligibility(row, station, method):
     if _day(row) is None:
         reasons.append("invalid_date")
     values = row["values"]
-    for key in PM_INPUTS if method == "pm" else EXTREMES:
+    inputs = PM_INPUTS if method == "pm" else EXTREMES + (("HumedadMedia",) if method == "valiantzas" else ())
+    for key in inputs:
         value = values.get(key)
         if not finite(value):
             reasons.append("missing_or_nonfinite:" + key)
-        elif key in EXTREMES and value <= -237.3:
+        elif key in EXTREMES and value <= (-273.15 if method == "valiantzas" else -237.3):
             reasons.append("temperature_domain:" + key)
-        elif key in HUMIDITY and not 0 <= value <= 100:
+        elif key in HUMIDITY + ("HumedadMedia",) and not 0 <= value <= 100:
             reasons.append("humidity_out_of_range:" + key)
         elif key in ("VelViento", "Radiacion") and value < 0:
             reasons.append("negative:" + key)
@@ -132,4 +134,22 @@ def scientific_flags(row, station):
             flags.append("low_rs_rso:review")
         if ratio > 1:
             flags.append("rs_above_rso")
+    return flags
+
+
+def valiantzas_flags(row):
+    """Additive diagnostics for the new model; never change PM/HS eligibility."""
+    values, flags = row["values"], []
+    rh, lo, hi = values.get("HumedadMedia"), values.get("TempMin"), values.get("TempMax")
+    if not finite(rh):
+        flags.append("valiantzas:missing_or_nonfinite:HumedadMedia")
+    elif not 0 <= rh <= 100:
+        flags.append("valiantzas:humidity_out_of_range:HumedadMedia")
+    elif rh == 100:
+        flags.append("valiantzas:rh_100_percent_positive_humidity_factor")
+    if finite(lo) and finite(hi):
+        if lo == hi:
+            flags.append("valiantzas:zero_temperature_range")
+        if (lo+hi)/2 < -17.8:
+            flags.append("valiantzas:negative_temperature_factor")
     return flags

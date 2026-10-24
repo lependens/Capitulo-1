@@ -1,7 +1,6 @@
 """Pure orchestration plus explicit, isolated run I/O. Never acquires SIAR data."""
 from copy import deepcopy
 from datetime import date, datetime, timezone
-import hashlib
 import json
 from pathlib import Path
 import re
@@ -20,6 +19,7 @@ from .metrics import FOUR_COHORTS, evaluate, reference_value
 from .penman_monteith import PM_FAO56_V1, PM_FAO56_V1_PARAMETERS, fao56_daily, net_longwave_radiation
 from .quality import eligibility, scientific_flags, valiantzas_flags, finite
 from .solar import extraterrestrial_radiation, clear_sky_radiation
+from .serialization import digest, json_bytes
 
 METHODS = {"pm": (PM_FAO56_V1, "ET0_FAO56"), "hargreaves": (HS_RA_V1, "ET0_Hargreaves"),
            "valiantzas": (VALIANTZAS_V1, "ET0_Valiantzas"),
@@ -113,14 +113,6 @@ def calculate(dataset, methods=("pm", "hargreaves")):
                 row["eligibility"][method]["status"] = "FAILED"
                 row["eligibility"][method]["reasons"].append("calculation_failed:" + str(exc))
     return result
-
-
-def digest(content):
-    return hashlib.sha256(content).hexdigest()
-
-
-def json_bytes(value):
-    return (json.dumps(value, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n").encode("utf-8")
 
 
 def _identity(provided_sha=None):

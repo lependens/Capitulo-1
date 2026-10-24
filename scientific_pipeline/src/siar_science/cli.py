@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .datasets import build_dataset, validate_dataset
 from .pipeline import execute_run, json_bytes, safe_new_output
+from .ahc_pipeline import execute_ahc
 
 
 def main(argv=None):
@@ -20,6 +21,15 @@ def main(argv=None):
     build = sub.add_parser("build-dataset", help="Future authorized POST handoff only")
     build.add_argument("--handoff", type=Path, required=True)
     build.add_argument("--output", type=Path, required=True, help="New dataset JSON file")
+    for stage in ("train", "validate", "test", "closeout"):
+        operation = sub.add_parser("ahc-"+stage, help="Frozen chronological AHC " + stage)
+        operation.add_argument("--dataset", type=Path, required=True)
+        operation.add_argument("--baseline-manifest", type=Path, required=True)
+        operation.add_argument("--protocol", type=Path, required=True)
+        operation.add_argument("--output", type=Path, required=True)
+        operation.add_argument("--pipeline-sha")
+        if stage != "train":
+            operation.add_argument("--parent-manifest", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "build-dataset":
@@ -30,7 +40,11 @@ def main(argv=None):
                 stream.write(json_bytes(dataset))
             print("SUCCESS: dataset built from authorized verified Quality POST handoff")
             return 0
-        result = execute_run(args.dataset, args.output, args.command, args.pipeline_sha, getattr(args, "predictions", ()))
+        if args.command.startswith("ahc-"):
+            result = execute_ahc(args.dataset, args.baseline_manifest, args.protocol, args.output,
+                                 args.command[4:], parent_manifest=getattr(args, "parent_manifest", None), pipeline_sha=args.pipeline_sha)
+        else:
+            result = execute_run(args.dataset, args.output, args.command, args.pipeline_sha, getattr(args, "predictions", ()))
         print(result["status"] + ": " + str(args.output))
         if result["status"] != "SUCCESS":
             print(result.get("error", "Run failed"), file=sys.stderr)

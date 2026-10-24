@@ -1,0 +1,42 @@
+{
+  "schema_version": "ml-experiment-contract-v1",
+  "contract_id": "ML_TEMPORAL_CONTRACT_V1",
+  "status": "DESIGN_ONLY_NO_MODELS_TRAINED",
+  "execution_requires": "AHC closeout plus a frozen execution protocol with model candidates, hyperparameter budget, seeds and selection rules",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "dataset_mutation_allowed": false,
+  "primary_target": {"method_id": "PM_FAO56_V1", "units": "mm/day", "meaning": "computed reference; PM emulation, not independently measured ET", "evaluation_domain": "finite nonnegative target; zero retained"},
+  "secondary_reference": {"field": "EtPMon", "meaning": "computed SIAR reference; not an input feature", "policy": "existing v1 reference eligibility including zero"},
+  "test_status": "retrospective_locked; full-history baselines were already inspected and AHC may already have published this period",
+  "prospective_confirmation": "requires a later dataset and protocol locked before observing its targets or errors",
+  "splits": {
+    "TRAIN": ["2004-01-01", "2015-12-31"],
+    "VALIDATION": ["2016-01-01", "2020-12-31"],
+    "TEST": ["2021-01-01", "2025-12-31"]
+  },
+  "split_policy": "inclusive global calendar cuts shared by all stations; no random split; publish station/date assignments and SHA256",
+  "shared_context": ["latitude_deg", "altitude_m", "doy_sin", "doy_cos", "Ra_mj_m2_day"],
+  "feature_family_suffix": "_WITH_CONTEXT_V1",
+  "derived_features": {"Tcalc": "(TempMax+TempMin)/2", "TD": "TempMax-TempMin", "doy_sin": "sin(2*pi*day_of_year/days_in_year)", "doy_cos": "cos(2*pi*day_of_year/days_in_year)", "Ra_mj_m2_day": "versioned solar geometry from date and latitude"},
+  "meteorological_feature_families": {
+    "FEATURE_SET_T": ["Tcalc", "TD"],
+    "FEATURE_SET_T_RH": ["Tcalc", "TD", "HumedadMedia", "HumedadMin", "HumedadMax"],
+    "FEATURE_SET_T_RS": ["Tcalc", "TD", "Radiacion"],
+    "FEATURE_SET_T_RH_RS": ["Tcalc", "TD", "HumedadMedia", "HumedadMin", "HumedadMax", "Radiacion"],
+    "FEATURE_SET_FULL": ["Tcalc", "TD", "HumedadMedia", "HumedadMin", "HumedadMax", "Radiacion", "VelViento"]
+  },
+  "excluded_predictors": ["EtPMon", "PePMon", "PM_FAO56_V1", "HS_RA_V1", "HG_RS_V1", "VALIANTZAS_V1", "AHC outputs", "AHC fitted coefficients", "target residuals", "calibration ratios", "target-dependent quality flags", "future observations", "station_code as ordinal numeric feature"],
+  "missing_policy": "initial complete-case eligibility independently per feature family; no target or meteorological imputation; preserve all dataset rows",
+  "quality_policy": {"quality_status": ["PASS", "WARN"], "observation_status": ["OBSERVED", "RECOVERED"], "official_period_only": true, "raw_quality_changes": false},
+  "station_policy": {"primary_population": "stations with TRAIN support and VALIDATION/TEST presence; freeze availability-based list before fitting", "IB09": "excluded by unchanged Quality FAIL", "IB07": "closed 2012; no validation/test", "IB101": "short 2008-2009 series; no invented validation/test or robust AHC", "unseen_train_station": "separate geographic-transfer cohort only"},
+  "preprocessing": {"fit_partition": "TRAIN", "normalization": "TRAIN-only parameters stored and frozen; optional for tree models", "zero_variance": "explicit policy, no division by zero", "future_imputation_variants": "new experiment, TRAIN-only fitting and declared missing indicators", "prohibited": ["whole-history residual filters", "bidirectional interpolation", "centered windows", "test-year normalization", "global dropna shared across feature families"]},
+  "future_model_order": ["linear regression", "Ridge or Elastic Net", "limited decision tree", "random forest or extra trees if justified", "boosting"],
+  "ANN_authorized": false,
+  "selection": {"partition": "VALIDATION", "proposed_primary_metric": "RMSE on identical evaluation keys", "tie_policy": "prefer simpler model", "budget": "must be locked in execution protocol before fitting", "test_tuning_allowed": false},
+  "ahc_comparison": {"reference": "PM_FAO56_V1", "estimator": "OLS0=sum(x*PM)/sum(x*x)", "fit_partition": "TRAIN", "refit_train_plus_validation": false, "primary": "PM unchanged plus HS/HG-Rs/Valiantzas original and annual AHC_VALIDATED", "secondary": "only variants selected on VALIDATION and frozen before TEST", "climatology_in_out_of_sample_table": false},
+  "evaluation": {"metrics": ["n", "MAE", "RMSE", "bias", "predictive_R2"], "bias": "prediction-reference", "predictive_R2": "1-SSE/SST; null for n<2 or SST=0", "zero_reference_retained": true, "cohorts": ["own per feature family/model", "common intersection for compared methods/families"], "cohort_identity": "SHA256 of sorted station/date keys", "groups": ["global pooled pairs", "station", "year", "month", "season", "season_year"], "season_policy": "northern DJF/MAM/JJA/SON; December assigned to following season-year; never merge splits", "negative_predictions": "retain and flag; no silent clipping"},
+  "required_run_identity": ["experiment_id", "protocol_sha256", "protocol_locked_at_utc", "dataset_id", "dataset_sha256", "audit_source_repo_sha", "source_repo_sha", "quality_post_id", "quality_post_sha256", "upstream_prediction_hashes", "pipeline_sha", "config_sha256", "split_assignment_sha256", "feature_spec_sha256", "cohort_hashes", "environment", "random_seeds", "timestamps_utc", "output_hashes"],
+  "visualization_contract": "../docs/visualization_contract.md",
+  "documentation": "../docs/ml_experiment_contract.md"
+}

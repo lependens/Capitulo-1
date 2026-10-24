@@ -172,3 +172,28 @@ común de cuatro 70860. Dataset v1 y resultados anteriores intactos.
 **PROJECT-ARTIFACT-BACKUP-V1 pendiente**: el dataset, predictions y CSV científicos masivos permanecen en el workspace Windows declarado por 05, no íntegramente en Git ni necesariamente en el servidor. [DATA_LOCATIONS](../docs/DATA_LOCATIONS.md) identifica bytes, índices y hashes. No se afirma backup completo por disponer de evidencia compacta versionada.
 
 Secuencia posterior: revisión AHC → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. Los cuatro baselines siguen sin calibración local y Dataset v1/raw/Quality intactos. El interés es contrastar accuracy against EtPMon con input requirements / operational availability; más inputs no garantizan mejor modelo ni causalidad.
+
+## Experimento AHC temporal versionado
+
+[Metodología y bibliografía](docs/ahc_methodology.md),
+[protocolo congelado antes del primer ajuste](experiments/ahc-v1.json),
+[contrato ML, sin entrenamiento](docs/ml_experiment_contract.md) y
+[contrato de tablas para visualización](docs/visualization_contract.md).
+AHC_VALIDATED estima por estación un multiplicador OLS sin intercepto contra
+PM_FAO56_V1 usando exclusivamente TRAIN (2004–2015). VALIDATION (2016–2020)
+puede seleccionar complejidad entre ajustes ya congelados; TEST (2021–2025)
+evalúa sin reajuste. TEST es retrospectivo: los baselines del histórico completo
+ya fueron inspeccionados. La climatología posterior se identifica separadamente.
+
+```powershell
+python -m siar_science ahc-train --dataset ./derived/dataset.json --baseline-manifest ./runs/four/manifest.json --protocol scientific_pipeline/experiments/ahc-v1.json --output ./runs/ahc/train
+python -m siar_science ahc-validate --dataset ./derived/dataset.json --baseline-manifest ./runs/four/manifest.json --protocol scientific_pipeline/experiments/ahc-v1.json --parent-manifest ./runs/ahc/train/manifest.json --output ./runs/ahc/validation
+python -m siar_science ahc-test --dataset ./derived/dataset.json --baseline-manifest ./runs/four/manifest.json --protocol scientific_pipeline/experiments/ahc-v1.json --parent-manifest ./runs/ahc/validation/manifest.json --output ./runs/ahc/test
+python -m siar_science ahc-closeout --dataset ./derived/dataset.json --baseline-manifest ./runs/four/manifest.json --protocol scientific_pipeline/experiments/ahc-v1.json --parent-manifest ./runs/ahc/test/manifest.json --output ./runs/ahc/closeout
+```
+
+Las cuatro etapas requieren el mismo código y entradas verificadas, destinos
+nuevos y manifest padre SUCCESS. Un STOP científico preserva evidencia y
+prohíbe continuar. No se reconstruye Dataset v1. Las predicciones clásicas se
+importan con sus hashes y productores; las tablas derivadas registran ambas
+identidades SHA de fuentes, pipeline, protocolo, coeficientes y cohortes.

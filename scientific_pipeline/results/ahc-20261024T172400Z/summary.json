@@ -1,0 +1,887 @@
+{
+  "dataset_modified": false,
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "definition": "station-wise OLS0: sum(x*PM)/sum(x*x)",
+  "pipeline_sha": "38503dbe8422982deeb3680bbc3e82fd950da4e1",
+  "quality_modified": false,
+  "raw_modified": false,
+  "reference": "PM_FAO56_V1",
+  "rows": 75496,
+  "selection": [
+    {
+      "annual_validation_rmse": 0.6381053414892355,
+      "candidates": {
+        "monthly": {
+          "complete_annual_cohort": true,
+          "metrics": {
+            "bias": 0.15386569574567435,
+            "mae": 0.4716486522000912,
+            "n": 15900,
+            "r2": 0.8666332932144816,
+            "rmse": 0.6264689034495388
+          },
+          "relative_rmse_improvement": 0.01823592012650943,
+          "status": "RETAIN_ANNUAL"
+        },
+        "seasonal": {
+          "complete_annual_cohort": true,
+          "metrics": {
+            "bias": 0.1553770010081575,
+            "mae": 0.47356948816691596,
+            "n": 15900,
+            "r2": 0.8662888202225917,
+            "rmse": 0.6272774352556283
+          },
+          "relative_rmse_improvement": 0.016968838104906903,
+          "status": "RETAIN_ANNUAL"
+        }
+      },
+      "granularity": "annual",
+      "method": "HS_RA_V1",
+      "validation_n": 15900
+    },
+    {
+      "annual_validation_rmse": 0.41637987572856966,
+      "candidates": {
+        "monthly": {
+          "complete_annual_cohort": true,
+          "metrics": {
+            "bias": 0.009662447820512482,
+            "mae": 0.3094767229875554,
+            "n": 15900,
+            "r2": 0.9446962586729168,
+            "rmse": 0.4034159462706104
+          },
+          "relative_rmse_improvement": 0.031134860769328365,
+          "status": "ACCEPTABLE"
+        },
+        "seasonal": {
+          "complete_annual_cohort": true,
+          "metrics": {
+            "bias": 0.015482288037940245,
+            "mae": 0.31318430582093526,
+            "n": 15900,
+            "r2": 0.9436416074323534,
+            "rmse": 0.40724438372398175
+          },
+          "relative_rmse_improvement": 0.02194028226893263,
+          "status": "ACCEPTABLE"
+        }
+      },
+      "granularity": "seasonal",
+      "method": "HG_RS_V1",
+      "validation_n": 15900
+    },
+    {
+      "annual_validation_rmse": 0.4998196500850155,
+      "candidates": {
+        "monthly": {
+          "n": 0,
+          "status": "NOT_ENABLED_BY_TRAIN"
+        },
+        "seasonal": {
+          "n": 0,
+          "status": "NOT_ENABLED_BY_TRAIN"
+        }
+      },
+      "granularity": "annual",
+      "method": "VALIANTZAS_V1",
+      "validation_n": 15900
+    }
+  ],
+  "split_counts": {
+    "TEST": 15978,
+    "TRAIN": 42796,
+    "VALIDATION": 16722
+  },
+  "splits": {
+    "TEST": [
+      "2021-01-01",
+      "2025-12-31"
+    ],
+    "TRAIN": [
+      "2004-01-01",
+      "2015-12-31"
+    ],
+    "VALIDATION": [
+      "2016-01-01",
+      "2020-12-31"
+    ]
+  },
+  "stability_max_cv": 0.06611983387449377,
+  "stability_max_ratio": 1.1644150327520313,
+  "station_coefficients": [
+    {
+      "CLIMATOLOGY_a": 0.8774522150720113,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9021474720146684,
+      "TRAIN_n": 4146,
+      "method": "HS_RA_V1",
+      "station": "IB01"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9210396169116838,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9225813300081199,
+      "TRAIN_n": 4146,
+      "method": "HG_RS_V1",
+      "station": "IB01"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9636721550112112,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9855060935743046,
+      "TRAIN_n": 4146,
+      "method": "VALIANTZAS_V1",
+      "station": "IB01"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8879011770174656,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9002680355736735,
+      "TRAIN_n": 4218,
+      "method": "HS_RA_V1",
+      "station": "IB02"
+    },
+    {
+      "CLIMATOLOGY_a": 0.950553347901425,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.946427284379617,
+      "TRAIN_n": 4218,
+      "method": "HG_RS_V1",
+      "station": "IB02"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9735947010726739,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9822235655083265,
+      "TRAIN_n": 4218,
+      "method": "VALIANTZAS_V1",
+      "station": "IB02"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8878692487267795,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9064380138597103,
+      "TRAIN_n": 4219,
+      "method": "HS_RA_V1",
+      "station": "IB03"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9497169555777184,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9461840099048041,
+      "TRAIN_n": 4219,
+      "method": "HG_RS_V1",
+      "station": "IB03"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9793890598843032,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9895806780181661,
+      "TRAIN_n": 4219,
+      "method": "VALIANTZAS_V1",
+      "station": "IB03"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8576235737287475,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.870861930800919,
+      "TRAIN_n": 4219,
+      "method": "HS_RA_V1",
+      "station": "IB04"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8972995527949733,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9036065185026553,
+      "TRAIN_n": 4219,
+      "method": "HG_RS_V1",
+      "station": "IB04"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9251791082546729,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9349079270044997,
+      "TRAIN_n": 4219,
+      "method": "VALIANTZAS_V1",
+      "station": "IB04"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8209039720145942,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.85483231692939,
+      "TRAIN_n": 4216,
+      "method": "HS_RA_V1",
+      "station": "IB05"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8712886674584478,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.8824194919354228,
+      "TRAIN_n": 4216,
+      "method": "HG_RS_V1",
+      "station": "IB05"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8873532963978884,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9137898806996013,
+      "TRAIN_n": 4216,
+      "method": "VALIANTZAS_V1",
+      "station": "IB05"
+    },
+    {
+      "CLIMATOLOGY_a": 0.7945365801997115,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.8186454921986597,
+      "TRAIN_n": 4209,
+      "method": "HS_RA_V1",
+      "station": "IB06"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9120386921340058,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9170020597244836,
+      "TRAIN_n": 4209,
+      "method": "HG_RS_V1",
+      "station": "IB06"
+    },
+    {
+      "CLIMATOLOGY_a": 0.91246132088094,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9317623664613838,
+      "TRAIN_n": 4209,
+      "method": "VALIANTZAS_V1",
+      "station": "IB06"
+    },
+    {
+      "CLIMATOLOGY_a": 0.7566861224234009,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.7566861224234009,
+      "TRAIN_n": 2929,
+      "method": "HS_RA_V1",
+      "station": "IB07"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8194655681284054,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.8194655681284054,
+      "TRAIN_n": 2929,
+      "method": "HG_RS_V1",
+      "station": "IB07"
+    },
+    {
+      "CLIMATOLOGY_a": 0.7956867173236011,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.7956867173236011,
+      "TRAIN_n": 2929,
+      "method": "VALIANTZAS_V1",
+      "station": "IB07"
+    },
+    {
+      "CLIMATOLOGY_a": 0.832994829478136,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.874687053478137,
+      "TRAIN_n": 3614,
+      "method": "HS_RA_V1",
+      "station": "IB08"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8616563614455612,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.8766188372508176,
+      "TRAIN_n": 3614,
+      "method": "HG_RS_V1",
+      "station": "IB08"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8973916749513926,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9313502771916709,
+      "TRAIN_n": 3614,
+      "method": "VALIANTZAS_V1",
+      "station": "IB08"
+    },
+    {
+      "CLIMATOLOGY_a": null,
+      "CLIMATOLOGY_status": "UNAVAILABLE",
+      "TRAIN_a": null,
+      "TRAIN_n": 0,
+      "method": "HS_RA_V1",
+      "station": "IB09"
+    },
+    {
+      "CLIMATOLOGY_a": null,
+      "CLIMATOLOGY_status": "UNAVAILABLE",
+      "TRAIN_a": null,
+      "TRAIN_n": 0,
+      "method": "HG_RS_V1",
+      "station": "IB09"
+    },
+    {
+      "CLIMATOLOGY_a": null,
+      "CLIMATOLOGY_status": "UNAVAILABLE",
+      "TRAIN_a": null,
+      "TRAIN_n": 0,
+      "method": "VALIANTZAS_V1",
+      "station": "IB09"
+    },
+    {
+      "CLIMATOLOGY_a": 0.800392124339097,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.8315005043502858,
+      "TRAIN_n": 3649,
+      "method": "HS_RA_V1",
+      "station": "IB10"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8620904217391238,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.8861431387161777,
+      "TRAIN_n": 3649,
+      "method": "HG_RS_V1",
+      "station": "IB10"
+    },
+    {
+      "CLIMATOLOGY_a": 0.8794834314974281,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9093187679954708,
+      "TRAIN_n": 3649,
+      "method": "VALIANTZAS_V1",
+      "station": "IB10"
+    },
+    {
+      "CLIMATOLOGY_a": 1.0968176211950038,
+      "CLIMATOLOGY_status": "SHORT_SERIES_DESCRIPTIVE",
+      "TRAIN_a": null,
+      "TRAIN_n": 246,
+      "method": "HS_RA_V1",
+      "station": "IB101"
+    },
+    {
+      "CLIMATOLOGY_a": 0.903114487959936,
+      "CLIMATOLOGY_status": "SHORT_SERIES_DESCRIPTIVE",
+      "TRAIN_a": null,
+      "TRAIN_n": 246,
+      "method": "HG_RS_V1",
+      "station": "IB101"
+    },
+    {
+      "CLIMATOLOGY_a": 1.1308963130852812,
+      "CLIMATOLOGY_status": "SHORT_SERIES_DESCRIPTIVE",
+      "TRAIN_a": null,
+      "TRAIN_n": 246,
+      "method": "VALIANTZAS_V1",
+      "station": "IB101"
+    },
+    {
+      "CLIMATOLOGY_a": 1.1508175372791225,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 1.213275229246814,
+      "TRAIN_n": 3373,
+      "method": "HS_RA_V1",
+      "station": "IB11"
+    },
+    {
+      "CLIMATOLOGY_a": 0.9129617532454676,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 0.9107308314779072,
+      "TRAIN_n": 3373,
+      "method": "HG_RS_V1",
+      "station": "IB11"
+    },
+    {
+      "CLIMATOLOGY_a": 1.1789041211675053,
+      "CLIMATOLOGY_status": "ROBUST",
+      "TRAIN_a": 1.2196877363365835,
+      "TRAIN_n": 3372,
+      "method": "VALIANTZAS_V1",
+      "station": "IB11"
+    }
+  ],
+  "status": "PASS",
+  "test_own": [
+    {
+      "bias": 0.0034357243618677565,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.31892985699981463,
+      "method_id": "HG_RS_AHC_VALIDATED",
+      "model_instance_id": "model-afa85154b0b449bc06935656494c30f042a1957321d0afab8d8f68892ae3c993",
+      "n": 15958,
+      "r2": 0.9413379975803696,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.4142412274515209,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": -0.011504272177804673,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.3069188635069558,
+      "method_id": "HG_RS_AHC_VALIDATED_SELECTED",
+      "model_instance_id": "model-e843b108fd21660b80330a8bb113fd2044c94a8e7a89bcbfbfebd25f81c6a4d5",
+      "n": 15958,
+      "r2": 0.9449207728332893,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.40139207829124707,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.28746914548551095,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.47106836635219745,
+      "method_id": "HG_RS_V1",
+      "model_instance_id": "model-36d415a93b6d1a868eac1de2e1d64ffadb7eec7d226eadc43da582f84ddf04e0",
+      "n": 15958,
+      "r2": 0.8909947898469014,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5646749297343809,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.23056577296591702,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.5040806787659133,
+      "method_id": "HS_RA_AHC_VALIDATED",
+      "model_instance_id": "model-50adc6934d2199dafdf16a213038a07229fcf66144643bfc94fdd6fa2b4b7171",
+      "n": 15958,
+      "r2": 0.8604814642388121,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.6388381349028001,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.5710582502871001,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7862975237023276,
+      "method_id": "HS_RA_V1",
+      "model_instance_id": "model-e3c3588c374fc6b86f001ad16f61991b114e154a88dd306dce162e0d507ec566",
+      "n": 15958,
+      "r2": 0.692345573319225,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.9486509858540673,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.0,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.0,
+      "method_id": "PM_FAO56_V1",
+      "model_instance_id": "model-9e66a2c05dbb7b30ceb1e8e90003c0a8d90086ea6f862cd1505108ff904e4ae2",
+      "n": 15958,
+      "r2": 1.0,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.0,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.1668352000657362,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.39225889400877495,
+      "method_id": "VALIANTZAS_AHC_VALIDATED",
+      "model_instance_id": "model-aa4c38aaf070d846c89e7c42992931abf6b09956811230062a1b8b14c03320c5",
+      "n": 15958,
+      "r2": 0.9061492895903133,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5239546034638097,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.24286453350999107,
+      "cohort_id": "own",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.4743675439303616,
+      "method_id": "VALIANTZAS_V1",
+      "model_instance_id": "model-e5076484121ab4c2b1c7b0d1981ff084dceac8287c24d984cf1fc81f79fc10f2",
+      "n": 15958,
+      "r2": 0.8648847447588711,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.6286762749560687,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    }
+  ],
+  "test_primary_common_7": [
+    {
+      "bias": 0.0,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.0,
+      "method_id": "PM_FAO56_V1",
+      "model_instance_id": "model-9e66a2c05dbb7b30ceb1e8e90003c0a8d90086ea6f862cd1505108ff904e4ae2",
+      "n": 15958,
+      "r2": 1.0,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.0,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.5710582502871001,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7862975237023276,
+      "method_id": "HS_RA_V1",
+      "model_instance_id": "model-e3c3588c374fc6b86f001ad16f61991b114e154a88dd306dce162e0d507ec566",
+      "n": 15958,
+      "r2": 0.692345573319225,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.9486509858540673,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.28746914548551095,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.47106836635219745,
+      "method_id": "HG_RS_V1",
+      "model_instance_id": "model-36d415a93b6d1a868eac1de2e1d64ffadb7eec7d226eadc43da582f84ddf04e0",
+      "n": 15958,
+      "r2": 0.8909947898469014,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5646749297343809,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.24286453350999107,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.4743675439303616,
+      "method_id": "VALIANTZAS_V1",
+      "model_instance_id": "model-e5076484121ab4c2b1c7b0d1981ff084dceac8287c24d984cf1fc81f79fc10f2",
+      "n": 15958,
+      "r2": 0.8648847447588711,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.6286762749560687,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.23056577296591702,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.5040806787659133,
+      "method_id": "HS_RA_AHC_VALIDATED",
+      "model_instance_id": "model-50adc6934d2199dafdf16a213038a07229fcf66144643bfc94fdd6fa2b4b7171",
+      "n": 15958,
+      "r2": 0.8604814642388121,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.6388381349028001,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.0034357243618677565,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.31892985699981463,
+      "method_id": "HG_RS_AHC_VALIDATED",
+      "model_instance_id": "model-afa85154b0b449bc06935656494c30f042a1957321d0afab8d8f68892ae3c993",
+      "n": 15958,
+      "r2": 0.9413379975803696,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.4142412274515209,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.1668352000657362,
+      "cohort_id": "common_7",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.39225889400877495,
+      "method_id": "VALIANTZAS_AHC_VALIDATED",
+      "model_instance_id": "model-aa4c38aaf070d846c89e7c42992931abf6b09956811230062a1b8b14c03320c5",
+      "n": 15958,
+      "r2": 0.9061492895903133,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5239546034638097,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    }
+  ],
+  "test_secondary_SIAR": [
+    {
+      "bias": -0.0007591661424917687,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.011214361783107626,
+      "method_id": "PM_FAO56_V1",
+      "model_instance_id": "model-9e66a2c05dbb7b30ceb1e8e90003c0a8d90086ea6f862cd1505108ff904e4ae2",
+      "n": 15952,
+      "r2": 0.9998074609626937,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.023774191529516667,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.5701926440777628,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7857424785413442,
+      "method_id": "HS_RA_V1",
+      "model_instance_id": "model-e3c3588c374fc6b86f001ad16f61991b114e154a88dd306dce162e0d507ec566",
+      "n": 15952,
+      "r2": 0.6931415258901243,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.94910753152816,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.2866011219099284,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.47007589440859837,
+      "method_id": "HG_RS_V1",
+      "model_instance_id": "model-36d415a93b6d1a868eac1de2e1d64ffadb7eec7d226eadc43da582f84ddf04e0",
+      "n": 15952,
+      "r2": 0.8916990894719673,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.5638484788078826,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.2420294920987976,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.475139385560756,
+      "method_id": "VALIANTZAS_V1",
+      "model_instance_id": "model-e5076484121ab4c2b1c7b0d1981ff084dceac8287c24d984cf1fc81f79fc10f2",
+      "n": 15952,
+      "r2": 0.8649320308654322,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.6296838345497898,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.22975958201615435,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.5049015422241702,
+      "method_id": "HS_RA_AHC_VALIDATED",
+      "model_instance_id": "model-50adc6934d2199dafdf16a213038a07229fcf66144643bfc94fdd6fa2b4b7171",
+      "n": 15952,
+      "r2": 0.8604281965690643,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.6400961340192243,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.0026443599649971627,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.3188091640940303,
+      "method_id": "HG_RS_AHC_VALIDATED",
+      "model_instance_id": "model-afa85154b0b449bc06935656494c30f042a1957321d0afab8d8f68892ae3c993",
+      "n": 15952,
+      "r2": 0.9413905952686205,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.4147916587617708,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.16605391913992243,
+      "cohort_id": "common_7",
+      "cohort_sha256": "ea346e55d1e81eaaa4b009f254dc81e0dd3b83c56dc205b3d8e902b85e180d8a",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.3933437946552631,
+      "method_id": "VALIANTZAS_AHC_VALIDATED",
+      "model_instance_id": "model-aa4c38aaf070d846c89e7c42992931abf6b09956811230062a1b8b14c03320c5",
+      "n": 15952,
+      "r2": 0.9061396989677135,
+      "r2_status": "DEFINED",
+      "reference_id": "EtPMon",
+      "rmse": 0.524913002268879,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    }
+  ],
+  "test_selected_comparison": [
+    {
+      "bias": 0.28746914548551095,
+      "cohort_id": "selected:HG_RS_V1",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.47106836635219745,
+      "method_id": "HG_RS_V1",
+      "model_instance_id": "model-36d415a93b6d1a868eac1de2e1d64ffadb7eec7d226eadc43da582f84ddf04e0",
+      "n": 15958,
+      "r2": 0.8909947898469014,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5646749297343809,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": 0.0034357243618677565,
+      "cohort_id": "selected:HG_RS_V1",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.31892985699981463,
+      "method_id": "HG_RS_AHC_VALIDATED",
+      "model_instance_id": "model-afa85154b0b449bc06935656494c30f042a1957321d0afab8d8f68892ae3c993",
+      "n": 15958,
+      "r2": 0.9413379975803696,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.4142412274515209,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    },
+    {
+      "bias": -0.011504272177804673,
+      "cohort_id": "selected:HG_RS_V1",
+      "cohort_sha256": "584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f",
+      "end_date": "2025-12-31",
+      "group": "global",
+      "key": "all",
+      "mae": 0.3069188635069558,
+      "method_id": "HG_RS_AHC_VALIDATED_SELECTED",
+      "model_instance_id": "model-e843b108fd21660b80330a8bb113fd2044c94a8e7a89bcbfbfebd25f81c6a4d5",
+      "n": 15958,
+      "r2": 0.9449207728332893,
+      "r2_status": "DEFINED",
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.40139207829124707,
+      "split": "TEST",
+      "start_date": "2021-01-01",
+      "station_code": null
+    }
+  ]
+}

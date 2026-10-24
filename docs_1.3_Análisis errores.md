@@ -315,3 +315,37 @@ HG-Rs mejora RMSE/R² respecto a VAL; VAL mejora MAE y bias absoluto. No se decl
 **AHC-METHODOLOGY-REVIEW pendiente:** distinguir coeficiente climatológico de estación de calibración predictiva, revisar bibliografía/estabilidad temporal y escalas anual/estacional/mensual antes de definir validación temporal e implementar AHC_V1. Si se estima de datos es parámetro calibrado; no se decide aquí todo el dataset frente a solo TRAIN ni se cierra la metodología.
 
 Antes de nuevos modelos, **PROJECT-ARTIFACT-BACKUP-V1** debe resolver preservación del dataset y outputs masivos que hoy permanecen fuera de Git. [Ubicaciones y CSV de 75.496 filas](docs/DATA_LOCATIONS.md).
+
+---
+
+## CIERRE CIENTÍFICO AHC — 24/10/2026
+
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION = PASS.** El pendiente metodológico
+anterior queda cerrado por [protocolo y bibliografía](scientific_pipeline/docs/ahc_methodology.md)
+y [ejecución oficial](scientific_pipeline/results/ahc-20261024T172400Z/README.md).
+No se reescriben coeficientes ni métricas históricas del TFG.
+
+AHC v1 es multiplicador OLS sin intercepto por estación contra PM_FAO56_V1:
+a=Σ(x·PM)/Σ(x²). Para HS, coeficiente físico 0.0023·a; a es adimensional.
+La media de cocientes legacy responde a otro estimando y queda como sensibilidad,
+sin escoger fórmula por TEST. PM/EtPMon son referencias calculadas, no ET medida.
+
+TRAIN 2004–2015 ajusta; VALIDATION 2016–2020 selecciona complejidad;
+TEST 2021–2025 evalúa sin refit. TEST retrospectivo: los baselines de todo el
+histórico ya eran conocidos. No se declara validación prospectiva independiente.
+TEST común de siete métodos contra PM, n=15.958: RMSE HS 0.948651→0.638838,
+HG-Rs 0.564675→0.414241, VAL 0.628676→0.523955 mm/día. HG-Rs estacional,
+elegido solo por VALIDATION, RMSE TEST 0.401392; HS y VAL conservan anual.
+
+Estabilidad robusta por bloques PASS, CV máximo 6,61 %. Esto no garantiza
+estabilidad del error: HS en IB11/2025 empeora RMSE 0.756431→0.896925.
+Se conservan métricas por estación/periodo, sin ajustar parámetros tras TEST.
+AHC_CLIMATOLOGY se obtiene después con el histórico hasta 2025 y nunca sustituye
+AHC_VALIDATED en tablas fuera de muestra. IB101: climatología descriptiva,
+sin coeficiente validado robusto; IB09: FAIL; IB07: sin VALIDATION/TEST.
+
+Pipeline `38503dbe8422982deeb3680bbc3e82fd950da4e1`, PR #38,
+86 tests PASS y CI 3.11/3.12/3.13 PASS. Raw, Quality y Dataset v1 intactos.
+Contratos ML/visualización definidos, sin entrenar ML/ANN ni construir Web.
+La preservación externa de artefactos masivos sigue pendiente; este cierre
+científico no certifica PROJECT-ARTIFACT-BACKUP-V1. [Handoff para 03](scientific_pipeline/docs/ahc_handoff_03.md).

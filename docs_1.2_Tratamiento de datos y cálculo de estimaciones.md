@@ -420,3 +420,23 @@ VAL: 70.944 predicciones, 70.878 pares propios, 0 fallos.
 EtPMon sigue siendo referencia calculada SIAR, no validación instrumental
 independiente. Se retienen IB09 Quality FAIL, IB101 corto, unidades/procedencia
 parcial y convención de viento 2 m; raw/Quality/Dataset sin cambios.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Hargreaves-Rs y cuatro baselines oficiales
+
+**HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
+Se incorpora HG_RS_V1: **0.0135×0.408×Radiacion×(Tcalc+17.8)**, Rs medida en
+MJ/m²/día, salida mm/día, Tcalc=(Tmax+Tmin)/2. Sin Ra, √TD, humedad, viento
+ni calibración local. Legacy usaba TempMedia; se conservan su código y resultados.
+[Contrato y fuentes](scientific_pipeline/docs/hargreaves_rs_v1.md).
+
+HG-Rs: 70978 predicciones, 70912 evaluables, 0 fallos.
+Cohorte común de cuatro: **70860**. PM/HS/VAL conservan exactamente todas
+sus predicciones, elegibilidad, métricas y hashes de cohortes anteriores.
+Pipeline `a0b440fa3ab92e4593be521e4e819c6421327656`, [PR #35](https://github.com/lependens/Capitulo-1/pull/35); 75 tests y CI PASS.
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` sin cambios.
+
+[Resultados completos, cohortes, estaciones, temporadas, CSV y hashes](scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+EtPMon calculada SIAR comparte Rs con PM/HG-Rs; no es validación instrumental
+independiente. Se conservan procedencia parcial, viento convencional 2 m,
+IB09 FAIL, IB101 corto y límites empíricos. Raw/Quality/Dataset sin cambios.

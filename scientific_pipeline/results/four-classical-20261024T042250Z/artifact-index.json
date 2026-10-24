@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "pipeline_sha": "a0b440fa3ab92e4593be521e4e819c6421327656",
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "files": [
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\result-summary.json",
+      "sha256": "0971ea8ff25273b9ff4e22000ed2fb5e9d11488533d036e213a0bde748f32ca4",
+      "bytes": 70669,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\metrics-aggregated.csv",
+      "sha256": "be7444ef8385493e142dcf3005edb260b722d633d2e33d3ecabea3ac1d6dac02",
+      "bytes": 4672811,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\regression-before-merge.json",
+      "sha256": "2f330acc0ee230f2c6f80ddb933a3aa2117e9d2403574847bf984f3cb11ed7eb",
+      "bytes": 189,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\hargreaves-rs\\manifest.json",
+      "sha256": "acafeae48a41aec1cba1209874b0005db68c591325ae0a54e0a3d982f0ad3890",
+      "bytes": 11884,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\hargreaves-rs\\metrics.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\hargreaves-rs\\predictions.json",
+      "sha256": "f813762f333f56624469f4585f565ca5a309a99e6a2e4af343f0b7a8421406dc",
+      "bytes": 148418453,
+      "in_git": false
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\comparison\\manifest.json",
+      "sha256": "78d249f3736ff0aeefbdd4599b4f2e77ded0c76c21bff26f274664e282ebee62",
+      "bytes": 31597,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\comparison\\metrics.json",
+      "sha256": "4c5890fac6cef86be21b4a4a8f0abec2fefc3c4d78f172f37681d176b904e8bd",
+      "bytes": 4542492,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\comparison\\predictions.json",
+      "sha256": "c954a8d4a73bb9d2c8dc20695fcdc1a4365777c1374998864f2e625b0b5ad24c",
+      "bytes": 192117177,
+      "in_git": false
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\four-classical-20261024T042250Z\\comparison\\classical-baselines.csv",
+      "sha256": "f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44",
+      "bytes": 55813221,
+      "in_git": false
+    }
+  ]
+}

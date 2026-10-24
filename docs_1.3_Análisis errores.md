@@ -261,3 +261,40 @@ Resultados reales v1, separados de las tablas legacy:
 La comparación principal usa PM_HS_VAL. No se ajustan parámetros ni se presenta
 el acuerdo con SIAR como exactitud frente a ET medida. Estaciones, temporadas,
 periodos y extremos se interpretan en el informe enlazado.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Hargreaves-Rs y cuatro baselines oficiales
+
+**HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
+Se incorpora HG_RS_V1: **0.0135×0.408×Radiacion×(Tcalc+17.8)**, Rs medida en
+MJ/m²/día, salida mm/día, Tcalc=(Tmax+Tmin)/2. Sin Ra, √TD, humedad, viento
+ni calibración local. Legacy usaba TempMedia; se conservan su código y resultados.
+[Contrato y fuentes](scientific_pipeline/docs/hargreaves_rs_v1.md).
+
+HG-Rs: 70978 predicciones, 70912 evaluables, 0 fallos.
+Cohorte común de cuatro: **70860**. PM/HS/VAL conservan exactamente todas
+sus predicciones, elegibilidad, métricas y hashes de cohortes anteriores.
+Pipeline `a0b440fa3ab92e4593be521e4e819c6421327656`, [PR #35](https://github.com/lependens/Capitulo-1/pull/35); 75 tests y CI PASS.
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` sin cambios.
+
+[Resultados completos, cohortes, estaciones, temporadas, CSV y hashes](scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+EtPMon calculada SIAR comparte Rs con PM/HG-Rs; no es validación instrumental
+independiente. Se conservan procedencia parcial, viento convencional 2 m,
+IB09 FAIL, IB101 corto y límites empíricos. Raw/Quality/Dataset sin cambios.
+
+
+Resultados reales de cohortes propias y comparación principal de cuatro:
+
+| Grupo | Cohorte | Método | n | MAE | RMSE | bias/MBE | R² predictivo |
+|---|---|---|---:|---:|---:|---:|---:|
+| all | own | PM | 70861 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | own | HS-Ra | 70912 | 0.712895 | 0.874488 | 0.461359 | 0.746479 |
+| all | own | VAL | 70878 | 0.455990 | 0.609080 | 0.168851 | 0.877013 |
+| all | own | HG-Rs | 70912 | 0.471178 | 0.565634 | 0.275611 | 0.893934 |
+| all | PM_HS_VAL_HGRS | PM | 70860 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | PM_HS_VAL_HGRS | HS-Ra | 70860 | 0.712843 | 0.874359 | 0.461627 | 0.746559 |
+| all | PM_HS_VAL_HGRS | VAL | 70860 | 0.455952 | 0.608984 | 0.168919 | 0.877055 |
+| all | PM_HS_VAL_HGRS | HG-Rs | 70860 | 0.471171 | 0.565637 | 0.275804 | 0.893935 |
+
+Los resultados históricos y de tres modelos anteriores permanecen preservados.
+No se interpretan como una comparación de cuatro ni como validación de AHC.

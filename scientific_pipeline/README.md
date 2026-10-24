@@ -1,10 +1,10 @@
 # SIAR Science — ET₀ baselines v1
 
-Capa reproducible de observaciones SIAR Baleares: validación científica por método, Penman–Monteith diario FAO-56, Hargreaves–Samani fijo, VALIANTZAS_V1 y evaluación frente a EtPMon. Conserva valores originales y genera resultados derivados separados. No incorpora forecast, ML, AHC ni limpieza global ±3σ.
+Capa reproducible de observaciones SIAR Baleares: validación científica por método, Penman–Monteith diario FAO-56, Hargreaves–Samani fijo, VALIANTZAS_V1, Hargreaves-Rs y evaluación frente a EtPMon. Conserva valores originales y genera resultados derivados separados. No incorpora forecast, ML, AHC ni limpieza global ±3σ.
 
 La forense queda **RESOLVED_FOR_V1** por decisión de Dirección 00 del 2026-10-19. Radiacion se interpreta directamente en MJ m⁻² día⁻¹ y VelViento en m/s, con convención SIAR de viento a 2 m. `UNITS_PROVENANCE_PARTIAL` y `station_period_provenance_not_exhaustively_verified` son limitaciones registradas, no bloqueos. Una evidencia positiva de altura distinta de 2 m requiere resolver el cálculo PM afectado.
 
-**Estado vigente — 2026-10-24:** Dataset Observational v1 construido/validado desde POST corregido SIAR-QA-POST-20261020T193140Z y handoff autorizado. Comparación oficial PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 **PASS**, con CSV verificado y 68 tests/CI Python 3.11/3.12/3.13 PASS. [Resultados clásicos](results/classical-20261024T034529Z/README.md). Se preserva la [primera ejecución PM/HS](results/pm-vpd-20261023T194553Z/README.md), publicada por PR #31 tras el fix PR #30. READY_FOR_DATASET_V1 y sus tests anteriores son hitos históricos; ver [estado de misión](docs/mission_status.md).
+**Estado vigente — 2026-10-24:** Dataset Observational v1 construido/validado desde POST corregido SIAR-QA-POST-20261020T193140Z y handoff autorizado. Comparación oficial PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1 **PASS**, con CSV verificado y 75 tests/CI Python 3.11/3.12/3.13 PASS. [Resultados de cuatro métodos](results/four-classical-20261024T042250Z/README.md). Se conserva la [comparación previa de tres](results/classical-20261024T034529Z/README.md). Se preserva la [primera ejecución PM/HS](results/pm-vpd-20261023T194553Z/README.md), publicada por PR #31 tras el fix PR #30. READY_FOR_DATASET_V1 y sus tests anteriores son hitos históricos; ver [estado de misión](docs/mission_status.md).
 
 ## Instalación y ayuda
 
@@ -159,3 +159,10 @@ Cada output se escribe en un destino nuevo; Dataset v1 no se reconstruye.
 [Comparación PM/HS/VAL, métricas y CSV](results/classical-20261024T034529Z/README.md).
 VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS; Dataset v1 sin cambios.
 PM/HS importados de su ejecución oficial anterior; el productor original se conserva.
+
+
+## Ejecución oficial de cuatro métodos — 24/10/2026
+
+[HG_RS_V1 y comparación ampliada](results/four-classical-20261024T042250Z/README.md).
+70978 predicciones HG-Rs; 70912 evaluables; cohorte
+común de cuatro 70860. Dataset v1 y resultados anteriores intactos.

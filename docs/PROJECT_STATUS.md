@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-24 (Europe/Madrid).** Fuente principal del estado vigente. Actualización científica sobre main `4ac52e25c803cb2301316c5cb1353bf30cdb427a`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-10-24 (Europe/Madrid).** Fuente principal del estado vigente. Actualización científica sobre main `a0b440fa3ab92e4593be521e4e819c6421327656`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -19,7 +19,7 @@
 | Quality SIAR Baleares | COMPLETE; POST corregido publicado mediante PR #29; 12 estaciones | CATALOG-TZ-001 OPEN / NON_BLOCKING; completitud observacional distinta de completitud de auditoría |
 | Dataset Observational v1 | Construido y validado estructuralmente PASS; bytes preservados localmente | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
 | PM/HS v1 | Primera ejecución oficial PASS, publicada mediante PR #31 | Interpretar cohortes y limitaciones; no calibrar para reproducir EtPMon |
-| Valiantzas / comparación clásica | VALIANTZAS_V1 y comparación PM/HS/VAL oficiales PASS; CSV verificado | Preservación y límites; sin calibración |
+| Comparación clásica | PM/HS/VAL/HG-Rs oficiales PASS; CSV verificado | Preservación y límites; sin calibración |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
 | SIAR Forecast | Collector, runtime, raw y backup/restore demostrados; timers pausados tras incidente según último parte | Un ciclo automático real → CAPTURE RUNNING; al menos dos → PILOT RUNNING |
 | AEMET Track A | E2E DEMONSTRATED; pausado tras incidente según último parte | Reactivación prospectiva después de SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
@@ -118,7 +118,7 @@ GitHub conserva código/docs/artefactos versionables. Google Drive con rclone cr
 
 1. 02: reactivar Forecast SIAR, demostrar un ciclo automático y después dos; habilitar AEMET tras CAPTURE RUNNING, sin esperar SIAR Sync.
 2. 02: resolver alignment y modo incremental 2026 de SIAR Sync antes de levantar HOLD.
-3. Ciencia: preservar comparación PM/HS/VAL y CSV publicados; retener limitaciones y definir partición temporal antes de cualquier calibración o ML.
+3. Ciencia: preservar comparación PM/HS/VAL/HG-Rs y CSV publicados; retener limitaciones y definir partición temporal antes de cualquier calibración o ML.
 4. Después: modelos estadísticos, árboles, boosting y ANN con split temporal sin leakage.
 5. Forecast: acumular emisiones, resolver issue/valid time/D+n y datasets derivados antes de comparar con observaciones posteriores.
 6. Producto Web/API, ET₀+Kc, ETc y riego después de contratos y validaciones.
@@ -132,3 +132,12 @@ Los workstreams trabajan autónomamente dentro de objetivos, invariantes y STOP 
 Dataset v1 intacto; PM/HS oficiales reutilizados; VAL 70.944 predicciones,
 70.878 evaluables, 0 fallos. Martí Ecs.1b+3 con 0.408, sin calibración.
 Pipeline 4ac52e25c803cb2301316c5cb1353bf30cdb427a; ambas identidades audit/canonical preservadas.
+
+
+## Ampliación HG-Rs — 24/10/2026
+
+[Comparación de cuatro modelos y hashes](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+HG_RS_V1 70978 calculadas, 70912 evaluables, 0 fallos;
+cohorte común 70860. PR #35, pipeline `a0b440fa3ab92e4593be521e4e819c6421327656`.
+Dataset y todos los resultados PM/HS/VAL anteriores intactos, sin calibración.
+75 tests/CI PASS. Ambos SHA audit/canonical preservados.

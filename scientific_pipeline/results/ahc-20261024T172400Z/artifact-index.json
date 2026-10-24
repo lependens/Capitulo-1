@@ -1,0 +1,195 @@
+{
+  "artifacts": [
+    {
+      "bytes": 29604,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\closeout\\ahc_climatology_coefficients.csv",
+      "relative_path": "closeout/ahc_climatology_coefficients.csv",
+      "sha256": "6f5b789f4484375d82cc61a9bac1ae27bcc0eee8e65d39fdbeb2535f94c1847b"
+    },
+    {
+      "bytes": 197921,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\closeout\\closeout.json",
+      "relative_path": "closeout/closeout.json",
+      "sha256": "b716c799ceef8abb66720f8dd479228099d8be626c6606a8c875db977197e799"
+    },
+    {
+      "bytes": 36751,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\closeout\\manifest.json",
+      "relative_path": "closeout/manifest.json",
+      "sha256": "39be9d706f962722862c50ce6b25fad5d0e93a57d954c4b71aa77cfe5942d6cd"
+    },
+    {
+      "bytes": 302349,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\ahc_coefficients.csv",
+      "relative_path": "test/ahc_coefficients.csv",
+      "sha256": "c4adc187cfb2f373bc761999183c6a90ca7387c7f516568149dcc80c90e3f2e0"
+    },
+    {
+      "bytes": 1170624,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\climatological_month_metrics.csv",
+      "relative_path": "test/climatological_month_metrics.csv",
+      "sha256": "ec19ddb398a1fc01386cd59db48ad19b7fc7c12a38e70070eab0e9c543d29e57"
+    },
+    {
+      "bytes": 391584,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\climatological_season_metrics.csv",
+      "relative_path": "test/climatological_season_metrics.csv",
+      "sha256": "d4e95cbd1a15c7e386b1e0c4d70e96e391afd267fc5c4102ea971e2c4f6493ca"
+    },
+    {
+      "bytes": 142236,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\coverage_metrics.csv",
+      "relative_path": "test/coverage_metrics.csv",
+      "sha256": "4d017de09a07bc4ce4abfa8cacfeb1bdfd6b7de60383e18c1a4b44acec987c89"
+    },
+    {
+      "bytes": 164196273,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\daily_predictions.csv",
+      "relative_path": "test/daily_predictions.csv",
+      "sha256": "a87897a06167a6177e2a6287ce4e7e927756b8ad681cfc69d76d37498292e69c"
+    },
+    {
+      "bytes": 3858,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\input_complexity.csv",
+      "relative_path": "test/input_complexity.csv",
+      "sha256": "3260c091dbf95c18ba3d095cadb149d42bb6157ed156ae250b497df37aa614d0"
+    },
+    {
+      "bytes": 40704,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\manifest.json",
+      "relative_path": "test/manifest.json",
+      "sha256": "502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e47434fc469"
+    },
+    {
+      "bytes": 136781105,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\metrics.csv",
+      "relative_path": "test/metrics.csv",
+      "sha256": "b44260830ce84df33b8ea462a6b003be552fd2ef54462f86c6794ad6338631e9"
+    },
+    {
+      "bytes": 16657,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\model_metadata.csv",
+      "relative_path": "test/model_metadata.csv",
+      "sha256": "e8fc327d85458907637251b1fb5f75e38c0d9651a635ff8d379e9bea59501af9"
+    },
+    {
+      "bytes": 93478914,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\monthly_metrics.csv",
+      "relative_path": "test/monthly_metrics.csv",
+      "sha256": "e245642bbbf3d9961027ebc98fc0c11e8f77cfcca644bd079d71bf0dfb47df7c"
+    },
+    {
+      "bytes": 32622289,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\seasonal_metrics.csv",
+      "relative_path": "test/seasonal_metrics.csv",
+      "sha256": "bdee8a507071916b442c24b3a5dbeeb6ff3e99d8446839cd64c8652a784b1610"
+    },
+    {
+      "bytes": 11820,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\station_metadata.csv",
+      "relative_path": "test/station_metadata.csv",
+      "sha256": "9c3130f8c21269f09bfabb46eef0d23df5b46eb474cac60c76ffa8ed2a206189"
+    },
+    {
+      "bytes": 1010912,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\station_metrics.csv",
+      "relative_path": "test/station_metrics.csv",
+      "sha256": "1d25669f73b2ec738d10f1d41c65baeaa84aba701f8b847d8c868e4db4e6e2dd"
+    },
+    {
+      "bytes": 134889,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\test_results.json",
+      "relative_path": "test/test_results.json",
+      "sha256": "2d9c110274330c43f52c27e3213e3a5f6ba85a33a650dd80bd9e7dfcd548bd50"
+    },
+    {
+      "bytes": 36277,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\view-manifest.json",
+      "relative_path": "test/view-manifest.json",
+      "sha256": "f6dc102121f348d1fe9e8d45ecc824a3d1565421ca37285f2b75fc0e6b30156a"
+    },
+    {
+      "bytes": 23344,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\view_schemas.json",
+      "relative_path": "test/view_schemas.json",
+      "sha256": "8310458beb82eafdc9d121b6ecb4f12ae0958e48c65b1dd0b63928ecf84a1b7e"
+    },
+    {
+      "bytes": 8009997,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\yearly_metrics.csv",
+      "relative_path": "test/yearly_metrics.csv",
+      "sha256": "4a92e880fb5807d4bb2f27d990541d24053bffc9f52d265b06992126888bd550"
+    },
+    {
+      "bytes": 302349,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\ahc_validated_coefficients.csv",
+      "relative_path": "train/ahc_validated_coefficients.csv",
+      "sha256": "c4adc187cfb2f373bc761999183c6a90ca7387c7f516568149dcc80c90e3f2e0"
+    },
+    {
+      "bytes": 36745,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\manifest.json",
+      "relative_path": "train/manifest.json",
+      "sha256": "134867a034fabf764bf319d10fbdfa2b6bf305e7daeda353eb7dc0f982550384"
+    },
+    {
+      "bytes": 8900966,
+      "in_git": false,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\split_assignments.csv",
+      "relative_path": "train/split_assignments.csv",
+      "sha256": "8f33a161c7e17bca084f5357b70a2cc1004af3bc082674d2f0738d596f898cf8"
+    },
+    {
+      "bytes": 752336,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\training.json",
+      "relative_path": "train/training.json",
+      "sha256": "2275a94c1cfe8f81920e9075d57006b05f55895a0d604c3c73f74fcc49fca759"
+    },
+    {
+      "bytes": 36455,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\validation\\manifest.json",
+      "relative_path": "validation/manifest.json",
+      "sha256": "b4f9ff9b92141ae6610913db8ee6f12e5ae96a413e65b2a84490b27d7b143152"
+    },
+    {
+      "bytes": 629956,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\validation\\selection.json",
+      "relative_path": "validation/selection.json",
+      "sha256": "f99149befc9647c4bc2ef059563396a5fedebc2b88144cd37fcbe61d08f755ba"
+    },
+    {
+      "bytes": 16534,
+      "in_git": true,
+      "local_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\verification.json",
+      "relative_path": "verification.json",
+      "sha256": "e57f0ad3fb335d435054839cff84a691a3d6d65187793dce8fb57d24724ce6a7"
+    }
+  ],
+  "backup_claim": "LOCAL_PRESERVATION_ONLY; no verified independent backup",
+  "native_root": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z"
+}

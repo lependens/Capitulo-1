@@ -197,3 +197,13 @@ nuevos y manifest padre SUCCESS. Un STOP científico preserva evidencia y
 prohíbe continuar. No se reconstruye Dataset v1. Las predicciones clásicas se
 importan con sus hashes y productores; las tablas derivadas registran ambas
 identidades SHA de fuentes, pipeline, protocolo, coeficientes y cohortes.
+
+## Resultado oficial AHC — 24/10/2026
+
+[AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION = PASS](results/ahc-20261024T172400Z/README.md).
+TRAIN 2004–2015, VALIDATION 2016–2020 y TEST 2021–2025, sin refit.
+En TEST común contra PM (n=15.958), RMSE anual ajustado HS 0.638838,
+HG-Rs 0.414241 y VAL 0.523955 mm/día. HG-Rs estacional seleccionado en
+VALIDATION: 0.401392. Estabilidad por bloques PASS; climatología separada,
+IB101 descriptivo no desplegable e IB09 excluida. Se retienen empeoramientos
+estación-año y condición retrospectiva de TEST. ML y web siguen sin ejecución.

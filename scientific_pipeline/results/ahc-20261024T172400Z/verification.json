@@ -1,0 +1,381 @@
+{
+  "dataset_modified": false,
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "frozen_training_coefficients_sha256": "bdda1b898540fb350ed8f382b97291cb828e6409817c7af3c982cf1793673612",
+  "independently_recomputed_common_test": [
+    {
+      "bias": 0.0,
+      "mae": 0.0,
+      "method_id": "PM_FAO56_V1",
+      "n": 15958,
+      "r2": 1.0,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.0
+    },
+    {
+      "bias": 0.5710582502871001,
+      "mae": 0.7862975237023276,
+      "method_id": "HS_RA_V1",
+      "n": 15958,
+      "r2": 0.692345573319225,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.9486509858540673
+    },
+    {
+      "bias": 0.28746914548551095,
+      "mae": 0.47106836635219745,
+      "method_id": "HG_RS_V1",
+      "n": 15958,
+      "r2": 0.8909947898469014,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5646749297343809
+    },
+    {
+      "bias": 0.24286453350999107,
+      "mae": 0.4743675439303616,
+      "method_id": "VALIANTZAS_V1",
+      "n": 15958,
+      "r2": 0.8648847447588711,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.6286762749560687
+    },
+    {
+      "bias": 0.23056577296591702,
+      "mae": 0.5040806787659133,
+      "method_id": "HS_RA_AHC_VALIDATED",
+      "n": 15958,
+      "r2": 0.8604814642388121,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.6388381349028001
+    },
+    {
+      "bias": 0.0034357243618677565,
+      "mae": 0.31892985699981463,
+      "method_id": "HG_RS_AHC_VALIDATED",
+      "n": 15958,
+      "r2": 0.9413379975803696,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.4142412274515209
+    },
+    {
+      "bias": 0.1668352000657362,
+      "mae": 0.39225889400877495,
+      "method_id": "VALIANTZAS_AHC_VALIDATED",
+      "n": 15958,
+      "r2": 0.9061492895903133,
+      "reference_id": "PM_FAO56_V1",
+      "rmse": 0.5239546034638097
+    },
+    {
+      "bias": -0.0007591661424917687,
+      "mae": 0.011214361783107626,
+      "method_id": "PM_FAO56_V1",
+      "n": 15952,
+      "r2": 0.9998074609626937,
+      "reference_id": "EtPMon",
+      "rmse": 0.023774191529516667
+    },
+    {
+      "bias": 0.5701926440777628,
+      "mae": 0.7857424785413442,
+      "method_id": "HS_RA_V1",
+      "n": 15952,
+      "r2": 0.6931415258901243,
+      "reference_id": "EtPMon",
+      "rmse": 0.94910753152816
+    },
+    {
+      "bias": 0.2866011219099284,
+      "mae": 0.47007589440859837,
+      "method_id": "HG_RS_V1",
+      "n": 15952,
+      "r2": 0.8916990894719673,
+      "reference_id": "EtPMon",
+      "rmse": 0.5638484788078826
+    },
+    {
+      "bias": 0.2420294920987976,
+      "mae": 0.475139385560756,
+      "method_id": "VALIANTZAS_V1",
+      "n": 15952,
+      "r2": 0.8649320308654322,
+      "reference_id": "EtPMon",
+      "rmse": 0.6296838345497898
+    },
+    {
+      "bias": 0.22975958201615435,
+      "mae": 0.5049015422241702,
+      "method_id": "HS_RA_AHC_VALIDATED",
+      "n": 15952,
+      "r2": 0.8604281965690643,
+      "reference_id": "EtPMon",
+      "rmse": 0.6400961340192243
+    },
+    {
+      "bias": 0.0026443599649971627,
+      "mae": 0.3188091640940303,
+      "method_id": "HG_RS_AHC_VALIDATED",
+      "n": 15952,
+      "r2": 0.9413905952686205,
+      "reference_id": "EtPMon",
+      "rmse": 0.4147916587617708
+    },
+    {
+      "bias": 0.16605391913992243,
+      "mae": 0.3933437946552631,
+      "method_id": "VALIANTZAS_AHC_VALIDATED",
+      "n": 15952,
+      "r2": 0.9061396989677135,
+      "reference_id": "EtPMon",
+      "rmse": 0.524913002268879
+    }
+  ],
+  "manifests": {
+    "closeout": {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\closeout\\manifest.json",
+      "sha256": "39be9d706f962722862c50ce6b25fad5d0e93a57d954c4b71aa77cfe5942d6cd"
+    },
+    "test": {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\manifest.json",
+      "sha256": "502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e47434fc469"
+    },
+    "train": {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\manifest.json",
+      "sha256": "134867a034fabf764bf319d10fbdfa2b6bf305e7daeda353eb7dc0f982550384"
+    },
+    "validation": {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\validation\\manifest.json",
+      "sha256": "b4f9ff9b92141ae6610913db8ee6f12e5ae96a413e65b2a84490b27d7b143152"
+    }
+  },
+  "observation_statuses": {
+    "OBSERVED": 75494,
+    "OUTSIDE_OFFICIAL_PERIOD": 1,
+    "RECOVERED": 1
+  },
+  "output_count": 22,
+  "outputs": [
+    {
+      "bytes": 302349,
+      "name": "ahc_validated_coefficients.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\ahc_validated_coefficients.csv",
+      "sha256": "c4adc187cfb2f373bc761999183c6a90ca7387c7f516568149dcc80c90e3f2e0",
+      "stage": "train"
+    },
+    {
+      "bytes": 8900966,
+      "name": "split_assignments.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\split_assignments.csv",
+      "sha256": "8f33a161c7e17bca084f5357b70a2cc1004af3bc082674d2f0738d596f898cf8",
+      "stage": "train"
+    },
+    {
+      "bytes": 752336,
+      "name": "training.json",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\train\\training.json",
+      "sha256": "2275a94c1cfe8f81920e9075d57006b05f55895a0d604c3c73f74fcc49fca759",
+      "stage": "train"
+    },
+    {
+      "bytes": 629956,
+      "name": "selection.json",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\validation\\selection.json",
+      "sha256": "f99149befc9647c4bc2ef059563396a5fedebc2b88144cd37fcbe61d08f755ba",
+      "stage": "validation"
+    },
+    {
+      "bytes": 302349,
+      "name": "ahc_coefficients.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\ahc_coefficients.csv",
+      "sha256": "c4adc187cfb2f373bc761999183c6a90ca7387c7f516568149dcc80c90e3f2e0",
+      "stage": "test"
+    },
+    {
+      "bytes": 1170624,
+      "name": "climatological_month_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\climatological_month_metrics.csv",
+      "sha256": "ec19ddb398a1fc01386cd59db48ad19b7fc7c12a38e70070eab0e9c543d29e57",
+      "stage": "test"
+    },
+    {
+      "bytes": 391584,
+      "name": "climatological_season_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\climatological_season_metrics.csv",
+      "sha256": "d4e95cbd1a15c7e386b1e0c4d70e96e391afd267fc5c4102ea971e2c4f6493ca",
+      "stage": "test"
+    },
+    {
+      "bytes": 142236,
+      "name": "coverage_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\coverage_metrics.csv",
+      "sha256": "4d017de09a07bc4ce4abfa8cacfeb1bdfd6b7de60383e18c1a4b44acec987c89",
+      "stage": "test"
+    },
+    {
+      "bytes": 164196273,
+      "name": "daily_predictions.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\daily_predictions.csv",
+      "sha256": "a87897a06167a6177e2a6287ce4e7e927756b8ad681cfc69d76d37498292e69c",
+      "stage": "test"
+    },
+    {
+      "bytes": 3858,
+      "name": "input_complexity.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\input_complexity.csv",
+      "sha256": "3260c091dbf95c18ba3d095cadb149d42bb6157ed156ae250b497df37aa614d0",
+      "stage": "test"
+    },
+    {
+      "bytes": 136781105,
+      "name": "metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\metrics.csv",
+      "sha256": "b44260830ce84df33b8ea462a6b003be552fd2ef54462f86c6794ad6338631e9",
+      "stage": "test"
+    },
+    {
+      "bytes": 16657,
+      "name": "model_metadata.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\model_metadata.csv",
+      "sha256": "e8fc327d85458907637251b1fb5f75e38c0d9651a635ff8d379e9bea59501af9",
+      "stage": "test"
+    },
+    {
+      "bytes": 93478914,
+      "name": "monthly_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\monthly_metrics.csv",
+      "sha256": "e245642bbbf3d9961027ebc98fc0c11e8f77cfcca644bd079d71bf0dfb47df7c",
+      "stage": "test"
+    },
+    {
+      "bytes": 32622289,
+      "name": "seasonal_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\seasonal_metrics.csv",
+      "sha256": "bdee8a507071916b442c24b3a5dbeeb6ff3e99d8446839cd64c8652a784b1610",
+      "stage": "test"
+    },
+    {
+      "bytes": 11820,
+      "name": "station_metadata.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\station_metadata.csv",
+      "sha256": "9c3130f8c21269f09bfabb46eef0d23df5b46eb474cac60c76ffa8ed2a206189",
+      "stage": "test"
+    },
+    {
+      "bytes": 1010912,
+      "name": "station_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\station_metrics.csv",
+      "sha256": "1d25669f73b2ec738d10f1d41c65baeaa84aba701f8b847d8c868e4db4e6e2dd",
+      "stage": "test"
+    },
+    {
+      "bytes": 134889,
+      "name": "test_results.json",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\test_results.json",
+      "sha256": "2d9c110274330c43f52c27e3213e3a5f6ba85a33a650dd80bd9e7dfcd548bd50",
+      "stage": "test"
+    },
+    {
+      "bytes": 36277,
+      "name": "view-manifest.json",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\view-manifest.json",
+      "sha256": "f6dc102121f348d1fe9e8d45ecc824a3d1565421ca37285f2b75fc0e6b30156a",
+      "stage": "test"
+    },
+    {
+      "bytes": 23344,
+      "name": "view_schemas.json",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\view_schemas.json",
+      "sha256": "8310458beb82eafdc9d121b6ecb4f12ae0958e48c65b1dd0b63928ecf84a1b7e",
+      "stage": "test"
+    },
+    {
+      "bytes": 8009997,
+      "name": "yearly_metrics.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\test\\yearly_metrics.csv",
+      "sha256": "4a92e880fb5807d4bb2f27d990541d24053bffc9f52d265b06992126888bd550",
+      "stage": "test"
+    },
+    {
+      "bytes": 29604,
+      "name": "ahc_climatology_coefficients.csv",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\closeout\\ahc_climatology_coefficients.csv",
+      "sha256": "6f5b789f4484375d82cc61a9bac1ae27bcc0eee8e65d39fdbeb2535f94c1847b",
+      "stage": "closeout"
+    },
+    {
+      "bytes": 197921,
+      "name": "closeout.json",
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\ahc-20261024T172400Z\\closeout\\closeout.json",
+      "sha256": "b716c799ceef8abb66720f8dd479228099d8be626c6606a8c875db977197e799",
+      "stage": "closeout"
+    }
+  ],
+  "pipeline_sha": "38503dbe8422982deeb3680bbc3e82fd950da4e1",
+  "quality_modified": false,
+  "quality_statuses": {
+    "FAIL": 4423,
+    "WARN": 71073
+  },
+  "raw_modified": false,
+  "rows": 75496,
+  "source_hashes": [
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB01_datos_completos.csv",
+      "sha256": "dfadf1ec335d7af040a7caab65c73761ac555fa050e7bb75ffb7a4376b750c53"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB02_datos_completos.csv",
+      "sha256": "a65ba9913d1649fb86fb61b574630e9706154b4f2ad4ac11246b301740d78891"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB03_datos_completos.csv",
+      "sha256": "bf44c363acdc01673c5dd7bc847283bc7620d7af70ba91267608707c730c638d"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB04_datos_completos.csv",
+      "sha256": "2745c212a45078ba2010aaab637c40d56949f7fa50e9946dbe6763d008a11199"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB05_datos_completos.csv",
+      "sha256": "8ee97684d962169db1e3949c02e4a277b683ca0211ccea158e11382bd4905432"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB06_datos_completos.csv",
+      "sha256": "48731bd993a2116bea75fdb779788a1a71505563e1d9cdae8d9a7d5817907cb2"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB07_datos_completos.csv",
+      "sha256": "8641cdf90697064fe07c505618d5a9921cf103e5fc1e1d06b28812b566786c68"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB08_datos_completos.csv",
+      "sha256": "cfe4f124793139ea9b55f147209733fc74ef9e274272ff8bf9ad6115bf4c14cc"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB09_datos_completos.csv",
+      "sha256": "2cbd9bb289404264fc78dad21322562d9d22b64ce4bbc87e51512ca763ea7a8a"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB101_datos_completos.csv",
+      "sha256": "b2c91aa0c6b8836cba868243ad565755c97f21703e081baae40c66e0f810179a"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB10_datos_completos.csv",
+      "sha256": "9295b9b071ad6239301544cce1618cec065bae1e6ff7106e4fa0c5def1f69c47"
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\IB11_datos_completos.csv",
+      "sha256": "bee7da8bdd401bbbf801517861d02f4e0b7e1296cf3229f924cba1c2bec01e07"
+    }
+  ],
+  "splits": {
+    "TEST": 15978,
+    "TRAIN": 42796,
+    "VALIDATION": 16722
+  },
+  "status": "PASS",
+  "verified_at_utc": "2026-10-24T17:27:30.204079+00:00",
+  "zero_reference_rows": {
+    "EtPMon": 50
+  }
+}

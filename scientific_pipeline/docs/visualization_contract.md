@@ -103,7 +103,7 @@ Los campos estructurados son JSON. Periodos oficiales no se deducen de fechas ex
 
 `input_complexity.csv` declara requisitos de inputs de PM y los empíricos, y el ajuste TRAIN adicional cuando corresponde. Permite presentar precisión frente a complejidad/disponibilidad, sin atribuir causalidad al comparar cohortes propias distintas.
 
-`split_assignments.csv` fija claves estación-fecha y partición global; su hash vincula análisis y tablas. Fechas exteriores conservan su estado y no se reasignan para mejorar resultados. Los campos/tipos exactos de estas tablas están en view_schemas.json; no hay columnas adicionales implícitas.
+`split_assignments.csv` se emite en TRAIN y fija claves estación-fecha y partición global; su hash lógico `split_assignment_sha256` vincula análisis y tablas, mientras el hash de bytes está en el manifest TRAIN enlazado por la cadena de padres. Sus columnas son station_code, date, split, dataset_id y dataset_sha256. No se duplica en el lote TEST ni se incluye en su view_schemas.json. Las fechas exteriores conservan su estado y siguen siendo inelegibles, aunque su fecha pertenezca a una partición experimental. Los campos/tipos de las tablas del lote TEST están en view_schemas.json; no hay columnas adicionales implícitas.
 
 ## Responsabilidad del consumidor y extensiones
 

@@ -94,3 +94,22 @@ Reconciliador SIAR Forecast enabled/active cada 15 min, último Result success. 
 OAuth Production, reauthorization PASS y CLI crypt listing PASS; copy/restore independiente SHA256 MATCH. Eso todavía no demuestra **nuevo run real automático → backup automático → COMPLETE remoto**; es el gate pendiente. El límite específico de siete días de OAuth Testing está eliminado, sin garantizar que tokens nunca puedan invalidarse. No versionar config/secretos.
 
 AEMET: backup tras cada intento de captura (success/failure), sin timer independiente. Con capture timer disabled/inactive, nuevo backup automático AEMET NOT ACTIVE. Se habilitará reactivación tras SIAR-FORECAST-CAPTURE RUNNING. Estado y gates en [PROJECT_STATUS](PROJECT_STATUS.md).
+
+## AHC temporal — 24/10/2026
+
+[Publicación compacta, coeficientes, métricas y manifests](../scientific_pipeline/results/ahc-20261024T172400Z/README.md).
+[Índice de todos los artefactos con bytes/ruta/SHA256](../scientific_pipeline/results/ahc-20261024T172400Z/artifact-index.json).
+Pipeline AHC `38503dbe8422982deeb3680bbc3e82fd950da4e1`; Dataset v1
+permanece en su ubicación anterior y con el mismo SHA256.
+
+Raíz local de ejecución:
+
+```text
+C:\Users\Josep\.codex\.chatgpt-projects\g-p-6ac0c6c1d8908191b03f324e51c278f1\scientific-results\ahc-20261024T172400Z\
+```
+
+TRAIN/VALIDATION/TEST/cierre tienen directorios separados. `test/daily_predictions.csv`
+conserva 75.496 filas (164.196.273 bytes). Métricas completas y desgloses
+mensuales/estacionales/anuales permanecen fuera de Git; manifests y evidencia
+compacta sí se versionan. No implica réplica en Linux ni backup independiente.
+La cadena de manifests identifica fuentes, POST, dataset, protocolo y productores.

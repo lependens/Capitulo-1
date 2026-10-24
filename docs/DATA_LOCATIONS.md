@@ -64,3 +64,18 @@ SHA256 `66486b4138b7194ded3cd53f4d4d31f08e53ce3051d7c17ee43b30cdc957ed5f`.
 Pipeline comparación/VAL `4ac52e25c803cb2301316c5cb1353bf30cdb427a`; PM/HS conserva productor
 `39c101e5999245eb15e3c6c1c867d90b4ac44468`. No es un nuevo dataset ni se han movido
 artefactos anteriores. La verificación local no certifica backup externo nuevo.
+
+
+## Exportación de cuatro métodos — 24/10/2026
+
+[Manifests, métricas e índice](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+CSV completo fuera de Git, 75.496 filas verificadas:
+
+```text
+C:\Users\Josep\.codex\.chatgpt-projects\g-p-6ac0c6c1d8908191b03f324e51c278f1\scientific-results\four-classical-20261024T042250Z\comparison\classical-baselines.csv
+```
+
+SHA256 `f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44`.
+Pipeline HG-Rs/comparación `a0b440fa3ab92e4593be521e4e819c6421327656`.
+Dataset v1 en su ubicación anterior, sin reconstrucción. El CSV de tres métodos
+y sus hashes siguen preservados; este es un output nuevo, no una sobrescritura.

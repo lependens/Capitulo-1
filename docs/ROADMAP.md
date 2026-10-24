@@ -9,7 +9,7 @@
 | Línea | Ya demostrado | Siguiente gate |
 |---|---|---|
 | Observaciones / Quality | POST corregido COMPLETE; 2.345 ausencias confirmadas, 0 PENDING_RETRY | Mantener snapshot cerrado; CATALOG-TZ-001 no bloqueante |
-| Ciencia | Dataset v1 y comparación oficial PM/HS/VAL PASS | Preservación y contrato temporal antes de calibración/ML |
+| Ciencia | Dataset v1 y comparación oficial PM/HS/VAL/HG-Rs PASS | Preservación y contrato temporal antes de calibración/ML |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
 | Forecast SIAR / 02 | Runtime, raw, backup/restore; 8 estaciones funcionales | Reactivar timers pausados → 1 ciclo real CAPTURE RUNNING → mínimo 2 PILOT RUNNING |
 | AEMET Track A / 02 | Collector y E2E DEMONSTRATED; piloto pausado | Tras SIAR-FORECAST-CAPTURE RUNNING, reactivar prospectivo |
@@ -120,3 +120,11 @@ Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone co
 ## Gobierno y actualización
 
 Los workstreams resuelven problemas operativos dentro de objetivos/invariantes/STOP. Se escalan arquitectura, seguridad, integridad raw y semántica científica. Cambios de estado requieren evidencia y actualización de PROJECT_STATUS; MILESTONES se amplía sin borrar hitos previos. Las fases 2/3 permanecen abiertas y no se declara un RUNNING nuevo sin parte consolidado.
+
+
+## Ampliación clásica completada — 24/10/2026
+
+✅ HG_RS_V1 con Rs medida incorporado y ejecutado sin calibración;
+[comparación oficial de cuatro métodos y CSV](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md), 75 tests/CI PASS.
+PM/HS/VAL y Dataset v1 intactos. Próximo gate científico: definir objetivo y
+partición temporal antes de cualquier ajuste o ML; esta misión no los inicia.

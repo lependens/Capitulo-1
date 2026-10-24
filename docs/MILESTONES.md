@@ -51,3 +51,10 @@ Las fechas de PR corresponden al merge; para el parte operativo se usa fecha de 
 | Fecha | Hito | Resultado | PR / SHA o referencia | Significado |
 |---|---|---|---|---|
 | 2026-10-24 | VALIANTZAS_V1 y comparación clásica oficial | Martí Ecs.1b+3 con 0.408, sin calibración; 68 tests/CI PASS; CSV 75.496 filas verificado | [PR #33](https://github.com/lependens/Capitulo-1/pull/33), 4ac52e25c803cb2301316c5cb1353bf30cdb427a; [resultados](../scientific_pipeline/results/classical-20261024T034529Z/README.md) | Dataset/Quality/raw intactos; productores PM/HS previos preservados y tres métodos sobre cohorte común. |
+
+
+## HG-Rs — 24/10/2026
+
+| Fecha | Hito | Resultado | PR / SHA o referencia | Significado |
+|---|---|---|---|---|
+| 2026-10-24 | Hargreaves-Rs y cuatro baselines oficiales | 70978 predicciones HG-Rs; 70912 evaluables; CSV 75.496 filas verificado; 75 tests/CI PASS | [PR #35](https://github.com/lependens/Capitulo-1/pull/35), a0b440fa3ab92e4593be521e4e819c6421327656; [resultados](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md) | Sin calibración; Dataset/Quality/raw y resultados PM/HS/VAL anteriores intactos. |

@@ -1,6 +1,14 @@
 # ET0-BASELINES-PREP — estado de integración
 
-## Estado vigente — 24/10/2026
+## Estado vigente — cuatro métodos, 24/10/2026
+
+**HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
+[Cuatro baselines y CSV](../results/four-classical-20261024T042250Z/README.md). PR #35; pipeline
+a0b440fa3ab92e4593be521e4e819c6421327656; 75 tests/CI Python 3.11/3.12/3.13 PASS.
+HG-Rs 70978 calculadas / 70912 evaluables / 0 fallos.
+Cohorte común de cuatro 70860; Dataset v1 intacto.
+
+## Registro preservado — tres métodos, 24/10/2026
 
 **VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS**.
 [Resultados oficiales de tres métodos y CSV](../results/classical-20261024T034529Z/README.md).

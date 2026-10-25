@@ -1,0 +1,31 @@
+name: siar-et0-web
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: web_app/Dockerfile.backend
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    volumes:
+      - ${WEB_DATA_DIR:?Set WEB_DATA_DIR to verified derivative directory}:/data:ro
+    tmpfs: [/tmp:size=64m,mode=1777]
+    mem_limit: 512m
+  frontend:
+    build:
+      context: ..
+      dockerfile: web_app/Dockerfile.frontend
+    restart: unless-stopped
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs: [/var/cache/nginx:size=16m,mode=1777, /var/run:size=1m,mode=1777, /tmp:size=16m,mode=1777]
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - ${WEB_BIND_IP:?Set the verified LAN address}:${WEB_PORT:?Choose a verified free port}:8080
+    mem_limit: 128m

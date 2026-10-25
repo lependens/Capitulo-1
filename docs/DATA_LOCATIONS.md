@@ -133,4 +133,14 @@ TEST manifest SHA256: `502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e474
 
 El [contrato de visualización](../scientific_pipeline/docs/visualization_contract.md) está FROZEN/AVAILABLE TO 06: daily_predictions, métricas precalculadas, metadatos, cobertura, schemas y manifests. AHC_VALIDATED y AHC_CLIMATOLOGY tienen identidades separadas; el consumidor no recalcula ciencia ni usa climatología para atribuir métricas TEST.
 
+## WEB-V0.1 — despliegue LAN 25/10/2026
+
+- Aplicación: `http://192.168.1.43:8088/` (solo LAN).
+- Checkout de producción: `/home/josep/siar-et0-web`, main `b5a73e3df273bb3922adbd31abf19ee9f65b8520`.
+- Publicación derivada: `/home/josep/siar-et0-web-data/releases/web-v0.1-20261025`, montada como `/data:ro`.
+- `observations.parquet`: SHA256 `6119e3521e8efb1251771a8d6fad2b5a5308e31d7eabeb66e0183c3add0deeca`.
+- Fuente científica: CSV cuatro baselines SHA256 `f55e4ed12691b84dbca4e090c49da538d5e7fad4f2ef371e1307a649cfb1af44`; Dataset v1 SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`.
+
+El paquete WEB-V0.1 fue transferido explícitamente y verificado por hashes. Su presencia en el servidor no demuestra por sí sola backup remoto del nuevo derivado; debe entrar en el flujo de preservación antes de declarar esa copia protegida externamente.
+
 Para nuevos artefactos: **explicit transfer/ingestion → server preservation area → backup system → Drive crypt**. Receipt operativo de cierre `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, sin copiar contenido sensible. La documentación recoge el parte de 02, no una inspección nueva del servidor.

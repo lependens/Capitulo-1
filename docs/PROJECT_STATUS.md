@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-25 (Europe/Madrid).** Fuente principal del estado vigente. Consolidación AHC/backup sobre main `d15bbffac99164994aa884c1a47dc680d54e66af`; estado operativo según el último parte de Dirección 00 recibido en esta misión. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-10-25 (Europe/Madrid).** Fuente principal del estado vigente. Consolidación WEB-V0.1 sobre main `b5a73e3df273bb3922adbd31abf19ee9f65b8520`; estado operativo según el último parte de Dirección 00 y la validación de despliegue de 06. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -18,14 +18,14 @@
 |---|---|---|
 | Quality SIAR Baleares | COMPLETE; POST corregido publicado mediante PR #29; 12 estaciones | CATALOG-TZ-001 OPEN / NON_BLOCKING; completitud observacional distinta de completitud de auditoría |
 | Dataset Observational v1 | Construido/validado PASS; SHA256 verificado en snapshot remoto aceptado | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
-| Ciencia ET₀ | Cuatro baselines y AHC temporal PASS; contratos ML/visualización congelados | ML v1 futuro; ANN después; no modelos entrenados ni web construida |
+| Ciencia ET₀ | Cuatro baselines y AHC temporal PASS; contratos ML/visualización congelados | ML v1 futuro; ANN después; WEB-V0.1 consume solo los cuatro baselines publicados |
 | Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos REMOTE_VERIFIED | Nuevos resultados solo Windows requieren transferencia/ingestión explícita |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
 | SIAR Forecast | Timer de captura ACTIVE; reconciliador enabled/active cada 15 min, último Result success | Nuevo run real automático → backup automático → COMPLETE remoto; después CAPTURE RUNNING, mínimo dos ciclos PILOT RUNNING |
 | AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
 | AEMET Track B | OPEN | Investigar feed AEMET exacto utilizado por SIAR, independientemente de Track A |
 | Storage | Incidente CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE | Reabrir solo con nueva evidencia objetiva; sin plan de sustitución del SSD |
-| ML / producto | ML contract FROZEN/READY; visualization contract FROZEN/AVAILABLE TO 06 | No ML/ANN entrenado ni web construida; consumir artefactos publicados sin recalcular ciencia |
+| ML / producto | WEB-V0.1 DEPLOYED en LAN; ML contract FROZEN/READY; visualization contract FROZEN/AVAILABLE TO 06 | No ML/ANN entrenado; AHC se integra en WEB-V0.2; consumir artefactos publicados sin recalcular ciencia |
 
 ## Observaciones y Quality: cierre vigente
 
@@ -121,7 +121,11 @@ Estabilidad **PASS**, CV muestral máximo **6.612 %**, max/min **1.164415**. No 
 
 **AHC_CLIMATOLOGY** solo se calculó después de completar TEST usando todo el histórico declarado hasta 2025. Identidad separada: descripción climatológica y posible coeficiente operativo futuro, nunca fuente de métricas TEST ni sustituto de coeficientes TRAIN. IB101 **SHORT_SERIES_DESCRIPTIVE, deployable=false**; IB09 **UNAVAILABLE / Quality FAIL**; IB07 sin validación/test posterior al cierre.
 
-[ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS** y [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**. ML sigue DESIGN_ONLY_NO_MODELS_TRAINED; el protocolo de cada ejecución debe cerrar presupuesto/candidatos/semillas antes de ajustar. No ML/ANN entrenado ni web construida. 06 consume artefactos publicados sin recalcular ciencia.
+[ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS** y [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**. ML sigue DESIGN_ONLY_NO_MODELS_TRAINED; el protocolo de cada ejecución debe cerrar presupuesto/candidatos/semillas antes de ajustar. **WEB-V0.1 está desplegada en LAN** y consume la publicación cerrada de cuatro baselines sin recalcular ciencia. AHC queda explícitamente para WEB-V0.2.
+
+### WEB-V0.1 — DEPLOYED
+
+PR [#41](https://github.com/lependens/Capitulo-1/pull/41) publicó FastAPI/DuckDB, React/ECharts, conversor verificado, pruebas y operación Docker Compose; PR [#42](https://github.com/lependens/Capitulo-1/pull/42) corrigió la sintaxis `tmpfs` detectada en el primer arranque. Producción validada en `http://192.168.1.43:8088/`: backend y frontend healthy, enlace exclusivo a LAN, root filesystem de solo lectura y `/data` read-only. Dataset `siar-balears-observational-v1`, 75.496 filas; Parquet SHA256 `6119e3521e8efb1251771a8d6fad2b5a5308e31d7eabeb66e0183c3add0deeca`. Validación funcional de escritorio y móvil PASS.
 
 
 ## SIAR Sync: HOLD independiente del snapshot científico

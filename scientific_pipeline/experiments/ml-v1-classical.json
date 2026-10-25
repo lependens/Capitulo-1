@@ -1,0 +1,126 @@
+{
+  "schema_version": "ml-classical-protocol-v1",
+  "experiment_id": "ML_V1_CLASSICAL_20261025",
+  "locked_at_utc": "2026-10-25T20:56:22Z",
+  "contract_id": "ML_TEMPORAL_CONTRACT_V1",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "ahc_test_manifest_sha256": "502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e47434fc469",
+  "target": "PM_FAO56_V1",
+  "target_field": "ET0_FAO56",
+  "test_status": "retrospective_locked",
+  "splits": {
+    "TRAIN": ["2004-01-01", "2015-12-31"],
+    "VALIDATION": ["2016-01-01", "2020-12-31"],
+    "TEST": ["2021-01-01", "2025-12-31"]
+  },
+  "primary_stations": ["IB01", "IB02", "IB03", "IB04", "IB05", "IB06", "IB08", "IB10", "IB11"],
+  "excluded_stations": {
+    "IB07": "no VALIDATION/TEST after closure",
+    "IB09": "unchanged Quality FAIL",
+    "IB101": "short TRAIN-only series"
+  },
+  "shared_context": ["latitude_deg", "altitude_m", "doy_sin", "doy_cos", "Ra_mj_m2_day"],
+  "feature_sets": {
+    "FEATURE_SET_T": ["Tcalc", "TD"],
+    "FEATURE_SET_T_RH": ["Tcalc", "TD", "HumedadMedia", "HumedadMin", "HumedadMax"],
+    "FEATURE_SET_T_RS": ["Tcalc", "TD", "Radiacion"],
+    "FEATURE_SET_T_RH_RS": ["Tcalc", "TD", "HumedadMedia", "HumedadMin", "HumedadMax", "Radiacion"],
+    "FEATURE_SET_FULL": ["Tcalc", "TD", "HumedadMedia", "HumedadMin", "HumedadMax", "Radiacion", "VelViento"]
+  },
+  "eligibility": {
+    "quality_status": ["PASS", "WARN"],
+    "observation_status": ["OBSERVED", "RECOVERED"],
+    "official_period_only": true,
+    "complete_case_per_feature_set": true,
+    "target_finite_nonnegative": true,
+    "meteorological_imputation": false,
+    "prediction_clipping": false
+  },
+  "runtime": {
+    "python": ">=3.11",
+    "scikit_learn": "==1.9.1",
+    "random_seed": 20261025,
+    "parallel_jobs": 1,
+    "blas_threads": 1
+  },
+  "preprocessing": {
+    "linear_models": "StandardScaler fitted on TRAIN inside Pipeline",
+    "tree_models": "no scaling",
+    "zero_variance": "StandardScaler scale=1 behavior; persist fitted statistics",
+    "refit_train_plus_validation": false
+  },
+  "candidate_grids": {
+    "LINEAR": [{}],
+    "RIDGE": [
+      {"alpha": 0.001}, {"alpha": 0.01}, {"alpha": 0.1},
+      {"alpha": 1.0}, {"alpha": 10.0}, {"alpha": 100.0}
+    ],
+    "ELASTIC_NET": [
+      {"alpha": 0.0001, "l1_ratio": 0.1}, {"alpha": 0.0001, "l1_ratio": 0.5}, {"alpha": 0.0001, "l1_ratio": 0.9},
+      {"alpha": 0.001, "l1_ratio": 0.1}, {"alpha": 0.001, "l1_ratio": 0.5}, {"alpha": 0.001, "l1_ratio": 0.9},
+      {"alpha": 0.01, "l1_ratio": 0.1}, {"alpha": 0.01, "l1_ratio": 0.5}, {"alpha": 0.01, "l1_ratio": 0.9},
+      {"alpha": 0.1, "l1_ratio": 0.1}, {"alpha": 0.1, "l1_ratio": 0.5}, {"alpha": 0.1, "l1_ratio": 0.9}
+    ],
+    "TREE": [
+      {"max_depth": 4, "min_samples_leaf": 20, "min_samples_split": 20},
+      {"max_depth": 4, "min_samples_leaf": 80, "min_samples_split": 100},
+      {"max_depth": 8, "min_samples_leaf": 20, "min_samples_split": 20},
+      {"max_depth": 8, "min_samples_leaf": 80, "min_samples_split": 100},
+      {"max_depth": 12, "min_samples_leaf": 20, "min_samples_split": 20},
+      {"max_depth": 12, "min_samples_leaf": 80, "min_samples_split": 100}
+    ],
+    "RANDOM_FOREST": [
+      {"n_estimators": 200, "max_depth": 12, "min_samples_leaf": 1, "min_samples_split": 2, "max_features": 1.0},
+      {"n_estimators": 200, "max_depth": 12, "min_samples_leaf": 5, "min_samples_split": 10, "max_features": 0.7},
+      {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 1, "min_samples_split": 2, "max_features": 0.7},
+      {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 5, "min_samples_split": 10, "max_features": 1.0}
+    ],
+    "EXTRA_TREES": [
+      {"n_estimators": 200, "max_depth": 12, "min_samples_leaf": 1, "min_samples_split": 2, "max_features": 1.0},
+      {"n_estimators": 200, "max_depth": 12, "min_samples_leaf": 5, "min_samples_split": 10, "max_features": 0.7},
+      {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 1, "min_samples_split": 2, "max_features": 0.7},
+      {"n_estimators": 200, "max_depth": null, "min_samples_leaf": 5, "min_samples_split": 10, "max_features": 1.0}
+    ],
+    "HIST_GRADIENT_BOOSTING": [
+      {"max_iter": 200, "learning_rate": 0.05, "max_leaf_nodes": 15, "l2_regularization": 0.0},
+      {"max_iter": 200, "learning_rate": 0.05, "max_leaf_nodes": 31, "l2_regularization": 1.0},
+      {"max_iter": 200, "learning_rate": 0.1, "max_leaf_nodes": 15, "l2_regularization": 1.0},
+      {"max_iter": 200, "learning_rate": 0.1, "max_leaf_nodes": 31, "l2_regularization": 0.0}
+    ]
+  },
+  "fixed_estimator_parameters": {
+    "ELASTIC_NET": {"max_iter": 20000, "tol": 1e-6, "selection": "cyclic"},
+    "TREE": {"criterion": "squared_error", "random_state": 20261025},
+    "RANDOM_FOREST": {"criterion": "squared_error", "bootstrap": true, "random_state": 20261025, "n_jobs": 1},
+    "EXTRA_TREES": {"criterion": "squared_error", "bootstrap": false, "random_state": 20261025, "n_jobs": 1},
+    "HIST_GRADIENT_BOOSTING": {"loss": "squared_error", "early_stopping": false, "random_state": 20261025}
+  },
+  "selection": {
+    "within_cell": "minimum VALIDATION RMSE on own complete-case cohort",
+    "campaign_champion": "minimum VALIDATION RMSE on common cohort across all 35 selected cells",
+    "relative_tie_tolerance": 0.001,
+    "tie_break": ["lower model complexity rank", "fewer input features", "lexical candidate_id"],
+    "complexity_rank": ["LINEAR", "RIDGE", "ELASTIC_NET", "TREE", "RANDOM_FOREST", "EXTRA_TREES", "HIST_GRADIENT_BOOSTING"],
+    "test_tuning_allowed": false,
+    "test_evaluations": "one pass for all 35 frozen cells; TEST-best is descriptive, not selected"
+  },
+  "permutation_importance": {
+    "partition": "VALIDATION",
+    "models": "campaign champion and best VALIDATION cell per algorithm",
+    "scoring": "negative_root_mean_squared_error",
+    "n_repeats": 10,
+    "maximum_rows": 5000,
+    "sampling": "target-independent SHA256 rank of station/date",
+    "used_for_selection": false,
+    "causal_interpretation": false
+  },
+  "baseline_benchmark": [
+    "PM_FAO56_V1", "HS_RA_V1", "HS_RA_AHC_VALIDATED",
+    "HG_RS_V1", "HG_RS_AHC_VALIDATED", "HG_RS_AHC_VALIDATED_SELECTED",
+    "VALIANTZAS_V1", "VALIANTZAS_AHC_VALIDATED"
+  ],
+  "metrics": ["n", "MAE", "RMSE", "bias", "predictive_R2"],
+  "groups": ["global", "station", "year", "month", "season", "station_year", "season_year"],
+  "stop_policy": "stop on split/target/dataset/feature ambiguity, leakage, accidental TEST selection, unexplained physical absurdity or material dependency architecture change"
+}

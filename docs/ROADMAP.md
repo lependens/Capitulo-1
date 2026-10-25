@@ -15,6 +15,7 @@
 | Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
 | AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
 | AEMET Track B | Investigación independiente OPEN | Identificar feed exacto usado por SIAR |
+| Producto / 06 | WEB-V0.1 DEPLOYED en LAN; API, visualización, provenance y operación PASS | WEB-V0.2: integrar AHC publicado sin recalcular ciencia |
 
 **La captura prospectiva no espera a los modelos ni a reactivar SIAR Sync.** No reconstruir emisiones perdidas durante la pausa. El incidente Toshiba está CLOSED_OPERATIONALLY / MONITORING; no es una nueva fase activa.
 
@@ -113,7 +114,9 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 
 ## Fase 8 — Producto
 
-**06 Web / Visualization / API** puede consumir el contrato de visualización congelado y artefactos científicos publicados **sin recalcular ciencia**. La web no está construida. Evolución futura: Web/API → ET₀ + Kc → ETc → necesidades de riego. Separar adquisición, procesamiento científico, modelado y producto. Los prototipos ANN y dashboards legacy conservan valor histórico, sin considerarse implementación productiva validada.
+✅ **WEB-V0.1 DEPLOYED** en LAN mediante PR #41/#42. FastAPI/DuckDB sirve derivados verificados y de solo lectura; React/ECharts ofrece serie temporal, métricas publicadas, dispersión, agregaciones visuales, cobertura y procedencia. Despliegue Docker Compose healthy en `192.168.1.43:8088`, aislado de SIAR Sync/Forecast/AEMET. Validación escritorio/móvil PASS.
+
+⚪ **WEB-V0.2:** integrar los artefactos AHC publicados manteniendo identidades AHC_VALIDATED/AHC_CLIMATOLOGY y sin recalcular ciencia. Evolución posterior: ET₀ + Kc → ETc → necesidades de riego. Separar adquisición, procesamiento científico, modelado y producto. Los prototipos ANN y dashboards legacy conservan valor histórico, sin considerarse implementación productiva validada.
 
 ## Infraestructura, backups y STOP
 

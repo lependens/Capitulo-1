@@ -6,6 +6,7 @@ from pathlib import Path
 from .datasets import build_dataset, validate_dataset
 from .pipeline import execute_run, json_bytes, safe_new_output
 from .ahc_pipeline import execute_ahc
+from .ml_pipeline import execute_ml
 
 
 def main(argv=None):
@@ -30,6 +31,15 @@ def main(argv=None):
         operation.add_argument("--pipeline-sha")
         if stage != "train":
             operation.add_argument("--parent-manifest", type=Path, required=True)
+    for stage in ("train", "validate", "test"):
+        operation = sub.add_parser("ml-"+stage, help="Frozen chronological ML v1 " + stage)
+        operation.add_argument("--dataset", type=Path, required=True)
+        operation.add_argument("--ahc-manifest", type=Path, required=True)
+        operation.add_argument("--protocol", type=Path, required=True)
+        operation.add_argument("--output", type=Path, required=True)
+        operation.add_argument("--pipeline-sha")
+        if stage != "train":
+            operation.add_argument("--parent-manifest", type=Path, required=True)
     args = parser.parse_args(argv)
     try:
         if args.command == "build-dataset":
@@ -40,7 +50,10 @@ def main(argv=None):
                 stream.write(json_bytes(dataset))
             print("SUCCESS: dataset built from authorized verified Quality POST handoff")
             return 0
-        if args.command.startswith("ahc-"):
+        if args.command.startswith("ml-"):
+            result = execute_ml(args.dataset, args.ahc_manifest, args.protocol, args.output,
+                                args.command[3:], parent_manifest=getattr(args, "parent_manifest", None), pipeline_sha=args.pipeline_sha)
+        elif args.command.startswith("ahc-"):
             result = execute_ahc(args.dataset, args.baseline_manifest, args.protocol, args.output,
                                  args.command[4:], parent_manifest=getattr(args, "parent_manifest", None), pipeline_sha=args.pipeline_sha)
         else:

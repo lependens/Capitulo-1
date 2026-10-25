@@ -209,3 +209,23 @@ HG-Rs 0.414241 y VAL 0.523955 mm/día. HG-Rs estacional seleccionado en
 VALIDATION: 0.401392. Estabilidad por bloques PASS; climatología separada,
 IB101 descriptivo no desplegable e IB09 excluida. Se retienen empeoramientos
 estación-año y condición retrospectiva de TEST. ML y web siguen sin ejecución.
+
+## Campaña ML clásica v1
+
+[Metodología y presupuesto congelado](docs/ml_v1_classical_methodology.md) y
+[protocolo ejecutable](experiments/ml-v1-classical.json). La extensión opcional
+se instala con `python -m pip install './scientific_pipeline[ml]'`; fija
+`scikit-learn==1.9.1`. ANN continúa fuera de alcance.
+
+```powershell
+siar-science ml-train --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --output ./runs/ml/train
+siar-science ml-validate --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --parent-manifest ./runs/ml/train/manifest.json --output ./runs/ml/validation
+siar-science ml-test --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --parent-manifest ./runs/ml/validation/manifest.json --output ./runs/ml/test
+```
+
+TRAIN produce 185 modelos candidatos. VALIDATION congela 35 celdas
+algoritmo×familia, un champion común y la importancia por permutación. TEST
+acepta únicamente ese bundle verificado y no reajusta. Publica predicciones,
+métricas propias/comunes, desgloses, matriz compacta, cobertura, metadata,
+esquemas y manifest para 06 Web. Los archivos joblib son artefactos internos
+con hash: cargarlos solo desde el productor confiable, nunca desde terceros.

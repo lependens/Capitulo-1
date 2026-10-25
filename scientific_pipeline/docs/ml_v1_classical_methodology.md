@@ -20,7 +20,9 @@ La rejilla contiene 37 candidatos por familia: 1 lineal, 6 Ridge, 12 Elastic Net
 6 árboles limitados, 4 Random Forest, 4 Extra Trees y 4 HistGradientBoosting;
 **185 ajustes** en total. `scikit-learn==1.9.1` es la única dependencia ML.
 La elección sigue la [instalación estable oficial](https://scikit-learn.org/stable/install.html)
-y usa estimadores mantenidos en el mismo paquete. HistGradientBoosting evita
+y usa estimadores mantenidos en el mismo paquete. La
+[guía oficial de ensembles](https://scikit-learn.org/stable/modules/ensemble.html)
+documenta Random Forest, Extra Trees y gradient boosting. HistGradientBoosting evita
 añadir otro framework. Semillas, paralelismo, iteraciones y rejillas están
 fijados en el JSON.
 
@@ -31,7 +33,8 @@ y finalmente ID léxico. TEST se abre una vez y evalúa las 35 celdas sin cambia
 nada. El mejor valor observado en TEST es descriptivo; no reemplaza al champion
 seleccionado en VALIDATION. TEST continúa etiquetado `retrospective_locked`.
 
-La importancia por permutación se calcula en VALIDATION sobre una muestra de
+La [importancia por permutación](https://scikit-learn.org/stable/modules/permutation_importance.html)
+se calcula en VALIDATION sobre una muestra de
 claves seleccionada por hash, independiente del target. La caída de rendimiento
 describe dependencia predictiva del modelo y las variables correlacionadas;
 no mide causalidad ni dirige selección. Los árboles conservan además su

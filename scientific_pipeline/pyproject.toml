@@ -9,6 +9,9 @@ description = "Reproducible daily observational ET0 baselines"
 requires-python = ">=3.11"
 dependencies = []
 
+[project.optional-dependencies]
+ml = ["scikit-learn==1.9.1"]
+
 [project.scripts]
 siar-science = "siar_science.cli:main"
 

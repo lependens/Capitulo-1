@@ -30,6 +30,8 @@ class MLRecoveryTests(unittest.TestCase):
         with temporary_directory() as directory:
             root = Path(directory)
             (root / "protocol").write_text("{}", encoding="utf-8")
+            (root / "dataset").write_bytes(b"fixture dataset")
+            (root / "ahc").write_bytes(b"fixture ahc")
             def load_test(*args, **kwargs):
                 journal = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(journal[-2:], ["PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED"])
@@ -59,6 +61,8 @@ class MLRecoveryTests(unittest.TestCase):
         with temporary_directory() as directory:
             root = Path(directory)
             (root / "protocol").write_text("{}", encoding="utf-8")
+            (root / "dataset").write_bytes(b"fixture dataset")
+            (root / "ahc").write_bytes(b"fixture ahc")
             def interrupted(*args, **kwargs):
                 states = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(states[-1], "TEST_ACCESS_INTENT_RECORDED")

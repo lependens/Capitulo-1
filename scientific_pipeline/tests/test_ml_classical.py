@@ -6,11 +6,14 @@ from io import StringIO
 import json
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 
 from siar_science.ahc_pipeline import execute_ahc
 from siar_science.cli import main
-from siar_science.ml_classical import (ALGORITHMS, candidate_id, feature_names, fit_candidates,
-                                       prepare_rows, validate_candidates, validate_ml_protocol)
+from siar_science.ml_classical import (ALGORITHMS, candidate_id, feature_names,
+                                       prepare_rows, validate_ml_protocol)
+from siar_science.ml_rolling import evaluate_rolling_candidates, linux_smoke_candidates
+from siar_science.ml_pipeline import execute_ml_smoke
 from siar_science.pipeline import calculate, execute_run
 from siar_science.serialization import digest, json_bytes
 from tests_support import dataset_fixture, temporary_directory
@@ -33,7 +36,14 @@ def ml_protocol(dataset, dataset_bytes, ahc_manifest):
     p=json.loads((Path(__file__).parents[1]/"experiments/ml-v1-classical.json").read_bytes())
     p.update(dataset_id=dataset["dataset_id"],dataset_sha256=digest(dataset_bytes),
              ahc_test_manifest_sha256=digest(Path(ahc_manifest).read_bytes()),primary_stations=["SYNTH"],excluded_stations={})
-    p["splits"]={"TRAIN":["2001-01-01","2001-12-31"],"VALIDATION":["2002-01-01","2002-12-31"],"TEST":["2003-01-01","2003-12-31"]}
+    p["development_period"]=["2001-01-01","2008-12-31"]
+    p["development_folds"]=[
+        {"fold_id":"F1","train":["2001-01-01","2002-12-31"],"validation":["2003-01-01","2004-12-31"]},
+        {"fold_id":"F2","train":["2001-01-01","2004-12-31"],"validation":["2005-01-01","2006-12-31"]},
+        {"fold_id":"F3","train":["2001-01-01","2006-12-31"],"validation":["2007-01-01","2007-12-31"]},
+        {"fold_id":"F4","train":["2001-01-01","2007-12-31"],"validation":["2008-01-01","2008-12-31"]},
+    ]
+    p["test_period"]=["2009-01-01","2009-12-31"]
     p["candidate_grids"]={
         "LINEAR":[{}],"RIDGE":[{"alpha":1.0}],"ELASTIC_NET":[{"alpha":0.1,"l1_ratio":0.5}],
         "TREE":[{"max_depth":3,"min_samples_leaf":1,"min_samples_split":2}],
@@ -45,7 +55,7 @@ def ml_protocol(dataset, dataset_bytes, ahc_manifest):
 
 def synthetic_dataset():
     dataset=dataset_fixture();rows=[]
-    for year in (2001,2002,2003):
+    for year in range(2001,2010):
         for month in (1,4,7,10):
             row=deepcopy(dataset["rows"][0]);day=f"{year}-{month:02}-15";i=len(rows)
             row.update(date=day)
@@ -67,7 +77,11 @@ class MLClassicalPureTests(unittest.TestCase):
         self.assertEqual(len(p["feature_sets"])*len(ALGORITHMS),35)
         self.assertNotIn("EtPMon",feature_names(p,"FEATURE_SET_FULL"))
         self.assertEqual(candidate_id("RIDGE","FEATURE_SET_T",{"alpha":1}),candidate_id("RIDGE","FEATURE_SET_T",{"alpha":1}))
+        self.assertEqual(len(p["development_folds"]),4)
+        self.assertEqual(p["test_period"],["2021-01-01","2025-12-31"])
         q=deepcopy(p);q["selection"]["test_tuning_allowed"]=True
+        with self.assertRaises(ValueError): validate_ml_protocol(q)
+        q=deepcopy(p);q["development_folds"][2]["train"][1]="2016-12-31"
         with self.assertRaises(ValueError): validate_ml_protocol(q)
 
     def test_test_mutation_cannot_change_validation_selection(self):
@@ -81,53 +95,49 @@ class MLClassicalPureTests(unittest.TestCase):
                 "HG_RS_AHC_VALIDATED_SELECTED":row["ET0_Hargreaves_Rs"],"VALIANTZAS_AHC_VALIDATED":row["ET0_Valiantzas"]}
         p=ml_protocol(dataset,raw,Path(__file__))
         p["ahc_test_manifest_sha256"]="0"*64
-        rows=prepare_rows(dataset,official,p);models,candidates=fit_candidates(rows,p)
-        before=validate_candidates(rows,models,candidates,p)
+        rows=prepare_rows(dataset,official,p)
+        candidates=linux_smoke_candidates(p)
+        before=evaluate_rolling_candidates(rows,p,candidates)
         changed=deepcopy(rows)
         for row in changed:
             if row["split"]=="TEST": row["target"]=999999
-        self.assertEqual(before,validate_candidates(changed,models,candidates,p))
+        after=evaluate_rolling_candidates(changed,p,candidates)
+        before.pop("runtime_seconds");after.pop("runtime_seconds")
+        self.assertEqual(before,after)
+        self.assertTrue(all(record["test_inspected"] is False for record in before["fold_records"]))
         self.assertTrue(all(r["features"]["FEATURE_SET_FULL"] is not None for r in rows))
 
 
 class MLClassicalPipelineTests(unittest.TestCase):
-    def test_three_stages_preserve_hashes_and_never_refit(self):
+    def test_linux_smoke_preserves_hashes_and_never_inspects_test(self):
         with temporary_directory() as directory,redirect_stdout(StringIO()),redirect_stderr(StringIO()):
             root=Path(directory);dataset=synthetic_dataset();dataset_bytes=json_bytes(dataset)
             source=root/"dataset.json";source.write_bytes(dataset_bytes)
             baseline=execute_run(source,root/"baseline","run-four-baselines")
             self.assertEqual(baseline["status"],"SUCCESS")
-            ap=ahc_protocol(root,dataset,dataset_bytes);apath=root/"ahc.json";apath.write_bytes(json_bytes(ap))
+            ap=ahc_protocol(root,dataset,dataset_bytes)
+            ap["splits"]={"TRAIN":["2001-01-01","2004-12-31"],"VALIDATION":["2005-01-01","2006-12-31"],"TEST":["2007-01-01","2009-12-31"]}
+            ap["training_stability_blocks"]=[[2001,2002],[2003,2004]]
+            ap["post_test_descriptive_blocks"]=[[2001,2004],[2005,2006],[2007,2009]]
+            apath=root/"ahc.json";apath.write_bytes(json_bytes(ap))
             previous=None
             for stage in ("train","validate","test"):
                 target=root/("ahc-"+stage);kwargs={} if previous is None else {"parent_manifest":previous}
                 result=execute_ahc(source,root/"baseline/manifest.json",apath,target,stage,**kwargs)
                 self.assertEqual(result["status"],"SUCCESS",result.get("error"));previous=target/"manifest.json"
             mp=ml_protocol(dataset,dataset_bytes,previous);mpath=root/"ml.json";mpath.write_bytes(json_bytes(mp))
-            common=["--dataset",str(source),"--ahc-manifest",str(previous),"--protocol",str(mpath)]
-            code=main(["ml-train",*common,"--output",str(root/"train")])
-            self.assertEqual(code,0,json.loads((root/"train/manifest.json").read_bytes()).get("error"));parent=root/"train/manifest.json"
-            self.assertEqual(main(["ml-validate",*common,"--parent-manifest",str(parent),"--output",str(root/"validation")]),0);parent=root/"validation/manifest.json"
-            code=main(["ml-test",*common,"--parent-manifest",str(parent),"--output",str(root/"test")])
-            self.assertEqual(code,0,json.loads((root/"test/manifest.json").read_bytes()).get("error"))
-            selection=json.loads((root/"validation/selection.json").read_bytes())
-            test=json.loads((root/"test/test_results.json").read_bytes())
-            self.assertEqual(len(selection["selected"]),35);self.assertFalse(selection["test_inspected"])
-            self.assertFalse(test["models_refitted"])
-            self.assertEqual(selection["selected_model_bundle_sha256"],test["selected_model_bundle_sha256"])
-            with (root/"test/daily_predictions.csv").open(encoding="utf-8-sig",newline="") as stream:
-                daily=list(csv.DictReader(stream))
-            self.assertEqual(len(daily),12)
-            self.assertTrue(all("ML_LINEAR__FEATURE_SET_T" in r for r in daily))
-            self.assertTrue((root/"test/test_matrix.csv").is_file())
-            self.assertEqual(json.loads((root/"test/view-manifest.json").read_bytes())["schema_version"],"ml-science-view-v1")
+            with patch("siar_science.ml_pipeline.platform.system",return_value="Linux"):
+                result=execute_ml_smoke(source,previous,mpath,root/"smoke")
+            self.assertEqual(result["status"],"SUCCESS",result.get("error"))
+            smoke=json.loads((root/"smoke/smoke_results.json").read_bytes())
+            self.assertEqual(len(smoke["candidate_summaries"]),2)
+            self.assertTrue(all(len(item["fold_metrics"])==4 for item in smoke["candidate_summaries"]))
+            self.assertFalse(smoke["scientific_selection_allowed"])
+            self.assertFalse(smoke["test_inspected"])
             self.assertEqual(source.read_bytes(),dataset_bytes)
-            manifest=json.loads((root/"test/manifest.json").read_bytes())
+            manifest=json.loads((root/"smoke/manifest.json").read_bytes())
             for entry in manifest["outputs"].values():
-                self.assertEqual(digest((root/"test"/entry["path"]).read_bytes()),entry["sha256"])
-            (root/"validation/selected_models.joblib").write_bytes(b"tampered")
-            failed=main(["ml-test",*common,"--parent-manifest",str(parent),"--output",str(root/"tampered")])
-            self.assertEqual(failed,1)
+                self.assertEqual(digest((root/"smoke"/entry["path"]).read_bytes()),entry["sha256"])
 
 
 if __name__=="__main__": unittest.main()

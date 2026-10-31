@@ -8,6 +8,7 @@ from .pipeline import execute_run, json_bytes, safe_new_output
 from .ahc_pipeline import execute_ahc
 from .ml_pipeline import execute_ml, execute_ml_smoke
 from .ml_campaign import execute_ml_rolling_campaign
+from .ml_recovery import execute_ml_test_recovery
 
 
 def main(argv=None):
@@ -53,6 +54,13 @@ def main(argv=None):
     campaign.add_argument("--protocol", type=Path, required=True)
     campaign.add_argument("--output", type=Path, required=True)
     campaign.add_argument("--pipeline-sha")
+    recovery = sub.add_parser("ml-test-recovery", help="Evaluate an already frozen rolling campaign bundle without selection or refit")
+    recovery.add_argument("--source-run", type=Path, required=True, help="Interrupted campaign directory containing .staging frozen artifacts")
+    recovery.add_argument("--dataset", type=Path, required=True)
+    recovery.add_argument("--ahc-manifest", type=Path, required=True)
+    recovery.add_argument("--protocol", type=Path, required=True)
+    recovery.add_argument("--output", type=Path, required=True, help="New append-only recovery run directory")
+    recovery.add_argument("--pipeline-sha")
     args = parser.parse_args(argv)
     try:
         if args.command == "build-dataset":
@@ -69,6 +77,9 @@ def main(argv=None):
         elif args.command == "ml-rolling-campaign":
             result = execute_ml_rolling_campaign(args.dataset, args.ahc_manifest, args.protocol, args.output,
                                                  pipeline_sha=args.pipeline_sha)
+        elif args.command == "ml-test-recovery":
+            result = execute_ml_test_recovery(args.source_run, args.dataset, args.ahc_manifest,
+                                              args.protocol, args.output, pipeline_sha=args.pipeline_sha)
         elif args.command.startswith("ml-"):
             result = execute_ml(args.dataset, args.ahc_manifest, args.protocol, args.output,
                                 args.command[3:], parent_manifest=getattr(args, "parent_manifest", None), pipeline_sha=args.pipeline_sha)

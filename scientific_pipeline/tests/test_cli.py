@@ -14,7 +14,7 @@ class CLITests(unittest.TestCase):
     def test_module_help_smoke(self):
         result = subprocess.run([sys.executable, "-m", "siar_science", "--help"], text=True, capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
-        for command in ("validate", "build-dataset", "calculate-pm", "calculate-hargreaves", "evaluate", "run-baselines", "ml-rolling-campaign"):
+        for command in ("validate", "build-dataset", "calculate-pm", "calculate-hargreaves", "evaluate", "run-baselines", "ml-rolling-campaign", "ml-test-recovery"):
             self.assertIn(command, result.stdout)
 
     def test_synthetic_cli_success_failure_and_build_gate(self):

@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 from siar_science import ml_recovery
 from siar_science.pipeline import json_bytes
+from siar_science.serialization import digest
 from tests_support import temporary_directory
 
 
@@ -48,6 +49,11 @@ class MLRecoveryTests(unittest.TestCase):
             self.assertEqual(states, ["RECOVERY_STARTED", "PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED", "TEST_EVALUATION_COMPLETED", "SUCCESS"])
             self.assertFalse(hasattr(ml_recovery, "_fit_full_development"))
             self.assertFalse(hasattr(ml_recovery, "_frozen_selection"))
+            manifest_path = root / "run" / "manifest.json"
+            manifest = json.loads(manifest_path.read_bytes())
+            self.assertEqual(digest(manifest_path.read_bytes()), (root / "run" / "manifest.sha256").read_text().split()[0])
+            for entry in manifest["outputs"].values():
+                self.assertEqual(digest((root / "run" / entry["path"]).read_bytes()), entry["sha256"])
 
     def test_test_loader_interruption_leaves_durable_failed_journal(self):
         with temporary_directory() as directory:

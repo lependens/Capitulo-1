@@ -1,19 +1,22 @@
 {
-  "schema_version": "ml-classical-protocol-v1",
-  "experiment_id": "ML_V1_CLASSICAL_20261025",
-  "locked_at_utc": "2026-10-25T20:56:22Z",
-  "contract_id": "ML_TEMPORAL_CONTRACT_V1",
+  "schema_version": "ml-classical-protocol-v2",
+  "experiment_id": "ML_V1_CLASSICAL_ROLLING_20261031",
+  "locked_at_utc": "2026-10-31T08:00:00Z",
+  "contract_id": "ML_TEMPORAL_CONTRACT_V2_ROLLING_ORIGIN",
   "dataset_id": "siar-balears-observational-v1",
   "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
   "ahc_test_manifest_sha256": "502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e47434fc469",
   "target": "PM_FAO56_V1",
   "target_field": "ET0_FAO56",
   "test_status": "retrospective_locked",
-  "splits": {
-    "TRAIN": ["2004-01-01", "2015-12-31"],
-    "VALIDATION": ["2016-01-01", "2020-12-31"],
-    "TEST": ["2021-01-01", "2025-12-31"]
-  },
+  "development_period": ["2004-01-01", "2020-12-31"],
+  "development_folds": [
+    {"fold_id": "F1", "train": ["2004-01-01", "2009-12-31"], "validation": ["2010-01-01", "2012-12-31"]},
+    {"fold_id": "F2", "train": ["2004-01-01", "2012-12-31"], "validation": ["2013-01-01", "2015-12-31"]},
+    {"fold_id": "F3", "train": ["2004-01-01", "2015-12-31"], "validation": ["2016-01-01", "2018-12-31"]},
+    {"fold_id": "F4", "train": ["2004-01-01", "2018-12-31"], "validation": ["2019-01-01", "2020-12-31"]}
+  ],
+  "test_period": ["2021-01-01", "2025-12-31"],
   "primary_stations": ["IB01", "IB02", "IB03", "IB04", "IB05", "IB06", "IB08", "IB10", "IB11"],
   "excluded_stations": {
     "IB07": "no VALIDATION/TEST after closure",
@@ -48,7 +51,9 @@
     "linear_models": "StandardScaler fitted on TRAIN inside Pipeline",
     "tree_models": "no scaling",
     "zero_variance": "StandardScaler scale=1 behavior; persist fitted statistics",
-    "refit_train_plus_validation": false
+    "fold_transformations": "fit only on each fold train window",
+    "final_refit": "after development-only selection, refit frozen configuration on 2004-2020",
+    "test_transformations": "fit only on full development period 2004-2020"
   },
   "candidate_grids": {
     "LINEAR": [{}],
@@ -97,16 +102,21 @@
     "HIST_GRADIENT_BOOSTING": {"loss": "squared_error", "early_stopping": false, "random_state": 20261025}
   },
   "selection": {
-    "within_cell": "minimum VALIDATION RMSE on own complete-case cohort",
-    "campaign_champion": "minimum VALIDATION RMSE on common cohort across all 35 selected cells",
+    "within_cell": "minimum eligible-n weighted mean of fold validation RMSE on own complete-case cohorts",
+    "campaign_champion": "minimum eligible-n weighted mean of fold validation RMSE on per-fold common cohorts across all 35 selected cells",
+    "aggregation_primary": "weighted_mean_fold_rmse",
+    "aggregation_weights": "eligible validation n in each fold",
+    "aggregation_secondary": ["pooled_rmse", "weighted_sd_fold_rmse", "min_fold_rmse", "max_fold_rmse"],
+    "stability_tie_break": "lower weighted_sd_fold_rmse inside the relative RMSE tie",
     "relative_tie_tolerance": 0.001,
-    "tie_break": ["lower model complexity rank", "fewer input features", "lexical candidate_id"],
+    "tie_break": ["lower weighted fold RMSE dispersion", "lower model complexity rank", "fewer input features", "lexical candidate_id"],
     "complexity_rank": ["LINEAR", "RIDGE", "ELASTIC_NET", "TREE", "RANDOM_FOREST", "EXTRA_TREES", "HIST_GRADIENT_BOOSTING"],
     "test_tuning_allowed": false,
-    "test_evaluations": "one pass for all 35 frozen cells; TEST-best is descriptive, not selected"
+    "final_refit_on_full_development": true,
+    "test_evaluations": "one pass after all candidates, feature-family choices and final refit policy are frozen; TEST-best is descriptive, not selected"
   },
   "permutation_importance": {
-    "partition": "VALIDATION",
+    "partition": "last development validation fold F4 (2019-2020)",
     "models": "campaign champion and best VALIDATION cell per algorithm",
     "scoring": "negative_root_mean_squared_error",
     "n_repeats": 10,
@@ -122,5 +132,12 @@
   ],
   "metrics": ["n", "MAE", "RMSE", "bias", "predictive_R2"],
   "groups": ["global", "station", "year", "month", "season", "station_year", "season_year"],
+  "linux_execution": {
+    "canonical_runtime": "Linux server",
+    "windows_runs_after_contract_change": "noncanonical",
+    "smoke_algorithms": ["LINEAR", "RIDGE"],
+    "smoke_feature_set": "FEATURE_SET_T_RH_RS",
+    "smoke_scientific_selection_allowed": false
+  },
   "stop_policy": "stop on split/target/dataset/feature ambiguity, leakage, accidental TEST selection, unexplained physical absurdity or material dependency architecture change"
 }

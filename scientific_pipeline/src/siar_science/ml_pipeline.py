@@ -9,6 +9,7 @@ import uuid
 from .datasets import read_dataset
 from .ml_classical import (ALGORITHMS, BASELINES, feature_names, fit_candidates, importance,
                            predict, prepare_rows, score_predictions, validate_candidates, validate_ml_protocol)
+from .ml_rolling import evaluate_rolling_candidates, linux_smoke_candidates
 from .pipeline import _identity, _utc, safe_new_output
 from .serialization import digest, json_bytes
 
@@ -98,6 +99,16 @@ def _load_models(path, expected):
 def _runtime():
     import joblib,numpy,scipy,sklearn
     return dict(python=platform.python_version(),scikit_learn=sklearn.__version__,numpy=numpy.__version__,scipy=scipy.__version__,joblib=joblib.__version__)
+
+
+def _peak_memory_mb():
+    try:
+        import resource
+        value = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        # Linux reports KiB; macOS reports bytes. The canonical smoke is Linux.
+        return value / (1024 if platform.system() != "Darwin" else 1024 * 1024)
+    except (ImportError, AttributeError):
+        return None
 
 
 def _prediction_rows(rows, selected, models):
@@ -191,6 +202,8 @@ def execute_ml(dataset_path, ahc_manifest_path, protocol_path, output_path, stag
                   started_at_utc=_utc(),pipeline=code,runtime=_runtime(),outputs={})
     try:
         dataset,rows,protocol,identity=_context(dataset_path,ahc_manifest_path,protocol_path);manifest.update(identity);manifest["input_rows"]=len(rows)
+        if protocol.get("schema_version") == "ml-classical-protocol-v2":
+            raise ValueError("Legacy single-split ml-train/ml-validate/ml-test is superseded; use ml-linux-smoke, then the rolling-origin campaign")
         if manifest["runtime"]["scikit_learn"] != protocol["runtime"]["scikit_learn"].lstrip("="):
             raise ValueError("scikit-learn version differs from frozen protocol")
         if stage=="train":
@@ -240,4 +253,45 @@ def execute_ml(dataset_path, ahc_manifest_path, protocol_path, output_path, stag
         manifest["status"]="FAILED";manifest["error"]=str(exc)
     finally:
         manifest["finished_at_utc"]=_utc();_write(output/"manifest.json",manifest)
+    return manifest
+
+
+def execute_ml_smoke(dataset_path, ahc_manifest_path, protocol_path, output_path, *, pipeline_sha=None):
+    """Run the non-selecting LINEAR/RIDGE Linux smoke through all dev folds."""
+    code = _identity(pipeline_sha)
+    output = safe_new_output(output_path, directory=True)
+    manifest = dict(schema_version="ml-linux-smoke-run-v1", stage="linux-smoke", status="FAILED",
+                    run_id="ml-smoke-"+uuid.uuid4().hex, started_at_utc=_utc(), pipeline=code,
+                    runtime=_runtime(), outputs={})
+    try:
+        dataset, rows, protocol, identity = _context(dataset_path, ahc_manifest_path, protocol_path)
+        manifest.update(identity)
+        manifest["input_rows"] = len(rows)
+        if platform.system() != "Linux":
+            raise ValueError("Canonical ML smoke must execute natively on Linux")
+        if manifest["runtime"]["scikit_learn"] != protocol["runtime"]["scikit_learn"].lstrip("="):
+            raise ValueError("scikit-learn version differs from frozen protocol")
+        outcome = evaluate_rolling_candidates(rows, protocol, linux_smoke_candidates(protocol))
+        outcome.update(status="PASS", purpose="infrastructure smoke only; not scientific model selection",
+                       scientific_selection_allowed=False, test_inspected=False,
+                       peak_memory_mb=_peak_memory_mb(), platform=platform.platform())
+        fields = ("candidate_id", "algorithm", "feature_set", "parameters", "fold_id", "train_period",
+                  "validation_period", "train_n", "validation_n", "train_key_sha256",
+                  "validation_key_sha256", "metrics", "fit_warnings", "test_inspected")
+        manifest["outputs"]["rolling_fold_metrics.csv"] = _csv(
+            output/"rolling_fold_metrics.csv", outcome["fold_records"], fields)
+        summary = {key: value for key, value in outcome.items() if key != "fold_records"}
+        manifest["outputs"]["smoke_results.json"] = dict(
+            path="smoke_results.json", sha256=_write(output/"smoke_results.json", summary))
+        manifest["status"] = "SUCCESS"
+        manifest["scientific_selection_allowed"] = False
+        manifest["test_inspected"] = False
+        if digest(Path(dataset_path).read_bytes()) != identity["dataset_sha256"]:
+            raise ValueError("Dataset changed during smoke")
+    except (OSError, ValueError, TypeError, KeyError, OverflowError) as exc:
+        manifest["status"] = "FAILED"
+        manifest["error"] = str(exc)
+    finally:
+        manifest["finished_at_utc"] = _utc()
+        _write(output/"manifest.json", manifest)
     return manifest

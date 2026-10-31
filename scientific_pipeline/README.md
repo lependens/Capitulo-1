@@ -212,20 +212,18 @@ estación-año y condición retrospectiva de TEST. ML y web siguen sin ejecució
 
 ## Campaña ML clásica v1
 
-[Metodología y presupuesto congelado](docs/ml_v1_classical_methodology.md) y
+[Metodología y presupuesto congelado](docs/ml_v1_classical_methodology.md),
+[refinamiento temporal](docs/ml_validation_contract_refinement.md) y
 [protocolo ejecutable](experiments/ml-v1-classical.json). La extensión opcional
 se instala con `python -m pip install './scientific_pipeline[ml]'`; fija
 `scikit-learn==1.9.1`. ANN continúa fuera de alcance.
 
-```powershell
-siar-science ml-train --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --output ./runs/ml/train
-siar-science ml-validate --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --parent-manifest ./runs/ml/train/manifest.json --output ./runs/ml/validation
-siar-science ml-test --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --parent-manifest ./runs/ml/validation/manifest.json --output ./runs/ml/test
+```bash
+siar-science ml-linux-smoke --dataset ./derived/dataset.json --ahc-manifest ./runs/ahc/test/manifest.json --protocol scientific_pipeline/experiments/ml-v1-classical.json --output ./scientific-results/ml-linux-smoke-UTC
 ```
 
-TRAIN produce 185 modelos candidatos. VALIDATION congela 35 celdas
-algoritmo×familia, un champion común y la importancia por permutación. TEST
-acepta únicamente ese bundle verificado y no reajusta. Publica predicciones,
-métricas propias/comunes, desgloses, matriz compacta, cobertura, metadata,
-esquemas y manifest para 06 Web. Los archivos joblib son artefactos internos
-con hash: cargarlos solo desde el productor confiable, nunca desde terceros.
+El smoke Linux ejecuta Linear/Ridge sobre `FEATURE_SET_T_RH_RS` en los cuatro
+folds y declara que no selecciona ciencia ni inspecciona TEST. Los antiguos
+comandos de tres etapas con un solo VALIDATION están bloqueados para el protocolo
+v2. La siguiente campaña implementará selección rolling-origin de las 35 celdas,
+refit congelado en DEVELOPMENT 2004–2020 y una única evaluación TEST.

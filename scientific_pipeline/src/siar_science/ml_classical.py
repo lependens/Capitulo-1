@@ -9,7 +9,7 @@ import hashlib
 import math
 import warnings
 
-from .calibration import partition, season
+from .calibration import season
 from .metrics import metrics
 from .quality import finite
 from .serialization import digest, json_bytes
@@ -21,19 +21,34 @@ BASELINES = ("PM_FAO56_V1", "HS_RA_V1", "HS_RA_AHC_VALIDATED", "HG_RS_V1", "HG_R
 
 
 def validate_ml_protocol(protocol):
-    if protocol.get("schema_version") != "ml-classical-protocol-v1" or protocol.get("target") != "PM_FAO56_V1":
+    if protocol.get("schema_version") != "ml-classical-protocol-v2" or protocol.get("target") != "PM_FAO56_V1":
         raise ValueError("Unsupported ML protocol or target")
-    if protocol.get("test_status") != "retrospective_locked" or protocol.get("preprocessing", {}).get("refit_train_plus_validation") is not False:
-        raise ValueError("Unsupported TEST/refit policy")
-    if set(protocol.get("splits", {})) != {"TRAIN", "VALIDATION", "TEST"}:
-        raise ValueError("Require TRAIN/VALIDATION/TEST")
-    previous = None
-    for name in ("TRAIN", "VALIDATION", "TEST"):
-        start, end = protocol["splits"][name]
-        date.fromisoformat(start); date.fromisoformat(end)
-        if start > end or (previous is not None and start <= previous):
-            raise ValueError("Invalid temporal split")
-        previous = end
+    if protocol.get("test_status") != "retrospective_locked":
+        raise ValueError("Unsupported TEST policy")
+    development = protocol.get("development_period")
+    test = protocol.get("test_period")
+    if not _valid_period(development) or not _valid_period(test) or development[1] >= test[0]:
+        raise ValueError("Invalid DEVELOPMENT/TEST periods")
+    folds = protocol.get("development_folds")
+    if not isinstance(folds, list) or not folds:
+        raise ValueError("Require rolling-origin development folds")
+    seen = set()
+    previous_validation_end = None
+    for fold in folds:
+        if set(fold) != {"fold_id", "train", "validation"} or fold["fold_id"] in seen:
+            raise ValueError("Invalid or duplicate development fold")
+        seen.add(fold["fold_id"])
+        if not _valid_period(fold["train"]) or not _valid_period(fold["validation"]):
+            raise ValueError("Invalid fold period")
+        if fold["train"][0] != development[0] or fold["train"][1] >= fold["validation"][0]:
+            raise ValueError("Development folds must be expanding and causal")
+        if fold["validation"][0] < development[0] or fold["validation"][1] > development[1]:
+            raise ValueError("Fold validation outside DEVELOPMENT")
+        if previous_validation_end is not None and fold["train"][1] != previous_validation_end:
+            raise ValueError("Each expanding train must end at the prior validation boundary")
+        previous_validation_end = fold["validation"][1]
+    if previous_validation_end != development[1]:
+        raise ValueError("Rolling folds must close at the DEVELOPMENT boundary")
     if set(protocol.get("candidate_grids", {})) != set(ALGORITHMS):
         raise ValueError("Require the seven ordered algorithm families")
     if any(not isinstance(grid, list) or not grid for grid in protocol["candidate_grids"].values()):
@@ -44,7 +59,34 @@ def validate_ml_protocol(protocol):
         raise ValueError("Invalid feature families")
     if protocol.get("runtime", {}).get("random_seed") is None or protocol["selection"].get("test_tuning_allowed") is not False:
         raise ValueError("Missing deterministic seed or anti-tuning policy")
+    selection = protocol["selection"]
+    if (selection.get("aggregation_primary") != "weighted_mean_fold_rmse"
+            or selection.get("aggregation_weights") != "eligible validation n in each fold"
+            or selection.get("final_refit_on_full_development") is not True):
+        raise ValueError("Unsupported rolling aggregation/refit policy")
+    linux = protocol.get("linux_execution", {})
+    if linux.get("canonical_runtime") != "Linux server" or linux.get("smoke_scientific_selection_allowed") is not False:
+        raise ValueError("Linux-native/smoke policy is not frozen")
     return protocol
+
+
+def _valid_period(value):
+    if not isinstance(value, list) or len(value) != 2:
+        return False
+    try:
+        start, end = (date.fromisoformat(item) for item in value)
+    except (TypeError, ValueError):
+        return False
+    return start <= end
+
+
+def ml_partition(day, protocol):
+    """Return DEVELOPMENT/TEST without consulting target values or coverage."""
+    if protocol["development_period"][0] <= day <= protocol["development_period"][1]:
+        return "DEVELOPMENT"
+    if protocol["test_period"][0] <= day <= protocol["test_period"][1]:
+        return "TEST"
+    return "OUTSIDE_EXPERIMENT"
 
 
 def feature_names(protocol, family):
@@ -82,9 +124,10 @@ def prepare_rows(dataset, official, protocol):
             raise ValueError("AHC daily projection missing dataset key")
         source = official[key]
         values = _features(dataset, row)
+        split = ml_partition(row["date"], protocol)
         accepted = (row["station_code"] in primary and row["quality_status"] in protocol["eligibility"]["quality_status"]
                     and row["observation_status"] in protocol["eligibility"]["observation_status"]
-                    and partition(row["date"], protocol) in ("TRAIN", "VALIDATION", "TEST"))
+                    and split in ("DEVELOPMENT", "TEST"))
         target = source.get("PM_FAO56_V1")
         accepted = accepted and finite(target) and target >= 0
         families, reasons = {}, {}
@@ -106,7 +149,7 @@ def prepare_rows(dataset, official, protocol):
                 reason.append("negative_wind")
             reasons[family] = sorted(set(reason))
             families[family] = None if reason else [values[name] for name in names]
-        result.append(dict(station_code=row["station_code"], date=row["date"], split=partition(row["date"], protocol),
+        result.append(dict(station_code=row["station_code"], date=row["date"], split=split,
             target=target, EtPMon=source.get("EtPMon"), baselines={m: source.get(m) for m in BASELINES},
             feature_values=values, features=families, eligibility_reasons=reasons,
             quality_status=row["quality_status"], observation_status=row["observation_status"],

@@ -1,9 +1,10 @@
-# ML v1 — campaña clásica bloqueada antes del entrenamiento
+# ML v1 — campaña clásica bloqueada antes del entrenamiento científico
 
 La configuración ejecutable está en
 [`ml-v1-classical.json`](../experiments/ml-v1-classical.json). Se cerró el
-25/10/2026 antes de ajustar cualquier modelo ML o inspeccionar sus errores.
-Mantiene Dataset v1, target, familias y cortes del contrato ML aprobado.
+31/10/2026 después del [refinamiento rolling-origin](ml_validation_contract_refinement.md).
+Mantiene Dataset v1, target, familias y TEST; sustituye el único corte de
+desarrollo por cuatro ventanas expansivas causales.
 
 El objetivo es emular `PM_FAO56_V1`, una referencia calculada en mm/día. No es
 ET medida ni un target independiente de sus inputs físicos. La población primaria
@@ -26,15 +27,17 @@ documenta Random Forest, Extra Trees y gradient boosting. HistGradientBoosting e
 añadir otro framework. Semillas, paralelismo, iteraciones y rejillas están
 fijados en el JSON.
 
-VALIDATION elige un candidato por celda algoritmo×familia. Después elige un
-champion de campaña sobre la intersección común de las 35 celdas congeladas.
+Los cuatro folds de desarrollo eligen un candidato por celda algoritmo×familia
+mediante RMSE medio ponderado por n; se publican dispersión y rango. Después se
+elige un champion sobre cohortes comunes de desarrollo y se reajustan las
+configuraciones congeladas con DEVELOPMENT 2004–2020.
 Empates relativos dentro del 0,1 % favorecen menor complejidad, menos variables
 y finalmente ID léxico. TEST se abre una vez y evalúa las 35 celdas sin cambiar
 nada. El mejor valor observado en TEST es descriptivo; no reemplaza al champion
 seleccionado en VALIDATION. TEST continúa etiquetado `retrospective_locked`.
 
 La [importancia por permutación](https://scikit-learn.org/stable/modules/permutation_importance.html)
-se calcula en VALIDATION sobre una muestra de
+se calcula en el último fold de validación (2019–2020) sobre una muestra de
 claves seleccionada por hash, independiente del target. La caída de rendimiento
 describe dependencia predictiva del modelo y las variables correlacionadas;
 no mide causalidad ni dirige selección. Los árboles conservan además su

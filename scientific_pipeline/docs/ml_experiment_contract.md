@@ -28,16 +28,18 @@ documento para evitar autorreferencia.
 
 ## Partición y alcance de la validación
 
-| Partición | Fechas inclusivas globales |
+| Ámbito | Fechas inclusivas globales |
 |---|---|
-| TRAIN | 2004-01-01–2015-12-31 |
-| VALIDATION | 2016-01-01–2020-12-31 |
+| DEVELOPMENT rolling-origin | 2004-01-01–2020-12-31 |
 | TEST | 2021-01-01–2025-12-31 |
 
-La misma fecha pertenece a la misma partición en todas las estaciones. Publicar
-un archivo de asignación de claves estación-fecha y su hash. No mover cortes
-según errores, target o cobertura individual. TRAIN ajusta modelos y todas las
-transformaciones; VALIDATION selecciona; TEST evalúa la configuración congelada.
+DEVELOPMENT usa F1 2004–2009→2010–2012, F2 2004–2012→2013–2015,
+F3 2004–2015→2016–2018 y F4 2004–2018→2019–2020. La misma fecha pertenece
+al mismo fold en todas las estaciones. Publicar un archivo de asignación de
+claves estación-fecha y su hash. No mover cortes según errores, target o
+cobertura individual. El TRAIN de cada fold ajusta modelo y transformaciones;
+las ventanas futuras agregadas seleccionan. La configuración congelada se
+reajusta en DEVELOPMENT completo y TEST evalúa una vez.
 Presupuesto de candidatos, hiperparámetros, semillas y criterio de selección se
 deben cerrar en un protocolo de ejecución antes de ajustar. Este documento no
 autoriza buscar configuraciones reiteradamente contra TEST.

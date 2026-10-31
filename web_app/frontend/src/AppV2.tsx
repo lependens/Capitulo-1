@@ -7,7 +7,8 @@ const splits:ScientificSplit[]=['ALL','TRAIN','VALIDATION','TEST'];
 const tabs=[['ahc','Baseline vs AHC'],['coefficients','Coeficientes AHC'],['selected','HG-Rs SELECTED'],['provenance','Procedencia']] as const;
 const bases=['HS_RA_V1','HG_RS_V1','VALIANTZAS_V1'];
 const chartBase={animation:false,textStyle:{fontFamily:'system-ui, sans-serif'},grid:{left:58,right:24,top:28,bottom:86},tooltip:{trigger:'axis',confine:true},xAxis:{type:'time'},yAxis:{type:'value',name:'mm/día'},dataZoom:[{type:'inside'},{type:'slider',height:24,bottom:20}]} as const;
-const support=(value:Record<string,unknown>)=>Object.entries(value??{}).map(([k,v])=>`${k}: ${String(v)}`).join(' · ')||'—';
+const supportValue=(value:unknown)=>Array.isArray(value)?value.join(', '):value!==null&&typeof value==='object'?JSON.stringify(value):String(value);
+const support=(value:Record<string,unknown>)=>Object.entries(value??{}).map(([k,v])=>`${k}: ${supportValue(v)}`).join(' · ')||'—';
 
 function Metrics({rows,models}:{rows:AhcMetric[];models:Model[]}){return <div className="table-scroll"><table><thead><tr><th>Split</th><th>Método</th><th>N</th><th>MAE</th><th>RMSE</th><th>Bias</th><th>R²</th></tr></thead><tbody>{rows.map((r,i)=><tr key={`${r.split}-${r.method_id}-${r.key}-${i}`}><td><span className={`split-chip split-${r.split.toLowerCase()}`}>{r.split}</span></td><th><span className="dot" style={{background:models.find(m=>m.id===r.method_id)?.color}}/>{models.find(m=>m.id===r.method_id)?.label??r.method_id}</th><td>{number(r.n,0)}</td><td>{number(r.mae,6)}</td><td>{number(r.rmse,6)}</td><td>{number(r.bias,6)}</td><td>{number(r.r2,6)}</td></tr>)}</tbody></table>{!rows.length&&<p className="empty">No hay métricas publicadas para esta selección.</p>}</div>}
 

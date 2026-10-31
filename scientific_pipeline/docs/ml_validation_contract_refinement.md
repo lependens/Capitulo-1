@@ -1,3 +1,5 @@
+> **Estado posterior — 31/10/2026:** WEB-V0.2-AHC ya está desplegada (PR #46/#47) y el runtime ML rolling está implementado (PR #48); rolling validation y Linux smoke PASS. La campaña científica oficial permanece pendiente de despliegue/ejecución; ANN NOT STARTED. Las referencias inferiores a «web no construida», ML futuro o merge pendiente conservan el estado previo de su entrega. No cambian la semántica contractual ni resultados congelados. Este documento es la referencia técnica rolling; estado rápido en [PROJECT_STATUS](../../docs/PROJECT_STATUS.md).
+
 # ML v1 — refinamiento de validación temporal
 
 **Estado: contrato congelado antes de selección científica; TEST 2021–2025 no

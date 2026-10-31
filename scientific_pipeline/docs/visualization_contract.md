@@ -1,3 +1,5 @@
+> **Estado posterior — 31/10/2026:** WEB-V0.2-AHC ya está desplegada (PR #46/#47) y el runtime ML rolling está implementado (PR #48); rolling validation y Linux smoke PASS. La campaña científica oficial permanece pendiente de despliegue/ejecución; ANN NOT STARTED. Las referencias inferiores a «web no construida», ML futuro o merge pendiente conservan el estado previo de su entrega. No cambian la semántica contractual ni resultados congelados. Para el contrato rolling vigente, véase [refinamiento temporal](ml_validation_contract_refinement.md); estado rápido en [PROJECT_STATUS](../../docs/PROJECT_STATUS.md).
+
 # Contrato de datos para visualización científica v1
 
 **Estado documental vigente — 25/10/2026: FROZEN / AVAILABLE TO 06.** AHC temporal ya está PASS. Este contrato describe consumo/experimentos futuros: no ML/ANN entrenado ni web construida. El consumidor utiliza las tablas/schemas del productor y no recalcula ciencia ni inventa agregados no publicados. [Estado maestro](../../docs/PROJECT_STATUS.md).

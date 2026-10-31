@@ -1,3 +1,5 @@
+> **Estado vigente — 31/10/2026:** Dataset v1, cuatro baselines y AHC oficiales PASS. WEB-V0.2-AHC desplegada, sin recalcular ciencia. ML rolling validation (PR #45), Linux smoke y runtime (PR #48) PASS; comando `ml-rolling-campaign`. Campaña científica oficial PENDING EXECUTION, pendiente de despliegue/ejecución; ANN NOT STARTED. Los apartados fechados 24–25/10 conservan estados anteriores («ML/web sin ejecución»), superados por esta nota. [Contrato rolling](docs/ml_validation_contract_refinement.md), [estado maestro](../docs/PROJECT_STATUS.md) y [localizaciones/evidencia](../docs/DATA_LOCATIONS.md).
+
 # SIAR Science — ET₀ baselines v1
 
 Capa reproducible de observaciones SIAR Baleares: validación científica por método, Penman–Monteith diario FAO-56, Hargreaves–Samani fijo, VALIANTZAS_V1, Hargreaves-Rs y evaluación frente a EtPMon. Conserva valores originales y genera resultados derivados separados. Los cuatro baselines sin calibración se conservan; AHC tiene etapas/identidades separadas. No incorpora forecast, ML entrenado ni limpieza global ±3σ.

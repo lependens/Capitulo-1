@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-10-25.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico.
+**Actualizado: 2026-10-31.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.2-AHC está desplegada y el runtime ML rolling implementado; su campaña científica oficial sigue pendiente.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -40,10 +40,11 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
 - [Forecast SIAR](forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
-- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines clásicos v1 y evidencia reproducible.
+- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines, AHC y runtime ML rolling; campaña oficial pendiente.
+- [Aplicación web](web_app/README.md) — WEB-V0.2-AHC desplegada en LAN, consumo de ciencia publicada read-only.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
 - [Backup y recuperación](docs/backup/README.md) — inventario canónico, cobertura, operación, restore y diseño Windows pendiente (revisión 31/10/2026).
-- [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — estado vigente y límites de preservación.
+- [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — registro histórico del cierre AHC/backup del 25/10.
 - [Auditoría documental 24/10](docs/REPO_AUDIT_2026-10-24.md) — registro histórico de la etapa anterior.
 - [Auditoría documental 23/10](docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
@@ -211,12 +212,14 @@ Capitulo-1/
 ├── aemet_forecast_collector/
 ├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
 ├── data_quality/siar/         # POST original y POST corregido versionados
-├── scientific_pipeline/      # paquete científico y evidencia oficial compacta PM/HS
+├── scientific_pipeline/      # cuatro baselines, AHC y runtime ML rolling
+├── web_app/                  # WEB-V0.2-AHC, consulta read-only
 ├── legacy/                    # código y datos históricos
 ├── docs/
 │   ├── PROJECT_STATUS.md
 │   ├── ROADMAP.md
 │   ├── MILESTONES.md
+│   ├── backup/               # arquitectura, cobertura, operación y restore
 │   └── siar/
 ├── estaciones_baleares.csv
 └── README.md
@@ -436,7 +439,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 ---
 
-# 7. Estado general — 25/10/2026
+# 7. Estado general — 31/10/2026
 
 | Área | Estado |
 |---|---|
@@ -452,7 +455,9 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | AEMET Track B | OPEN |
 | Storage | CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE |
 | ANN y dashboards legacy | Historia preservada, sin convertir resultados antiguos en v1 |
-| ML nuevo / Web/API / Kc / ETc / riego | Futuro después de baselines comparables y validación |
+| WEB-V0.2-AHC | PASS / DEPLOYED en LAN; cuatro baselines y AHC publicados, datos read-only |
+| ML clásico | Rolling validation, Linux smoke y runtime PASS; campaña científica oficial PENDING EXECUTION |
+| ANN / Forecast integrado / Kc / ETc / riego | ANN NOT STARTED; integraciones y riego posteriores bajo sus gates |
 
 SIAR Forecast mantiene timer ACTIVE aunque SIAR Sync siga HOLD. El primer ciclo real automático con backup automático y COMPLETE remoto demuestra CAPTURE RUNNING; al menos dos ciclos PASS, PILOT RUNNING. Un timer activo no demuestra esos gates. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
 
@@ -502,7 +507,7 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-Quality CLOSED/COMPLETE y Dataset v1 PASS; [cuatro baselines oficiales y comparación](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) PASS. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS. Contrato ML FROZEN/READY: linear/regularized regression → trees → random forest/extra trees → boosting → ANN después. Visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida.
+Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.2-AHC desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña científica oficial sigue pendiente de despliegue/ejecución, ANN no iniciada. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
 
 El snapshot remoto protege 82 archivos scientific-results y 46 SIAR published Raw; futuros resultados que sigan solo Windows **no están automáticamente protegidos** y requieren transferencia/ingestión. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 

@@ -21,7 +21,7 @@ class MLRecoveryTests(unittest.TestCase):
                 {}, "b" * 64, [], "c" * 64, bundle, "d" * 64, protocol, "e" * 64)
 
     def _identity(self):
-        return {"dataset_id": "fixture", "dataset_sha256": "f" * 64, "audit_source_repo_sha": "a" * 40,
+        return {"dataset_id": "fixture", "dataset_sha256": digest(b"fixture dataset"), "audit_source_repo_sha": "a" * 40,
                 "source_repo_sha": "b" * 40, "quality_post": {}, "source_data_hashes": {}, "units": {},
                 "catalog": {}, "protocol_sha256": "e" * 64, "protocol_file_sha256": "e" * 64,
                 "ahc_test_manifest_sha256": "c" * 64, "split_assignment_sha256": "9" * 64}

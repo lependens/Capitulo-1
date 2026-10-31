@@ -1,7 +1,7 @@
 {
   "name": "siar-et0-lab",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {"dev": "vite --host 0.0.0.0", "build": "tsc -b && vite build", "lint": "eslint .", "test": "vitest run"},
   "dependencies": {"echarts": "5.6.0", "react": "19.0.0", "react-dom": "19.0.0"},

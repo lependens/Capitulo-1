@@ -33,6 +33,7 @@ class MLRecoveryTests(unittest.TestCase):
                 self.assertEqual(journal[-2:], ["PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED"])
                 return {}, [], self._frozen_source()[-2], self._identity()
             with patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
+                 patch.object(ml_recovery, "_file_sha256", return_value="0" * 64), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=load_test), \
                  patch.object(ml_recovery, "_test_predictions", return_value=[]), \
                  patch.object(ml_recovery, "score_predictions", return_value=[]), \
@@ -55,6 +56,7 @@ class MLRecoveryTests(unittest.TestCase):
                 self.assertEqual(states[-1], "TEST_ACCESS_INTENT_RECORDED")
                 raise RuntimeError("synthetic interruption")
             with patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
+                 patch.object(ml_recovery, "_file_sha256", return_value="0" * 64), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=interrupted):
                 with self.assertRaisesRegex(RuntimeError, "synthetic interruption"):
                     ml_recovery.execute_ml_test_recovery(root / "source", root / "dataset", root / "ahc", root / "protocol", root / "run")

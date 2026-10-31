@@ -36,7 +36,7 @@ INTERRUPTED_RUN_ARTIFACT_SHA256 = {
 def _journal(path, state, **details):
     record = {"state": state, "at_utc": _utc(), **details}
     with Path(path).open("ab") as stream:
-        stream.write(json_bytes(record) + b"\n")
+        stream.write((json.dumps(record, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False) + "\n").encode("utf-8"))
         stream.flush()
         os.fsync(stream.fileno())
 

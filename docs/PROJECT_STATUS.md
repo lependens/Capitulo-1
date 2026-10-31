@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-31 (Europe/Madrid), revisión de preservación.** Fuente principal del estado vigente. Consolidación WEB-V0.1 sobre main `b5a73e3df273bb3922adbd31abf19ee9f65b8520`; estado operativo según el último parte de Dirección 00 y la validación de despliegue de 06. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-10-31 (Europe/Madrid), consolidación hasta PR #49.** Base releída: `2da62f17314e77461d2fe9cc405127e1f5870fdc`. Estado operativo y hashes externos según el parte vigente de Dirección 00; esta actualización no inspecciona ni cambia producción. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -18,14 +18,14 @@
 |---|---|---|
 | Quality SIAR Baleares | COMPLETE; POST corregido publicado mediante PR #29; 12 estaciones | CATALOG-TZ-001 OPEN / NON_BLOCKING; completitud observacional distinta de completitud de auditoría |
 | Dataset Observational v1 | Construido/validado PASS; SHA256 verificado en snapshot remoto aceptado | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
-| Ciencia ET₀ | Cuatro baselines y AHC temporal PASS; contratos ML/visualización congelados | ML v1 futuro; ANN después; WEB-V0.1 consume solo los cuatro baselines publicados |
+| Ciencia ET₀ | Dataset v1, cuatro baselines y AHC temporal PASS; rolling validation, Linux smoke y runtime ML PASS | Campaña ML clásica oficial PENDING EXECUTION, pendiente de despliegue/ejecución del runtime; ANN NOT STARTED |
 | Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos REMOTE_VERIFIED | Nuevos resultados solo Windows requieren transferencia/ingestión explícita |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
 | SIAR Forecast | Timer de captura ACTIVE; reconciliador enabled/active cada 15 min, último Result success | Nuevo run real automático → backup automático → COMPLETE remoto; después CAPTURE RUNNING, mínimo dos ciclos PILOT RUNNING |
 | AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
 | AEMET Track B | OPEN | Investigar feed AEMET exacto utilizado por SIAR, independientemente de Track A |
 | Storage | Incidente CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE | Reabrir solo con nueva evidencia objetiva; sin plan de sustitución del SSD |
-| ML / producto | WEB-V0.1 DEPLOYED en LAN; ML contract FROZEN/READY; visualization contract FROZEN/AVAILABLE TO 06 | No ML/ANN entrenado; AHC se integra en WEB-V0.2; consumir artefactos publicados sin recalcular ciencia |
+| Producto | WEB-V0.2-AHC PASS / DEPLOYED; cuatro baselines y AHC publicados, LAN only, datos read-only | WEB-V0.3-ML espera outputs ML oficiales publicados; integración Forecast posterior |
 
 ## Observaciones y Quality: cierre vigente
 
@@ -121,12 +121,26 @@ Estabilidad **PASS**, CV muestral máximo **6.612 %**, max/min **1.164415**. No 
 
 **AHC_CLIMATOLOGY** solo se calculó después de completar TEST usando todo el histórico declarado hasta 2025. Identidad separada: descripción climatológica y posible coeficiente operativo futuro, nunca fuente de métricas TEST ni sustituto de coeficientes TRAIN. IB101 **SHORT_SERIES_DESCRIPTIVE, deployable=false**; IB09 **UNAVAILABLE / Quality FAIL**; IB07 sin validación/test posterior al cierre.
 
-[ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS** y [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**. ML sigue DESIGN_ONLY_NO_MODELS_TRAINED; el protocolo de cada ejecución debe cerrar presupuesto/candidatos/semillas antes de ajustar. **WEB-V0.1 está desplegada en LAN** y consume la publicación cerrada de cuatro baselines sin recalcular ciencia. AHC queda explícitamente para WEB-V0.2.
+Los contratos [ML](../scientific_pipeline/docs/ml_experiment_contract.md) y [visualización](../scientific_pipeline/docs/visualization_contract.md) conservan su semántica científica congelada. El refinamiento rolling y el runtime ya están fusionados; su implementación no acredita resultados oficiales nuevos. WEB-V0.2 consume los cuatro baselines y AHC publicados sin recalcular ciencia.
 
-### WEB-V0.1 — DEPLOYED
+### WEB-V0.1 — hito histórico de 25/10/2026
 
 PR [#41](https://github.com/lependens/Capitulo-1/pull/41) publicó FastAPI/DuckDB, React/ECharts, conversor verificado, pruebas y operación Docker Compose; PR [#42](https://github.com/lependens/Capitulo-1/pull/42) corrigió la sintaxis `tmpfs` detectada en el primer arranque. Producción validada en `http://192.168.1.43:8088/`: backend y frontend healthy, enlace exclusivo a LAN, root filesystem de solo lectura y `/data` read-only. Dataset `siar-balears-observational-v1`, 75.496 filas; Parquet SHA256 `6119e3521e8efb1251771a8d6fad2b5a5308e31d7eabeb66e0183c3add0deeca`. Validación funcional de escritorio y móvil PASS.
 
+
+### WEB-V0.2-AHC — PASS / DEPLOYED
+
+PR [#46](https://github.com/lependens/Capitulo-1/pull/46) y [#47](https://github.com/lependens/Capitulo-1/pull/47) fusionadas. Estado de despliegue confirmado por Dirección 00: [aplicación LAN](http://192.168.1.43:8088/), **LAN only**, montajes de datos **read-only**. Desktop/mobile/API **PASS**. Se mantienen los cuatro baselines y se integran AHC_VALIDATED, **HG_RS_AHC_VALIDATED_SELECTED**, coeficientes y selector **ALL/TRAIN/VALIDATION/TEST**. ALL conserva resultados separados por split, sin fabricar una métrica conjunta. **AHC_CLIMATOLOGY solo operacional**, nunca rendimiento TEST.
+
+`data_recalculated = NO`; `scientific_artifacts_modified = NO`. Derivado **web-derived-v02-ahc-20261031**, SHA256 `875a6dde1fe133e76a03bf2f07f7b51848afe5239c5bc87d9a2f47697cacb360`. Ingestión documentada y snapshot **backup_20261031T160746Z_c8860d65**, **REMOTE_VERIFIED**. Receipt y localizaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md). No se reemplaza la identidad de Dataset v1 por el hash del derivado web.
+
+### ML clásico — runtime implementado, campaña oficial pendiente
+
+**ML-VALIDATION-CONTRACT-REFINEMENT = PASS**, PR [#45](https://github.com/lependens/Capitulo-1/pull/45). Rolling-origin causal en DEVELOPMENT 2004–2020; **Linux smoke = PASS**, prueba de infraestructura sin selección científica ni inspección TEST. [Contrato vigente de validación](../scientific_pipeline/docs/ml_validation_contract_refinement.md).
+
+**Rolling runtime implementation = PASS**, PR [#48](https://github.com/lependens/Capitulo-1/pull/48), merge `87c8040a2f7f8068259f1ff6bdf6bca382b53400`. Comando oficial **ml-rolling-campaign**; STOP estructural de runtime resuelto. Evalúa candidatos en F1–F4, congela selección, refit DEVELOPMENT y una apertura posterior de TEST según el protocolo fusionado. Esto no cambia el protocolo AHC ni sus resultados.
+
+**Campaña ML clásica oficial = PENDING EXECUTION**, pendiente solo de despliegue/ejecución del runtime; no consta cierre científico PASS en el estado comunicado. El smoke y el intento FAILED anterior no son resultados oficiales ni selección de modelos. **ANN = NOT STARTED.** Evidencia operativa y hashes en [DATA_LOCATIONS](DATA_LOCATIONS.md); no se generan modelos ni métricas en esta PR documental.
 
 ## SIAR Sync: HOLD independiente del snapshot científico
 
@@ -197,15 +211,15 @@ Secret config y credentials **EXCLUDED** del snapshot. Material de recuperación
 
 Toshiba ya no es la única copia **para los artefactos científicos y SIAR published Raw cubiertos por el snapshot verificado**. GitHub sigue siendo autoridad versionable, no copia íntegra de outputs masivos. Esta misión backup **no cambió Forecast**: timer captura y reconciliador ACTIVE; nuevo run automático real con backup/COMPLETE remoto aún pendiente. AEMET disabled/inactive, captures=0, gate=CLOSED, sin nuevos raw.
 
-## Próximos gates y gobierno
+## Próximos pasos
 
-1. **ML v1:** contrato congelado; linear/regularized regression → trees → random forest/extra trees → boosting → ANN después. No se afirma entrenamiento ni resultados ML.
-2. **06 Web / Visualization / API:** contrato FROZEN/AVAILABLE, consumo de tablas, schemas, métricas y linaje publicados sin recalcular ciencia. Producto todavía no construido.
-3. Infraestructura: SIAR Forecast real-run backup gate, AEMET reactivation tras CAPTURE RUNNING y SIAR Sync alignment/incremental 2026 siguen pendientes. La misión backup no los cambió.
-4. Preservación continua de nuevos artefactos mediante ingestión explícita; daily reconciliation para los ya ingeridos, 15 min para SIAR published raw.
-5. Issue/valid time/D+n y comparativas forecast científicas siguen separados de adquisición; Web/API, ET₀+Kc/ETc/riego después de validación.
+1. **05 / ciencia:** desplegar/ejecutar `ml-rolling-campaign` y publicar la campaña ML clásica oficial con protocolo, hashes y evidencia de cierre. Runtime y Linux smoke ya PASS; no repetir su implementación como si faltara. ANN después de evaluar ML.
+2. **06 / producto:** conservar WEB-V0.2-AHC desplegada y consumir outputs ML oficiales publicados para WEB-V0.3-ML; no recalcular ciencia desde UI/API. Forecast se integra posteriormente bajo sus contratos.
+3. **02B / preservación:** ingerir y preservar cada nuevo artefacto publicado. WEB-V0.2 ya tiene receipt y snapshot REMOTE_VERIFIED; Windows automation sigue DESIGN_READY / STILL_PENDING.
+4. Infraestructura: gate SIAR Forecast de nuevo run real con backup/COMPLETE, AEMET tras CAPTURE RUNNING y SIAR Sync alignment/incremental 2026 permanecen separados, sin cambios en esta misión.
+5. Issue/valid time/D+n, ET₀+Kc/ETc/riego y validación prospectiva mantienen sus gates propios.
 
-AHC-METHODOLOGY-REVIEW y PROJECT-ARTIFACT-BACKUP-V1 ya no son pendientes: ambos PASS. Los workstreams operan dentro de objetivos/invariantes/STOP; se escalan arquitectura, seguridad, integridad raw y semántica científica.
+**05 produce ciencia → 06 consume ciencia publicada → 02B preserva nuevos artefactos.** MILESTONES conserva la historia; DATA_LOCATIONS identifica bytes/receipts; [backup canónico](backup/README.md) delimita cobertura. Se escalan arquitectura, seguridad, integridad raw y semántica científica.
 
 ## Registros de ampliación — trazabilidad
 

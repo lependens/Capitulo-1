@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Revisión de preservación: 2026-10-31.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Actualizado: 2026-10-31; consolidación hasta PR #49.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|
@@ -151,7 +151,7 @@ TEST manifest SHA256: `502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e474
 
 El [contrato de visualización](../scientific_pipeline/docs/visualization_contract.md) está FROZEN/AVAILABLE TO 06: daily_predictions, métricas precalculadas, metadatos, cobertura, schemas y manifests. AHC_VALIDATED y AHC_CLIMATOLOGY tienen identidades separadas; el consumidor no recalcula ciencia ni usa climatología para atribuir métricas TEST.
 
-## WEB-V0.1 — despliegue LAN 25/10/2026
+## WEB-V0.1 — despliegue LAN histórico 25/10/2026
 
 - Aplicación: `http://192.168.1.43:8088/` (solo LAN).
 - Checkout de producción: `/home/josep/siar-et0-web`, main `b5a73e3df273bb3922adbd31abf19ee9f65b8520`.
@@ -162,3 +162,37 @@ El [contrato de visualización](../scientific_pipeline/docs/visualization_contra
 El paquete WEB-V0.1 fue transferido explícitamente y verificado por hashes. Su presencia en el servidor no demuestra por sí sola backup remoto del nuevo derivado; debe entrar en el flujo de preservación antes de declarar esa copia protegida externamente.
 
 Para nuevos artefactos: **explicit transfer/ingestion → server preservation area → backup system → Drive crypt**. Receipt operativo de cierre `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, sin copiar contenido sensible. La documentación recoge el parte de 02, no una inspección nueva del servidor.
+
+## WEB-V0.2-AHC — despliegue vigente y preservación
+
+Fuente: parte operativo de Dirección 00; no inspección nueva del servidor o remoto desde esta PR.
+
+| Elemento | Identidad / ubicación |
+|---|---|
+| Aplicación | [LAN only](http://192.168.1.43:8088/) |
+| Derivado actual | `web-derived-v02-ahc-20261031` |
+| SHA256 declarado del artefacto | `875a6dde1fe133e76a03bf2f07f7b51848afe5239c5bc87d9a2f47697cacb360` |
+| Receipt ingestión | `/srv/siar-project/ingestion-receipts/science-web-v0-2-ahc-20261031_6e26e01d.json` |
+| Snapshot remoto | `backup_20261031T160746Z_c8860d65` |
+| Verificación remota | PASS / REMOTE_VERIFIED |
+
+WEB-V0.1 y su hash anterior quedan como historia. El nuevo derivado no cambia Dataset v1, raw, Quality ni artefactos científicos. No se deduce un path absoluto del release o un fichero concreto para ese SHA que el parte no especifique. [Componente web](../web_app/README.md), [backup canónico](backup/README.md).
+
+## ML Linux smoke — evidencia de infraestructura
+
+| Elemento | Valor |
+|---|---|
+| Raíz preservada | `/srv/siar-project/scientific-artifacts/ml-linux-smoke-20261031T081500Z` |
+| Run ID | `ml-smoke-5322e7dccebb4d20964d2b97215fd17d` |
+| Manifest SHA256 | `a8446e01cdff9bf909e54d4ee1a512ee34397d1f4cd9c3ed654391e0d71d867d` |
+| Snapshot remoto | `backup_20261031T192124Z_172de09c` |
+| Snapshot manifest SHA256 | `9bd4d33e0fc4390de1adaf9acc147a6b9a980763ffb3ef5039551be53d60e316` |
+| Propósito | Linux smoke PASS, infraestructura; no selección científica; TEST no inspeccionado |
+
+No es el resultado de la campaña ML clásica oficial. El runtime `ml-rolling-campaign` está fusionado (PR #48); su ejecución/publicación científica permanece pendiente según el parte vigente.
+
+### Intento ML previo FAILED — evidencia, no resultado científico
+
+Manifest declarado: `/home/josep/scientific-results/ml-v1-classical-20261031T194504Z/train/manifest.json`.
+SHA256 `a9b13fec8b4963330ad71597d9541abdfd7d776fb73779d063c3db3edfd3a8d0`.
+Estado **FAILED**, `outputs=[]`, **TEST not inspected**. Se conserva como referencia operativa comunicada, sin copiar el archivo ni atribuirle métricas, selección científica o backup verificado no reportado. El STOP estructural del runtime quedó resuelto por PR #48; no convierte este intento en PASS.

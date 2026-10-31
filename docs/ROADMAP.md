@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-10-31 (Europe/Madrid), revisión de preservación.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-10-31 (Europe/Madrid), consolidación hasta PR #49.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -9,13 +9,13 @@
 | Línea | Ya demostrado | Siguiente gate |
 |---|---|---|
 | Observaciones / Quality | POST corregido COMPLETE; 2.345 ausencias confirmadas, 0 PENDING_RETRY | Mantener snapshot cerrado; CATALOG-TZ-001 no bloqueante |
-| Ciencia | Dataset, cuatro baselines y AHC temporal PASS; ML/visualización FROZEN | ML v1: regresión lineal/regularizada → árboles → RF/extra trees → boosting → ANN después |
+| Ciencia / 05 | Dataset, cuatro baselines, AHC, rolling validation, Linux smoke y rolling runtime PASS | Ejecutar/publicar campaña ML clásica oficial; ANN después de evaluación ML |
 | Preservación / 02 | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos remotos verificados | Ingestión explícita de futuros artefactos Windows; seguimiento continuo |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
 | Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
 | AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
 | AEMET Track B | Investigación independiente OPEN | Identificar feed exacto usado por SIAR |
-| Producto / 06 | WEB-V0.1 DEPLOYED en LAN; API, visualización, provenance y operación PASS | WEB-V0.2: integrar AHC publicado sin recalcular ciencia |
+| Producto / 06 | WEB-V0.2-AHC PASS / DEPLOYED en LAN; WEB-V0.1 histórico | WEB-V0.3-ML espera outputs ML oficiales publicados; Forecast después |
 
 **La captura prospectiva no espera a los modelos ni a reactivar SIAR Sync.** No reconstruir emisiones perdidas durante la pausa. El incidente Toshiba está CLOSED_OPERATIONALLY / MONITORING; no es una nueva fase activa.
 
@@ -86,7 +86,7 @@ Conserva 75.496 observaciones raw, 23 columnas, una fila exterior, ledger y prov
 
 HG-Rs tiene mejor RMSE/R² que VAL y VAL mejor MAE/bias en la cohorte común; no hay vencedor universal. La mayor similitud de inputs con EtPMon puede favorecer concordancia, sin causalidad demostrada. Separar accuracy against EtPMon de input requirements / operational availability; sigue importando precisión con menos variables. EtPMon no es ET₀ instrumental independiente.
 
-## Fase 6 — AHC cerrado y ML v1 preparado
+## Fase 6 — AHC cerrado, runtime ML rolling listo y campaña pendiente
 
 ✅ **AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39. OLS0 por estación a=Σ(x·PM)/Σ(x²), referencia primaria PM_FAO56_V1; EtPMon secundaria calculada. TRAIN 2004–2015, VALIDATION 2016–2020, TEST 2021–2025; ajuste solo TRAIN, sin refit TRAIN+VALIDATION. TEST retrospective_locked, no prospectivo nunca visto.
 
@@ -96,15 +96,20 @@ HG-Rs tiene mejor RMSE/R² que VAL y VAL mejor MAE/bias en la cohorte común; no
 
 ✅ [ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS**; [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**.
 
-Próximos experimentos ML v1, sin modelos entrenados todavía:
+Estado científico y de implementación:
 
-1. ⚪ Linear / regularized regression.
-2. ⚪ Trees.
-3. ⚪ Random forest / extra trees.
-4. ⚪ Boosting.
-5. ⚪ ANN después.
+- ✅ Dataset Observational v1.
+- ✅ Cuatro baselines clásicos oficiales.
+- ✅ AHC temporal oficial.
+- ✅ Rolling validation contract (PR #45).
+- ✅ Linux smoke, solo infraestructura; sin selección científica ni TEST.
+- ✅ Runtime rolling oficial (PR #48), comando `ml-rolling-campaign`.
+- 🟠 Campaña ML clásica oficial: PENDING EXECUTION; siguiente gate despliegue/ejecución y publicación verificable, no implementar de nuevo el runtime.
+- ⚪ ANN NOT STARTED; después de evaluar ML clásico.
 
-Cada ejecución congela presupuesto/candidatos/semillas y selección antes de entrenar. Conservar TEST retrospectivo; confirmación prospectiva exige datos posteriores y protocolo nuevo. No volver a cerrar metodología AHC ni repetir búsqueda de estimador como si siguiera pendiente.
+[Protocolo rolling vigente](../scientific_pipeline/docs/ml_validation_contract_refinement.md): selección en DEVELOPMENT F1–F4, congelación, refit DEVELOPMENT y TEST posterior una vez. Conservar `retrospective_locked`; no aplicar este refit al AHC ya publicado. El intento FAILED y el smoke no sirven para seleccionar ciencia. No reabrir baselines ni metodología AHC.
+
+**05 produce ciencia; 06 consume resultados publicados; 02B preserva nuevos artefactos.** WEB-V0.3-ML espera outputs oficiales, no convierte disponibilidad de runtime en campaña completada.
 
 ## Fase 7 — Evaluación predictiva
 
@@ -114,9 +119,13 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 
 ## Fase 8 — Producto
 
-✅ **WEB-V0.1 DEPLOYED** en LAN mediante PR #41/#42. FastAPI/DuckDB sirve derivados verificados y de solo lectura; React/ECharts ofrece serie temporal, métricas publicadas, dispersión, agregaciones visuales, cobertura y procedencia. Despliegue Docker Compose healthy en `192.168.1.43:8088`, aislado de SIAR Sync/Forecast/AEMET. Validación escritorio/móvil PASS.
+✅ **WEB-V0.1 histórico**, PR #41/#42: primer despliegue LAN de consulta read-only de cuatro baselines.
 
-⚪ **WEB-V0.2:** integrar los artefactos AHC publicados manteniendo identidades AHC_VALIDATED/AHC_CLIMATOLOGY y sin recalcular ciencia. Evolución posterior: ET₀ + Kc → ETc → necesidades de riego. Separar adquisición, procesamiento científico, modelado y producto. Los prototipos ANN y dashboards legacy conservan valor histórico, sin considerarse implementación productiva validada.
+✅ **WEB-V0.2-AHC PASS / DEPLOYED**, PR #46/#47. Cuatro baselines, AHC_VALIDATED, HG_RS_AHC_VALIDATED_SELECTED, coeficientes y ALL/TRAIN/VALIDATION/TEST visibles; climatología solo operacional. Desktop/mobile/API PASS; [LAN](http://192.168.1.43:8088/), data mounts read-only, sin recalcular datos ni modificar ciencia. Derivado y backup REMOTE_VERIFIED identificados en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+
+🟠 **WEB-V0.3-ML:** espera publicación de outputs oficiales de la campaña ML. 06 consume tablas/manifests publicados por 05; 02B preserva los nuevos artefactos. No entrenar modelos ni recalcular ciencia desde producto.
+
+⚪ Integración Forecast posterior con semántica issue/valid time y D+n demostrada. Después ET₀ + Kc → ETc → necesidades de riego. Mantener separados adquisición, ciencia, modelado y producto; prototipos legacy no son resultados v1.
 
 ## Infraestructura, backups y STOP
 

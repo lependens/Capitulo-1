@@ -1,3 +1,5 @@
+> **Estado operativo comunicado por Dirección 00 — 31/10/2026:** WEB-V0.2-AHC PASS / DEPLOYED en [LAN](http://192.168.1.43:8088/), desktop/mobile/API PASS y montajes de datos read-only. PR #46/#47 fusionadas; derivado `web-derived-v02-ahc-20261031` preservado y REMOTE_VERIFIED. Sin datos recalculados ni artefactos científicos modificados. [Identidad, receipt y backup](../docs/DATA_LOCATIONS.md). WEB-V0.3-ML espera outputs científicos oficiales publicados; este documento no acredita una campaña ML completada.
+
 # SIAR ET₀ Lab — WEB-V0.2-AHC
 
 Aplicación web de consulta de Dataset Observational v1, los cuatro baselines oficiales y los resultados AHC publicados. El componente es de solo lectura: no calcula ET₀, coeficientes ni métricas y no escribe sobre raw, Quality, Dataset v1 o artefactos científicos.

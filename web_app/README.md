@@ -1,6 +1,6 @@
-# SIAR ET₀ Lab — WEB-V0.1
+# SIAR ET₀ Lab — WEB-V0.2-AHC
 
-Aplicación web de consulta de los resultados científicos cerrados de Dataset Observational v1 y los cuatro baselines oficiales. El componente es de solo lectura: no calcula ET₀ canónica, no calibra modelos y no escribe sobre raw, Quality o Dataset v1.
+Aplicación web de consulta de Dataset Observational v1, los cuatro baselines oficiales y los resultados AHC publicados. El componente es de solo lectura: no calcula ET₀, coeficientes ni métricas y no escribe sobre raw, Quality, Dataset v1 o artefactos científicos.
 
 ## Arquitectura
 
@@ -11,6 +11,8 @@ CSV + metrics.json + manifest.json aprobados
   → DuckDB / FastAPI
   → React / ECharts
 ```
+
+WEB-V0.2 añade una segunda conversión verificable desde las tablas congeladas de `visualization_contract`: cambia CSV a Parquet para consulta, pero conserva literalmente predicciones, métricas, coeficientes, cohortes y splits.
 
 El navegador recibe únicamente las filas filtradas o muestras visuales acotadas. Las métricas proceden literalmente de `metrics.json`; no se calculan sobre el downsampling ni sobre el scatter.
 
@@ -25,6 +27,17 @@ python -m web_app.backend.convert `
 ```
 
 El paquete registra `source_sha256`, `derived_sha256`, versión de conversión, Dataset ID/SHA, POST, pipeline, run y hashes de todos los derivados. El Parquet es un artefacto web; su SHA no sustituye al SHA del dataset científico JSON.
+
+Para ampliar un paquete V0.1 con el AHC publicado:
+
+```powershell
+python -m web_app.backend.convert_ahc `
+  --base C:\ruta\web-derived-v01 `
+  --ahc C:\ruta\scientific-results\ahc-20261024T172400Z `
+  --output C:\ruta\web-derived-v02-ahc
+```
+
+El destino debe ser nuevo. El conversor verifica manifiestos, schemas, hashes y recuentos antes de registrar `data_recalculated=false` y `scientific_artifacts_modified=false`.
 
 ## Desarrollo y pruebas
 
@@ -49,7 +62,7 @@ npm run build
 
 Para desarrollo interactivo, iniciar Uvicorn en el puerto 8001 y Vite; el proxy de Vite dirige `/api` a ese backend.
 
-## API v0.1
+## API v0.2
 
 - `GET /api/health`
 - `GET /api/stations`
@@ -60,8 +73,14 @@ Para desarrollo interactivo, iniciar Uvicorn en el puerto 8001 y Vite; el proxy 
 - `GET /api/scatter?station=IB04&model=HG_RS_V1&cohort=common`
 - `GET /api/coverage?station=IB04`
 - `GET /api/observations?station=IB04&limit=50&offset=0`
+- `GET /api/ahc/models`
+- `GET /api/ahc/timeseries?station=IB04&split=TEST`
+- `GET /api/ahc/comparison?base_method=HG_RS_V1&split=TEST&station=IB04`
+- `GET /api/ahc/coefficients?station=IB04&kind=AHC_VALIDATED`
+- `GET /api/ahc/seasonal?station=IB04&split=TEST`
+- `GET /api/ahc/coverage?station=IB04&split=ALL`
 
-`group=month` y `group=season` solo están publicados para todas las estaciones. La API devuelve una indisponibilidad explícita si se combina uno de esos grupos con una estación. `group=year` sí admite estación mediante el grupo científico `station_year`.
+`ALL` devuelve las filas publicadas de TRAIN, VALIDATION y TEST por separado, sin crear una métrica conjunta. TRAIN es ajuste, VALIDATION selección y TEST `retrospective_locked`. `AHC_CLIMATOLOGY` se ofrece solo como coeficiente/descripción operacional, nunca como rendimiento TEST.
 
 ## Despliegue LAN
 
@@ -78,7 +97,7 @@ docker compose --env-file web_app/.env -f web_app/compose.yaml ps
 curl --fail http://DIRECCION_LAN:PUERTO/api/health
 ```
 
-La v0.1 se enlaza solo a la dirección LAN verificada. No abrir NAT, publicar el puerto en Internet ni añadir forecast/AHC/ML sin sus contratos científicos.
+La aplicación se enlaza solo a la dirección LAN verificada. No abrir NAT, publicar el puerto en Internet ni integrar Forecast/AEMET/ML sin sus contratos científicos.
 
 Para actualizar después de un merge: conservar el release derivado existente, actualizar el checkout propio, validar el nuevo paquete en un directorio de release nuevo, cambiar `WEB_DATA_DIR`, ejecutar `docker compose config`, reconstruir y verificar health/API/UI. No sobrescribir un release científico ni derivado existente.
 

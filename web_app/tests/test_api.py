@@ -241,3 +241,34 @@ def test_official_publication_rows_and_common_metrics():
     ib09 = next(row for row in coverage if row["code"] == "IB09")
     assert ib09["quality_status"] == "FAIL"
     assert all(row["evaluated"] == 0 for row in ib09["models"])
+
+
+@pytest.mark.skipif(not os.environ.get("WEB_OFFICIAL_DATA_DIR"), reason="Official derivative package not configured")
+def test_official_ahc_contract_is_served_verbatim_without_aggregation():
+    client = ASGIClient(create_app(Path(os.environ["WEB_OFFICIAL_DATA_DIR"])))
+    health = client.get("/api/health").json()
+    assert health["release"] == "WEB-V0.2-AHC"
+    assert health["data_recalculated"] is False
+    models = client.get("/api/ahc/models").json()["models"]
+    assert {row["id"] for row in models if row.get("adjustment_kind") == "AHC_VALIDATED"} == {
+        "HS_RA_AHC_VALIDATED", "HG_RS_AHC_VALIDATED",
+        "HG_RS_AHC_VALIDATED_SELECTED", "VALIANTZAS_AHC_VALIDATED"}
+    selected = client.get("/api/ahc/comparison", params={"base_method": "HG_RS_V1", "split": "TEST"}).json()
+    assert selected["test_status"] == "retrospective_locked"
+    assert selected["data_recalculated"] is False
+    by_method = {row["method_id"]: row for row in selected["metrics"]}
+    assert set(by_method) == {"HG_RS_V1", "HG_RS_AHC_VALIDATED", "HG_RS_AHC_VALIDATED_SELECTED"}
+    assert all(row["n"] == 15958 for row in by_method.values())
+    assert round(by_method["HG_RS_AHC_VALIDATED_SELECTED"]["rmse"], 12) == 0.401392078291
+    all_splits = client.get("/api/ahc/comparison", params={"base_method": "HS_RA_V1", "split": "ALL"}).json()["metrics"]
+    assert {row["split"] for row in all_splits} == {"TRAIN", "VALIDATION", "TEST"}
+    assert len(all_splits) == 6
+    coefficients = client.get("/api/ahc/coefficients", params={"station": "IB04"}).json()
+    assert coefficients["interpretation"] == "TRAIN-fitted frozen coefficients"
+    assert all(row["fit_split"] == "TRAIN" for row in coefficients["coefficients"])
+    climatology = client.get("/api/ahc/coefficients", params={"station": "IB04", "kind": "AHC_CLIMATOLOGY"}).json()
+    assert climatology["interpretation"] == "operational description only; no TEST performance"
+    assert climatology["coefficients"]
+    timeline = client.get("/api/ahc/timeseries", params={"station": "IB04", "split": "TEST"}).json()
+    assert timeline["data_recalculated"] is False
+    assert timeline["source_rows"] > 0

@@ -1,17 +1,17 @@
-# Contrato de arquitectura y datos WEB-V0.1
+# Contrato de arquitectura y datos WEB-V0.2-AHC
 
 Fecha: 2026-10-24. Revisión inicial sobre main `35927e1ef07775c405fa6d8be9fe5957835d2f39`.
-El mandato WEB-V0.1 autoriza un componente separado `web_app/`, sin cambiar contratos científicos ni servicios de adquisición.
+WEB-V0.2 amplía el componente separado `web_app/` con las tablas AHC ya publicadas, sin cambiar contratos científicos ni servicios de adquisición.
 
 ## Separación de responsabilidades
 
 ```text
-05 scientific_pipeline → artefactos aprobados CSV/JSON
+05 scientific_pipeline → artefactos aprobados CSV/JSON + tablas AHC congeladas
                        → conversión web versionada → Parquet + metadata
                        → consultas DuckDB → FastAPI → React / ECharts
 ```
 
-La conversión transforma representación y selecciona columnas para consulta. No vuelve a calcular ET₀, elegibilidad, Quality ni métricas científicas. Los archivos científicos se leen sin sobrescribirlos. Los contenedores de consulta montan los derivados en solo lectura; no reciben acceso de escritura a raw, Dataset v1 o Quality.
+La conversión transforma representación y selecciona columnas para consulta. No vuelve a calcular ET₀, AHC, coeficientes, elegibilidad, Quality ni métricas científicas. Los archivos científicos se leen sin sobrescribirlos. Los contenedores de consulta montan los derivados en solo lectura; no reciben acceso de escritura a raw, Dataset v1 o Quality.
 
 DuckDB encaja con 75.496 filas y consultas analíticas filtradas por estación/fecha sin un servidor de base de datos adicional. Parquet reduce transferencia y tiempo de lectura. FastAPI define una interfaz independiente del frontend; React y TypeScript permiten componentes reutilizables y ECharts cubre serie/scatter/barras con una sola librería principal. Docker Compose mantiene portable el despliegue doméstico.
 
@@ -68,7 +68,7 @@ Los grupos adicionales publicados son `season_year`; no existen `station_month` 
 
 Error firmado=predicción−EtPMon. MAE/RMSE/bias en mm/día; R² predictivo=1−SSE/SST. R² negativo es válido; indefinido se presenta como ausencia, nunca como cero. La API no altera los ceros de referencia ni las cohortes para conseguir un mejor valor.
 
-## API v0.1
+## API v0.2
 
 | Ruta | Contrato funcional |
 |---|---|
@@ -80,6 +80,11 @@ Error firmado=predicción−EtPMon. MAE/RMSE/bias en mm/día; R² predictivo=1�
 | GET /api/metrics | Selección publicada por estación/modelo/grupo y own/common; alcance y periodo independientes del rango visual. |
 | GET /api/scatter | Pares evaluables del modelo, fecha/estación y cohorte solicitados; muestra acotada con N total y método de muestreo. |
 | GET /api/coverage | Recuentos por estación de observaciones, Quality y elegibilidad/evaluación por modelo. |
+| GET /api/ahc/models | Registro de los cuatro modelos AHC publicados y semántica de splits. |
+| GET /api/ahc/timeseries | Filtrado y reducción exclusivamente visual de predicciones diarias publicadas. |
+| GET /api/ahc/comparison | MAE, RMSE, bias, R² y n literales de la cohorte emparejada baseline/AHC. |
+| GET /api/ahc/coefficients | Coeficientes, support, status y deployable; climatología separada y sin rendimiento TEST. |
+| GET /api/ahc/seasonal | Métricas temporales publicadas de HG-Rs baseline, anual y SELECTED. |
 
 Fechas ISO civiles, sin inventar zona horaria del dato diario. Identificadores/modelos/grupos se validan contra listas permitidas. SQL parametrizado para valores; nombres de columnas únicamente desde metadata controlada. Ningún endpoint acepta rutas arbitrarias ni ofrece escritura o recálculo científico.
 
@@ -92,14 +97,14 @@ Series y scatter tienen límites duros de puntos/respuesta. Una agregación o mu
 - IB101 tiene un registro corto.
 - UNITS_PROVENANCE_PARTIAL; instrumentación por estación/periodo no exhaustivamente verificada y viento 2 m por convención SIAR.
 - Métricas own y common representan poblaciones distintas; no hay vencedor universal.
-- Forecast, AHC y ML todavía no están integrados; no inferir D+n ni reutilizar coeficientes legacy.
+- Forecast, AEMET y ML no están integrados. AHC procede exclusivamente de las tablas congeladas; no inferir D+n ni reutilizar coeficientes legacy.
 - Cobertura de cálculo/evaluación no equivale a completitud de auditoría ni a cobertura observacional del calendario.
 
 ## Operación y evolución
 
 Despliegue inicial LAN, sin NAT ni exposición pública. Inspeccionar host/usuario, checkout, Docker, espacio y puertos antes de elegir directorios y puerto. Producción utiliza checkout propio y datos derivados separados, con reinicio y healthchecks; no reutilizar el checkout residual SIAR Sync sin análisis. Código por rama `06/...`, PR, CI y merge antes de desplegar.
 
-Los futuros modelos entran mediante metadata y artefactos aprobados. AHC temporal y su contrato de visualización ya están PASS/FROZEN, pero quedan fuera del alcance deliberado de WEB-V0.1 y se incorporarán como WEB-V0.2 sin recalcular ciencia. ML necesita productores verificables; forecast necesita issue time, valid time y horizontes científicos cerrados. Añadir columnas o servicios de visualización no autoriza esas decisiones científicas.
+Los futuros modelos entran mediante metadata y artefactos aprobados. AHC_VALIDATED conserva baseline, ajuste anual y variante SELECTED como identidades separadas. `ALL` enumera splits sin agregarlos; TRAIN ajusta, VALIDATION selecciona y TEST es `retrospective_locked`. AHC_CLIMATOLOGY solo describe coeficientes operacionales. ML necesita productores verificables; Forecast necesita issue time, valid time y horizontes científicos cerrados.
 
 ## Lectura de referencia
 

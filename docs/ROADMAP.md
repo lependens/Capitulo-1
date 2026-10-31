@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-10-25 (Europe/Madrid).** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-10-31 (Europe/Madrid), revisión de preservación.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -60,7 +60,7 @@ source issue time puede ser null; D+0…D+6 y recuperación histórica de emisio
 
 ✅ Track A municipal diario OpenData: E2E DEMONSTRATED, estabilización PASS. PR #18/#19/#20: collector, id municipal y permisos POSIX. Conserva wrapper.raw y payload.raw sin modificar bytes; id 7040 se compara canónicamente con 07040 sin editar raw.
 
-Piloto IB04 → Palma → municipio 07040, capital municipal, no punto exacto de estación. Último parte: **capture timer disabled/inactive**. El backup se ejecuta tras cada intento de captura, success o failure; no existe timer independiente. Con captura deshabilitada, **new AEMET automatic backup = NOT ACTIVE**.
+Piloto IB04 → Palma → municipio 07040, capital municipal, no punto exacto de estación. Último parte: **capture timer disabled/inactive**. El servicio específico de backup está disponible, static/inactive, sin timer independiente. El inventario no observó hook de backup en el servicio de captura; no se afirma ejecución automática tras cada intento. Los runs AEMET están en el ámbito separado de preservación general. Con captura deshabilitada, **new AEMET automatic backup = NOT ACTIVE**.
 
 **Dependencia vigente:** SIAR-FORECAST-CAPTURE RUNNING → reactivar AEMET Track A. Se supera la dependencia antigua de esperar SIAR-FORECAST-PILOT RUNNING; nunca depende de SIAR Sync.
 
@@ -119,6 +119,10 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 ⚪ **WEB-V0.2:** integrar los artefactos AHC publicados manteniendo identidades AHC_VALIDATED/AHC_CLIMATOLOGY y sin recalcular ciencia. Evolución posterior: ET₀ + Kc → ETc → necesidades de riego. Separar adquisición, procesamiento científico, modelado y producto. Los prototipos ANN y dashboards legacy conservan valor histórico, sin considerarse implementación productiva validada.
 
 ## Infraestructura, backups y STOP
+
+✅ **BACKUP-IMPLEMENTATION-INVENTORY-V1 PASS**: implementación existente canonizada en [docs/backup](backup/README.md). Preservación general diaria 04:15 UTC (Persistent, jitter hasta 15 min) e ingestión event-driven; backup SIAR cada 15 min; AEMET sin timer propio ni hook de captura observado. No cambia ninguno de los gates de captura.
+
+🟠 **WINDOWS-SCIENCE-INGEST-AUTOMATION = DESIGN_READY / STILL_PENDING**: desarrollar/provisionar receptor y watcher y validar E2E sintético en misión independiente. [Diseño](backup/windows-ingestion.md) no desplegado; provisioning SFTP no autorizado aquí. Hasta ingestión explícita, Windows-only no está cubierto. Mantener verificación de cobertura, receipts y recuperación off-server; no asumir backup masivo de workspaces, /etc ni servidor completo.
 
 STORAGE-DATA-PRESERVATION PASS; incidente CLOSED_OPERATIONALLY / MONITORING; **SSD IN SERVICE**. No crear un roadmap de sustitución del SSD; reabrir solo con nueva evidencia objetiva. 238/238 archivos de datos size/SHA256 y 12/12 CSV contra POST PASS; 242 archivos totales sin ausencias/discrepancias. No se reabre como proyecto activo por mantener monitorización.
 

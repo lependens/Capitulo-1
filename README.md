@@ -42,6 +42,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
 - [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines clásicos v1 y evidencia reproducible.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
+- [Backup y recuperación](docs/backup/README.md) — inventario canónico, cobertura, operación, restore y diseño Windows pendiente (revisión 31/10/2026).
 - [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — estado vigente y límites de preservación.
 - [Auditoría documental 24/10](docs/REPO_AUDIT_2026-10-24.md) — registro histórico de la etapa anterior.
 - [Auditoría documental 23/10](docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.

@@ -75,3 +75,36 @@ supersedida, sin valor de selección científica.
 Los artefactos Linux siguen el flujo servidor `scientific-results` → preservación
 → Drive crypt. No se mueven ni eliminan resultados históricos de Windows.
 
+## Runtime de campaña rolling
+
+La orquestación oficial está expuesta como `ml-rolling-campaign`. Los comandos
+`ml-train`, `ml-validate` y `ml-test` siguen siendo las etapas legacy y conservan
+su rechazo explícito del protocolo rolling v2. La campaña valida los SHA del
+Dataset v1, protocolo congelado y manifiesto AHC TEST antes del ajuste.
+
+`ml-rolling-campaign` ajusta los 185 candidatos en F1–F4 (185×4 evaluaciones),
+selecciona una configuración por cada una de las 35 celdas, agrega la cohorte
+común por fold, congela selección/configuraciones y reajusta las 35
+configuraciones en DEVELOPMENT 2004–2020. El cargador de TEST no se invoca hasta
+que selección y bundle de refit están materializados. TEST se lee una vez; el
+mejor TEST se conserva como descripción, nunca como selector.
+
+La salida es append-only. Cada run contiene manifiesto con hashes, protocolo,
+métricas de folds/candidatos, selección congelada, bundle refitted, predicciones
+y métricas TEST, cohortes comunes, desgloses, cobertura, importancia de
+permutación F4 y vistas CSV para consumo web. Las vistas no recalculan ciencia.
+Un fallo retira el staging de esa ejecución y conserva solo un manifiesto
+`FAILED` sin outputs científicos parciales.
+
+```bash
+siar-science ml-rolling-campaign --dataset ./derived/dataset.json \
+  --ahc-manifest ./runs/ahc/test/manifest.json \
+  --protocol scientific_pipeline/experiments/ml-v1-classical.json \
+  --output ./scientific-results/ml-v1-classical-UTC \
+  --pipeline-sha <SHA-del-checkout-fusionado>
+```
+
+La primera ejecución oficial permanece pendiente de que se fusione este
+runtime. ANN continúa fuera de alcance; su recomendación depende del análisis
+de estabilidad y cobertura de la campaña clásica.
+

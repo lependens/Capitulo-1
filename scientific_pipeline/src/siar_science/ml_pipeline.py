@@ -35,7 +35,7 @@ def _csv(path, rows, fields):
     return dict(path=Path(path).name,sha256=digest(Path(path).read_bytes()),rows=count,encoding="utf-8-sig",delimiter=",",decimal=".",null="empty")
 
 
-def _load_official(dataset, dataset_sha, ahc_manifest_path, expected_sha):
+def _load_official(dataset, dataset_sha, ahc_manifest_path, expected_sha, *, period=None):
     manifest, manifest_sha = _read(ahc_manifest_path)
     if manifest_sha != expected_sha or manifest.get("status") != "SUCCESS" or manifest.get("stage") != "test":
         raise ValueError("Require the frozen successful AHC TEST manifest")
@@ -49,6 +49,10 @@ def _load_official(dataset, dataset_sha, ahc_manifest_path, expected_sha):
     official={}
     with (root/entry["path"]).open(encoding="utf-8-sig",newline="") as stream:
         for row in csv.DictReader(stream):
+            # The rolling campaign asks for one temporal partition at a time.
+            # Skip non-partition rows before reading target or baseline values.
+            if period is not None and not period[0] <= row["date"] <= period[1]:
+                continue
             key=(row["station_code"],row["date"])
             if key in official: raise ValueError("Duplicate AHC daily key")
             official[key]={name:(float(row[name]) if row.get(name) not in (None,"") else None) for name in ("EtPMon",*BASELINES)}
@@ -124,12 +128,12 @@ def _prediction_rows(rows, selected, models):
     return output
 
 
-def _model_diagnostics(model):
+def _model_diagnostics(model, *, fitted_on="TRAIN"):
     estimator=model.named_steps["model"] if hasattr(model,"named_steps") else model
     result={}
     if hasattr(model,"named_steps"):
         scaler=model.named_steps["scale"]
-        result["standard_scaler"]={"mean":[float(v) for v in scaler.mean_],"scale":[float(v) for v in scaler.scale_],"fitted_on":"TRAIN"}
+        result["standard_scaler"]={"mean":[float(v) for v in scaler.mean_],"scale":[float(v) for v in scaler.scale_],"fitted_on":fitted_on}
     for name in ("n_features_in_","n_iter_","max_depth_","n_leaves_"):
         value=getattr(estimator,name,None)
         if value is not None:

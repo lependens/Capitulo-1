@@ -1,9 +1,10 @@
 # Contrato experimental para ML — v1
 
-**Estado documental vigente — 25/10/2026: FROZEN / READY FOR FUTURE EXPERIMENTS.** AHC temporal ya está PASS. Este contrato describe consumo/experimentos futuros: no ML/ANN entrenado ni web construida. No se sustituye el protocolo de ejecución que debe congelar presupuesto, candidatos y semillas antes de entrenar. [Estado maestro](../../docs/PROJECT_STATUS.md).
+**Estado documental vigente — 31/10/2026: protocolo ML-V1 congelado; runtime rolling implementado, campaña oficial pendiente de ejecución tras merge.** AHC temporal ya está PASS. No hay campaña ML oficial ejecutada ni ANN entrenada; no hay web construida. El runtime de campaña se describe en [refinamiento temporal](ml_validation_contract_refinement.md). [Estado maestro](../../docs/PROJECT_STATUS.md).
 
-Este contrato define experimentos futuros; **no declara modelos entrenados ni
-resultados ML**. El cierre AHC es PASS; la ejecución ML sigue siendo futura. El protocolo
+Este contrato define el experimento ML v1; **no declara modelos entrenados ni
+resultados ML oficiales**. El cierre AHC es PASS; la campaña ML sigue pendiente de
+merge y ejecución. El protocolo
 legible por máquina es [ml-v1-contract.json](../experiments/ml-v1-contract.json).
 La metodología AHC vigente se conserva en [ahc_methodology.md](ahc_methodology.md).
 ANN y la construcción de una interfaz web quedan fuera de esta fase.
@@ -121,11 +122,14 @@ propias estadísticas ni ajustar valores extremos mediante residuos futuros.
 
 ## Selección, comparación y métricas
 
-Orden futuro: regresión lineal, Ridge/Elastic Net, árbol limitado, random forest
-o extra trees si procede y boosting. ANN queda expresamente pospuesta. El criterio
-primario propuesto de selección es RMSE VALIDATION sobre la misma cohorte, con
-preferencia por menor complejidad en empates; los detalles y presupuesto se
-congelarán antes del primer entrenamiento.
+La campaña congelada cubre regresión lineal, Ridge/Elastic Net, árbol limitado,
+random forest, extra trees y boosting sobre cinco familias de inputs; el grid
+contiene 185 candidatos y selecciona 35 celdas finales por el protocolo
+rolling-origin. La regla exacta y los desempates están congelados en
+[`ml-v1-classical.json`](../experiments/ml-v1-classical.json) y en
+[`ml_v1_classical_methodology.md`](ml_v1_classical_methodology.md). ANN queda
+expresamente pospuesta hasta analizar estabilidad, cobertura y ganancias fuera
+de muestra.
 
 Publicar cohortes propias para disponibilidad y cohortes comunes con hash de
 claves para accuracy comparable. Las comparaciones entre familias no deben

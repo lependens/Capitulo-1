@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Vigente: 2026-10-25.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Revisión de preservación: 2026-10-31.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|
@@ -44,6 +44,24 @@ scientific-results/
 ```
 
 Es una propuesta para acordar con el productor; no sustituye los paths reales anteriores ni autoriza mover outputs. Cada ejecución necesita identidad y directorio nuevos, sin sobrescritura. No crear una estructura vacía para hacer parecer que contiene artefactos.
+
+## Rutas canónicas de preservación
+
+[Arquitectura de backup](backup/architecture.md), [matriz de cobertura](backup/coverage.md) y [restore](backup/restore.md) son la referencia operativa detallada. Fuente: BACKUP-IMPLEMENTATION-INVENTORY-V1 PASS recibido, no inspección nueva.
+
+| Función | Ubicación |
+|---|---|
+| Ciencia ingerida | `/srv/siar-project/scientific-artifacts` |
+| Inbox | `/home/josep/project-artifact-inbox` |
+| Receipts de ingestión | `/srv/siar-project/ingestion-receipts` |
+| Manifest snapshot | `/srv/siar-project/preservation/snapshots/<backup_id>/manifest.json` |
+| COMPLETE local | `/srv/siar-project/preservation/markers/<backup_id>/COMPLETE` |
+| Receipt remoto | `/srv/siar-project/preservation/verified/<backup_id>.json` |
+| Cuarentena restore | `/srv/siar-project/preservation/restores/<backup_id>_<suffix>/` |
+| Remoto general lógico | `forecast-offsite-crypt:SIAR-project/snapshots/<backup_id>/` |
+| Remoto AEMET específico | `forecast-offsite-crypt:AEMET-forecast/raw/runs` |
+
+Windows automation DESIGN_READY / STILL_PENDING: `%LOCALAPPDATA%\SIAR-Science-Ingest\ready-for-backup` es raíz **propuesta**, no instalación. El inbox y el importador del servidor sí existen; no extender esa existencia al watcher Windows. [Diseño pendiente](backup/windows-ingestion.md).
 
 ## Recuperación y límites
 
@@ -104,7 +122,7 @@ Reconciliador SIAR Forecast enabled/active cada 15 min, último Result success. 
 
 OAuth Production, reauthorization PASS y CLI crypt listing PASS; copy/restore independiente SHA256 MATCH. Eso todavía no demuestra **nuevo run real automático → backup automático → COMPLETE remoto**; es el gate pendiente. El límite específico de siete días de OAuth Testing está eliminado, sin garantizar que tokens nunca puedan invalidarse. No versionar config/secretos.
 
-AEMET: backup tras cada intento de captura (success/failure), sin timer independiente. Con capture timer disabled/inactive, nuevo backup automático AEMET NOT ACTIVE. Se habilitará reactivación tras SIAR-FORECAST-CAPTURE RUNNING. Estado y gates en [PROJECT_STATUS](PROJECT_STATUS.md).
+AEMET: servicio específico `aemet-forecast-backup.service` static/inactive, sin timer independiente. BACKUP-IMPLEMENTATION-INVENTORY-V1 no observó hook de backup en el servicio de captura; queda corregida la afirmación anterior de backup tras cada intento. Runs AEMET incluidos también en preservación general, sin implicar nuevas capturas ni automatismo específico activo. Con capture timer disabled/inactive, nuevo backup automático AEMET NOT ACTIVE. Se habilitará reactivación tras SIAR-FORECAST-CAPTURE RUNNING. Estado y gates en [PROJECT_STATUS](PROJECT_STATUS.md).
 
 ## AHC temporal — 24/10/2026
 

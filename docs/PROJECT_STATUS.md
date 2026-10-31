@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-25 (Europe/Madrid).** Fuente principal del estado vigente. Consolidación WEB-V0.1 sobre main `b5a73e3df273bb3922adbd31abf19ee9f65b8520`; estado operativo según el último parte de Dirección 00 y la validación de despliegue de 06. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-10-31 (Europe/Madrid), revisión de preservación.** Fuente principal del estado vigente. Consolidación WEB-V0.1 sobre main `b5a73e3df273bb3922adbd31abf19ee9f65b8520`; estado operativo según el último parte de Dirección 00 y la validación de despliegue de 06. Un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -159,7 +159,7 @@ Forecast es independiente de SIAR Sync HOLD. Cadencia experimental de captura 08
 
 Track A E2E DEMONSTRATED; PR #18 Collector, #19 comparación id municipal, #20 permisos POSIX. Wrapper y payload raw append-only con bytes, timestamps y provenance preservados. IB04 Son Ferriol → Palma → municipio 07040 representa la capital municipal, no la estación exacta.
 
-Último parte 24/10: **capture timer disabled / inactive**. Backup AEMET se ejecuta después de cada intento de captura, success o failure; **no hay timer de backup independiente**. Por estar deshabilitada la captura, **new AEMET automatic backup = NOT ACTIVE**. La dependencia vigente es **SIAR-FORECAST-CAPTURE = RUNNING → reactivar AEMET Track A prospectivo**. No necesita SIAR Sync ni esperar a SIAR-FORECAST-PILOT RUNNING. Se conserva raw independiente en `/srv/aemet-forecast/raw/` y cada nueva captura relevante debe quedar cubierta por backup externo.
+Inventario BACKUP-IMPLEMENTATION-INVENTORY-V1: **capture timer disabled / inactive**. `aemet-forecast-backup.service` static/inactive está disponible, **sin timer independiente**. La inspección no observó hook de backup en el servicio de captura: no se afirma backup automático después de cada intento. Los runs AEMET están también dentro del ámbito de preservación general; esto no demuestra nuevas capturas. Por estar deshabilitada la captura, **new AEMET automatic backup = NOT ACTIVE**. La dependencia vigente es **SIAR-FORECAST-CAPTURE = RUNNING → reactivar AEMET Track A prospectivo**. No necesita SIAR Sync ni esperar a SIAR-FORECAST-PILOT RUNNING. Se conserva raw independiente en `/srv/aemet-forecast/raw/` y cada nueva captura relevante debe quedar cubierta por backup externo.
 
 No están demostrados ET₀, D+n, timezone científico de emisión, recuperación histórica ni entradas suficientes para PM completo. No se infiere timezone ni se integra científicamente con SIAR. **Track B = OPEN**, investigación del feed exacto usado por SIAR, independiente de Track A.
 
@@ -172,6 +172,14 @@ Incidente de storage: **CLOSED_OPERATIONALLY / MONITORING**; **SSD = IN SERVICE*
 STOP de infraestructura si reaparecen I/O error, emergency_ro, SMART warning, USB reset asociado o corrupción. Monitorización no equivale a prometer ausencia de fallos futuros.
 
 GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt tiene copias verificadas de raw/preservación dentro de sus alcances demostrados; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. El material crypt/OAuth de recuperación está confirmado OFF-SERVER; no publicar secretos. La cobertura de futuros resultados requiere ingestión explícita.
+
+## Preservación canónica — inventario operativo PASS
+
+**BACKUP-IMPLEMENTATION-INVENTORY-V1 = PASS**, fuente operativa recibida de Dirección 00, sin inspección nueva ni cambios de infraestructura. [Documentación de backup](backup/README.md): servicios/rutas, [cobertura](backup/coverage.md), [restore](backup/restore.md) y [secretos](backup/secrets-and-recovery.md).
+
+`siar-project-preservation.service` static/inactive entre ejecuciones, root:root; `siar-project-preservation.timer` enabled/active, diario **04:15 UTC**, Persistent=true, retraso aleatorio hasta 15 min. Ejecuta snapshot y reconcile para bytes nuevos/modificados. Ingestión event-driven existente; ciencia preservada en `/srv/siar-project/scientific-artifacts`, receipts en `/srv/siar-project/ingestion-receipts`, snapshots y verificaciones en `/srv/siar-project/preservation`. Es distinto del backup SIAR Forecast de 15 min.
+
+**WINDOWS-SCIENCE-INGEST-AUTOMATION = DESIGN_READY / STILL_PENDING**: receptor SFTP + watcher no instalados, provisioning SFTP no autorizado. Artefactos solo Windows no cubiertos hasta ingestión. El inventario no acredita restore específico independiente del namespace SIAR Raw; la evidencia general se conserva separadamente.
 
 ## PROJECT-ARTIFACT-BACKUP-V1 — PASS
 

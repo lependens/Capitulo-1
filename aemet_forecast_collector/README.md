@@ -31,7 +31,7 @@ The municipality forecast represents the municipal capital. `spatial_match = "mu
 
 PR #18 merged the Track A Collector, PR #19 merged municipality-id comparison, and PR #20 merged POSIX ancestor permissions. `AEMET-A1 = PASS`, `AEMET-A2 = PASS`, and `AEMET-A3 = COMPLETE`. `AEMET-TRACK-A-STABILIZE = PASS`; final AEMET E2E = `DEMONSTRATED`. The next operational milestone is `AEMET-PROSPECTIVE-PILOT`.
 
-Current direction report (2026-10-24): capture timer **disabled / inactive**. AEMET backup runs after every capture attempt, whether success or failure; there is **no independent backup timer**. With capture disabled, **new AEMET automatic backup = NOT ACTIVE**.
+Backup inventory clarification (documented 2026-10-31): capture timer remains **disabled / inactive**. `aemet-forecast-backup.service` is **static/inactive**, with **no independent backup timer**. Inspection did not observe a backup hook in the capture service; automatic backup after each attempt is therefore not asserted. AEMET runs are also in the separate general preservation scope. **New AEMET automatic capture/backup is not demonstrated active.** See the [canonical backup architecture](../docs/backup/architecture.md) and [operations](../docs/backup/operations.md).
 
 Reactivate Track A after **SIAR-FORECAST-CAPTURE = RUNNING**, following a demonstrated new real automatic SIAR run with automatic backup and remote COMPLETE. It does not depend on SIAR Sync HOLD or require waiting for the separate PILOT gate. The initial target remains IB04 → Palma → municipality `07040`. This documentation does not reactivate a service.
 

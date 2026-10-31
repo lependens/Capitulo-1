@@ -225,5 +225,19 @@ siar-science ml-linux-smoke --dataset ./derived/dataset.json --ahc-manifest ./ru
 El smoke Linux ejecuta Linear/Ridge sobre `FEATURE_SET_T_RH_RS` en los cuatro
 folds y declara que no selecciona ciencia ni inspecciona TEST. Los antiguos
 comandos de tres etapas con un solo VALIDATION están bloqueados para el protocolo
-v2. La siguiente campaña implementará selección rolling-origin de las 35 celdas,
-refit congelado en DEVELOPMENT 2004–2020 y una única evaluación TEST.
+v2. La campaña rolling oficial usa un comando separado:
+
+```bash
+siar-science ml-rolling-campaign --dataset ./derived/dataset.json \
+  --ahc-manifest ./runs/ahc/test/manifest.json \
+  --protocol scientific_pipeline/experiments/ml-v1-classical.json \
+  --output ./scientific-results/ml-v1-classical-UTC \
+  --pipeline-sha <SHA-del-checkout-fusionado>
+```
+
+El runtime evalúa los 185 candidatos en F1–F4, congela 35 configuraciones y
+champion basados solo en DEVELOPMENT, reajusta el conjunto completo 2004–2020 y
+abre TEST 2021–2025 una única vez después de guardar selección y bundle refitted.
+`ml-train`/`ml-validate`/`ml-test` siguen siendo legacy y continúan rechazando
+el protocolo rolling v2. La campaña oficial solo se lanzará desde el checkout
+fusionado que coincida con Dataset v1, protocolo y manifiesto AHC.

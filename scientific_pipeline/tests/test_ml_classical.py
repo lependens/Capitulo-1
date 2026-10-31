@@ -13,7 +13,9 @@ from siar_science.cli import main
 from siar_science.ml_classical import (ALGORITHMS, candidate_id, feature_names,
                                        prepare_rows, validate_ml_protocol)
 from siar_science.ml_rolling import evaluate_rolling_candidates, linux_smoke_candidates
-from siar_science.ml_pipeline import execute_ml_smoke
+from siar_science.ml_pipeline import execute_ml, execute_ml_smoke
+from siar_science.ml_campaign import (_context_for_split, _candidates, _frozen_selection,
+                                     execute_ml_rolling_campaign)
 from siar_science.pipeline import calculate, execute_run
 from siar_science.serialization import digest, json_bytes
 from tests_support import dataset_fixture, temporary_directory
@@ -138,6 +140,81 @@ class MLClassicalPipelineTests(unittest.TestCase):
             manifest=json.loads((root/"smoke/manifest.json").read_bytes())
             for entry in manifest["outputs"].values():
                 self.assertEqual(digest((root/"smoke"/entry["path"]).read_bytes()),entry["sha256"])
+
+            # Legacy public stages must keep rejecting protocol v2.
+            legacy=execute_ml(source,previous,mpath,root/"legacy-v2","train")
+            self.assertEqual(legacy["status"],"FAILED")
+            self.assertIn("Legacy single-split",legacy["error"])
+            self.assertEqual(legacy["outputs"],{})
+            self.assertEqual(main(["ml-train","--dataset",str(source),"--ahc-manifest",str(previous),
+                "--protocol",str(mpath),"--output",str(root/"legacy-cli-v2")]),1)
+            legacy_cli=json.loads((root/"legacy-cli-v2/manifest.json").read_bytes())
+            self.assertEqual(legacy_cli["status"],"FAILED")
+            self.assertIn("Legacy single-split",legacy_cli["error"])
+            self.assertEqual(legacy_cli["outputs"],{})
+
+            # The rolling campaign calls its TEST loader only after the frozen
+            # selection and full-DEVELOPMENT model bundle are on disk.
+            calls=[]
+            from siar_science import ml_campaign
+            original_loader=ml_campaign._load_official
+            def track_loader(*args,period=None,**kwargs):
+                calls.append(period)
+                if period==mp["test_period"]:
+                    staging=root/"campaign"/".staging"
+                    self.assertTrue((staging/"selection.json").is_file())
+                    self.assertTrue((staging/"frozen_configurations.json").is_file())
+                    self.assertTrue((staging/"refitted_models.joblib").is_file())
+                return original_loader(*args,period=period,**kwargs)
+            with patch("siar_science.ml_campaign._load_official",side_effect=track_loader):
+                campaign=execute_ml_rolling_campaign(source,previous,mpath,root/"campaign",
+                                                       require_official_identity=False)
+            self.assertEqual(campaign["status"],"SUCCESS",campaign.get("error"))
+            self.assertEqual(calls,[mp["development_period"],mp["test_period"]])
+            self.assertEqual(campaign["development_rows_loaded"],sum(r["date"]<=mp["development_period"][1] for r in dataset["rows"]))
+            self.assertEqual(campaign["test_rows_loaded_before_freeze"],0)
+            selection=json.loads((root/"campaign/selection.json").read_bytes())
+            self.assertEqual(selection["status"],"FROZEN")
+            self.assertFalse(selection["test_inspected"])
+            self.assertEqual(len(selection["selected"]),35)
+            self.assertEqual(campaign["outputs"]["test_results.json"]["sha256"],
+                             digest((root/"campaign/test_results.json").read_bytes()))
+            bundle=__import__("joblib").load(root/"campaign/refitted_models.joblib")
+            self.assertEqual(bundle["fit_period"],mp["development_period"])
+            self.assertEqual(len(bundle["selected"]),35)
+            self.assertEqual(set(bundle["models"]),{item["candidate_id"] for item in selection["selected"]})
+            for entry in campaign["outputs"].values():
+                self.assertEqual(digest((root/"campaign"/entry["path"]).read_bytes()),entry["sha256"])
+            manifest_sha=digest((root/"campaign/manifest.json").read_bytes())
+            self.assertEqual((root/"campaign/manifest.sha256").read_text().split()[0],manifest_sha)
+            with self.assertRaises(ValueError):
+                execute_ml_rolling_campaign(source,previous,mpath,root/"campaign",require_official_identity=False)
+
+            broken=deepcopy(mp);broken["dataset_sha256"]="f"*64
+            broken_path=root/"broken-ml.json";broken_path.write_bytes(json_bytes(broken))
+            with self.assertRaises(ValueError):
+                execute_ml_rolling_campaign(source,previous,broken_path,root/"failed-campaign",
+                                            require_official_identity=False)
+            failed=json.loads((root/"failed-campaign/manifest.json").read_bytes())
+            self.assertEqual(failed["status"],"FAILED")
+            self.assertEqual(failed["outputs"],{})
+            self.assertEqual({p.name for p in (root/"failed-campaign").iterdir()},{"manifest.json"})
+
+            # Changing only TEST targets cannot change rolling fold summaries
+            # or the frozen development selection.
+            _,dev_rows,_,_=_context_for_split(source,previous,mpath,"DEVELOPMENT")
+            _,test_rows,_,_=_context_for_split(source,previous,mpath,"TEST")
+            changed_test=deepcopy(test_rows)
+            for row in changed_test:
+                row["target"]=1_000_000.0
+            candidates=_candidates(mp)
+            before=evaluate_rolling_candidates(dev_rows,mp,candidates)
+            after=evaluate_rolling_candidates(dev_rows+changed_test,mp,candidates)
+            before_selection=_frozen_selection(dev_rows,mp,before)
+            after_selection=_frozen_selection(dev_rows+changed_test,mp,after)
+            self.assertEqual(before["candidate_summaries"],after["candidate_summaries"])
+            self.assertEqual(before_selection["selected"],after_selection["selected"])
+            self.assertEqual(before_selection["campaign_champion"],after_selection["campaign_champion"])
 
 
 if __name__=="__main__": unittest.main()

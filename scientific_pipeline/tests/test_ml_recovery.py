@@ -28,6 +28,7 @@ class MLRecoveryTests(unittest.TestCase):
     def test_journal_is_durable_before_test_loader_and_no_fit_or_selection(self):
         with temporary_directory() as directory:
             root = Path(directory)
+            (root / "protocol").write_text("{}", encoding="utf-8")
             def load_test(*args, **kwargs):
                 journal = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(journal[-2:], ["PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED"])
@@ -51,6 +52,7 @@ class MLRecoveryTests(unittest.TestCase):
     def test_test_loader_interruption_leaves_durable_failed_journal(self):
         with temporary_directory() as directory:
             root = Path(directory)
+            (root / "protocol").write_text("{}", encoding="utf-8")
             def interrupted(*args, **kwargs):
                 states = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(states[-1], "TEST_ACCESS_INTENT_RECORDED")

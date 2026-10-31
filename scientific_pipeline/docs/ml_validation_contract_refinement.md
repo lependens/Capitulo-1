@@ -106,7 +106,39 @@ siar-science ml-rolling-campaign --dataset ./derived/dataset.json \
   --pipeline-sha <SHA-del-checkout-fusionado>
 ```
 
-La primera ejecución oficial permanece pendiente de que se fusione este
-runtime. ANN continúa fuera de alcance; su recomendación depende del análisis
-de estabilidad y cobertura de la campaña clásica.
+La primera campaña oficial se interrumpió después de persistir selección y
+bundle de refit; su acceso a TEST es desconocido. La evaluación autorizada de
+recuperación, descrita abajo, es una ejecución separada y no afirma ser el
+primer acceso a TEST. ANN continúa fuera de alcance hasta analizar estabilidad
+y cobertura de la campaña clásica.
+
+## Recuperación de evaluación interrumpida
+
+Si una campaña se interrumpe después de persistir selección congelada y bundle
+refitted, `ml-test-recovery` permite validar esos artefactos y evaluar el mismo
+bundle en TEST sin volver a seleccionar ni ajustar modelos. Requiere las 185
+resúmenes de candidatos con F1–F4, las 35 configuraciones idénticas en selección,
+configuración congelada y bundle, y metadatos de refit DEVELOPMENT 2004–2020.
+Los hashes del Dataset v1, protocolo y manifiesto AHC también deben coincidir.
+
+La recuperación escribe en una carpeta nueva. Su journal durable registra
+`PRE_TEST_VERIFIED` y `TEST_ACCESS_INTENT_RECORDED` antes de invocar el cargador
+TEST; las etapas posteriores registran apertura, evaluación y resultado. Si la
+campaña previa no permite saber si llegó a abrir TEST, el nuevo run se etiqueta
+`retrospective_recovery_evaluation` y conserva `prior_attempt_status` como
+`TEST_ACCESS_UNKNOWN`. No se afirma que TEST se abra por primera vez ni que sea
+un acceso único a lo largo de todas las ejecuciones.
+
+```bash
+siar-science ml-test-recovery --source-run ./scientific-results/<campaña-interrumpida> \
+  --dataset ./derived/dataset.json \
+  --ahc-manifest ./runs/ahc/test/manifest.json \
+  --protocol scientific_pipeline/experiments/ml-v1-classical.json \
+  --output ./scientific-results/ml-test-recovery-UTC \
+  --pipeline-sha <SHA-del-checkout-fusionado>
+```
+
+La recuperación es solo evaluación: no ejecuta selección, entrenamiento ni
+refit. Un fallo conserva su manifest `FAILED` y el journal de acceso para que
+quede registrada la frontera alcanzada.
 

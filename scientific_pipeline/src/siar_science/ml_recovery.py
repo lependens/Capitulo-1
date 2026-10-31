@@ -225,6 +225,7 @@ def execute_ml_test_recovery(source_run, dataset_path, ahc_manifest_path, protoc
             manifest["_models"] = bundle["models"]
             _write_recovery_outputs(staging, rows, predicted, scores, selection, manifest)
             del manifest["_models"]
+            _journal(journal_path, "TEST_EVALUATION_COMPLETED", prediction_rows=len(predicted), metric_rows=len(scores))
             result = {"status": "PASS", "stage": manifest["stage"], "test_access_claim": manifest["test_access_claim"],
                 "test_status": protocol["test_status"], "selected_cell_count": 35, "test_rows": len(rows),
                 "test_common_cohort": [score for score in scores if score["reference_id"] == "PM_FAO56_V1" and score["group"] == "global" and score["cohort_id"] == "common_all"]}

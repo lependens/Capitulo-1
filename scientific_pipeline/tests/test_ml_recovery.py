@@ -44,7 +44,7 @@ class MLRecoveryTests(unittest.TestCase):
             self.assertEqual(result["prior_attempt_status"], "TEST_ACCESS_UNKNOWN")
             writer.assert_called_once()
             states = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
-            self.assertEqual(states, ["RECOVERY_STARTED", "PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED", "SUCCESS"])
+            self.assertEqual(states, ["RECOVERY_STARTED", "PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED", "TEST_EVALUATION_COMPLETED", "SUCCESS"])
             self.assertFalse(hasattr(ml_recovery, "_fit_full_development"))
             self.assertFalse(hasattr(ml_recovery, "_frozen_selection"))
 

@@ -54,6 +54,37 @@ def _file_sha256(path):
     return hasher.hexdigest()
 
 
+
+def _verify_ahc_output_dependencies(ahc_manifest_path):
+    """Verify every immutable AHC output before any Dataset v1 read."""
+    manifest_bytes = Path(ahc_manifest_path).read_bytes()
+    manifest_sha = digest(manifest_bytes)
+    if manifest_sha != OFFICIAL_AHC_TEST_SHA256:
+        raise ValueError("Official AHC TEST manifest hash mismatch")
+    ahc_manifest = json.loads(manifest_bytes)
+    outputs = ahc_manifest.get("outputs")
+    if not isinstance(outputs, dict) or not outputs:
+        raise ValueError("AHC manifest has no declared outputs")
+    root = Path(ahc_manifest_path).resolve().parent
+    verified = {}
+    for name, entry in sorted(outputs.items()):
+        if not isinstance(entry, dict):
+            raise ValueError("Invalid AHC output entry: " + str(name))
+        relative = Path(entry.get("path", ""))
+        if not entry.get("path") or relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("Unsafe or missing AHC output path: " + str(name))
+        path = (root / relative).resolve()
+        if root not in path.parents:
+            raise ValueError("AHC output escapes manifest directory: " + str(name))
+        if not path.is_file():
+            raise FileNotFoundError("Missing AHC manifest output: " + str(name) + " (" + str(path) + ")")
+        actual_sha = _file_sha256(path)
+        if actual_sha != entry.get("sha256"):
+            raise ValueError("AHC manifest output hash mismatch: " + str(name))
+        verified[name] = {"path": relative.as_posix(), "sha256": actual_sha}
+    return {"manifest_sha256": manifest_sha, "output_count": len(verified), "outputs": verified}
+
+
 def _validate_frozen_source(source_run, dataset_path, ahc_manifest_path, protocol_path):
     source = Path(source_run).resolve()
     stage = source / ".staging" if (source / ".staging").is_dir() else source
@@ -80,9 +111,11 @@ def _validate_frozen_source(source_run, dataset_path, ahc_manifest_path, protoco
     for name, expected_hash in INTERRUPTED_RUN_ARTIFACT_SHA256.items():
         if _file_sha256(stage / name) != expected_hash:
             raise ValueError("Preserved interrupted-run artifact hash mismatch: " + name)
-    dataset_sha = digest(Path(dataset_path).read_bytes())
-    if dataset_sha != OFFICIAL_DATASET_SHA256 or dataset_sha != protocol["dataset_sha256"]:
-        raise ValueError("Official Dataset v1 hash mismatch")
+    # Do not read Dataset v1 before the durable TEST_OPENED journal event.
+    if not Path(dataset_path).is_file():
+        raise FileNotFoundError("Dataset v1 file is missing")
+    if OFFICIAL_DATASET_SHA256 != protocol["dataset_sha256"]:
+        raise ValueError("Protocol Dataset v1 hash mismatch")
     ahc_sha = digest(Path(ahc_manifest_path).read_bytes())
     if ahc_sha != OFFICIAL_AHC_TEST_SHA256 or ahc_sha != protocol["ahc_test_manifest_sha256"]:
         raise ValueError("Official AHC TEST manifest hash mismatch")
@@ -194,10 +227,14 @@ def execute_ml_test_recovery(source_run, dataset_path, ahc_manifest_path, protoc
     usage_before = _resource_usage()
     manifest = {"schema_version": "ml-test-recovery-v1", "stage": "retrospective_recovery_evaluation",
         "status": "FAILED", "run_id": "ml-recovery-" + uuid.uuid4().hex, "started_at_utc": _utc(),
-        "prior_attempt_status": "TEST_ACCESS_UNKNOWN", "test_access_claim": "recovery evaluation; not first TEST access",
+        "prior_attempt_status": "TEST_ACCESS_OCCURRED_TEST_EVALUATION_NOT_PERFORMED", "test_access_claim": "retrospective recovery; prior technical TEST access without predictions or metrics",
         "pipeline": _identity(pipeline_sha), "runtime": _runtime(), "outputs": {}, "test_inspected": False}
     _journal(journal_path, "RECOVERY_STARTED", source_run=str(Path(source_run).resolve()))
     try:
+        ahc_dependencies = _verify_ahc_output_dependencies(ahc_manifest_path)
+        _journal(journal_path, "PRE_TEST_DEPENDENCIES_VERIFIED",
+                 ahc_manifest_sha256=ahc_dependencies["manifest_sha256"],
+                 ahc_output_count=ahc_dependencies["output_count"])
         values = _validate_frozen_source(source_run, dataset_path, ahc_manifest_path, protocol_path)
         source, source_stage, selection, selection_sha, frozen, frozen_sha, refit, refit_sha, bundle, bundle_sha, protocol, protocol_sha = values
         # Persist source validation and all immutable inputs before any TEST loader is invoked.
@@ -206,15 +243,32 @@ def execute_ml_test_recovery(source_run, dataset_path, ahc_manifest_path, protoc
             source_artifacts={name: _file_sha256(source_stage / name) for name in
                 ("selection.json", "frozen_configurations.json", "candidate_summaries.json", "refit_metadata.json", "refitted_models.joblib")},
             protocol=protocol, protocol_sha256=protocol_sha, protocol_file_sha256=digest(Path(protocol_path).read_bytes()),
-            dataset_sha256=digest(Path(dataset_path).read_bytes()), ahc_test_manifest_sha256=digest(Path(ahc_manifest_path).read_bytes()),
-            selected_cell_count=35, fit_split="DEVELOPMENT", fit_period=protocol["development_period"])
+            expected_dataset_sha256=protocol["dataset_sha256"],
+            ahc_test_manifest_sha256=ahc_dependencies["manifest_sha256"], ahc_dependency_outputs=ahc_dependencies["outputs"],
+            selected_cell_count=35, fit_split="DEVELOPMENT", fit_period=protocol["development_period"],
+            prior_attempt_status="TEST_ACCESS_OCCURRED_TEST_EVALUATION_NOT_PERFORMED",
+            prior_test_access_history=[
+                {"attempt":"original campaign", "status":"TEST_ACCESS_UNKNOWN"},
+                {"attempt":"server recovery", "status":"TEST_NOT_OPENED"},
+                {"attempt":"first Kaggle recovery", "status":"TEST_ACCESS_OCCURRED",
+                 "predictions":False, "metrics":False,
+                 "manifest_sha256":"9bb4c7bc1f605b121e0d8797743094883a54e773b6275258f0a9fec1769e70f1",
+                 "journal_sha256":"307c065336f3be736cf19f1121222e4b499642ca98db8bcef87ef6122a1336df"}])
         _journal(journal_path, "PRE_TEST_VERIFIED", selection_sha256=selection_sha, bundle_sha256=bundle_sha,
                  candidate_count=185, selected_cell_count=35)
-        _journal(journal_path, "TEST_ACCESS_INTENT_RECORDED", reason="all frozen selection/refit checks passed")
+        _journal(journal_path, "TEST_ACCESS_INTENT_RECORDED", reason="frozen selection, refit and AHC dependencies verified")
+        # Durable access marker precedes hashing, parsing, or any other Dataset v1 read.
+        _journal(journal_path, "TEST_OPENED", reason="all frozen and AHC dependency checks passed")
+        manifest["test_inspected"] = True
+        manifest["test_access_count_this_recovery"] = 1
+        dataset_sha = _file_sha256(dataset_path)
+        if dataset_sha != OFFICIAL_DATASET_SHA256 or dataset_sha != protocol["dataset_sha256"]:
+            raise ValueError("Official Dataset v1 hash mismatch")
+        manifest["dataset_sha256"] = dataset_sha
         dataset, rows, loaded_protocol, identity = _context_for_split(dataset_path, ahc_manifest_path, protocol_path, "TEST")
         if loaded_protocol != protocol or identity["dataset_sha256"] != manifest["dataset_sha256"] or identity["protocol_sha256"] != protocol_sha:
             raise ValueError("TEST identity differs from pre-verified inputs")
-        _journal(journal_path, "TEST_OPENED", row_count=len(rows), identity_verified=True)
+        _journal(journal_path, "TEST_CONTEXT_IDENTIFIED", row_count=len(rows), identity_verified=True)
         manifest.update(identity)
         manifest["test_inspected"] = True
         manifest["development_selection_sha256"] = selection_sha

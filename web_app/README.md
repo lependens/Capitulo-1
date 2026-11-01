@@ -1,3 +1,5 @@
+> **Estado posterior — 01/11/2026:** ML-V1-CLASSICAL-MODELS PASS; **WEB-V0.3-ML READY** para consumir los resultados publicados. La versión desplegada documentada sigue siendo WEB-V0.2-AHC: esta actualización no implementa ni despliega ML en la web ni recalcula ciencia. [Cierre narrativo y límites](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
+
 > **Estado operativo comunicado por Dirección 00 — 31/10/2026:** WEB-V0.2-AHC PASS / DEPLOYED en [LAN](http://192.168.1.43:8088/), desktop/mobile/API PASS y montajes de datos read-only. PR #46/#47 fusionadas; derivado `web-derived-v02-ahc-20261031` preservado y REMOTE_VERIFIED. Sin datos recalculados ni artefactos científicos modificados. [Identidad, receipt y backup](../docs/DATA_LOCATIONS.md). WEB-V0.3-ML espera outputs científicos oficiales publicados; este documento no acredita una campaña ML completada.
 
 # SIAR ET₀ Lab — WEB-V0.2-AHC

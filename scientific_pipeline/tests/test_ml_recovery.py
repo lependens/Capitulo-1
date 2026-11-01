@@ -143,6 +143,33 @@ class MLRecoveryTests(unittest.TestCase):
             manifest = json.loads((root/"run"/"manifest.json").read_bytes())
             self.assertFalse(manifest["test_inspected"])
 
+    def test_daily_predictions_merge_baseline_target_once(self):
+        identity = {"run_id": "fixture"}
+        row = {
+            "station_code": "IB01", "date": "2021-01-01", "EtPMon": 2.1, "target": 2.2,
+            "predictions": {"PM_FAO56_V1": 2.2, "ML_LINEAR__FEATURE_SET_T": 2.3},
+            "eligibility_reasons": {}, "quality_status": "PASS", "observation_status": "OBSERVED",
+            "quality_flags": [], "scientific_flags": [], "provenance": {}, "source_data_sha": "a" * 64,
+        }
+        with temporary_directory() as directory, patch.object(ml_recovery, "_model_diagnostics", return_value={}):
+            manifest = {"dataset_id": "fixture", "dataset_sha256": "b" * 64,
+                        "audit_source_repo_sha": "c" * 40, "source_repo_sha": "d" * 40,
+                        "protocol_sha256": "e" * 64, "run_id": "fixture",
+                        "protocol": {"feature_sets": ["FEATURE_SET_T"]},
+                        "_models": {"linear-t": object()}, "outputs": {}}
+            selection = {"selected": [{"model_id": "ML_LINEAR__FEATURE_SET_T", "candidate_id": "linear-t",
+                         "algorithm": "LINEAR", "feature_set": "FEATURE_SET_T",
+                         "features": ["tmin", "tmax"], "parameters": {}}]}
+            score = {"group": "global", "cohort_id": "common_all", "reference_id": "PM_FAO56_V1",
+                     "method_id": "ML_LINEAR__FEATURE_SET_T"}
+            ml_recovery._write_recovery_outputs(Path(directory), [row], [row], [score], selection, manifest)
+            with (Path(directory) / "test_predictions.csv").open(encoding="utf-8-sig", newline="") as stream:
+                records = list(json.reader(stream))
+        self.assertEqual(records[0].count("PM_FAO56_V1"), 1)
+        values = dict(zip(records[0], records[1]))
+        self.assertEqual(values["PM_FAO56_V1"], "2.2")
+        self.assertEqual(values["ML_LINEAR__FEATURE_SET_T"], "2.3")
+
     def test_output_path_is_append_only(self):
         with temporary_directory() as directory:
             root = Path(directory)

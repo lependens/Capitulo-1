@@ -15,7 +15,8 @@ class MLRecoveryTests(unittest.TestCase):
         selected = [{"model_id": "ML_LINEAR__FEATURE_SET_T", "candidate_id": "linear-t",
                      "algorithm": "LINEAR", "feature_set": "FEATURE_SET_T", "features": ["tmin", "tmax"], "parameters": {}}]
         protocol = {"development_period": ["2004-01-01", "2020-12-31"], "test_period": ["2021-01-01", "2025-12-31"],
-                    "feature_sets": ["FEATURE_SET_T"], "test_status": "retrospective_locked"}
+                    "feature_sets": ["FEATURE_SET_T"], "test_status": "retrospective_locked",
+                    "dataset_sha256": digest(b"fixture dataset")}
         bundle = {"models": {"linear-t": object()}}
         return (Path("/frozen"), Path("/frozen/.staging"), {"selected": selected}, "a" * 64,
                 {}, "b" * 64, [], "c" * 64, bundle, "d" * 64, protocol, "e" * 64)
@@ -36,8 +37,9 @@ class MLRecoveryTests(unittest.TestCase):
                 journal = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(journal[-3:], ["PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED"])
                 return {}, [], self._frozen_source()[-2], self._identity()
-            with patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
-                 patch.object(ml_recovery, "_file_sha256", return_value="0" * 64), \
+            with patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
+                 patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
+                 patch.object(ml_recovery, "_file_sha256", side_effect=lambda path: digest(b"fixture dataset") if Path(path) == root/"dataset" else "0" * 64), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=load_test), \
                  patch.object(ml_recovery, "_test_predictions", return_value=[]), \
                  patch.object(ml_recovery, "score_predictions", return_value=[]), \

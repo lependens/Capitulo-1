@@ -1,12 +1,12 @@
-> **Estado posterior — 01/11/2026:** ML-V1-CLASSICAL-MODELS PASS; **WEB-V0.3-ML READY** para consumir los resultados publicados. La versión desplegada documentada sigue siendo WEB-V0.2-AHC: esta actualización no implementa ni despliega ML en la web ni recalcula ciencia. [Cierre narrativo y límites](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
+> **Estado operativo — 01/11/2026:** **WEB-V0.3-SCIENTIFIC-EXPLORER PASS / DEPLOYED** en [LAN](http://192.168.1.43:8088/). Desktop, mobile y API PASS; paquete de 19 archivos ingerido por 02B y snapshot `backup_20261101T123421Z_8022d3fd` **REMOTE_VERIFIED**. [Cierre, hashes, receipt, comprobaciones y rollback](docs/release-v03.md). [Ciencia ML publicada y límites](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
 
-> **Estado operativo comunicado por Dirección 00 — 31/10/2026:** WEB-V0.2-AHC PASS / DEPLOYED en [LAN](http://192.168.1.43:8088/), desktop/mobile/API PASS y montajes de datos read-only. PR #46/#47 fusionadas; derivado `web-derived-v02-ahc-20261031` preservado y REMOTE_VERIFIED. Sin datos recalculados ni artefactos científicos modificados. [Identidad, receipt y backup](../docs/DATA_LOCATIONS.md). WEB-V0.3-ML espera outputs científicos oficiales publicados; este documento no acredita una campaña ML completada.
+> **Histórico comunicado por Dirección 00 — 31/10/2026:** WEB-V0.2-AHC PASS / DEPLOYED, PR #46/#47 fusionadas; derivado `web-derived-v02-ahc-20261031` preservado y REMOTE_VERIFIED. Sin datos recalculados ni artefactos científicos modificados. [Identidad, receipt y backup anteriores](../docs/DATA_LOCATIONS.md).
 
 # SIAR ET₀ Scientific Explorer — WEB-V0.3
 
 WEB-V0.3 consumes the published ML recovery, frozen DEVELOPMENT selection and existing AHC/baseline derivatives. It adds a summary, model/input catalog, station analysis, cohort-aware comparison and audit/glossary. PM is a calculated reference, not independently observed ET₀. WEB performs no training, selection, coefficient fitting or scientific metric recalculation.
 
-[V0.3 data contract, API, scientific semantics, audit, validation, deployment and rollback](docs/explorer.md). The preceding V0.2 operational statement and following V0.1/V0.2 instructions document those releases. V0.3 production status requires its deployment and preservation receipts.
+[V0.3 data contract, API, scientific semantics, audit, validation, deployment and rollback](docs/explorer.md). [Verified production release](docs/release-v03.md). The V0.2 statement and following V0.1/V0.2 instructions document those previous releases.
 
 ## Previous releases
 

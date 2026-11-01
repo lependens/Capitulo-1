@@ -8,6 +8,8 @@ The DEVELOPMENT-selected ML champion is read from the frozen selection. TEST-bes
 
 [Canonical science](../../scientific_pipeline/README.md), [AHC visualization contract](../../scientific_pipeline/docs/visualization_contract.md), [ML rolling contract](../../scientific_pipeline/docs/ml_validation_contract_refinement.md), [recovery incident](../../scientific_pipeline/docs/ml-v1-test-recovery-access-incident.md).
 
+The current narrative explanation of models, inputs and accepted results is [1.2.6 — ML clásico](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md), incorporated from main after PR #56.
+
 ## Verified data contract
 
 `convert_explorer` reads an approved WEB-V0.2 package, official recovery CSVs and frozen `selection.json`. It imports no scientific implementation or serialized estimator. Recovery manifest SHA: `05834edaebf3f990729ebb8b15ecd7511bb96e006bfab69f11408a250f432aab`; selection SHA: `a41ee87956368d6c0e1fae2b39177ffe8c42cae7658477172c46725409f829c7`. Each source output hash and row count is checked. Protocol file SHA and canonical logical protocol SHA are distinct and both retained.

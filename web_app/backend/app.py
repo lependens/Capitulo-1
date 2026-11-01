@@ -23,12 +23,13 @@ def create_app(data_dir=None):
             raise ValueError(f"Derived artifact integrity failure: {name}")
     load = lambda name: json.loads((folder / name).read_text(encoding="utf-8"))
     stations, models, published = load("stations.json"), load("models.json"), load("metrics.json")
-    ahc_enabled = info.get("schema_version") == "web-v0.2-ahc"
+    explorer_enabled = info.get("schema_version") == "web-v0.3-explorer"
+    ahc_enabled = explorer_enabled or info.get("schema_version") == "web-v0.2-ahc"
     ahc_models = load("ahc_models.json") if ahc_enabled else []
     station_codes = {s["code"] for s in stations}
     model_ids = {m["id"] for m in models}
     predictions = model_ids - {"EtPMon"}
-    web_version = "0.2.0" if ahc_enabled else "0.1.0"
+    web_version = "0.3.0" if explorer_enabled else "0.2.0" if ahc_enabled else "0.1.0"
     api = FastAPI(title="SIAR ET₀ Lab", version=web_version, docs_url="/api/docs", openapi_url="/api/openapi.json", redoc_url=None)
     db = duckdb.connect(config={"threads": 1, "memory_limit": "256MB", "max_temp_directory_size": "0B"})
     parquet_path = str(folder / "observations.parquet").replace("'", "''")
@@ -46,6 +47,9 @@ def create_app(data_dir=None):
             path = str(folder / filename).replace("'", "''")
             db.execute(f"CREATE VIEW {view} AS SELECT * FROM read_parquet('{path}')")
     api.state.db = db
+    if explorer_enabled:
+        from .explorer import router
+        api.include_router(router(folder, db, stations))
 
     def check_station(station):
         if station and station not in station_codes:
@@ -108,7 +112,7 @@ def create_app(data_dir=None):
     @api.get("/api/health")
     async def health():
         return dict(status="ok", dataset_id=info["dataset_id"], rows=info["rows"], integrity="verified at startup",
-                    version=web_version, release="WEB-V0.2-AHC" if ahc_enabled else "WEB-V0.1",
+                    version=web_version, release="WEB-V0.3-SCIENTIFIC-EXPLORER" if explorer_enabled else "WEB-V0.2-AHC" if ahc_enabled else "WEB-V0.1",
                     ahc="PASS" if ahc_enabled else "not installed", data_recalculated=False,
                     scientific_artifacts_modified=False)
 

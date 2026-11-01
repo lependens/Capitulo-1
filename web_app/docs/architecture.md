@@ -1,5 +1,7 @@
 # Contrato de arquitectura y datos WEB-V0.2-AHC
 
+WEB-V0.3 extends this architecture with the [Scientific Explorer contract](explorer.md): verified ML conversion, general read-only explorer API, cohort-aware comparison and portable audit identities. The V0.2 architecture and endpoints below remain available for AHC coefficients and historical splits.
+
 Fecha: 2026-10-24. Revisión inicial sobre main `35927e1ef07775c405fa6d8be9fe5957835d2f39`.
 WEB-V0.2 amplía el componente separado `web_app/` con las tablas AHC ya publicadas, sin cambiar contratos científicos ni servicios de adquisición.
 

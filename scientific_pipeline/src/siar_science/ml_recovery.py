@@ -183,8 +183,12 @@ def _write_recovery_outputs(stage, rows, predicted, scores, selection, manifest)
         "eligibility_reasons", "quality_status", "observation_status", "quality_flags", "scientific_flags", "provenance", "source_data_sha"]
     daily = []
     for row in predicted:
-        record = dict(identity, station_code=row["station_code"], date=row["date"], split="TEST", EtPMon=row["EtPMon"],
-                      PM_FAO56_V1=row["target"], **row["predictions"])
+        # Baselines include PM_FAO56_V1, which is also the ML target. Merge
+        # predictions first, then set the canonical target column exactly once.
+        record = dict(identity, station_code=row["station_code"], date=row["date"], split="TEST",
+                      EtPMon=row["EtPMon"])
+        record.update(row["predictions"])
+        record["PM_FAO56_V1"] = row["target"]
         record.update(eligibility_reasons=row["eligibility_reasons"], quality_status=row["quality_status"],
             observation_status=row["observation_status"], quality_flags=row["quality_flags"],
             scientific_flags=row["scientific_flags"], provenance=row["provenance"], source_data_sha=row["source_data_sha"])

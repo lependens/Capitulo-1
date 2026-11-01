@@ -1,6 +1,6 @@
 # Operación y semántica
 
-Este documento describe mecanismos inventariados, no ordena ejecutarlos ni instala automatización. Los paths y las identidades están en [arquitectura](architecture.md).
+**Actualizado: 2026-11-01**, incluido cierre operativo Windows PASS de 02B comunicado por Dirección 00. Este documento describe mecanismos inventariados, no ordena ejecutarlos ni instala automatización. Los paths y las identidades están en [arquitectura](architecture.md).
 
 ## Ingestión event-driven existente
 
@@ -8,7 +8,9 @@ Flujo real: inbox del servidor → `ingest_incremental.py` → verificación SHA
 
 Idempotencia: un artefacto idéntico se acepta como **unchanged**. La misma identidad con contenido diferente se rechaza como **collision**; no sobrescribirla ni reutilizarla. No se deducen formatos de receipt ni flags del importador que no figuren en el inventario.
 
-El importador existente y el timer diario funcionan para material ya presente en el servidor. No constituyen una automatización instalada de transporte desde Windows.
+La entrada Windows ya está automatizada **después de finalización explícita**: resultado completo → preparación/inventario/hash y firma READY local → watcher cada 5 min → SFTP restringido → staging/chroot → verificación SHA servidor → inbox/importer existentes. Debe estar desbloqueada la clave SFTP dedicada en ssh-agent. READY firmado es independiente de la presencia del paquete; no lo firma autónomamente el watcher. [Contrato y precondiciones](windows-ingestion.md).
+
+Tras aceptación: scientific-artifacts → receipt → solicitud del servicio de preservación → snapshot → Drive crypt → verificación remota/receipt. Originales y OneDrive no cambian. Fallos conservan paquete/material para retry y no publican staging incompleto ni borran originales. E2E, idempotencia (new=0, unchanged=1) y failure/retry PASS, con artefacto sintético 47 bytes y snapshot `backup_20261101T065239Z_71bbe72e` REMOTE_VERIFIED. El manejo de fallo se validó tras corregir el contrato de retorno del importador, sin cambiar su política de colisiones.
 
 ## Preservación general
 

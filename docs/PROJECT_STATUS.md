@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-10-31 (Europe/Madrid), consolidación hasta PR #49.** Base releída: `2da62f17314e77461d2fe9cc405127e1f5870fdc`. Estado operativo y hashes externos según el parte vigente de Dirección 00; esta actualización no inspecciona ni cambia producción. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-11-01 (Europe/Madrid), cierre de ingestión Windows.** Base releída: `ef6d327f7d6ceb12fda3621620e7f7f4792546a4`. Estado operativo y hashes externos según el parte vigente de Dirección 00; esta actualización no inspecciona ni cambia producción. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -19,7 +19,7 @@
 | Quality SIAR Baleares | COMPLETE; POST corregido publicado mediante PR #29; 12 estaciones | CATALOG-TZ-001 OPEN / NON_BLOCKING; completitud observacional distinta de completitud de auditoría |
 | Dataset Observational v1 | Construido/validado PASS; SHA256 verificado en snapshot remoto aceptado | Conservar identidad, provenance y acceso a la copia completa; no se afirma que el JSON masivo esté en Git |
 | Ciencia ET₀ | Dataset v1, cuatro baselines y AHC temporal PASS; rolling validation, Linux smoke y runtime ML PASS | Campaña ML clásica oficial PENDING EXECUTION, pendiente de despliegue/ejecución del runtime; ANN NOT STARTED |
-| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos REMOTE_VERIFIED | Nuevos resultados solo Windows requieren transferencia/ingestión explícita |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows ingestion PASS | Finalización científica y preparación/READY firmado explícitos; transferencia, verificación servidor, ingestión y preservación posteriores automáticas |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
 | SIAR Forecast | Timer de captura ACTIVE; reconciliador enabled/active cada 15 min, último Result success | Nuevo run real automático → backup automático → COMPLETE remoto; después CAPTURE RUNNING, mínimo dos ciclos PILOT RUNNING |
 | AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
@@ -185,7 +185,7 @@ Incidente de storage: **CLOSED_OPERATIONALLY / MONITORING**; **SSD = IN SERVICE*
 
 STOP de infraestructura si reaparecen I/O error, emergency_ro, SMART warning, USB reset asociado o corrupción. Monitorización no equivale a prometer ausencia de fallos futuros.
 
-GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt tiene copias verificadas de raw/preservación dentro de sus alcances demostrados; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. El material crypt/OAuth de recuperación está confirmado OFF-SERVER; no publicar secretos. La cobertura de futuros resultados requiere ingestión explícita.
+GitHub conserva código/docs/artefactos versionables. Google Drive con rclone crypt tiene copias verificadas de raw/preservación dentro de sus alcances demostrados; rclone copy, no sync; contenido/nombres/directorios cifrados y restore independiente demostrado. PC personal + OneDrive es copia adicional: no se presenta OneDrive como backup auditado independiente sin verificación expresa. El material crypt/OAuth de recuperación está confirmado OFF-SERVER; no publicar secretos. La cobertura de futuros resultados exige finalización explícita y paquete con READY firmado; la transferencia/ingestión/preservación posteriores ya están automatizadas con sus precondiciones.
 
 ## Preservación canónica — inventario operativo PASS
 
@@ -193,9 +193,13 @@ GitHub conserva código/docs/artefactos versionables. Google Drive con rclone cr
 
 `siar-project-preservation.service` static/inactive entre ejecuciones, root:root; `siar-project-preservation.timer` enabled/active, diario **04:15 UTC**, Persistent=true, retraso aleatorio hasta 15 min. Ejecuta snapshot y reconcile para bytes nuevos/modificados. Ingestión event-driven existente; ciencia preservada en `/srv/siar-project/scientific-artifacts`, receipts en `/srv/siar-project/ingestion-receipts`, snapshots y verificaciones en `/srv/siar-project/preservation`. Es distinto del backup SIAR Forecast de 15 min.
 
-**WINDOWS-SCIENCE-INGEST-AUTOMATION = DESIGN_READY / STILL_PENDING**: receptor SFTP + watcher no instalados, provisioning SFTP no autorizado. Artefactos solo Windows no cubiertos hasta ingestión. El inventario no acredita restore específico independiente del namespace SIAR Raw; la evidencia general se conserva separadamente.
+**WINDOWS-SCIENCE-INGEST-AUTOMATION = PASS**, cierre de 02B comunicado por Dirección 00 el **01/11/2026**. **EXPLICIT FINALIZATION REQUIRED + AUTOMATED TRANSFER/PRESERVATION**. El productor declara completo, prepara y firma READY en `%LOCALAPPDATA%\SIAR-Science-Ingest\ready-for-backup`; con clave SFTP Ed25519 dedicada desbloqueada en `ssh-agent`, el watcher cada 5 min transfiere a staging/chroot restringido. El servidor revalida SHA → inbox/importer existentes → scientific-artifacts → receipt → preservación → Drive crypt → verificación remota.
 
-## PROJECT-ARTIFACT-BACKUP-V1 — PASS
+E2E PASS: artefacto **sintético 47 bytes**, snapshot **backup_20261101T065239Z_71bbe72e**, **REMOTE_VERIFIED**. Retry **new=0 / unchanged=1 PASS**; failure/retry **PASS**. Originales/OneDrive intactos; colisiones con bytes distintos siguen siendo error. No es un resultado científico. [Contrato operativo Windows](backup/windows-ingestion.md). La finalización sigue siendo decisión explícita del productor, no del watcher.
+
+El inventario no acredita restore específico independiente del namespace SIAR Raw; la evidencia general se conserva separadamente.
+
+## PROJECT-ARTIFACT-BACKUP-V1 — PASS / MAINTAINED
 
 Parte de cierre de 02 comunicado por Dirección 00: snapshot **backup_20261024T215639Z_63d0ef01**, **REMOTE_VERIFIED**. **128 archivos verificados = 82 scientific-results + 46 SIAR published Raw**. Scientific-results: **1,421,919,603 bytes**. El inventario del servidor tiene **221 entries**: no afirmar que los 221 estén respaldados.
 
@@ -205,7 +209,7 @@ Dataset v1 SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49
 
 Preservación general para artefactos científicos **ya ingeridos al servidor**: **event-driven ingestion PASS, new=0, unchanged=9** en la prueba reportada; **daily preservation reconciliation ENABLED**. Es distinta del reconciliador SIAR Forecast de runs publicados cada **15 minutos**.
 
-**LIMITACIÓN ABIERTA:** futuros resultados solo Windows = **NOT AUTOMATICALLY PROTECTED**. Requieren explicit transfer/ingestion → server preservation area → backup system → Drive crypt. No se garantiza todo resultado futuro ni se confunde inventario con cobertura.
+**LÍMITE VIGENTE:** resultado Windows sin finalización explícita = **NOT YET ELIGIBLE FOR AUTOMATED TRANSFER**. Resultado completo + paquete preparado + READY firmado, con clave SFTP desbloqueada, entra en transferencia/verificación/ingestión/preservación automáticas. El PASS E2E no certifica de antemano todos los outputs futuros; inventario, elegibilidad y verificación remota son estados distintos.
 
 Secret config y credentials **EXCLUDED** del snapshot. Material de recuperación crypt/OAuth **OFF-SERVER**; no publicar rclone.conf, refresh token, OAuth tokens ni crypt passwords. Closeout operativo: `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, referencia sin copiar contenido.
 
@@ -215,7 +219,7 @@ Toshiba ya no es la única copia **para los artefactos científicos y SIAR publi
 
 1. **05 / ciencia:** desplegar/ejecutar `ml-rolling-campaign` y publicar la campaña ML clásica oficial con protocolo, hashes y evidencia de cierre. Runtime y Linux smoke ya PASS; no repetir su implementación como si faltara. ANN después de evaluar ML.
 2. **06 / producto:** conservar WEB-V0.2-AHC desplegada y consumir outputs ML oficiales publicados para WEB-V0.3-ML; no recalcular ciencia desde UI/API. Forecast se integra posteriormente bajo sus contratos.
-3. **02B / preservación:** ingerir y preservar cada nuevo artefacto publicado. WEB-V0.2 ya tiene receipt y snapshot REMOTE_VERIFIED; Windows automation sigue DESIGN_READY / STILL_PENDING.
+3. **Productor / 02B:** finalizar explícitamente cada resultado, preparar y firmar READY y mantener precondiciones de ssh-agent. Windows automation PASS; transferencia/verificación/ingestión/preservación automáticas y reconciliación diaria enabled/active. WEB-V0.2 conserva su receipt/snapshot REMOTE_VERIFIED.
 4. Infraestructura: gate SIAR Forecast de nuevo run real con backup/COMPLETE, AEMET tras CAPTURE RUNNING y SIAR Sync alignment/incremental 2026 permanecen separados, sin cambios en esta misión.
 5. Issue/valid time/D+n, ET₀+Kc/ETc/riego y validación prospectiva mantienen sus gates propios.
 

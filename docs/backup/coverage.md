@@ -1,6 +1,6 @@
 # Cobertura y límites
 
-La matriz refleja `BACKUP-IMPLEMENTATION-INVENTORY-V1 = PASS`, no una auditoría nueva de cada archivo. Cobertura condicionada a ingestión no equivale a verificación individual de un output recién creado.
+**Actualizado: 2026-11-01; PROJECT-ARTIFACT-BACKUP-V1 = PASS / MAINTAINED.** La matriz refleja `BACKUP-IMPLEMENTATION-INVENTORY-V1 = PASS` y el cierre `WINDOWS-SCIENCE-INGEST-AUTOMATION = PASS`, no una auditoría nueva de cada archivo. Cobertura condicionada a ingestión no equivale a verificación individual de un output recién creado.
 
 | Categoría | Cobertura exacta |
 |---|---|
@@ -14,7 +14,8 @@ La matriz refleja `BACKUP-IMPLEMENTATION-INVENTORY-V1 = PASS`, no una auditoría
 | AEMET Raw runs | Ámbito de preservación general; servicio específico disponible sin timer independiente; captura deshabilitada |
 | Working copies del repositorio | Sin backup masivo; GitHub es autoridad |
 | Configuración no secreta / metadatos de releases | Solo allowlist explícita |
-| Archivos únicamente Windows | NO cubiertos hasta ingestión explícita |
+| Resultado Windows no finalizado explícitamente | NOT YET ELIGIBLE FOR AUTOMATED TRANSFER |
+| Resultado Windows finalizado + paquete preparado + READY firmado | Watcher transfiere automáticamente con clave SFTP desbloqueada en ssh-agent; servidor verifica SHA, importer publica y preservación/verificación remota automáticas |
 | OneDrive | NO es un backup auditado |
 | Archivos arbitrarios del servidor | NO cubiertos |
 
@@ -50,4 +51,4 @@ La aceptación histórica se apoya en cryptcheck + restores independientes + SHA
 - CSV SIAR arbitrarios fuera de las raíces de runs declaradas: el backup Forecast no protege automáticamente los CSV de SIAR Sync.
 - Credenciales, tokens, claves privadas y material secreto de configuración.
 
-Los resultados futuros solo Windows requieren transferencia/ingestión explícita; el [watcher propuesto](windows-ingestion.md) no está instalado. La política de [secretos y recuperación](secrets-and-recovery.md) evita depender únicamente del backup cifrado para poder abrirlo.
+La **finalización científica sigue siendo explícita/manual**, no la transferencia/ingestión posterior. [Watcher operativo y READY firmado](windows-ingestion.md): E2E PASS con artefacto sintético 47 bytes y snapshot `backup_20261101T065239Z_71bbe72e` REMOTE_VERIFIED; retry new=0/unchanged=1 y failure/retry PASS. Un paquete elegible sigue necesitando completar la cadena y su verificación: no se certifica por anticipado todo archivo futuro. La política de [secretos y recuperación](secrets-and-recovery.md) evita depender únicamente del backup cifrado para poder abrirlo.

@@ -37,7 +37,8 @@ class MLRecoveryTests(unittest.TestCase):
                 journal = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(journal[-3:], ["PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED"])
                 return {}, [], self._frozen_source()[-2], self._identity()
-            with patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
+            with patch.object(ml_recovery, "OFFICIAL_DATASET_SHA256", digest(b"fixture dataset")), \
+                 patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
                  patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
                  patch.object(ml_recovery, "_file_sha256", side_effect=lambda path: digest(b"fixture dataset") if Path(path) == root/"dataset" else "0" * 64), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=load_test), \

@@ -45,8 +45,8 @@ def main():
                 # A running container may outlive its removed image metadata.
                 # Commit preserves its current root filesystem/config; Docker
                 # excludes bind mounts/volumes, so scientific data stays outside.
-                preserved_id = run('docker','container','commit','--pause=true',
-                                   'siar-et0-web-'+service+'-1',tag)
+                run('docker','container','commit','siar-et0-web-'+service+'-1',tag)
+                preserved_id = run('docker','image','inspect','--format','{{.Id}}',tag)
             images[service] = dict(id=image_id, preserved_id=preserved_id, tag=tag)
         data = dict(git_sha=a.deployed_sha or run('git','-C',str(a.repo),'rev-parse','HEAD'), images=images)
         (record/'rollback.json').write_text(json.dumps(data,indent=2))

@@ -85,10 +85,10 @@ def package(base, source, selection_path, output):
     audit.update(quality_post=info['quality_post'], scientific_status='SUCCESS · published recovery manifest; verified by consumer')
     audit.update(manifest_sha256=MANIFEST_SHA, source_artifact='ml-v1-test-recovery-20261101T090828Z', source_hashes={name:e['sha256'] for name,e in manifest['outputs'].items()}, development_folds=manifest['protocol']['development_folds'], champion=selection['campaign_champion'], selection_status=selection['status'], test_semantics='retrospective_recovery_evaluation', reference='PM_FAO56_V1', science_recalculation_allowed=False)
     for name, value in [('explorer_models.json', metadata), ('explorer_audit.json', audit), ('explorer_selection.json', selection)]:
-        (output / name).write_text(json.dumps(value, ensure_ascii=False, allow_nan=False, indent=2), encoding='utf-8')
+        (output / name).write_text(json.dumps(value, ensure_ascii=False, allow_nan=False, indent=2), encoding='utf-8', newline='\r\n')
         artifacts[name] = sha(output / name)
     info.update(schema_version='web-v0.3-explorer', conversion_version='3.0.0', reference='PM_FAO56_V1 · referencia calculada', limitations=[v for v in info['limitations'] if 'Forecast y ML' not in v] + ['ML TEST: retrospective_recovery_evaluation; no holdout prospectivo virgen.', 'ANN moderna NOT STARTED. Forecast fuera del explorador.'], web_version='0.3.0', artifacts=artifacts, ml_manifest_sha256=MANIFEST_SHA, derived_sha256=artifacts['explorer_predictions.parquet'])
-    (output / 'info.json').write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding='utf-8')
+    (output / 'info.json').write_text(json.dumps(info, ensure_ascii=False, indent=2), encoding='utf-8', newline='\r\n')
     return info
 
 

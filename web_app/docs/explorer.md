@@ -24,6 +24,8 @@ python -m web_app.backend.convert_explorer \
 
 The destination must be new. Base and official artifacts remain unchanged. Metrics are copied to Parquet without rounding. Recovery CSV predictions omit baseline columns; baseline values are joined by immutable station/date keys from the verified AHC derivative. Joined common-all and common-ML key hashes must exactly equal published scientific hashes before conversion succeeds. This verifies a representation of existing cohorts; it does not define a new cohort. Own cohorts follow the published finite prediction/reference rule.
 
+Generated JSON metadata uses explicit UTF-8 / CRLF on every host, matching the finalized Windows preservation package byte for byte on Linux. Parquet source values and metric precision are unchanged. Verify the complete file inventory, not only the prediction Parquet hash, when matching deployment to preservation.
+
 `explorer_models.json` preserves exact feature arrays, candidate IDs and frozen parameters. Negative counts count the producer's published negative-prediction flags. No model bundle is deployed. Audit records the source artifact/run, dataset, protocol, pipeline, manifest, selection and bundle hashes. Scaler diagnostics and local source paths are omitted. Startup validates every derived file hash. Web representations do not become scientific authorities.
 
 ## Read-only API

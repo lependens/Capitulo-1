@@ -1,4 +1,5 @@
 """Recovery-specific ordering and non-training tests using controlled fixtures."""
+import csv
 import json
 from pathlib import Path
 import unittest
@@ -164,7 +165,7 @@ class MLRecoveryTests(unittest.TestCase):
                      "method_id": "ML_LINEAR__FEATURE_SET_T"}
             ml_recovery._write_recovery_outputs(Path(directory), [row], [row], [score], selection, manifest)
             with (Path(directory) / "test_predictions.csv").open(encoding="utf-8-sig", newline="") as stream:
-                records = list(json.reader(stream))
+                records = list(csv.reader(stream))
         self.assertEqual(records[0].count("PM_FAO56_V1"), 1)
         values = dict(zip(records[0], records[1]))
         self.assertEqual(values["PM_FAO56_V1"], "2.2")

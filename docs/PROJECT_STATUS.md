@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-11-01 (Europe/Madrid), recuperación ML y preservación verificada.** Base releída: `ef6d327f7d6ceb12fda3621620e7f7f4792546a4`. Estado operativo y hashes externos según el parte vigente de Dirección 00; esta actualización no inspecciona ni cambia producción. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-11-01 (Europe/Madrid), recuperación ML y preservación verificada.** Base GitHub: `94ebf67df2954e6818fc5f70c6b2e91b1b07f505`. La evidencia de ingestión, preservación remota y restore procede de la comprobación operativa del servidor; esta actualización documental no modifica los artefactos científicos. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 

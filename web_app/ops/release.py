@@ -37,8 +37,17 @@ def main():
         for service in ['frontend','backend']:
             image_id = run('docker','inspect','--format','{{.Image}}','siar-et0-web-'+service+'-1')
             tag = 'siar-et0-web-'+service+':rollback-'+record.name.lower()
-            run('docker','image','tag',image_id,tag)
-            images[service] = dict(id=image_id, tag=tag)
+            available = subprocess.run(['docker','image','inspect',image_id], capture_output=True, text=True)
+            if available.returncode == 0:
+                run('docker','image','tag',image_id,tag)
+                preserved_id = image_id
+            else:
+                # A running container may outlive its removed image metadata.
+                # Commit preserves its current root filesystem/config; Docker
+                # excludes bind mounts/volumes, so scientific data stays outside.
+                preserved_id = run('docker','container','commit','--pause=true',
+                                   'siar-et0-web-'+service+'-1',tag)
+            images[service] = dict(id=image_id, preserved_id=preserved_id, tag=tag)
         data = dict(git_sha=a.deployed_sha or run('git','-C',str(a.repo),'rev-parse','HEAD'), images=images)
         (record/'rollback.json').write_text(json.dumps(data,indent=2))
         override = 'services:\n' + ''.join(f'  {s}:\n    image: {v["tag"]}\n' for s,v in images.items())

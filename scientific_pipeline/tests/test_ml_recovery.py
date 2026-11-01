@@ -40,7 +40,7 @@ class MLRecoveryTests(unittest.TestCase):
             with patch.object(ml_recovery, "OFFICIAL_DATASET_SHA256", digest(b"fixture dataset")), \
                  patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
                  patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
-                 patch.object(ml_recovery, "_file_sha256", side_effect=lambda path: digest(b"fixture dataset") if Path(path) == root/"dataset" else "0" * 64), \
+                 patch.object(ml_recovery, "_file_sha256", return_value=digest(b"fixture dataset")), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=load_test), \
                  patch.object(ml_recovery, "_test_predictions", return_value=[]), \
                  patch.object(ml_recovery, "score_predictions", return_value=[]), \
@@ -71,9 +71,10 @@ class MLRecoveryTests(unittest.TestCase):
                 states = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(states[-1], "TEST_OPENED")
                 raise RuntimeError("synthetic interruption")
-            with patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
+            with patch.object(ml_recovery, "OFFICIAL_DATASET_SHA256", digest(b"fixture dataset")), \
+                 patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
                  patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
-                 patch.object(ml_recovery, "_file_sha256", side_effect=lambda path: digest(b"fixture dataset") if Path(path) == root/"dataset" else "0" * 64), \
+                 patch.object(ml_recovery, "_file_sha256", return_value=digest(b"fixture dataset")), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=interrupted):
                 with self.assertRaisesRegex(RuntimeError, "synthetic interruption"):
                     ml_recovery.execute_ml_test_recovery(root / "source", root / "dataset", root / "ahc", root / "protocol", root / "run")

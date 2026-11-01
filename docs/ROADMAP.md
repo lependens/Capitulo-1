@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-10-31 (Europe/Madrid), consolidación hasta PR #49.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-11-01 (Europe/Madrid), cierre de ingestión Windows.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -10,7 +10,7 @@
 |---|---|---|
 | Observaciones / Quality | POST corregido COMPLETE; 2.345 ausencias confirmadas, 0 PENDING_RETRY | Mantener snapshot cerrado; CATALOG-TZ-001 no bloqueante |
 | Ciencia / 05 | Dataset, cuatro baselines, AHC, rolling validation, Linux smoke y rolling runtime PASS | Ejecutar/publicar campaña ML clásica oficial; ANN después de evaluación ML |
-| Preservación / 02 | PROJECT-ARTIFACT-BACKUP-V1 PASS; 128 archivos remotos verificados | Ingestión explícita de futuros artefactos Windows; seguimiento continuo |
+| Preservación / 02B | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows ingestion automation PASS | Productor finaliza/prepara/firma READY; flujo posterior automatizado; mantener verificación y recuperabilidad |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
 | Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
 | AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
@@ -92,7 +92,7 @@ HG-Rs tiene mejor RMSE/R² que VAL y VAL mejor MAE/bias en la cohorte común; no
 
 ✅ VALIDATION eligió HS annual, HG-Rs seasonal y VAL annual; mensual no justifica complejidad extra. No reseleccionar tras TEST. AHC_CLIMATOLOGY se calculó después de TEST con todo el histórico hasta 2025 y permanece separado de métricas fuera de muestra. IB101 descriptivo corto, deployable=false; IB09 UNAVAILABLE/FAIL. Estabilidad PASS no garantiza mejora todos los años; conservar empeoramientos.
 
-✅ **PROJECT-ARTIFACT-BACKUP-V1 PASS**, snapshot REMOTE_VERIFIED de 128 archivos; no es un gate pendiente. Daily reconciliation ENABLED y event-driven ingestion PASS para material ya ingerido al servidor. Futuros resultados solo Windows requieren transferencia explícita; no están automáticamente protegidos.
+✅ **PROJECT-ARTIFACT-BACKUP-V1 PASS**, snapshot REMOTE_VERIFIED de 128 archivos; no es un gate pendiente. Daily reconciliation ENABLED y event-driven ingestion PASS para material ya ingerido al servidor. El productor finaliza explícitamente y prepara READY firmado; Windows transfiere y el servidor ingiere/preserva automáticamente con clave SFTP desbloqueada. Resultados no finalizados no son elegibles.
 
 ✅ [ML contract](../scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS**; [visualization contract](../scientific_pipeline/docs/visualization_contract.md) **FROZEN / AVAILABLE TO 06**.
 
@@ -131,7 +131,7 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 
 ✅ **BACKUP-IMPLEMENTATION-INVENTORY-V1 PASS**: implementación existente canonizada en [docs/backup](backup/README.md). Preservación general diaria 04:15 UTC (Persistent, jitter hasta 15 min) e ingestión event-driven; backup SIAR cada 15 min; AEMET sin timer propio ni hook de captura observado. No cambia ninguno de los gates de captura.
 
-🟠 **WINDOWS-SCIENCE-INGEST-AUTOMATION = DESIGN_READY / STILL_PENDING**: desarrollar/provisionar receptor y watcher y validar E2E sintético en misión independiente. [Diseño](backup/windows-ingestion.md) no desplegado; provisioning SFTP no autorizado aquí. Hasta ingestión explícita, Windows-only no está cubierto. Mantener verificación de cobertura, receipts y recuperación off-server; no asumir backup masivo de workspaces, /etc ni servidor completo.
+✅ **WINDOWS-SCIENCE-INGEST-AUTOMATION = PASS**, 01/11/2026. [Flujo operativo](backup/windows-ingestion.md): finalización/preparación y READY firmado explícitos, después watcher 5 min → SFTP → verificación SHA servidor → importer → preservación/remoto automáticos. E2E sintético 47 bytes, snapshot `backup_20261101T065239Z_71bbe72e` REMOTE_VERIFIED; retry new=0/unchanged=1 y failure/retry PASS. No es trabajo pendiente ni selección científica. Mantener precondiciones, receipts y recuperación off-server; sin backup masivo de workspaces o servidor completo.
 
 STORAGE-DATA-PRESERVATION PASS; incidente CLOSED_OPERATIONALLY / MONITORING; **SSD IN SERVICE**. No crear un roadmap de sustitución del SSD; reabrir solo con nueva evidencia objetiva. 238/238 archivos de datos size/SHA256 y 12/12 CSV contra POST PASS; 242 archivos totales sin ausencias/discrepancias. No se reabre como proyecto activo por mantener monitorización.
 
@@ -139,7 +139,7 @@ STOP ante nueva evidencia de I/O error, emergency_ro, SMART warning, USB reset a
 
 **PROJECT-ARTIFACT-BACKUP-V1 PASS:** snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED; 82 archivos científicos (1,421,919,603 bytes) + 46 SIAR published Raw = 128 verificados. 221 inventariados no significa 221 respaldados. cryptcheck + restores independientes + hashes PASS; descarga completa redundante INTERRUPTED, no full-download PASS. Secret config/credentials excluidos; crypt/OAuth OFF-SERVER.
 
-Event-driven ingestion PASS (new=0, unchanged=9) y daily reconciliation ENABLED protegen artefactos ya ingeridos al servidor; futuros resultados solo Windows necesitan transferencia/ingestión. El reconciliador SIAR de 15 min es distinto y no cambia el gate de nuevo run automático con backup/COMPLETE remoto. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
+Event-driven ingestion PASS (new=0, unchanged=9) y daily reconciliation ENABLED protegen artefactos ya ingeridos al servidor; futuros resultados Windows requieren finalización y READY firmado explícitos, no transferencia manual; el flujo posterior es automático. PROJECT-ARTIFACT-BACKUP-V1 permanece PASS / MAINTAINED. El reconciliador SIAR de 15 min es distinto y no cambia el gate de nuevo run automático con backup/COMPLETE remoto. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
 
 ## Gobierno y actualización
 

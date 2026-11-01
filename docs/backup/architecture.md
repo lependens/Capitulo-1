@@ -1,6 +1,6 @@
 # Arquitectura de preservación
 
-Fuente y fecha de canonización: [inventario operativo recibido](README.md). Se documenta la implementación existente, sin desplegar ni cambiar unidades.
+Fuentes: [inventario operativo y cierre Windows de 01/11/2026](README.md). Se documenta la implementación existente, sin desplegar ni cambiar unidades.
 
 ## Preservación general
 
@@ -36,6 +36,12 @@ Los modos anteriores describen archivos inventariados; no implican permiso ejecu
 | Cuarentena de restore | `restores/<backup_id>_<suffix>/` |
 
 La raíz de preservación contiene `snapshots/`, `staging/`, `markers/`, `verified/` y `restores/`. Las rutas son referencias operativas, no directorios creados por esta PR.
+
+## Entrada Windows operativa — PASS
+
+`%LOCALAPPDATA%\SIAR-Science-Ingest\ready-for-backup`: raíz operativa. El productor finaliza explícitamente, prepara inventario/hashes y firma READY localmente; la simple presencia de un paquete no inicia su publicación como resultado completo. Watcher cada 5 min, con clave SFTP Ed25519 dedicada cargada/desbloqueada en `ssh-agent` → SFTP restringido/staging-chroot limitado → revalidación SHA servidor → inbox/importer existentes → scientific-artifacts → receipt → preservación/snapshot → Drive crypt → verificación remota. [Precondiciones y evidencia](windows-ingestion.md).
+
+Clave privada Windows-only, contraseñas almacenadas NO, passphrase de firma solo introducida en Windows y no almacenada. Originales y OneDrive intactos; no cambios operativos desde esta documentación.
 
 ## Destino remoto lógico
 

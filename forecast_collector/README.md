@@ -1,3 +1,5 @@
+> **Estado posterior de preservación — 01/11/2026:** WINDOWS-SCIENCE-INGEST-AUTOMATION PASS; PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED. Las referencias inferiores a transferencia manual/Windows sin protección automática describen el cierre anterior. El límite vigente es finalización/preparación y READY firmado explícitos; después, con clave SFTP desbloqueada en ssh-agent, transferencia, verificación servidor, ingestión y preservación automáticas. [Contrato operativo y evidencia E2E](../docs/backup/windows-ingestion.md). Esta nota no modifica ciencia ni operación Forecast.
+
 # Raw Forecast Capturer v0.1
 
 Batch-only Python component for preserving SIAR forecast responses as immutable, append-only raw captures. It does not assign forecast horizons, normalize ET₀, deduplicate captures, use DuckDB, or depend on SIAR Sync.

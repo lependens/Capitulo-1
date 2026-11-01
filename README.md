@@ -43,7 +43,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines, AHC y runtime ML rolling; campaña oficial pendiente.
 - [Aplicación web](web_app/README.md) — WEB-V0.2-AHC desplegada en LAN, consumo de ciencia publicada read-only.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
-- [Backup y recuperación](docs/backup/README.md) — inventario canónico, cobertura, operación, restore y diseño Windows pendiente (revisión 31/10/2026).
+- [Backup y recuperación](docs/backup/README.md) — cobertura, operación y restore; ingestión Windows PASS tras finalización explícita y READY firmado (01/11/2026).
 - [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — registro histórico del cierre AHC/backup del 25/10.
 - [Auditoría documental 24/10](docs/REPO_AUDIT_2026-10-24.md) — registro histórico de la etapa anterior.
 - [Auditoría documental 23/10](docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.
@@ -448,7 +448,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Dataset Observational v1 | Construido/validado PASS; backup SHA256 PASS en snapshot aceptado |
 | Cuatro baselines oficiales | PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1 PASS; comparación común n=70.860 (PR #36) |
 | AHC temporal | AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS; OLS0 TRAIN, TEST retrospective_locked; climatología separada |
-| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS; snapshot REMOTE_VERIFIED, 128 archivos; nuevos outputs solo Windows requieren ingestión |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows automation PASS; finalización y READY firmado explícitos, transferencia/preservación posteriores automáticas |
 | SIAR Sync v2.3.3 | HOLD hasta alignment e incremental 2026 demostrado |
 | Forecast SIAR | Timer ACTIVE; reconciliador cada 15 min enabled/active; OAuth Production; nuevo run real → backup automático → COMPLETE remoto pendiente |
 | AEMET Track A | E2E DEMONSTRATED; captura disabled/inactive, nuevo backup automático NOT ACTIVE; reactivar tras CAPTURE RUNNING |
@@ -509,7 +509,7 @@ De esta forma, GitHub funciona simultáneamente como:
 
 Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.2-AHC desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña científica oficial sigue pendiente de despliegue/ejecución, ANN no iniciada. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
 
-El snapshot remoto protege 82 archivos scientific-results y 46 SIAR published Raw; futuros resultados que sigan solo Windows **no están automáticamente protegidos** y requieren transferencia/ingestión. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
+El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 
 En paralelo: demostrar un nuevo ciclo Forecast SIAR real con backup automático y COMPLETE remoto; reactivar AEMET tras CAPTURE RUNNING, asegurar backup de nuevos raw y resolver alignment/incremental 2026 antes de levantar HOLD en Sync. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
 

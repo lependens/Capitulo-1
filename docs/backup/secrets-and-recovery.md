@@ -20,6 +20,8 @@ La aplicación OAuth pasó a Production y se reautorizó: elimina el límite esp
 
 Solo configuración **no secreta** y metadatos de releases explícitamente allowlisted pueden entrar en preservación. No afirmar que se respalda `/etc` completo o todo el servidor. Los working copies no tienen backup masivo; GitHub es su autoridad versionable.
 
-Para el futuro transporte Windows se propone clave Ed25519 dedicada con passphrase, privada Windows-only, receptor SFTP restringido. Es [diseño pendiente](windows-ingestion.md), no autorización de provisión ni evidencia de instalación.
+**Transporte Windows operativo — 01/11/2026:** autenticación mediante clave Ed25519 dedicada, privada solo Windows y desbloqueada/cargada mediante `ssh-agent`; acceso SFTP y staging/chroot restringidos. Contraseñas almacenadas: **NO**. READY firmado es requisito independiente de la presencia del paquete. La passphrase de firma se introduce solo en Windows, no se almacena ni publica. La automatización no firma autónomamente resultados científicos. [Flujo operativo PASS](windows-ingestion.md).
+
+No publicar contenidos de claves públicas/privadas innecesarios, fingerprints sensibles, passphrases, secretos rclone ni tokens OAuth. Esta documentación no proporciona credenciales ni cambia su provisión.
 
 La recuperación se acepta por integridad verificable, no por mostrar secretos: [restore y validaciones](restore.md), [evidencia histórica y exclusiones](coverage.md).

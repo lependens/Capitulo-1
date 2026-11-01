@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Actualizado: 2026-10-31; consolidación hasta PR #49.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Actualizado: 2026-11-01; cierre de ingestión Windows.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|
@@ -61,7 +61,7 @@ Es una propuesta para acordar con el productor; no sustituye los paths reales an
 | Remoto general lógico | `forecast-offsite-crypt:SIAR-project/snapshots/<backup_id>/` |
 | Remoto AEMET específico | `forecast-offsite-crypt:AEMET-forecast/raw/runs` |
 
-Windows automation DESIGN_READY / STILL_PENDING: `%LOCALAPPDATA%\SIAR-Science-Ingest\ready-for-backup` es raíz **propuesta**, no instalación. El inbox y el importador del servidor sí existen; no extender esa existencia al watcher Windows. [Diseño pendiente](backup/windows-ingestion.md).
+Windows automation **PASS**: raíz operativa `%LOCALAPPDATA%\SIAR-Science-Ingest\ready-for-backup`. Productor finaliza, prepara inventario/hash y firma READY explícitamente; watcher cada 5 min y clave SFTP dedicada desbloqueada en ssh-agent permiten transferencia automática a staging/chroot restringido → revalidación SHA servidor → inbox/importer existentes → publicación → receipt → snapshot → Drive crypt → verificación. [Contrato operativo](backup/windows-ingestion.md). Originales y OneDrive no cambian.
 
 ## Recuperación y límites
 
@@ -99,7 +99,7 @@ Pipeline HG-Rs/comparación `a0b440fa3ab92e4593be521e4e819c6421327656`.
 Dataset v1 en su ubicación anterior, sin reconstrucción. El CSV de tres métodos
 y sus hashes siguen preservados; este es un output nuevo, no una sobrescritura.
 
-## PROJECT-ARTIFACT-BACKUP-V1 — PASS
+## PROJECT-ARTIFACT-BACKUP-V1 — PASS / MAINTAINED
 
 Parte de cierre de 02 comunicado por Dirección 00: snapshot **backup_20261024T215639Z_63d0ef01**, **REMOTE_VERIFIED**. **128 archivos verificados = 82 scientific-results + 46 SIAR published Raw**. Scientific-results: **1,421,919,603 bytes**. El inventario del servidor tiene **221 entries**: no afirmar que los 221 estén respaldados.
 
@@ -109,7 +109,7 @@ Dataset v1 SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49
 
 Preservación general para artefactos científicos **ya ingeridos al servidor**: **event-driven ingestion PASS, new=0, unchanged=9** en la prueba reportada; **daily preservation reconciliation ENABLED**. Es distinta del reconciliador SIAR Forecast de runs publicados cada **15 minutos**.
 
-**LIMITACIÓN ABIERTA:** futuros resultados solo Windows = **NOT AUTOMATICALLY PROTECTED**. Requieren explicit transfer/ingestion → server preservation area → backup system → Drive crypt. No se garantiza todo resultado futuro ni se confunde inventario con cobertura.
+**LÍMITE VIGENTE:** resultado Windows sin finalización explícita = **NOT YET ELIGIBLE FOR AUTOMATED TRANSFER**. Resultado completo + paquete preparado + READY firmado, con clave SFTP desbloqueada, entra en transferencia/verificación/ingestión/preservación automáticas. El PASS E2E no certifica de antemano todos los outputs futuros; inventario, elegibilidad y verificación remota son estados distintos.
 
 Secret config y credentials **EXCLUDED** del snapshot. Material de recuperación crypt/OAuth **OFF-SERVER**; no publicar rclone.conf, refresh token, OAuth tokens ni crypt passwords. Closeout operativo: `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, referencia sin copiar contenido.
 
@@ -196,3 +196,19 @@ No es el resultado de la campaña ML clásica oficial. El runtime `ml-rolling-ca
 Manifest declarado: `/home/josep/scientific-results/ml-v1-classical-20261031T194504Z/train/manifest.json`.
 SHA256 `a9b13fec8b4963330ad71597d9541abdfd7d776fb73779d063c3db3edfd3a8d0`.
 Estado **FAILED**, `outputs=[]`, **TEST not inspected**. Se conserva como referencia operativa comunicada, sin copiar el archivo ni atribuirle métricas, selección científica o backup verificado no reportado. El STOP estructural del runtime quedó resuelto por PR #48; no convierte este intento en PASS.
+
+## Windows ingestion E2E — 01/11/2026
+
+Fuente: cierre 02B comunicado por Dirección 00, no inspección nueva de estas ubicaciones. **WINDOWS-SCIENCE-INGEST-AUTOMATION = PASS**; **PROJECT-ARTIFACT-BACKUP-V1 = PASS / MAINTAINED**.
+
+| Evidencia | Resultado |
+|---|---|
+| Artefacto E2E | Sintético, 47 bytes; no resultado científico |
+| Snapshot | `backup_20261101T065239Z_71bbe72e` |
+| Estado remoto | REMOTE_VERIFIED |
+| Retry idempotente | new=0, unchanged=1; PASS |
+| Failure/retry handling | PASS, tras corregir contrato de retorno del importador |
+| Receipts ingestión | `/srv/siar-project/ingestion-receipts` |
+| Receipt de verificación, patrón canónico | `/srv/siar-project/preservation/verified/<backup_id>.json` |
+
+La finalización/preparación y firma READY siguen siendo explícitas; después, transferencia e ingestión/preservación/verificación son automáticas. No se inventa un nombre de receipt concreto no comunicado ni se publica material de firma/autenticación. Reconciliación diaria enabled/active, independiente del backup SIAR Forecast cada 15 min y del servicio AEMET sin timer propio.

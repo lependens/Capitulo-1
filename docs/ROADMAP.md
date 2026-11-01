@@ -15,7 +15,7 @@
 | Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
 | AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
 | AEMET Track B | Investigación independiente OPEN | Identificar feed exacto usado por SIAR |
-| Producto / 06 | WEB-V0.2-AHC PASS / DEPLOYED en LAN; WEB-V0.1 histórico | WEB-V0.3-ML READY para ciencia ML publicada; despliegue separado; Forecast después |
+| Producto / 06 | WEB-V0.3 Scientific Explorer PASS / DEPLOYED en LAN | ANN moderna y/o validación prospectiva; consumo web tras publicación, sin V0.4 inmediato |
 
 **La captura prospectiva no espera a los modelos ni a reactivar SIAR Sync.** No reconstruir emisiones perdidas durante la pausa. El incidente Toshiba está CLOSED_OPERATIONALLY / MONITORING; no es una nueva fase activa.
 
@@ -109,7 +109,7 @@ Estado científico y de implementación:
 
 [Protocolo rolling vigente](../scientific_pipeline/docs/ml_validation_contract_refinement.md): selección en DEVELOPMENT F1–F4, congelación y refit DEVELOPMENT antes de TEST. La recuperación efectiva conserva TEST_ACCESS_UNKNOWN del intento original y la etiqueta retrospective_recovery_evaluation; no afirmar apertura única ni holdout prístino. Conservar `retrospective_locked`; no aplicar este refit al AHC ya publicado. El intento FAILED y el smoke no sirven para seleccionar ciencia. No reabrir baselines ni metodología AHC.
 
-**05 produce ciencia; 06 consume resultados publicados; 02B preserva nuevos artefactos.** WEB-V0.3-ML está READY porque el cierre ML científico ya es PASS; no se confunde readiness con un despliegue web realizado.
+**05 produce ciencia; 06 consume resultados publicados; 02B preserva nuevos artefactos.** WEB-V0.3 Scientific Explorer ya está desplegada según el acta canónica; no recalcula ciencia.
 
 ## Fase 7 — Evaluación predictiva
 
@@ -121,9 +121,9 @@ No asignar horizonte por posición de fila ni timezone por conjetura. No mezclar
 
 ✅ **WEB-V0.1 histórico**, PR #41/#42: primer despliegue LAN de consulta read-only de cuatro baselines.
 
-✅ **WEB-V0.2-AHC PASS / DEPLOYED**, PR #46/#47. Cuatro baselines, AHC_VALIDATED, HG_RS_AHC_VALIDATED_SELECTED, coeficientes y ALL/TRAIN/VALIDATION/TEST visibles; climatología solo operacional. Desktop/mobile/API PASS; [LAN](http://192.168.1.43:8088/), data mounts read-only, sin recalcular datos ni modificar ciencia. Derivado y backup REMOTE_VERIFIED identificados en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+✅ **WEB-V0.2-AHC histórico / rollback**, PR #46/#47. Cuatro baselines, AHC_VALIDATED, HG_RS_AHC_VALIDATED_SELECTED, coeficientes y ALL/TRAIN/VALIDATION/TEST visibles; climatología solo operacional. Desktop/mobile/API PASS; [LAN](http://192.168.1.43:8088/), data mounts read-only, sin recalcular datos ni modificar ciencia. Derivado y backup REMOTE_VERIFIED identificados en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
-✅ **WEB-V0.3-ML READY:** outputs ML oficiales cerrados y preservados; queda su integración/despliegue autorizado, no realizado en esta misión. 06 consume tablas/manifests publicados por 05; 02B preserva los nuevos artefactos. No entrenar modelos ni recalcular ciencia desde producto.
+✅ **WEB-V0.3 Scientific Explorer PASS / DEPLOYED**; ver acta y cierre vigente al final.
 
 ⚪ Integración Forecast posterior con semántica issue/valid time y D+n demostrada. Después ET₀ + Kc → ETc → necesidades de riego. Mantener separados adquisición, ciencia, modelado y producto; prototipos legacy no son resultados v1.
 
@@ -151,3 +151,7 @@ Los workstreams resuelven problemas operativos dentro de objetivos/invariantes/S
 ✅ HG_RS_V1 con Rs medida incorporado y ejecutado sin calibración;
 [comparación oficial de cuatro métodos y CSV](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md), 75 tests/CI PASS.
 PM/HS/VAL y Dataset v1 intactos. AHC y backup ya están PASS; siguientes experimentos ML v1 bajo contrato congelado, con preservación continua y consumo por 06 sin recalcular ciencia.
+
+## Cierre vigente de producto — 01/11/2026
+
+**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](../web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: siguiente avance científico ANN moderna y/o validación prospectiva; la web los consumirá después de publicación.

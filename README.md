@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-11-01.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.2-AHC está desplegada; ML clásico PASS tras evaluación recuperada, ANN moderna no iniciada y WEB-V0.3-ML READY.
+**Actualizado: 2026-11-01.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico PASS tras evaluación recuperada, ANN moderna no iniciada y WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -42,7 +42,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
 - [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines, AHC y ML clásico PASS, con linaje y límites de evaluación.
 - [Modelos ML clásicos — explicación 1.2.6](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) — de ecuaciones y calibración a modelos aprendidos, resultados y límites.
-- [Aplicación web](web_app/README.md) — WEB-V0.2-AHC desplegada en LAN, consumo de ciencia publicada read-only.
+- [Aplicación web](web_app/README.md) — WEB-V0.3 Scientific Explorer desplegada en LAN, consumo de ciencia publicada read-only.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
 - [Backup y recuperación](docs/backup/README.md) — cobertura, operación y restore; ingestión Windows PASS tras finalización explícita y READY firmado (01/11/2026).
 - [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — registro histórico del cierre AHC/backup del 25/10.
@@ -214,7 +214,7 @@ Capitulo-1/
 ├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
 ├── data_quality/siar/         # POST original y POST corregido versionados
 ├── scientific_pipeline/      # cuatro baselines, AHC y runtime ML rolling
-├── web_app/                  # WEB-V0.2-AHC, consulta read-only
+├── web_app/                  # WEB-V0.3 Scientific Explorer, consulta read-only
 ├── legacy/                    # código y datos históricos
 ├── docs/
 │   ├── PROJECT_STATUS.md
@@ -509,7 +509,7 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.2-AHC desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica está PASS tras recuperación de evaluación, ANN moderna no iniciada y WEB-V0.3-ML READY. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
+Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.3 Scientific Explorer desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica está PASS tras recuperación de evaluación, ANN moderna no iniciada y WEB-V0.3 Scientific Explorer PASS / DEPLOYED. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
 
 El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 
@@ -534,3 +534,7 @@ En paralelo: demostrar un nuevo ciclo Forecast SIAR real con backup automático 
 El proyecto puede resumirse actualmente en una única línea:
 
 > **Construir una infraestructura reproducible de datos meteorológicos de las Islas Baleares que permita estudiar, estimar y predecir ET₀ mediante métodos físicos, empíricos y de Machine Learning, con una futura aplicación práctica orientada al riego.**
+
+## Cierre vigente de producto — 01/11/2026
+
+**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: siguiente avance científico ANN moderna y/o validación prospectiva; la web los consumirá después de publicación.

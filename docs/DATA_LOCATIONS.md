@@ -163,7 +163,7 @@ El paquete WEB-V0.1 fue transferido explícitamente y verificado por hashes. Su 
 
 Para nuevos artefactos: **explicit transfer/ingestion → server preservation area → backup system → Drive crypt**. Receipt operativo de cierre `/srv/siar-project/ingestion-receipts/closeout-e0417937.json`, sin copiar contenido sensible. La documentación recoge el parte de 02, no una inspección nueva del servidor.
 
-## WEB-V0.2-AHC — despliegue vigente y preservación
+## WEB-V0.2-AHC — histórico / rollback y preservación
 
 Fuente: parte operativo de Dirección 00; no inspección nueva del servidor o remoto desde esta PR.
 
@@ -233,3 +233,17 @@ La finalización/preparación y firma READY siguen siendo explícitas; después,
 | Cohorte TEST común | n=15.958, SHA256 `584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f` |
 
 Los intentos FAILED anteriores no se convierten en resultados válidos. Intento original TEST_ACCESS_UNKNOWN; recuperación final retrospective_recovery_evaluation, con modelos ya congelados. [Incidente de acceso](../scientific_pipeline/docs/ml-v1-test-recovery-access-incident.md). No declarar primera/única apertura ni holdout prospectivo; no hubo nuevo ajuste o selección tras TEST. Los artefactos masivos siguen fuera de Git; Dataset v1, raw y Quality conservan sus identidades.
+
+## WEB-V0.3 Scientific Explorer — vigente 01/11/2026
+
+[Acta canónica](../web_app/docs/release-v03.md), PR #57/#58/#59/#60. LAN: http://192.168.1.43:8088/.
+
+| Identidad | Valor |
+|---|---|
+| Artefacto | `web-derived-v03-explorer-20261101-v1` |
+| Derived prediction Parquet SHA256 | `922e3df2a716a4d8457e08183bc3c55a67801c9c653beb9458d327dc72f9d203` |
+| Receipt bajo ingestion-receipts | `science-20261101T120323Z-e58f9d30_3c9a0bc6.json` |
+| Snapshot | `backup_20261101T123421Z_8022d3fd` |
+| Preservación | REMOTE_VERIFIED |
+
+Montaje de datos read-only; sin recálculo científico, cambios de artefactos científicos, Dataset ni raw. V0.2 queda como histórico/rollback. Paths completos, hash del paquete (distinto del Parquet) y evidencia en el acta, sin inspección nueva del servidor.

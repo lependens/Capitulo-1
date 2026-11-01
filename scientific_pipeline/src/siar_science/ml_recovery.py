@@ -266,7 +266,7 @@ def execute_ml_test_recovery(source_run, dataset_path, ahc_manifest_path, protoc
         manifest["test_access_count_this_recovery"] = 1
         dataset_sha = _file_sha256(dataset_path)
         if dataset_sha != OFFICIAL_DATASET_SHA256 or dataset_sha != protocol["dataset_sha256"]:
-            raise ValueError("Official Dataset v1 hash mismatch")
+            raise ValueError("Official Dataset v1 hash mismatch: actual=" + dataset_sha + " official=" + OFFICIAL_DATASET_SHA256 + " protocol=" + str(protocol["dataset_sha256"]))
         manifest["dataset_sha256"] = dataset_sha
         dataset, rows, loaded_protocol, identity = _context_for_split(dataset_path, ahc_manifest_path, protocol_path, "TEST")
         if loaded_protocol != protocol or identity["dataset_sha256"] != manifest["dataset_sha256"] or identity["protocol_sha256"] != protocol_sha:

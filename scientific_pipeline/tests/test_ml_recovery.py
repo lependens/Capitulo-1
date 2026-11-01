@@ -149,7 +149,7 @@ class MLRecoveryTests(unittest.TestCase):
         row = {
             "station_code": "IB01", "date": "2021-01-01", "split": "TEST", "EtPMon": 2.1, "target": 2.2,
             "predictions": {"PM_FAO56_V1": 2.2, "ML_LINEAR__FEATURE_SET_T": 2.3},
-            "eligibility_reasons": {}, "quality_status": "PASS", "observation_status": "OBSERVED",
+            "eligibility_reasons": {"FEATURE_SET_T": []}, "quality_status": "PASS", "observation_status": "OBSERVED",
             "quality_flags": [], "scientific_flags": [], "provenance": {}, "source_data_sha": "a" * 64,
         }
         with temporary_directory() as directory, patch.object(ml_recovery, "_model_diagnostics", return_value={}):

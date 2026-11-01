@@ -1,5 +1,19 @@
 # 1.2 Depuración y Verificación de Datos Meteorológicos: Guía Paso a Paso
 
+> **Estado vigente — 01/11/2026:** Dataset v1, cuatro baselines, AHC y **ML-V1-CLASSICAL-MODELS PASS**. El proyecto distingue **formulaciones deterministas/empíricas**, **calibraciones AHC** y **modelos ML aprendidos**. ANN moderna NOT STARTED; WEB-V0.3-ML READY. La explicación narrativa de la campaña está en [1.2.6 — Modelos ML clásicos](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md). Las notas y secciones fechadas anteriormente se conservan como historia, no como estado vigente.
+
+La transición siguiente representa evolución metodológica, no un único pipeline que use AHC como predictor ML. El target ML es PM calculado; los modelos no validan ET₀ instrumental independiente.
+
+```mermaid
+flowchart TD
+    O[Observaciones] --> D[PM y métodos simplificados]
+    D --> A[Calibración AHC]
+    D --> M[ML clásico]
+    A -. Comparación .-> M
+    M --> N[ANN futura]
+```
+
+
 > **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
 
 > **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
@@ -478,3 +492,13 @@ VALIDATION eligió HS annual, HG-Rs seasonal y VAL annual; mensual no justificó
 Estabilidad PASS no implica error estable todos los años: conservar empeoramientos como IB11/2025/HS RMSE 0.756→0.897, ≈+18.57 %. El mean(PM/x) full-series/in-sample legacy permanece histórico, no es OLS0 validado. [Resultados y métricas oficiales](scientific_pipeline/results/ahc-20261024T172400Z/README.md).
 
 PROJECT-ARTIFACT-BACKUP-V1 PASS cubre el snapshot remoto aceptado, sin proteger automáticamente nuevos resultados solo Windows. Contratos ML/visualización FROZEN, sin ML/ANN entrenado ni web construida. No se recalculan baselines ni raw/Quality/Dataset.
+
+## ACTUALIZACIÓN 01/11/2026 — ML clásico aprendido y cierre científico
+
+**ML-V1-CLASSICAL-MODELS = PASS**, cierre autorizado por Dirección 00. Las formulaciones PM/HS/HG-Rs/Valiantzas no calibradas, el ajuste AHC y los modelos aprendidos son niveles metodológicos distintos. La nueva [sección 1.2.6](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) explica target, algoritmos, inputs, rolling-origin, cohortes, resultados y preservación sin reemplazar esta bitácora.
+
+DEVELOPMENT 2004–2020 seleccionó y congeló 35 configuraciones entre 185 candidatos; TEST 2021–2025 mantiene retrospective_locked. Champion elegido en desarrollo: ML_HIST_GRADIENT_BOOSTING__FEATURE_SET_FULL. TEST común n=15.958: MAE 0.047045, RMSE 0.064104, bias -0.000966 mm/día, R² 0.998595 contra PM_FAO56_V1. Son cifras del cierre comunicado, no métricas recalculadas en esta documentación.
+
+La recuperación final es **retrospective_recovery_evaluation**: intento original TEST_ACCESS_UNKNOWN y acceso técnico previo documentado. Modelos congelados antes de recovery; sin reselección, entrenamiento ni refit después de TEST. No afirmar primera/única apertura ni holdout prístino/prospectivo. FULL incluye variables cercanas a PM; aproximarla no demuestra exactitud frente a ET₀ instrumental.
+
+Dataset v1, baselines y AHC **PASS**; ML clásico **PASS**; ANN moderna **NOT STARTED**; WEB-V0.3-ML **READY**, sin despliegue en esta misión. Raw, Quality, resultados, contratos ejecutables y ciencia permanecen sin cambios. Run, hashes, receipt, snapshot REMOTE_VERIFIED y restore 77 archivos constan en [DATA_LOCATIONS](docs/DATA_LOCATIONS.md).

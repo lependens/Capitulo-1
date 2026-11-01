@@ -25,7 +25,7 @@
 | AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
 | AEMET Track B | OPEN | Investigar feed AEMET exacto utilizado por SIAR, independientemente de Track A |
 | Storage | Incidente CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE | Reabrir solo con nueva evidencia objetiva; sin plan de sustitución del SSD |
-| Producto | WEB-V0.2-AHC PASS / DEPLOYED; cuatro baselines y AHC publicados, LAN only, datos read-only | WEB-V0.3-ML READY para consumo de ML publicado; no desplegada en esta misión; integración Forecast posterior |
+| Producto / 06 | WEB-V0.3 Scientific Explorer PASS / DEPLOYED en LAN | ANN moderna y/o validación prospectiva; consumo web tras publicación, sin V0.4 inmediato |
 
 ## Observaciones y Quality: cierre vigente
 
@@ -121,14 +121,14 @@ Estabilidad **PASS**, CV muestral máximo **6.612 %**, max/min **1.164415**. No 
 
 **AHC_CLIMATOLOGY** solo se calculó después de completar TEST usando todo el histórico declarado hasta 2025. Identidad separada: descripción climatológica y posible coeficiente operativo futuro, nunca fuente de métricas TEST ni sustituto de coeficientes TRAIN. IB101 **SHORT_SERIES_DESCRIPTIVE, deployable=false**; IB09 **UNAVAILABLE / Quality FAIL**; IB07 sin validación/test posterior al cierre.
 
-Los contratos [ML](../scientific_pipeline/docs/ml_experiment_contract.md) y [visualización](../scientific_pipeline/docs/visualization_contract.md) conservan su semántica científica congelada. El refinamiento rolling y el runtime ya están fusionados; su implementación no acredita resultados oficiales nuevos. WEB-V0.2 consume los cuatro baselines y AHC publicados sin recalcular ciencia.
+Los contratos [ML](../scientific_pipeline/docs/ml_experiment_contract.md) y [visualización](../scientific_pipeline/docs/visualization_contract.md) conservan su semántica científica congelada. El refinamiento rolling y el runtime ya están fusionados; su implementación no acredita resultados oficiales nuevos. La versión histórica WEB-V0.2 consumía los cuatro baselines y AHC publicados sin recalcular ciencia.
 
 ### WEB-V0.1 — hito histórico de 25/10/2026
 
 PR [#41](https://github.com/lependens/Capitulo-1/pull/41) publicó FastAPI/DuckDB, React/ECharts, conversor verificado, pruebas y operación Docker Compose; PR [#42](https://github.com/lependens/Capitulo-1/pull/42) corrigió la sintaxis `tmpfs` detectada en el primer arranque. Producción validada en `http://192.168.1.43:8088/`: backend y frontend healthy, enlace exclusivo a LAN, root filesystem de solo lectura y `/data` read-only. Dataset `siar-balears-observational-v1`, 75.496 filas; Parquet SHA256 `6119e3521e8efb1251771a8d6fad2b5a5308e31d7eabeb66e0183c3add0deeca`. Validación funcional de escritorio y móvil PASS.
 
 
-### WEB-V0.2-AHC — PASS / DEPLOYED
+### WEB-V0.2-AHC — histórico / rollback
 
 PR [#46](https://github.com/lependens/Capitulo-1/pull/46) y [#47](https://github.com/lependens/Capitulo-1/pull/47) fusionadas. Estado de despliegue confirmado por Dirección 00: [aplicación LAN](http://192.168.1.43:8088/), **LAN only**, montajes de datos **read-only**. Desktop/mobile/API **PASS**. Se mantienen los cuatro baselines y se integran AHC_VALIDATED, **HG_RS_AHC_VALIDATED_SELECTED**, coeficientes y selector **ALL/TRAIN/VALIDATION/TEST**. ALL conserva resultados separados por split, sin fabricar una métrica conjunta. **AHC_CLIMATOLOGY solo operacional**, nunca rendimiento TEST.
 
@@ -142,7 +142,7 @@ PR [#46](https://github.com/lependens/Capitulo-1/pull/46) y [#47](https://github
 
 **ML-V1-TEST-RECOVERY = EXECUTED / PRESERVED.** Pipeline `94ebf67df2954e6818fc5f70c6b2e91b1b07f505`; los 35 modelos y la selección permanecen congelados. TEST se abrió en la recuperación y existen predicciones y métricas; no hubo nuevo entrenamiento, selección ni refit. Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`; protocolo `45f1c4f3ed20bb70dc3b1ca06a8e23ec14f95aae6b60f574e44a8a261cc07048`; manifest AHC TEST `502d7a39b82c8b5032931370ae8f05f4d8e7ecbbb93f6946810d0e47434fc469`; selection `a41ee87956368d6c0e1fae2b39177ffe8c42cae7658477172c46725409f829c7`; bundle `b1be36a43ff465cbf8662e6182c3c862037d1bc6bbc8295320013c99e7893946`; manifest de run `05834edaebf3f990729ebb8b15ecd7511bb96e006bfab69f11408a250f432aab`. Artefacto canónico: `/srv/siar-project/scientific-artifacts/ml-v1-test-recovery-20261101T090828Z/`. La ingesta incremental informó `new=1, unchanged=2`, receipt `science-ml-v1-test-recovery-20261101T090828Z_83cf4565.json` con estado `published-verified`. Snapshot `backup_20261101T095440Z_0381c133`, manifest SHA256 `f3cfa2c4d1d7d4197d5495f187275dae9d2784eabb1d6b952b0bb44db796fd46`, **REMOTE_VERIFIED** y restore en cuarentena **RESTORE_HASHES_PASS (77 archivos)**. **ML-V1-CLASSICAL-MODELS = PASS**, cierre científico autorizado por Dirección 00 tras revisión. Champion elegido en DEVELOPMENT: **ML_HIST_GRADIENT_BOOSTING__FEATURE_SET_FULL**; TEST común **n=15.958**, MAE **0.047045**, RMSE **0.064104**, bias **-0.000966 mm/día**, R² **0.998595**, cobertura **99.875 %**. La explicación de métodos, inputs, comparación AHC y estabilidad está en [1.2.6](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
 
-Intento original TEST_ACCESS_UNKNOWN; final **retrospective_recovery_evaluation**. Modelos congelados antes del acceso de recuperación, sin reselección/entrenamiento/refit posteriores. No es una única apertura TEST ni validación instrumental independiente de ET₀. Se conservan 1.007 predicciones negativas de regresiones entre 35 modelos, sin clipping; champion 0 negativas/0 no finitas. **ANN moderna NOT STARTED; WEB-V0.3-ML READY.**
+Intento original TEST_ACCESS_UNKNOWN; final **retrospective_recovery_evaluation**. Modelos congelados antes del acceso de recuperación, sin reselección/entrenamiento/refit posteriores. No es una única apertura TEST ni validación instrumental independiente de ET₀. Se conservan 1.007 predicciones negativas de regresiones entre 35 modelos, sin clipping; champion 0 negativas/0 no finitas. **ANN moderna NOT STARTED; WEB-V0.3 Scientific Explorer PASS / DEPLOYED.**
 
 ## SIAR Sync: HOLD independiente del snapshot científico
 
@@ -220,7 +220,7 @@ Toshiba ya no es la única copia **para los artefactos científicos y SIAR publi
 ## Próximos pasos
 
 1. **05 / ciencia:** ML-V1-CLASSICAL-MODELS PASS; conservar resultados, protocolo y límites del cierre. ANN moderna NOT STARTED; cualquier fase nueva requiere su contrato y autorización, sin reutilizar TEST para reseleccionar.
-2. **06 / producto:** WEB-V0.3-ML READY para consumir outputs ML oficiales publicados; conservar WEB-V0.2-AHC desplegada hasta el despliegue autorizado de la siguiente versión, sin recalcular ciencia desde UI/API. Forecast se integra posteriormente bajo sus contratos.
+2. **06 / producto:** mantener WEB-V0.3 Scientific Explorer desplegada; consumir ANN moderna y/o validación prospectiva cuando estén publicadas, sin recalcular ciencia ni exigir V0.4 inmediato.
 3. **Productor / 02B:** finalizar explícitamente cada resultado, preparar y firmar READY y mantener precondiciones de ssh-agent. Windows automation PASS; transferencia/verificación/ingestión/preservación automáticas y reconciliación diaria enabled/active. WEB-V0.2 conserva su receipt/snapshot REMOTE_VERIFIED.
 4. Infraestructura: gate SIAR Forecast de nuevo run real con backup/COMPLETE, AEMET tras CAPTURE RUNNING y SIAR Sync alignment/incremental 2026 permanecen separados, sin cambios en esta misión.
 5. Issue/valid time/D+n, ET₀+Kc/ETc/riego y validación prospectiva mantienen sus gates propios.
@@ -244,3 +244,7 @@ HG_RS_V1 70978 calculadas, 70912 evaluables, 0 fallos;
 cohorte común 70860. PR #35, pipeline `a0b440fa3ab92e4593be521e4e819c6421327656`.
 Dataset y todos los resultados PM/HS/VAL anteriores intactos, sin calibración.
 75 tests/CI PASS. Ambos SHA audit/canonical preservados.
+
+## Cierre vigente de producto — 01/11/2026
+
+**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](../web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: siguiente avance científico ANN moderna y/o validación prospectiva; la web los consumirá después de publicación.

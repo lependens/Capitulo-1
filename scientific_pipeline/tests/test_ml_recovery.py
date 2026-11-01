@@ -156,7 +156,7 @@ class MLRecoveryTests(unittest.TestCase):
             manifest = {"dataset_id": "fixture", "dataset_sha256": "b" * 64,
                         "audit_source_repo_sha": "c" * 40, "source_repo_sha": "d" * 40,
                         "protocol_sha256": "e" * 64, "run_id": "fixture",
-                        "protocol": {"feature_sets": ["FEATURE_SET_T"]},
+                        "protocol": {"feature_sets": ["FEATURE_SET_T"], "development_period": ["2004-01-01", "2020-12-31"]},
                         "_models": {"linear-t": object()}, "outputs": {}}
             selection = {"selected": [{"model_id": "ML_LINEAR__FEATURE_SET_T", "candidate_id": "linear-t",
                          "algorithm": "LINEAR", "feature_set": "FEATURE_SET_T",

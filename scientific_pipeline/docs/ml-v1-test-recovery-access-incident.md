@@ -23,3 +23,7 @@ The original campaign remains classified `TEST_ACCESS_UNKNOWN`; the server recov
 The recovery runtime verifies every file declared under `ahc_test_manifest.json: outputs` against its pinned SHA256 before it reads Dataset v1. It durably appends `TEST_OPENED` before hashing or parsing Dataset v1, so an interruption during loading cannot leave the journal claiming that TEST was unopened. The final recovery must be labeled `retrospective_recovery_evaluation`; do not describe it as the first TEST opening, an exactly-once opening, or a pristine unseen holdout.
 
 The recovery is evaluation-only: it consumes the frozen selection and serialized DEVELOPMENT models and performs no training, selection, or refit.
+
+## Posterior scientific closeout — 2026-11-01
+
+Direction 00 authorized **ML-V1-CLASSICAL-MODELS = PASS** for final run `ml-recovery-c2c5c34e7cc642a181d0f3ee12a5ef7e`, pipeline `94ebf67df2954e6818fc5f70c6b2e91b1b07f505`. This supersedes pending scientific review, not the incident classifications above. The final evaluation remains `retrospective_recovery_evaluation`; no selection, training or refit followed TEST access, and no pristine/prospective or exactly-once TEST claim is made. [Narrative results and preserved identities](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).

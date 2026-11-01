@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-10-31.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.2-AHC está desplegada y el runtime ML rolling implementado; su campaña científica oficial sigue pendiente.
+**Actualizado: 2026-11-01.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.2-AHC está desplegada; ML clásico PASS tras evaluación recuperada, ANN moderna no iniciada y WEB-V0.3-ML READY.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -40,7 +40,8 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
 - [Forecast SIAR](forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
 - [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
-- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines, AHC y runtime ML rolling; campaña oficial pendiente.
+- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines, AHC y ML clásico PASS, con linaje y límites de evaluación.
+- [Modelos ML clásicos — explicación 1.2.6](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) — de ecuaciones y calibración a modelos aprendidos, resultados y límites.
 - [Aplicación web](web_app/README.md) — WEB-V0.2-AHC desplegada en LAN, consumo de ciencia publicada read-only.
 - [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
 - [Backup y recuperación](docs/backup/README.md) — cobertura, operación y restore; ingestión Windows PASS tras finalización explícita y READY firmado (01/11/2026).
@@ -456,7 +457,8 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | Storage | CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE |
 | ANN y dashboards legacy | Historia preservada, sin convertir resultados antiguos en v1 |
 | WEB-V0.2-AHC | PASS / DEPLOYED en LAN; cuatro baselines y AHC publicados, datos read-only |
-| ML clásico | Rolling validation, Linux smoke y runtime PASS; campaña científica oficial PENDING EXECUTION |
+| ML clásico | ML-V1-CLASSICAL-MODELS PASS; champion HGB FULL; evaluación retrospectiva recuperada |
+| WEB-V0.3-ML | READY para consumir outputs ML publicados; sin despliegue nuevo en esta misión |
 | ANN / Forecast integrado / Kc / ETc / riego | ANN NOT STARTED; integraciones y riego posteriores bajo sus gates |
 
 SIAR Forecast mantiene timer ACTIVE aunque SIAR Sync siga HOLD. El primer ciclo real automático con backup automático y COMPLETE remoto demuestra CAPTURE RUNNING; al menos dos ciclos PASS, PILOT RUNNING. Un timer activo no demuestra esos gates. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
@@ -507,7 +509,7 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.2-AHC desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña científica oficial sigue pendiente de despliegue/ejecución, ANN no iniciada. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
+Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.2-AHC desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica está PASS tras recuperación de evaluación, ANN moderna no iniciada y WEB-V0.3-ML READY. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
 
 El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 

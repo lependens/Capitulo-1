@@ -189,7 +189,7 @@ WEB-V0.1 y su hash anterior quedan como historia. El nuevo derivado no cambia Da
 | Snapshot manifest SHA256 | `9bd4d33e0fc4390de1adaf9acc147a6b9a980763ffb3ef5039551be53d60e316` |
 | Propósito | Linux smoke PASS, infraestructura; no selección científica; TEST no inspeccionado |
 
-No es el resultado de la campaña ML clásica oficial. El runtime `ml-rolling-campaign` está fusionado (PR #48); su ejecución/publicación científica permanece pendiente según el parte vigente.
+No es el resultado de la campaña ML clásica oficial. El runtime `ml-rolling-campaign` está fusionado (PR #48); su cierre científico posterior ya es ML-V1-CLASSICAL-MODELS PASS, mediante evaluación recuperada documentada abajo. El smoke sigue sin ser resultado científico.
 
 ### Intento ML previo FAILED — evidencia, no resultado científico
 
@@ -212,3 +212,24 @@ Fuente: cierre 02B comunicado por Dirección 00, no inspección nueva de estas u
 | Receipt de verificación, patrón canónico | `/srv/siar-project/preservation/verified/<backup_id>.json` |
 
 La finalización/preparación y firma READY siguen siendo explícitas; después, transferencia e ingestión/preservación/verificación son automáticas. No se inventa un nombre de receipt concreto no comunicado ni se publica material de firma/autenticación. Reconciliación diaria enabled/active, independiente del backup SIAR Forecast cada 15 min y del servicio AEMET sin timer propio.
+
+## ML clásico oficial — cierre 01/11/2026
+
+**ML-V1-CLASSICAL-MODELS = PASS**, cierre autorizado por Dirección 00. [Explicación narrativa y métricas](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md). Estas referencias recogen el parte autorizado y la preservación registrada previamente en main; esta PR no reejecuta ni restaura ciencia.
+
+| Elemento | Identidad / ubicación |
+|---|---|
+| Run | `ml-recovery-c2c5c34e7cc642a181d0f3ee12a5ef7e` |
+| Artefacto canónico | `/srv/siar-project/scientific-artifacts/ml-v1-test-recovery-20261101T090828Z/` |
+| Pipeline | `94ebf67df2954e6818fc5f70c6b2e91b1b07f505` |
+| Dataset SHA256 | `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` |
+| Protocolo SHA256 | `45f1c4f3ed20bb70dc3b1ca06a8e23ec14f95aae6b60f574e44a8a261cc07048` |
+| Run manifest SHA256 | `05834edaebf3f990729ebb8b15ecd7511bb96e006bfab69f11408a250f432aab` |
+| Receipt bajo ingestion-receipts | `science-ml-v1-test-recovery-20261101T090828Z_83cf4565.json` |
+| Ingestión | new=1, unchanged=2; published-verified |
+| Snapshot | `backup_20261101T095440Z_0381c133`, REMOTE_VERIFIED |
+| Snapshot manifest SHA256 | `f3cfa2c4d1d7d4197d5495f187275dae9d2784eabb1d6b952b0bb44db796fd46` |
+| Restore | 77 archivos, RESTORE_HASHES_PASS |
+| Cohorte TEST común | n=15.958, SHA256 `584d68d6dfc20799ea536562fc5f116a7f0ce166ac9f7ee7b95a9d44c255b59f` |
+
+Los intentos FAILED anteriores no se convierten en resultados válidos. Intento original TEST_ACCESS_UNKNOWN; recuperación final retrospective_recovery_evaluation, con modelos ya congelados. [Incidente de acceso](../scientific_pipeline/docs/ml-v1-test-recovery-access-incident.md). No declarar primera/única apertura ni holdout prospectivo; no hubo nuevo ajuste o selección tras TEST. Los artefactos masivos siguen fuera de Git; Dataset v1, raw y Quality conservan sus identidades.

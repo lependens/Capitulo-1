@@ -70,8 +70,11 @@ def _verify_ahc_output_dependencies(ahc_manifest_path):
     for name, entry in sorted(outputs.items()):
         if not isinstance(entry, dict):
             raise ValueError("Invalid AHC output entry: " + str(name))
-        relative = Path(entry.get("path", ""))
-        if not entry.get("path") or relative.is_absolute() or ".." in relative.parts:
+        relative_value = entry.get("path")
+        if not isinstance(relative_value, str) or not relative_value:
+            raise ValueError("Unsafe or missing AHC output path: " + str(name))
+        relative = Path(relative_value)
+        if relative.is_absolute() or ".." in relative.parts:
             raise ValueError("Unsafe or missing AHC output path: " + str(name))
         path = (root / relative).resolve()
         if root not in path.parents:

@@ -33,16 +33,22 @@ class MLRecoveryTests(unittest.TestCase):
             (root / "protocol").write_text("{}", encoding="utf-8")
             (root / "dataset").write_bytes(b"fixture dataset")
             (root / "ahc").write_bytes(b"fixture ahc")
+            frozen = self._frozen_source()
+            def hash_input(path):
+                if Path(path) == root/"dataset":
+                    states = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
+                    self.assertEqual(states[-1], "TEST_OPENED")
+                return digest(b"fixture dataset")
             def load_test(*args, **kwargs):
                 journal = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
                 self.assertEqual(journal[-3:], ["PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED"])
                 return {}, [], self._frozen_source()[-2], self._identity()
             with patch.object(ml_recovery, "OFFICIAL_DATASET_SHA256", digest(b"fixture dataset")), \
                  patch.object(ml_recovery, "_verify_ahc_output_dependencies", return_value={"manifest_sha256":"f"*64,"output_count":16,"outputs":{}}), \
-                 patch.object(ml_recovery, "_validate_frozen_source", return_value=self._frozen_source()), \
-                 patch.object(ml_recovery, "_file_sha256", return_value=digest(b"fixture dataset")), \
+                 patch.object(ml_recovery, "_validate_frozen_source", return_value=frozen), \
+                 patch.object(ml_recovery, "_file_sha256", side_effect=hash_input), \
                  patch.object(ml_recovery, "_context_for_split", side_effect=load_test), \
-                 patch.object(ml_recovery, "_test_predictions", return_value=[]), \
+                 patch.object(ml_recovery, "_test_predictions", return_value=[]) as predict, \
                  patch.object(ml_recovery, "score_predictions", return_value=[]), \
                  patch.object(ml_recovery, "_write_recovery_outputs") as writer:
                 result = ml_recovery.execute_ml_test_recovery(root / "source", root / "dataset", root / "ahc", root / "protocol", root / "run")
@@ -51,6 +57,10 @@ class MLRecoveryTests(unittest.TestCase):
             self.assertEqual(result["prior_attempt_status"], "TEST_ACCESS_OCCURRED_TEST_EVALUATION_NOT_PERFORMED")
             self.assertEqual(result["prior_test_access_history"][-1]["status"], "TEST_ACCESS_OCCURRED")
             writer.assert_called_once()
+            predict.assert_called_once()
+            self.assertEqual(predict.call_args.args[1], frozen[2]["selected"])
+            self.assertEqual({item["candidate_id"] for item in predict.call_args.args[1]}, {"linear-t"})
+            self.assertIs(predict.call_args.args[2], frozen[8]["models"])
             states = [json.loads(line)["state"] for line in (root / "run" / "recovery_journal.jsonl").read_text().splitlines()]
             self.assertEqual(states, ["RECOVERY_STARTED", "PRE_TEST_DEPENDENCIES_VERIFIED", "PRE_TEST_VERIFIED", "TEST_ACCESS_INTENT_RECORDED", "TEST_OPENED", "TEST_CONTEXT_IDENTIFIED", "TEST_EVALUATION_COMPLETED", "SUCCESS"])
             self.assertFalse(hasattr(ml_recovery, "_fit_full_development"))

@@ -1,32 +1,111 @@
-commit 7058e640d0ec200a965cac8503b918eca9f5ec7e
-Author: Codex <codex@openai.com>
-Date:   Mon Nov 9 13:25:51 2026 +0100
+> **Estado posterior — 02/11/2026: ANN-V1-MODERN-ET0 PASS.** La ANN moderna `FEATURE_SET_FULL / MLP [32]` aproxima `PM_FAO56_V1` calculada; no valida ET₀ instrumental independiente. TEST 2021–2025 es `retrospective_locked`, sin selección/entrenamiento/refit, y no globalmente prístino. Resultado y linaje: [documentación ANN](../../docs_2.1_Estimación%20Et0%20ANN%20%28tensorflow%29.md). Las referencias inferiores a ANN no iniciada son históricas.
 
-    docs: close out ANN v1 modern ET0 results
+> **Cierre posterior — 01/11/2026: ML-V1-CLASSICAL-MODELS PASS**, autorizado por Dirección 00. Dataset v1, cuatro baselines y AHC PASS; ANN moderna NOT STARTED **(estado histórico al 01/11/2026, superado el 02/11)**; WEB-V0.3-ML READY. Los apartados previos de preparación/TEST pendiente se conservan como protocolo o historia, no como estado actual. La ejecución final fue **retrospective_recovery_evaluation**: selección y modelos DEVELOPMENT congelados antes de recovery, intento original TEST_ACCESS_UNKNOWN, sin reselección/entrenamiento/refit después de TEST. Las menciones a una evaluación única describen el diseño inicial, no el historial real; no afirmar holdout prístino/prospectivo. [Resultados, interpretación y linaje](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
 
-diff --git a/scientific_pipeline/docs/mission_status.md b/scientific_pipeline/docs/mission_status.md
-index 2b39204..de39421 100644
---- a/scientific_pipeline/docs/mission_status.md
-+++ b/scientific_pipeline/docs/mission_status.md
-@@ -1,8 +1,10 @@
--> **Cierre posterior — 01/11/2026: ML-V1-CLASSICAL-MODELS PASS**, autorizado por Dirección 00. Dataset v1, cuatro baselines y AHC PASS; ANN moderna NOT STARTED; WEB-V0.3-ML READY. Los apartados previos de preparación/TEST pendiente se conservan como protocolo o historia, no como estado actual. La ejecución final fue **retrospective_recovery_evaluation**: selección y modelos DEVELOPMENT congelados antes de recovery, intento original TEST_ACCESS_UNKNOWN, sin reselección/entrenamiento/refit después de TEST. Las menciones a una evaluación única describen el diseño inicial, no el historial real; no afirmar holdout prístino/prospectivo. [Resultados, interpretación y linaje](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
-+> **Estado posterior — 02/11/2026: ANN-V1-MODERN-ET0 PASS.** La ANN moderna `FEATURE_SET_FULL / MLP [32]` aproxima `PM_FAO56_V1` calculada; no valida ET₀ instrumental independiente. TEST 2021–2025 es `retrospective_locked`, sin selección/entrenamiento/refit, y no globalmente prístino. Resultado y linaje: [documentación ANN](../../docs_2.1_Estimación%20Et0%20ANN%20%28tensorflow%29.md). Las referencias inferiores a ANN no iniciada son históricas.
-+
-+> **Cierre posterior — 01/11/2026: ML-V1-CLASSICAL-MODELS PASS**, autorizado por Dirección 00. Dataset v1, cuatro baselines y AHC PASS; ANN moderna NOT STARTED **(estado histórico al 01/11/2026, superado el 02/11)**; WEB-V0.3-ML READY. Los apartados previos de preparación/TEST pendiente se conservan como protocolo o historia, no como estado actual. La ejecución final fue **retrospective_recovery_evaluation**: selección y modelos DEVELOPMENT congelados antes de recovery, intento original TEST_ACCESS_UNKNOWN, sin reselección/entrenamiento/refit después de TEST. Las menciones a una evaluación única describen el diseño inicial, no el historial real; no afirmar holdout prístino/prospectivo. [Resultados, interpretación y linaje](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
- 
- > **Estado posterior de preservación — 01/11/2026:** WINDOWS-SCIENCE-INGEST-AUTOMATION PASS; PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED. Las referencias inferiores a transferencia manual/Windows sin protección automática describen el cierre anterior. El límite vigente es finalización/preparación y READY firmado explícitos; después, con clave SFTP desbloqueada en ssh-agent, transferencia, verificación servidor, ingestión y preservación automáticas. [Contrato operativo y evidencia E2E](../../docs/backup/windows-ingestion.md). Esta nota no modifica ciencia ni operación Forecast.
- 
--> **Estado posterior — 31/10/2026:** WEB-V0.2-AHC ya está desplegada (PR #46/#47) y el runtime ML rolling está implementado (PR #48); rolling validation y Linux smoke PASS. La campaña científica oficial permanece pendiente de despliegue/ejecución; ANN NOT STARTED. Las referencias inferiores a «web no construida», ML futuro o merge pendiente conservan el estado previo de su entrega. No cambian la semántica contractual ni resultados congelados. Para el contrato rolling vigente, véase [refinamiento temporal](ml_validation_contract_refinement.md); estado rápido en [PROJECT_STATUS](../../docs/PROJECT_STATUS.md).
-+> **Estado posterior — 31/10/2026:** WEB-V0.2-AHC ya está desplegada (PR #46/#47) y el runtime ML rolling está implementado (PR #48); rolling validation y Linux smoke PASS. La campaña científica oficial permanece pendiente de despliegue/ejecución; ANN NOT STARTED **(estado histórico al 31/10/2026, superado el 02/11)**. Las referencias inferiores a «web no construida», ML futuro o merge pendiente conservan el estado previo de su entrega. No cambian la semántica contractual ni resultados congelados. Para el contrato rolling vigente, véase [refinamiento temporal](ml_validation_contract_refinement.md); estado rápido en [PROJECT_STATUS](../../docs/PROJECT_STATUS.md).
- 
- # ET0-BASELINES-PREP — estado de integración
- 
-@@ -14,7 +16,7 @@ AHC_CLIMATOLOGY se calcula después de TEST con todo el histórico declarado has
- 
- **PROJECT-ARTIFACT-BACKUP-V1 PASS** según cierre de 02 comunicado por Dirección 00; snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED, 128 archivos. Los artefactos científicos cubiertos ya tienen preservación externa; no implica que cualquier resultado futuro solo Windows esté automáticamente protegido. Requiere transferencia/ingestión explícita y reconciliación diaria para lo ingerido. [Alcance, pruebas y límites](../../docs/DATA_LOCATIONS.md).
- 
--ML contract FROZEN/READY FOR FUTURE EXPERIMENTS y visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida.
-+ML contract FROZEN/READY FOR FUTURE EXPERIMENTS y visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida **(estado histórico, superado posteriormente)**.
- 
- 
- ## Registro de cuatro métodos — 24/10/2026
+> **Estado posterior de preservación — 01/11/2026:** WINDOWS-SCIENCE-INGEST-AUTOMATION PASS; PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED. Las referencias inferiores a transferencia manual/Windows sin protección automática describen el cierre anterior. El límite vigente es finalización/preparación y READY firmado explícitos; después, con clave SFTP desbloqueada en ssh-agent, transferencia, verificación servidor, ingestión y preservación automáticas. [Contrato operativo y evidencia E2E](../../docs/backup/windows-ingestion.md). Esta nota no modifica ciencia ni operación Forecast.
+
+> **Estado posterior — 31/10/2026:** WEB-V0.2-AHC ya está desplegada (PR #46/#47) y el runtime ML rolling está implementado (PR #48); rolling validation y Linux smoke PASS. La campaña científica oficial permanece pendiente de despliegue/ejecución; ANN NOT STARTED **(estado histórico al 31/10/2026, superado el 02/11)**. Las referencias inferiores a «web no construida», ML futuro o merge pendiente conservan el estado previo de su entrega. No cambian la semántica contractual ni resultados congelados. Para el contrato rolling vigente, véase [refinamiento temporal](ml_validation_contract_refinement.md); estado rápido en [PROJECT_STATUS](../../docs/PROJECT_STATUS.md).
+
+# ET0-BASELINES-PREP — estado de integración
+
+## AHC y preservación: estado vigente 25/10/2026
+
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39; OLS0 por estación a=Σ(x·PM)/Σ(x²), TRAIN 2004–2015 únicamente, coeficientes congelados. VALIDATION 2016–2020 seleccionó HS annual / HG-Rs seasonal / VAL annual; TEST 2021–2025 retrospective_locked, sin refit ni reselección. [Metodología](ahc_methodology.md) y [evidencia](../results/ahc-20261024T172400Z/README.md).
+
+AHC_CLIMATOLOGY se calcula después de TEST con todo el histórico declarado hasta 2025; identidad separada y sin atribución de métricas TEST. El legacy mean-ratio full-series/in-sample sigue siendo historia. Los cuatro baselines, raw, Quality y Dataset no cambian.
+
+**PROJECT-ARTIFACT-BACKUP-V1 PASS** según cierre de 02 comunicado por Dirección 00; snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED, 128 archivos. Los artefactos científicos cubiertos ya tienen preservación externa; no implica que cualquier resultado futuro solo Windows esté automáticamente protegido. Requiere transferencia/ingestión explícita y reconciliación diaria para lo ingerido. [Alcance, pruebas y límites](../../docs/DATA_LOCATIONS.md).
+
+ML contract FROZEN/READY FOR FUTURE EXPERIMENTS y visualization contract FROZEN/AVAILABLE TO 06; no ML/ANN entrenado ni web construida **(estado histórico, superado posteriormente)**.
+
+
+## Registro de cuatro métodos — 24/10/2026
+
+**HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
+[Cuatro baselines y CSV](../results/four-classical-20261024T042250Z/README.md). PR #35; pipeline
+a0b440fa3ab92e4593be521e4e819c6421327656; 75 tests/CI Python 3.11/3.12/3.13 PASS.
+HG-Rs 70978 calculadas / 70912 evaluables / 0 fallos.
+Cohorte común de cuatro 70860; Dataset v1 intacto. Publicación oficial PR #36, SHA 9f3dde8e22ab8e8f76aeaa273b5e7681558ebbcf. Los registros inferiores de dos/tres métodos y preparación conservan su fecha; no son estados pendientes vigentes.
+
+Orden histórico de preparación previo al cierre AHC/backup: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos posteriores; esos gates se superaron según el estado vigente superior. [ROADMAP](../../docs/ROADMAP.md).
+
+## Registro preservado — tres métodos, 24/10/2026
+
+**VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS**.
+[Resultados oficiales de tres métodos y CSV](../results/classical-20261024T034529Z/README.md).
+PR #33; pipeline 4ac52e25c803cb2301316c5cb1353bf30cdb427a; 68 tests y CI 3.11/3.12/3.13 PASS.
+VAL 70.944 predicciones / 70.878 evaluables / 0 fallos; Dataset v1 intacto.
+
+## Snapshot anterior — 23/10/2026 (histórico)
+
+**Dataset Observational v1 construido/validado PASS. Primera ejecución oficial PM/HS PASS.** La espera de POST y handoff descrita en el registro de preparación inferior es HISTÓRICA / SUPERADA.
+
+- POST vigente: SIAR-QA-POST-20261020T193140Z; publicación canónica 2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9; auditado 18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865.
+- Dataset SHA256: 0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb.
+- PR #30: tolerancia VPD explícita 1e-12 kPa absoluta / 0 relativa, sin cambios en dataset o Quality.
+- PR #31: PM-VPD-FLOAT-TOLERANCE-AND-BASELINES PASS; 62 tests y CI 3.11/3.12/3.13 PASS según evidencia publicada.
+- PM: 70.896 calculadas / 70.861 evaluadas / 0 fallos. HS: 70.979 / 70.912 / 0 fallos. Paired n=70.861.
+- Mantener limitaciones de referencia SIAR, procedencia parcial, viento convencional, exclusión IB09 por FAIL y muestra IB101.
+
+[Informe oficial, métricas y artefactos](../results/pm-vpd-20261023T194553Z/README.md). No se modifican ni regeneran resultados en esta actualización documental. Valiantzas permanece LEGACY / FUTURE BASELINE REVIEW; los siguientes gates metodológicos constan en [ROADMAP](../../docs/ROADMAP.md).
+
+## Registro histórico de preparación — 19/10/2026
+
+El texto siguiente conserva la evidencia y las condiciones de aquella entrega. Las menciones de dataset/ejecución pendientes se refieren al estado del 19/10, superado por el resultado vigente anterior.
+
+
+Fecha: 2026-10-19 (Europe/Madrid). Decisión de Dirección 00: cerrar forense y avanzar preparación integrada.
+
+## Estado de preparación al 19/10/2026
+
+- Forense: **RESOLVED_FOR_V1**.
+- Interpretación aceptada: Radiacion MJ m⁻² día⁻¹; VelViento m/s; lectura directa, sin ×0.0864 ni /3.6.
+- Viento: convención SIAR de 2 m aceptada para v1. La falta de historial instrumental exhaustivo no es STOP.
+- Limitaciones no bloqueantes: **UNITS_PROVENANCE_PARTIAL** y **station_period_provenance_not_exhaustively_verified**, conservadas en trazabilidad/manifiestos.
+- Evidencia positiva de altura distinta de 2 m: detener PM en el ámbito afectado hasta resolución explícita; no bloquea automáticamente HS.
+- **ET0-BASELINES-PREP = READY_FOR_DATASET_V1**. Integración, pruebas, revisión y CI científica verificadas; la construcción del dataset oficial permanece pendiente de POST y handoff.
+
+Esta decisión supera los diagnósticos preliminares BLOCKED_UNITS y WIND_HEIGHT_UNVERIFIED de la fase anterior. No reescribe las cifras forenses ni transforma una convención aceptada en verificación instrumental por estación/periodo. No se continuarán búsquedas históricas para avanzar esta misión.
+
+## Alcance preservado
+
+La investigación partió de main `6f1dd95c415730ec29843055d3a32a7ac5a636ad` y documentación 1.2, seguida de código, outputs legacy y documentación 1.3. La auditoría y el contraste offline quedan como evidencia histórica. El informe forense generado conserva sus valores y diagnóstico fechado; una nota posterior de decisión 00 define la interpretación operativa actual.
+
+No se ha ejecutado el Dataset Observational v1 definitivo ni publicado resultados finales de baselines sobre él. No se modifica adquisición, Quality, raw, CSV canónicos, legacy o el esquema canónico de 23 columnas. Las pruebas sintéticas no sustituyen Quality POST.
+
+## Preparación integrada entregada
+
+La entrega incorpora CLI `python -m siar_science` con validación, construcción desde handoff, PM, HS y evaluación; salidas nuevas con predicciones, métricas y manifiesto. Se han comprobado:
+
+1. Funciones FAO-56/HS con ejemplos independientes, dominios y políticas numéricas registradas.
+2. Adaptador del handoff `SIAR-QUALITY-CLOSEOUT`, esquemas POST oficiales y hashes de fuentes e informes, sin fabricar cierre autorizado.
+3. QC por método, preservación de observaciones y flags, referencia SIAR separada de predicción.
+4. Ejecución sintética de extremo a extremo y pruebas de rechazo de contradicciones, duplicados y sobrescritura.
+5. Trazabilidad de dataset/configuración/código/cohortes/outputs en manifiesto y CI científica verificable.
+
+El [README](../README.md), [contrato](contracts.md) y [supuestos](assumptions.md) documentan el comportamiento implementado.
+
+## Verificación de cierre
+
+- Main inicial: `6f1dd95c415730ec29843055d3a32a7ac5a636ad`.
+- Implementación validada: `7a1ece4c9082a15973baa1cbb70f7373a21c63db`.
+- Suite científica local: **48 tests PASS**, incluidos ejemplos FAO publicados, QC/eligibilidad, métricas, handoff sintético con hashes reales, catálogo, pipeline y CLI.
+- CI científica: **PASS en Python 3.11/3.12/3.13**, paquete instalado y entry point probado; [ejecución verificada](https://github.com/lependens/Capitulo-1/actions/runs/39173293712).
+- Suite forense preservada: 9 tests PASS tras actualizar exclusivamente la interpretación documental del cierre de 00; no se añadieron cálculos históricos.
+- Revisión independiente: corregidas coherencia de cohortes pareadas, protección raw y trazabilidad del productor de predicciones; regresiones cubiertas por los tests de integración.
+- Diff-check completo contra main: PASS. Alcance: scientific_pipeline y su workflow CI; sin cambios en raw, legacy, catálogo original, Quality, Sync o Forecast.
+- [PR #23](https://github.com/lependens/Capitulo-1/pull/23) conserva el registro canónico de revisión, CI y SHA de merge; no se introduce un SHA de merge autorreferencial en sus propios archivos.
+
+Los commits de cierre documental posteriores no cambian las fórmulas ni los resultados de las pruebas de la implementación identificada; la PR vuelve a verificar la CI sobre su head antes de fusionarse.
+
+## Decisiones científicas congeladas para v1
+
+PM diario FAO-56 y HS sin calibración usan media de extremos. PM fija G=0, γ estándar, albedo=0.23 y VPD de extremos; Rnl no tiene floor inferior por defecto. Conservar negativos con flags, sin sustituciones silenciosas ni ±3σ global. HS usa 0.0023·0.408 fijo y Ra. EtPMon sigue como referencia calculada SIAR, no verdad independiente.
+
+Métricas: n, MAE, RMSE, MBE/bias, R² predictivo; cohortes propias y pareadas separadas, referencias cero conservadas. Futura calibración/ML exige cortes temporales globales y aprendizaje solo en TRAIN; no forma parte de esta misión.
+
+## Gate de ejecución definitiva
+
+Preparar y verificar el software no autoriza generar el dataset final ahora. La construcción definitiva espera el handoff autorizado de 00 después de Quality closeout: `gate=SIAR-QUALITY-CLOSEOUT`, informes POST originales, catálogo/metadatos, hashes, unidades y fuentes identificadas. El mismo gate sigue vigente aunque la forense esté resuelta.
+
+La capa está READY_FOR_DATASET_V1. La disponibilidad de Quality POST y Dataset v1 es un estado separado; la misión no los declara completados ni ejecuta los baselines definitivos para anticiparlos. Ready for Quality POST: **YES** como software preparado para recibir el handoff; generación y ejecución oficial: **NO, esperando handoff de 00**.

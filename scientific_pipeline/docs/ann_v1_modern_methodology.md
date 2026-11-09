@@ -1,5 +1,7 @@
 # ANN-V1-MODERN-ET0: frozen experiment contract
 
+For a Spanish, non-specialist explanation of the completed experiment, results and limitations, see [ANN-V1-MODERN-ET0: guía del experimento y sus resultados](ann_v1_modern_explained.md). The editable one-slide summary is linked from that guide.
+
 The frozen machine-readable protocol is `experiments/ann-v1-modern-et0.json`. It is anchored to Dataset Observational v1 (SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`) and ML rolling protocol (SHA256 `45f1c4f3ed20bb70dc3b1ca06a8e23ec14f95aae6b60f574e44a8a261cc07048`). The target is `PM_FAO56_V1`, an internally calculated estimate, not independent observed evapotranspiration. This experiment tests emulation of that calculation.
 
 The five input families and nine primary stations are inherited from the ML protocol. Features include latitude, altitude, Ra and cyclic day-of-year components where specified. The target, EtPMon, other baseline outputs, residuals, station identifiers and TEST-derived information are excluded as predictors. Missing meteorological inputs make only the affected feature family ineligible.

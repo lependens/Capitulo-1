@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-11-01.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico PASS tras evaluación recuperada, ANN moderna no iniciada y WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
+**Actualizado: 2026-11-02.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico y ANN moderna v1 PASS, con WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -459,7 +459,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | WEB-V0.2-AHC | PASS / DEPLOYED en LAN; cuatro baselines y AHC publicados, datos read-only |
 | ML clásico | ML-V1-CLASSICAL-MODELS PASS; champion HGB FULL; evaluación retrospectiva recuperada |
 | WEB-V0.3-ML | READY para consumir outputs ML publicados; sin despliegue nuevo en esta misión |
-| ANN / Forecast integrado / Kc / ETc / riego | ANN NOT STARTED; integraciones y riego posteriores bajo sus gates |
+| ANN / Forecast integrado / Kc / ETc / riego | ANN-V1-MODERN-ET0 PASS contra PM_FAO56_V1 calculada; integraciones y riego posteriores bajo sus gates |
 
 SIAR Forecast mantiene timer ACTIVE aunque SIAR Sync siga HOLD. El primer ciclo real automático con backup automático y COMPLETE remoto demuestra CAPTURE RUNNING; al menos dos ciclos PASS, PILOT RUNNING. Un timer activo no demuestra esos gates. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
 
@@ -509,7 +509,7 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.3 Scientific Explorer desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica está PASS tras recuperación de evaluación, ANN moderna no iniciada y WEB-V0.3 Scientific Explorer PASS / DEPLOYED. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
+Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.3 Scientific Explorer desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica y la ANN moderna v1 están PASS; WEB-V0.3 Scientific Explorer permanece PASS / DEPLOYED. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
 
 El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 
@@ -537,4 +537,4 @@ El proyecto puede resumirse actualmente en una única línea:
 
 ## Cierre vigente de producto — 01/11/2026
 
-**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: siguiente avance científico ANN moderna y/o validación prospectiva; la web los consumirá después de publicación.
+**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: la ANN moderna v1 ya está publicada; la web podrá consumirla junto con validación prospectiva posterior.

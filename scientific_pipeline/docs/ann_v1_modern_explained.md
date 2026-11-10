@@ -2,7 +2,9 @@
 
 Esta guía explica el primer experimento moderno de redes neuronales del proyecto ET0. Está pensada para una persona que conoce el proyecto, pero no necesita dominar aprendizaje automático. El contrato técnico congelado permanece en [ann_v1_modern_methodology.md](ann_v1_modern_methodology.md) y en [`ann-v1-modern-et0.json`](../experiments/ann-v1-modern-et0.json).
 
-La diapositiva editable que resume el experimento está disponible en [ann_v1_modern_et0_summary.pptx](assets/ann_v1_modern_et0_summary.pptx). Su [vista previa PNG](assets/ann_v1_modern_et0_summary.png) permite consultarla sin PowerPoint.
+La [presentación ampliada de ANN-V1](assets/ann_v1_modern_et0_presentation.pptx) explica el experimento en 13 diapositivas. También está disponible su [vista previa](assets/ann_v1_modern_et0_presentation.png). Para una síntesis breve, véase la [diapositiva resumen](assets/ann_v1_modern_et0_summary.pptx) y su [vista previa](assets/ann_v1_modern_et0_summary.png).
+
+La [revisión metodológica y propuesta de V2](et0_methodology_review_v2.md) compara los métodos calibrados, documenta la recuperación de TEST del ML clásico y recoge las decisiones pendientes.
 
 ## 1. La pregunta científica
 
@@ -40,7 +42,7 @@ La campaña utiliza nueve estaciones primarias:
 
 Tres estaciones del Dataset v1 no forman parte de la comparación principal:
 
-- `IB07`: no tiene periodo VALIDATION/TEST después de su cierre.
+- `IB07`: cerró en 2012. Su histórico alcanza la primera ventana de validación, pero no el periodo TEST común.
 - `IB09`: conserva su estado Quality FAIL.
 - `IB101`: solo aporta una serie corta dentro de TRAIN.
 
@@ -118,7 +120,7 @@ El manifiesto DEVELOPMENT registra:
 - scikit-learn `1.9.1`.
 - Runtime DEVELOPMENT `1.496,78 s`, aproximadamente 24 min 57 s.
 
-Durante la ejecución se observó un uso de memoria cercano a 0,6 GB. El modelo y las cinco familias cabían holgadamente en el servidor, por lo que esta campaña ANN no necesitó GPU ni Kaggle. El modelo usa `MLPRegressor` de scikit-learn; no depende de TensorFlow o PyTorch. El total de RAM y el modelo exacto de CPU del host no forman parte del manifiesto preservado, por lo que no se presentan como evidencia canónica.
+El log de DEVELOPMENT registra un pico de memoria residente de 709.528 KiB (aproximadamente 693 MiB). El modelo y las cinco familias cabían holgadamente en el servidor, por lo que esta campaña ANN no necesitó GPU ni Kaggle. El modelo usa `MLPRegressor` de scikit-learn; no depende de TensorFlow o PyTorch. El total de RAM y el modelo exacto de CPU del host no forman parte del manifiesto preservado, por lo que no se presentan como evidencia canónica.
 
 ## 8. Champion y resultados TEST
 

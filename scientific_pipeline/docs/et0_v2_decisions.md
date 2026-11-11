@@ -12,14 +12,14 @@ Las decisiones de Dirección 00 sustituyen las propuestas anteriores de la PR #6
 - ANN: [16], [32], [64], [64,32], [64,32,16]; tres semillas y parámetros generales V1. Comparar A: último 15 % cronológico, y E: 15 % aleatorio reproducible compartido entre candidatos; interna elige épocas, año omitido puntúa arquitectura y 2020–2025 evalúa configuraciones congeladas. No escoger regla ganadora con TEST.
 - RMSE, MAE, bias, n y cobertura; cohorte común para error y propia para disponibilidad.
 
-## Pendiente de contrato ejecutable — 05
+## Contrato ejecutable — 05
 
-Fijar soporte mínimo por estación/grupo/año, elegibilidad, desempates, asignaciones reproducibles A/E, detalles de compatibilidad de rejillas, trazabilidad y reglas de publicación antes de cualquier ejecución. No se inventan umbrales operativos.
+El [contrato de preparación V2](et0_v2_preparation.md) fija soporte por estación, grupo y año, elegibilidad, desempates, asignaciones reproducibles A/E, rejillas y trazabilidad. Los controles de soporte son técnicos. Los umbrales operativos siguen pendientes.
 
 ## Quality y series cortas
 
-IB07: histórico elegible como caso separado. IB09: revisión Quality antes de decidir admisión; conservar raw. IB101: inventariar soporte sin fabricar evaluación temporal.
+IB07 e IB101 se inventarían por separado como series históricas. El 11/11/2026 Dirección 00 aprobó la excepción científica de IB09 para DEVELOPMENT de V2 entre 2005-10-24 y 2018-10-10, ambos inclusive. Se conserva el FAIL de Quality V1, la verificación oficial independiente UNRESOLVED y la fila del 2005-10-23 fuera de alcance. La [decisión preservada](../../data_quality/siar/ib09-handoff-v2-development/decision.md) exige detener la admisión ante evidencia oficial contradictoria o fallo de reconciliación.
 
 ## Futuro
 
-Umbrales de uso y validación prospectiva requieren decisiones y datos independientes. El bloque retrospectivo no es un holdout globalmente prístino. No se ha ejecutado V2.
+Umbrales de uso y validación prospectiva requieren decisiones y datos independientes. El bloque retrospectivo ya formó parte de experimentos anteriores. V2 está en preparación, con lanzamiento pendiente de autorización.

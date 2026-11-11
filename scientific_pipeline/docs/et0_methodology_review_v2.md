@@ -1,127 +1,146 @@
-# Revisión de la metodología de estimación de ET₀ y diseño de V2
+# Revisión de la metodología de ET₀ y protocolo de V2
 
-Esta revisión reúne los resultados de V1, explica qué preguntas quedan abiertas y convierte las observaciones de Dirección en propuestas que pueden probarse. V2 debe responder a una pregunta operativa: **cuando faltan entradas para calcular Penman–Monteith, ¿qué método ofrece el mejor equilibrio entre error, sesgo, cobertura y coste de obtener los datos?** El diseño se cerrará en un contrato versionado antes de ajustar modelos o abrir el periodo reservado para confirmación.
+V2 compara fórmulas empíricas calibradas, ML clásico y redes neuronales (ANN) para estimar la ET₀ diaria cuando faltan entradas de Penman–Monteith. La comparación se hace **por estación meteorológica**, con la **misma información de entrada** y sobre las **mismas fechas evaluables** dentro de cada escenario. La referencia de error es `PM_FAO56_V1` calculada por el proyecto. Este documento describe el experimento acordado para V2. Las cifras de rendimiento que se citan proceden de V1.
 
-## 1. Referencia y alcance de la estimación
+[Presentación editable del protocolo V2](assets/et0_v2_experiment_protocol.pptx) · [Registro de decisiones](et0_v2_decisions.md) · [Guía de ANN V1](ann_v1_modern_explained.md)
 
-`PM_FAO56_V1` es la salida objetivo calculada por el pipeline a partir de las observaciones SIAR. FAO-56 recomienda Penman–Monteith como método estándar para calcular la ET₀ con datos meteorológicos. Con las entradas válidas y completas, la vía operativa directa es calcular PM. FULL tiene valor como control científico para medir la capacidad de aproximar esa fórmula y comparar algoritmos con información equivalente.
+## 1. Decisiones que fijan V2
 
-Las métricas expresan distancia respecto a PM. La concordancia con una referencia instrumental, por ejemplo un lisímetro adecuado, requeriría datos independientes. La estimación diaria estudiada usa las entradas meteorológicas de ese día. Un producto que anticipe la ET₀ futura a partir de meteorología pronosticada tendría que evaluarse con esos pronósticos, sus horizontes y sus errores. [FAO-56, capítulos 2](https://www.fao.org/4/x0490e/x0490e06.htm) [y 4](https://www.fao.org/4/x0490e/x0490e08.htm) · [Martí et al., estudio sobre salidas objetivo calculadas](https://www.sciencedirect.com/science/article/abs/pii/S0378377414003485)
-
-## 2. Qué aporta cada campaña de V1
-
-| Etapa | Qué se ajustó y con qué datos | Qué permite concluir |
-|---|---|---|
-| Dataset y fórmulas | Dataset Observational v1 auditado. PM y tres fórmulas de referencia, `HS_RA_V1` (Hargreaves-Samani con Ra, o HG-Ra), `HG_RS_V1` (Hargreaves con Rs medida) y `VALIANTZAS_V1`. | El error de partida de cada fórmula y su disponibilidad según sus requisitos. |
-| AHC V1 | Ajuste multiplicativo por estación frente a PM en 2004–2015. Validación 2016–2020 para elegir granularidad. Evaluación 2021–2025 con los coeficientes congelados. | Cuánto mejora cada fórmula mediante calibración histórica. Los seleccionados fueron HS anual, HG-Rs estacional y Valiantzas anual. AHC Climatology usa todo el histórico hasta 2025 y tiene una finalidad descriptiva separada. |
-| ML clásico V1 | Siete algoritmos y cinco familias de entradas. Ventanas crecientes en DEVELOPMENT 2004–2020 y 35 modelos reajustados sobre DEVELOPMENT. | El rendimiento retrospectivo de los modelos congelados. HGB FULL fue el modelo seleccionado globalmente. La recuperación de TEST completó la evaluación con los pesos ya ajustados. |
-| ANN V1 | Tres arquitecturas MLP con ReLU, cinco familias y tres semillas por candidato. Cuatro ventanas crecientes en DEVELOPMENT, con validación interna para elegir épocas. Reajuste final con DEVELOPMENT. | La arquitectura `[32]` ganó en las cinco familias dentro de la rejilla probada. FULL quedó como selección global y su salida es la media de tres redes. |
-
-La población principal de ML y ANN consta de nueve estaciones de Baleares. En sus ventanas de validación externa, el entrenamiento termina en 2009, 2012, 2015 y 2018, y la evaluación abarca, respectivamente, 2010–2012, 2013–2015, 2016–2018 y 2019–2020. El TEST común cubre 2021–2025 y ya se ha examinado. Para V2 seguirá siendo un benchmark retrospectivo y puede servir como puente con V1. La confirmación independiente requiere un bloque adicional reservado y suficiente, de 2026 en adelante si se conserva su independencia. [Protocolo AHC](ahc_methodology.md) · [ML clásico](ml_v1_classical_methodology.md) · [Contrato ANN](ann_v1_modern_methodology.md) · [Presentación ampliada de ANN-V1](assets/ann_v1_modern_et0_presentation.pptx)
-
-## 3. Comparación transversal y nuevo ajuste AHC
-
-Al cruzar las salidas preservadas por estación y fecha se obtuvo el mismo PM de referencia en las **15.958 filas comunes** de TEST. Las cifras siguientes son una lectura descriptiva de los modelos congelados, en RMSE (mm/día).
-
-| Familia más próxima y fórmula | Fórmula original | AHC V1 | HGB | ANN |
-|---|---:|---:|---:|---:|
-| T · Hargreaves-Samani con Ra | 0,949 | 0,639 anual | 0,547 | 0,521 |
-| T + Rs · Hargreaves con radiación medida | 0,565 | 0,414 anual · 0,401 estacional | 0,302 | 0,342 |
-| T + RH · Valiantzas | 0,629 | 0,524 anual | 0,430 | 0,414 |
-
-ANN FULL obtuvo 0,051312 mm/día de RMSE frente a 0,064104 de HGB FULL, con las mismas 12 entradas. El sesgo fue −0,022449 para ANN y −0,000966 para HGB. La cobertura ANN fue de 15.958 sobre 15.978 filas del archivo TEST, igual para las cinco familias. Ese denominador describe las filas del benchmark y no cuantifica los días adicionales que se podrían cubrir ante fallos de sensores. [Resultados AHC](../results/ahc-20261024T172400Z/README.md) · [Resultados ML y linaje](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) · [Resultados ANN y linaje](ann_v1_modern_explained.md)
-
-Las fórmulas y las familias actuales difieren en información disponible. La media de los extremos y su amplitud equivalen a los dos extremos. La altitud añade información. Ra se calcula con latitud y día del año y difiere de Rs, que se mide. HS y Valiantzas usan Ra en sus ecuaciones, mientras que ML y ANN también reciben latitud y componentes cíclicas del día del año como entradas separadas. HG-Rs usa temperatura media de extremos y Rs. Su familia de ML y ANN recibe además amplitud térmica y contexto. Valiantzas usa humedad media, mientras que T + RH incluye también humedad mínima y máxima. El AHC aplica un coeficiente por estación y, en su versión estacional, usa también la fecha para seleccionar el coeficiente. [Inventario de entradas AHC](../results/ahc-20261024T172400Z/test/input_complexity.csv) · [Implementación HG-Rs](hargreaves_rs_v1.md) · [Implementación Valiantzas](valiantzas_v1.md) · [Contrato ML](../experiments/ml-v1-classical.json)
-
-### Diseño propuesto para AHC V2 y comparaciones a igual información
-
-1. **Conservar AHC V1** con sus coeficientes, evaluación y linaje. Crear una campaña distinta para `HS_RA`, `HG_RS` y `VALIANTZAS`, siempre con la fórmula original y su calibración como referencias.
-2. **Igualar la fecha de corte final.** Si el ajuste usa observaciones hasta el **31/12/2020 inclusive**, el benchmark común comienza el **01/01/2021**. Para evaluar desde el **01/01/2020**, hay que cerrar el ajuste como máximo el **31/12/2019**. La primera opción reproduce el corte de ML y ANN V1. Para comparar candidatos durante DEVELOPMENT, estimar los coeficientes AHC dentro del TRAIN de cada ventana y puntuar en su validación posterior. Seleccionar la granularidad dentro de DEVELOPMENT y calcular los coeficientes finales con el histórico elegible hasta el corte.
-3. **Fijar una ficha de entradas por comparación.** Para HS-Ra, extremos térmicos y Ra. Para HG-Rs, media de extremos y Rs. Para Valiantzas, extremos, humedad media y Ra. Especificar qué metadatos puede usar cada método y cómo se trata la calibración por estación. Si se autoriza el calendario, la altitud u otro contexto por estar disponible en producción, añadir una comparación separada que mida cuánto aporta ese contexto.
-4. **Igualar histórico y evaluación.** Mantener el mismo corte, las mismas estaciones y, en el contraste estricto, las mismas claves elegibles para el ajuste y evaluación de los modelos calibrados. Documentar el presupuesto de selección. Informar por separado los resultados con una cohorte común para comparar error y con la cohorte propia de cada método para medir disponibilidad.
-5. **Fijar el criterio de utilidad antes de medir.** Definir error y sesgo tolerables, cobertura mínima y coste de entradas para cada escenario. Publicar RMSE, MAE, sesgo, `n` y cobertura global y por estación y temporada, con incertidumbre para las diferencias pareadas si el soporte lo permite. Para probar la pérdida de un sensor, ocultarlo al modelo en días completos donde siga siendo posible calcular el PM de referencia. Medir aparte la disponibilidad real sobre el calendario operativo.
-
-La pregunta de igualdad de entradas es experimental. Comparar modelos congelados responde qué rendimiento se observó con la información que ya utilizaban. Para atribuir diferencias al método con entradas e histórico equivalentes, hace falta entrenar las variantes restringidas y calibrar AHC bajo el mismo contrato.
-
-## 4. Estaciones con series históricas más cortas
-
-El número de filas brutas, la cobertura de su periodo oficial, la disponibilidad de PM y la presencia en las ventanas de evaluación son criterios distintos.
-
-| Estación | Evidencia de V1 | Tratamiento propuesto en V2 |
-|---|---|---|
-| **IB07 · Sóller** | 2.946 filas, 97,65 % de cobertura, `WARN`. Cierre el 13/11/2012. En F1 hay 1.957 filas brutas de TRAIN y 989 de validación, con PM preservado en 1.942 y 987, respectivamente. | Admitirla como **excepción histórica de entrenamiento** y comprobar entradas válidas por familia. F1 admite evaluación local. Si se usa otro esquema, declarar sus ventanas y tamaño. Reportarla separada del benchmark común de 2021–2025. |
-| **IB09 · Artà** | 4.423 filas, de las que 4.422 caen en el periodo oficial, 93,39 % de cobertura y `FAIL`. Hay una fila del 23/10/2005, un día anterior a la fecha oficial de inicio. El artefacto AHC V1 no contiene PM para la estación. | Revisar la incidencia de Quality y el soporte meteorológico antes de admitirla. Si la evidencia confirma la fecha oficial, marcar y excluir esa fila en la **vista científica versionada**, conservando el original. Documentar si procede aceptar el resto, recalcular PM y las tres fórmulas, y ajustar AHC, ML y ANN según elegibilidad. Por fechas puede aportar evaluación histórica a F1–F3. |
-| **IB101 · Ciutadella** | 249 filas, 98,81 % de cobertura de una serie de diciembre de 2008 a agosto de 2009, `WARN`. Hay 246 filas con PM preservado. | Mantenerla como caso de soporte insuficiente para validación temporal por estación bajo las ventanas actuales. Si se estudia su inclusión en ajuste agrupado, declarar el objetivo y la ausencia de evaluación propia posterior. |
-
-IB07 sí tiene validación posible en el primer fold de ANN. Su ausencia de la validación AHC V1 se explica por el corte de 2016. Para IB07 e IB09 conviene distinguir dos preguntas: cómo rinde un modelo que aprende de su propio histórico y cómo cambia el modelo agrupado si las incluye. La segunda se puede examinar con una comparación con y sin estas estaciones en TRAIN y las mismas claves externas de evaluación. La excepción requiere ventanas, soporte mínimo y métricas declarados antes de medir. [Manifiesto Quality](../../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_dataset_manifest.csv) · [Auditoría por estación](../../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_station_audit.csv) · [Resultado AHC](../results/ahc-20261024T172400Z/README.md)
-
-## 5. Cronología y comparación con el TFG
-
-La tabla 5 aportada del TFG registra **43.800 entrenamientos**. Suma 146 combinaciones de estación y año evaluado, multiplicadas por diez anchuras, diez repeticiones y tres combinaciones de entradas. Según la descripción de Dirección, cada año apartado se puntuaba fuera del entrenamiento y los errores anuales se promediaban como medida de desempeño. Eso permite ver estabilidad entre años y repeticiones. Si se escoge la anchura o semilla con esos mismos errores, el promedio de la opción ganadora también interviene en su selección. Para estimar el rendimiento de esa selección con independencia se necesita otro nivel de evaluación o un bloque final reservado. La tabla por sí sola no identifica una partición interna ni una regla de parada. [Cawley y Talbot, sesgo tras seleccionar con las mismas puntuaciones](https://www.jmlr.org/papers/v11/cawley10a.html)
-
-| Esquema | Pregunta que responde | Ventajas y límites |
-|---|---|---|
-| Ventanas crecientes, pasado hacia futuro | ¿Cómo habría rendido el método si se hubiera desplegado con los datos disponibles entonces? | Mantiene el orden de la aplicación, muestra cambios entre periodos y permite un histórico creciente. Las primeras ventanas tienen menos entrenamiento y las validaciones no comparten la misma dificultad. |
-| Dejar fuera un año completo | ¿Cómo rinde al reconstruir un año omitido, disponiendo hoy del histórico anterior y posterior? | Aprovecha más histórico por ajuste y permite comparar errores anuales, útil para estaciones cerradas si tienen soporte. Puede usar condiciones posteriores a la fecha estimada y responde a una reconstrucción retrospectiva. |
-| Validación anidada por bloques | ¿Qué error tiene el procedimiento completo que selecciona y ajusta el modelo? | Dentro de cada bloque de entrenamiento se eligen arquitectura y épocas. El bloque externo puntúa esa decisión. Aumenta coste y reduce el histórico de algunas divisiones. La estructura exterior puede ser cronológica o dejar un año fuera, según el uso. |
-
-La periodicidad anual de las entradas ayuda a aprender patrones estacionales. Por sí sola no garantiza estabilidad entre años de las relaciones entre temperatura, radiación, humedad y viento. Con pocos sensores, esa estabilidad es especialmente relevante. Para una aplicación hacia delante, usar ventanas crecientes como protocolo principal es una recomendación defendible. Para reconstrucción histórica, el esquema del TFG es un complemento informativo. Para compararlos, mantener constantes entradas, arquitecturas y semillas dentro de DEVELOPMENT y publicar los resultados separados por pregunta. Shiri et al. ilustran en ET₀ la separación de patrones de calibración y evaluación temporal y espacial. Cerqueira et al. comparan esquemas de evaluación en pronóstico y encuentran ventajas de conservar el orden cuando hay cambios de distribución. Aquí se usa esa evidencia para justificar una elección de evaluación, con la salvedad de que estimamos ET₀ con entradas contemporáneas. [Shiri et al., Hargreaves-Samani](https://www.sciencedirect.com/science/article/abs/pii/S0168169915002057) · [Cerqueira et al.](https://arxiv.org/abs/1905.11744) · [Roberts et al., datos con estructura temporal y espacial](https://doi.org/10.1111/ecog.02881)
-
-## 6. Escalado de entradas
-
-ANN V1 calcula media y desviación típica en los datos usados para ajustar en cada fase y aplica esos valores a su validación y a TEST. Con una media de 20 °C y desviación de 5 °C, 25 °C se convierte en 1 y 30 °C en 2. Así, una entrada en metros y otra en m/s parten de escalas comparables. Sin escalar, las magnitudes pueden producir gradientes muy distintos por variable, dificultar la convergencia y aumentar la sensibilidad a la tasa de aprendizaje y al presupuesto de épocas. También cambia cómo actúa una penalización L2 sobre pesos que compensan escalas distintas. El escalado no elimina correlaciones ni garantiza menor RMSE. Media y desviación también son sensibles a valores extremos.
-
-LeCun et al. analizan el centrado y escalado como formas de mejorar el condicionamiento del entrenamiento por retropropagación. La documentación de scikit-learn recomienda escalar las entradas de un MLP y ajustar la transformación solo con los datos de entrenamiento. Para V2, conservar el escalado estándar como punto de partida. Si se quiere comprobar su efecto en estas estaciones, comparar con una variante sin escalar o con escalado robusto, manteniendo las particiones y declarando cómo se ajustará el optimizador de cada opción. [LeCun et al., *Efficient BackProp*, §§2 y 5.3](https://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) · [scikit-learn, MLP y escalado](https://scikit-learn.org/stable/modules/neural_networks_supervised.html#tips-on-practical-use) · [Código ANN](../src/siar_science/ann_modern.py)
-
-## 7. Elección de épocas y reajuste final
-
-En cada combinación de familia, arquitectura, ventana y semilla, ANN V1 entrena una red en el primer 85 % de fechas elegibles de TRAIN. El último 15 % determina la mejor época con RMSE, una mejora mínima de 0,0001 mm/día, paciencia de 15 épocas y tope de 200. A continuación arranca otra red con la misma semilla, reajusta el escalador con todo TRAIN y entrena durante las épocas elegidas. La validación externa puntúa la media de las tres redes. La selección usa la media de los RMSE de los cuatro folds ponderada por filas. Para cada familia y semilla, la red final arranca desde cero con todo DEVELOPMENT y usa la mediana de las épocas elegidas en los cuatro folds, redondeada hacia arriba en medias épocas.
-
-Ejemplo real de FULL `[32]`, semilla `20261101`. Los folds eligieron **82, 94, 193 y 66** épocas. Su mediana es **88**. El reajuste final entrena 88 épocas sobre DEVELOPMENT 2004–2020. Las 180 combinaciones de candidato, fold y semilla generan 180 ajustes internos y 180 reajustes de fold. Las cinco familias seleccionadas añaden 15 reajustes finales. La red final hereda la **regla y el número de épocas**, y aprende pesos nuevos con más datos. [Selección de épocas y agregación](../src/siar_science/ann_modern.py) · [Ajuste final](../src/siar_science/ann_campaign.py)
-
-**La duda sobre quedarse corto es plausible y comprobable.** La mediana estabiliza diferencias entre ventanas y evita reservar datos al ajustar el modelo final. A cambio, traslada una decisión desde ventanas con distinto tamaño, distinta composición estacional y distinto escalado. Una época sobre más filas también incluye más actualizaciones por lotes. La curva de error del reajuste final podría mejorar con más épocas o empezar a degradarse antes. En `seed_metrics.csv`, **14 de 180** mejores épocas registradas fueron exactamente 200. Aplicando la regla de parada del código, se deduce que **29 de 180** ajustes internos ejecutaron 200 épocas, contando aquellos que alcanzaron el tope sin registrar allí su mejor resultado. Para T + RH `[32]`, **7 de 12** tuvieron su mejor época en 200 y sus tres ajustes finales se fijaron en **200**. Llegar al tope indica que no se exploró más allá en esos ajustes. Por sí solo no demuestra que más épocas habrían mejorado el error externo. En FULL ninguna de las 36 combinaciones registró 200 como mejor época.
-
-| Regla a estudiar | Ventaja | Límite |
-|---|---|---|
-| 15 % final y mediana de V1 | Reproducible, económica y usa todo DEVELOPMENT para los pesos finales. | El corte puede concentrarse en una época del año y la mediana puede trasladarse mal a una muestra mayor. |
-| Varias ventanas internas o un bloque interno de un año | Permite comparar épocas en más de una estación climática o en varios periodos. | Requiere más ajustes o apartar más datos, especialmente en series cortas. |
-| Rejilla de épocas fijas y sensibilidad de paciencia y tope | Cuantifica si el resultado cambia al ampliar el presupuesto y permite comparar curvas con el mismo criterio. | Si se prueban muchas variantes, aumenta el coste y la posibilidad de elegir por ruido. Debe hacerse dentro de DEVELOPMENT. |
-| Elegir épocas con una reserva tardía cercana al tamaño final y reajustar | Permite decidir sobre una ventana más parecida al ajuste final. | Depende de un periodo concreto y el reajuste vuelve a cambiar la muestra. |
-
-La propuesta es mantener V1 como control y comparar primero, en un piloto de DEVELOPMENT, la parada vigente con una regla que cubra el ciclo estacional y un presupuesto mayor para T + RH. Guardar curvas de entrenamiento y validación por época, frecuencia de tope, número de actualizaciones, tiempos, estabilidad por semilla y error externo. Prechelt encontró empíricamente un intercambio entre tiempo y generalización al variar la regla de parada en MLP. Sus resultados justifican medir la sensibilidad, sin fijar una paciencia universal para ET₀. [Prechelt, *Early Stopping — But When?*](https://page.mi.fu-berlin.de/prechelt/Biblio/stop_tricks1997.pdf)
-
-## 8. Arquitecturas y repeticiones en V2
-
-La ampliación propuesta mantiene `[32]`, `[64, 32]` y `[64, 32, 16]` y añade **`[16]` y `[64]`**, ambas de una sola capa oculta. Así se puede comparar la mitad y el doble de neuronas frente a 32 con la profundidad fija. Para atribuir diferencias a la anchura, mantener constantes entradas, filas, optimizador, política de épocas y lista de semillas. Comparar la distribución de resultados individuales y la predicción media del conjunto por separado. La media de errores de repeticiones describe una ejecución típica. El error de la media de predicciones describe el producto que se desplegaría como conjunto.
-
-Mantener las tres semillas de V1 como comparación inicial. Decidir antes del cierre si ampliar a diez repeticiones al estilo del TFG para estimar mejor la variabilidad. Si se amplía, aplicar el mismo presupuesto a los candidatos comparados. Definir de antemano qué diferencia de error justificaría mayor complejidad. La decisión de profundidad queda limitada a la rejilla estudiada, cuyas opciones profundas también cambian de anchura. [Arquitecturas y semillas V1](../experiments/ann-v1-modern-et0.json)
-
-## 9. Servidor Linux, Kaggle y errores de recuperación
-
-**Los 35 modelos ML se ajustaron en el servidor Linux sobre DEVELOPMENT. Kaggle completó la evaluación de TEST con el bundle congelado.** ANN V1 se entrenó en el servidor Linux con CPU. La diferencia de memoria observada compara fases distintas.
-
-| Fase | Evidencia y resultado |
+| Aspecto | Decisión |
 |---|---|
-| ML original y ajuste final en Linux | Se preservaron selección, metadatos de los 35 ajustes y bundle. La ejecución original quedó incompleta y sin manifiesto final, con estado `TEST_ACCESS_UNKNOWN`. El pico del ajuste original sigue sin constar en la evidencia consultada. |
-| Intento de recuperación en Linux | Según el informe operativo preservado y revisado por 05, el proceso estaba validando y cargando el bundle. Se observó aproximadamente **10,6 GiB de RSS**, **2,3 GiB disponibles** y aumento de swap. Se envió **SIGTERM preventivo**. El informe sitúa el intento antes de la apertura de TEST. La revisión de 05 no recuperó el log original de ese intento ni evidencia de que actuara el OOM killer. |
-| Preflight de Kaggle con CPU | El notebook preservado registró **52,591 s** y **14,62 GiB** de pico RSS en una carga aislada con `joblib.load`. Identificó los 35 modelos y declaró que no llamó al cargador de TEST. |
-| Incidencias en Kaggle | Hubo una discrepancia inicial de scikit-learn (1.6.1 frente a 1.9.1). Otro intento llegó al cargador TEST y falló por ausencia de `ahc_coefficients.csv`, sin generar métricas. Dos intentos posteriores fallaron con `dict() got multiple values for keyword argument 'PM_FAO56_V1'`. La corrección de serialización quedó en la PR #54. |
-| Recuperación final en Kaggle | **177,03 s** y pico acumulado de **25,23 GiB RSS** para el proceso. El journal registra evaluación completada. El máximo es de proceso completo, sin medición por fase suficiente para localizarlo. |
-| ANN DEVELOPMENT en Linux | Aproximadamente **24 min 58 s**, incluido el ajuste final. Según el log consultado por 05, **709.528 KiB**, unos **693 MiB** de pico RSS. Los 375 ajustes son sucesivos. Una red FULL final `[32]` tiene 449 pesos y sesgos. |
+| Unidad de ajuste | Un ajuste local por estación meteorológica, método y escenario de entradas. |
+| DEVELOPMENT | Desde el inicio elegible de cada estación hasta el **31/12/2019 inclusive**. Incluye la selección y el ajuste final. |
+| Evaluación final | Del **01/01/2020 al 31/12/2025**, con configuraciones, escaladores, pesos y coeficientes ya fijados. |
+| Fórmulas comparadas | HS-Ra, HG-Rs y Valiantzas. Cada una define un conjunto de entradas para su comparación con AHC, ML y ANN. |
+| Calendario | Comparación anual sin calendario adicional, estacional con la temporada y mensual con el mes. |
+| AHC | Ajuste directo anual, estacional y mensual con DEVELOPMENT. Cuarto cálculo anual de todo el histórico hasta 2025, con error dentro de muestra. |
+| Selección ML y ANN | Dejar un año fuera cada vez dentro de DEVELOPMENT. Seleccionar por media de RMSE anual y reajustar con todo DEVELOPMENT. |
+| Parada ANN | Ejecutar A y E. A usa el último 15 % por fecha. E usa el 15 % de filas al azar. Ambas mantienen los parámetros y el escalador de V1. |
 
-La carga aislada muestra que el bundle explica una parte importante del consumo. El pico final también puede incluir preparación de datos, predicción, métricas y escritura. Para V2 se propone instrumentar RSS, memoria disponible, swap y tiempos por fase, hacer un preflight con artefactos congelados y conservar manifiesto y journal incluso ante una interrupción. También conviene evaluar carga y predicción por lotes o por modelo antes de atribuir el problema al entrenamiento. La recuperación final conserva el carácter retrospectivo, dados los accesos técnicos anteriores.
+La evaluación 2020–2025 es **retrospectiva**. V2 reserva esas fechas para su evaluación final, aunque 2020 formó parte de DEVELOPMENT de ML y ANN V1 y 2021–2025 ya se ha examinado en el proyecto. Si se quiere confirmar en el futuro una elección basada en estos resultados, se reservará otro periodo antes de usarlo para decidir. La duración dependerá de las estaciones y temporadas que se necesite representar.
 
-Fuentes del repo y huellas para localizar la evidencia preservada. [Incidente ML](ml-v1-test-recovery-access-incident.md) · [PR #54](https://github.com/lependens/Capitulo-1/pull/54) · [Código de recuperación](https://github.com/lependens/Capitulo-1/blob/94ebf67df2954e6818fc5f70c6b2e91b1b07f505/scientific_pipeline/src/siar_science/ml_recovery.py) · [Ubicaciones y preservación](../../docs/DATA_LOCATIONS.md). El manifiesto de la recuperación final `ml-v1-test-recovery-20261101T090828Z` tiene SHA256 `05834edaebf3f990729ebb8b15ecd7511bb96e006bfab69f11408a250f432aab`. El notebook de preflight tiene SHA256 `99fd06621df96c35f1526a6de0a3108053abe6c1254e003cca9f4d8542fd61ab`.
+## 2. Referencia y preparación de datos
 
-## 10. Decisiones previas a la ejecución de V2
+### Una fila por estación y fecha
 
-| Punto | Dirección recogida en la revisión | Decisión que falta cerrar |
+Se parte de las observaciones SIAR y su trazabilidad de Quality. Cada fila identifica **estación + fecha** y conserva los datos meteorológicos válidos, los motivos de exclusión y, si se puede calcular, el valor diario de `PM_FAO56_V1`. La referencia PM se usa como salida objetivo para calibrar y entrenar, y para medir el error. Con todas las entradas válidas disponibles, la vía directa para obtener esa referencia es calcular PM. Evaluar la ET₀ frente a un lisímetro requeriría datos instrumentales independientes. [FAO-56, cálculo de ET₀](https://www.fao.org/4/x0490e/x0490e08.htm)
+
+Para **ajustar y medir error** se exige PM válido y las entradas requeridas por la fórmula correspondiente. Para **medir disponibilidad**, se cuentan aparte los días en que el método puede producir una estimación con sus propias entradas, aunque ese día falte una variable necesaria para calcular PM. Los métodos de cada contraste usan las mismas claves elegibles en el ajuste comparable y se puntúan sobre la intersección de claves evaluables. Las ausencias se registran por método y motivo.
+
+### Entradas meteorológicas por familia
+
+| Familia | Entradas que llegan al método | Origen |
 |---|---|---|
-| Comparativa transversal | Conservar V1 y preparar AHC V2 para HS-Ra, HG-Rs y Valiantzas. | Fecha de corte exacta, metadatos permitidos, tratamiento de calibración local y granularidad. |
-| Estaciones históricas | Admitir IB07 como excepción de ajuste. Revisar IB09 y calcular su benchmark si Quality permite usarla. | Elegibilidad por fila y familia, ventanas y soporte mínimo. Resultados por estación separados del benchmark común. |
-| Evaluación temporal | Contrastar ventanas crecientes con el esquema del TFG. | Uso principal, reconstrucción o aplicación hacia delante, y bloque independiente para confirmación. |
-| ANN | Mantener la rejilla V1 y añadir `[16]` y `[64]`. | Semillas, regla de épocas, presupuesto de ajuste, tolerancia de mejora y criterio de desempate. |
-| Uso con sensores ausentes | Evaluar alternativas según las entradas disponibles. | Umbrales de RMSE, MAE, sesgo y cobertura por escenario. Fecha y condiciones de la validación operativa. |
-| Reproducibilidad | Registrar cambios como una versión nueva con trazabilidad. | Congelar dataset, cohortes, código, dependencias, protocolo, predicciones, métricas y perfiles de recursos. |
+| `HS_RA` | `Tmin`, `Tmax`, `Ra` | `Ra` es radiación extraterrestre calculada con latitud y día del año. |
+| `HG_RS` | `Tmedia_extremos`, `Rs` | `Tmedia_extremos = (Tmin + Tmax) / 2`. `Rs` es radiación solar medida. |
+| `VALIANTZAS` | `Tmin`, `Tmax`, `RHmedia`, `Ra` | `RHmedia` es la humedad relativa media. |
 
-Orden de trabajo propuesto: resolver primero Quality y disponibilidad por estación, cerrar el inventario de entradas y cortes, ejecutar los pilotos dentro de DEVELOPMENT y congelar el protocolo. A continuación ajustar AHC, ML y ANN, producir el benchmark retrospectivo comparable y evaluar con el bloque independiente cuando cumpla los requisitos acordados.
+Estas son las entradas para AHC, ML y ANN en la comparación anual de cada familia. La media y la amplitud de temperatura juntas permiten reconstruir los extremos. La media sola pierde la amplitud, por lo que ML y ANN de HG-Rs reciben únicamente la media de los extremos y Rs. La fecha y la latitud intervienen en el cálculo de Ra. ML y ANN reciben la Ra resultante en esa familia. El identificador de estación selecciona el modelo local. El PM, los residuos y las estimaciones de otras fórmulas quedan fuera del vector de entrada. [Entradas AHC V1](../results/ahc-20261024T172400Z/test/input_complexity.csv) · [HG-Rs](hargreaves_rs_v1.md) · [Valiantzas](valiantzas_v1.md)
+
+## 3. Comparación estacional y mensual con la misma información
+
+Se propone codificar **exactamente la categoría de calendario que usa AHC**, con indicadores binarios `one-hot` para ML y ANN. Por ejemplo, el **15 de julio** activa únicamente «verano» en la comparación estacional y únicamente «julio» en la mensual. Esto evita que numerar los meses del 1 al 12 imponga un orden y una distancia artificial al modelo. El día del año, incluso codificado como seno y coseno, aporta una posición más detallada que la que emplea el AHC estacional o mensual. Su efecto queda para un experimento posterior. [Codificación categórica](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html) · [Codificaciones temporales](https://scikit-learn.org/stable/auto_examples/applications/plot_cyclical_feature_engineering.html)
+
+| Comparación | AHC | ML y ANN |
+|---|---|---|
+| **Anual** | Un coeficiente por estación y fórmula. | Un modelo local por familia y método, con las entradas base. |
+| **Estacional** | Hasta cuatro coeficientes. La fecha selecciona DJF, MAM, JJA o SON. | Un modelo local por familia y método con las entradas base más cuatro indicadores de temporada. |
+| **Mensual** | Hasta doce coeficientes. La fecha selecciona el mes. | Un modelo local por familia y método con las entradas base más doce indicadores de mes. |
+
+DJF corresponde a diciembre, enero y febrero. MAM corresponde a marzo, abril y mayo. JJA corresponde a junio, julio y agosto. SON corresponde a septiembre, octubre y noviembre. La **granularidad** indica cuándo cambia el coeficiente. El ajuste reúne los días de la misma categoría de todos los años admisibles. Los años que se apartan para validar son años naturales, de enero a diciembre. ML y ANN comparten parámetros entre categorías dentro de un modelo local y pueden aprender interacciones con las entradas, según el algoritmo. AHC aplica multiplicadores independientes por grupo. Se iguala la información disponible para medir la diferencia entre métodos.
+
+El vocabulario de categorías se fija antes de ajustar. Si una categoría carece de días elegibles en el entrenamiento de un método, se marca como **sin soporte** para ese ajuste y se informa su efecto en la cobertura. La calibración local y el análisis estacional tienen precedentes en estudios de ET₀. El rendimiento de esta codificación para Baleares se medirá en V2. [Moratiel et al. (2020), calibración y evaluación estacional de ET₀](https://doi.org/10.5194/nhess-20-859-2020)
+
+## 4. Calibración directa de AHC
+
+AHC toma una fórmula empírica y estima un multiplicador por mínimos cuadrados sin intercepto. Para cada estación, fórmula y grupo de calendario, si `x` es la ET₀ diaria de la fórmula y `y` es el PM del mismo día, se obtiene `a = Σ(x × y) / Σ(x²)`. La estimación diaria ajustada es `a × x`. Así se minimiza la suma de errores diarios al cuadrado. Es el estimador de AHC V1 y difiere de la media de cocientes diarios `y/x`. [Método AHC V1](ahc_methodology.md)
+
+1. **AHC anual.** Ajustar un coeficiente con todas las filas elegibles de DEVELOPMENT de esa estación y fórmula. Aplicarlo a cada día evaluable de 2020–2025.
+2. **AHC estacional.** Repetir el cálculo dentro de cada una de las cuatro temporadas usando DEVELOPMENT. Aplicar en 2020–2025 el coeficiente correspondiente a la fecha.
+3. **AHC mensual.** Repetir el cálculo para cada mes usando DEVELOPMENT. Aplicar en 2020–2025 el coeficiente del mes correspondiente.
+4. **AHC anual de histórico completo.** Ajustar un coeficiente anual con el histórico elegible hasta el 31/12/2025. Medir el error sobre esas mismas filas y etiquetarlo **dentro de muestra**. Tiene el mismo carácter descriptivo que el cálculo de climatología de V1 y se presenta fuera de la clasificación final 2020–2025.
+
+Se ajustan directamente las tres granularidades y se publican sus resultados. Cada coeficiente usa todos los pares disponibles de su grupo. La regla acordada prescinde de un mínimo uniforme de días o años. El cálculo requiere pares válidos y `Σ(x²) > 0`. Si no se cumple, se registra la causa y el grupo queda sin coeficiente. Se guardan los pares, los años representados y las fechas extremas de cada grupo para distinguir una estimación con mucho histórico de una sustentada en pocas observaciones.
+
+Se publican los errores anuales de los coeficientes congelados y su variabilidad en 2020–2025. Un RMSE calculado por año resume el comportamiento del mismo ajuste frente a condiciones distintas. Si más adelante se declara una granularidad ganadora usando esos errores, la confirmación de esa elección corresponderá a otro periodo reservado.
+
+## 5. ML clásico por estación
+
+Por cada **estación × familia × calendario** se prueban las rejillas de V1 para regresión lineal, Ridge, Elastic Net, árbol de decisión, Random Forest, Extra Trees e HistGradientBoosting. Se conservan sus parámetros fijos y las transformaciones de V1. Las tres regresiones usan `StandardScaler` ajustado dentro de cada entrenamiento. Los métodos de árboles reciben las columnas sin ese escalado. [Rejillas y preprocesamiento de ML V1](../experiments/ml-v1-classical.json) · [Implementación de estimadores](../src/siar_science/ml_classical.py)
+
+Para puntuar un candidato, se reserva un año completo disponible dentro de DEVELOPMENT y se ajusta con los demás. Por ejemplo, al puntuar **2014** pueden entrar observaciones de 2015–2019 en TRAIN. El procedimiento evalúa años omitidos dentro del histórico de desarrollo. El corte posterior de 2020–2025 proporciona la evaluación cronológica del modelo congelado. Se rota el año, se calcula el RMSE de cada bloque y se obtiene la media simple de los RMSE sobre los mismos años y las mismas filas comparables. Cada año apto pesa lo mismo.
+
+Se conserva el mejor candidato de cada algoritmo y se identifica el ML principal por **estación, familia y calendario** usando DEVELOPMENT. Para un empate se prioriza menor dispersión de RMSE anual y luego el orden de complejidad y desempate de V1. Se reconstruye el candidato seleccionado con todos los datos elegibles de DEVELOPMENT. Se guarda el resultado de selección y, a continuación, se evalúa el modelo final en 2020–2025.
+
+## 6. ANN por estación, desde los datos hasta el resultado
+
+### Configuraciones comparadas
+
+Se conservan las arquitecturas de V1 y se añaden las dos anchuras propuestas. Se prueban **`[16]`, `[32]`, `[64]`, `[64, 32]` y `[64, 32, 16]`** con las tres semillas de V1, `20261101`, `20261102` y `20261103`. Las redes tienen salida escalar. Conservan ReLU, Adam, la penalización L2 `alpha=0,0001`, tasa inicial `0,001`, lote configurado de 256 y el orden de ajuste fijado por el código de V1. El escalador es `StandardScaler`. Sus estadísticas se calculan de nuevo usando solo las entradas de las filas que ajustan los pesos en cada fase. [Contrato ANN V1](../experiments/ann-v1-modern-et0.json) · [Código de entrenamiento](../src/siar_science/ann_modern.py)
+
+El centrado y el escalado reducen diferencias de magnitud entre entradas durante la optimización. Con una media de entrenamiento de 20 °C y una desviación de 5 °C, 25 °C se convierte en 1 tanto en ajuste como en evaluación. Las mismas estadísticas se aplican a ambos conjuntos hasta el siguiente reajuste. [LeCun et al., *Efficient BackProp*](https://yann.lecun.com/exdb/publis/pdf/lecun-98b.pdf) · [Escalado de MLP en scikit-learn](https://scikit-learn.org/stable/modules/neural_networks_supervised.html#tips-on-practical-use)
+
+### Dos validaciones con funciones distintas
+
+1. **Dejar fuera el año externo.** Separa, por ejemplo, todas las filas de 2014 de esa estación y familia. El resto de DEVELOPMENT forma TRAIN del fold.
+2. **Dividir TRAIN del fold en ajuste y validación interna.** A usa el último 15 % de fechas elegibles ordenadas. E elige al azar aproximadamente el 15 % de filas elegibles, sin reemplazo. Cada estación, familia y año externo conserva un único conjunto de claves para E, compartido por las arquitecturas, semillas de red y versiones de calendario que usan esas mismas filas. La semilla de partición se fija y registra aparte de las semillas de inicialización de la red.
+3. **Elegir épocas por semilla.** Se ajusta el escalador y se actualizan los pesos con la parte de ajuste. Se mide el RMSE en el 15 % interno después de cada época. Se conserva la mejor época registrada cuando la mejora supera `0,0001 mm/día`. Se aplica paciencia de **15 épocas** y un máximo de **200**, igual que en V1.
+4. **Puntuar en el año externo.** Para cada semilla se inicia otra red, se recalcula el escalador con **todo el TRAIN del fold**, incluido el 15 % interno, y se entrena durante las épocas elegidas. En el año externo, se promedian primero las tres predicciones de cada día y luego se calcula el RMSE anual de ese promedio.
+5. **Elegir la arquitectura.** Se repite el ciclo para cada año apto. Se compara la media de los RMSE anuales. Se selecciona una arquitectura por **estación, familia, calendario y regla A o E**. En caso de empate se prefiere menor dispersión anual y luego menor número de parámetros. Se conserva también la comparación A frente a E a arquitectura fija, sobre las mismas filas, para aislar el efecto de cómo se eligió el 15 %.
+6. **Ajustar y congelar.** Para cada configuración seleccionada se ajusta un escalador con todo DEVELOPMENT. Se crean tres redes nuevas. Para cada semilla se usa la mediana de sus mejores épocas de los folds, redondeando hacia arriba cuando termina en media época. Se congelan escalador, pesos, épocas y selección. Tanto A como E pasan a la evaluación 2020–2025. La salida diaria de cada modelo final es la media de las tres redes.
+
+| Cómo se divide TRAIN | A · Por fecha | E · Al azar |
+|---|---|---|
+| Ajuste de pesos | Primer 85 % de fechas. | Aproximadamente 85 % de filas, las que quedan fuera de la muestra aleatoria. |
+| Elección de épocas | Último 15 % de fechas. | Aproximadamente 15 % de filas elegidas sin reemplazo. |
+| Evaluación externa | Año omitido completo. | El mismo año omitido completo. |
+
+El año externo se usa para comparar arquitecturas. El 15 % interno se usa para elegir épocas. El bloque 2020–2025 mide los modelos finales. La mediana transfiere un presupuesto de épocas desde muestras más pequeñas, con distinta composición y distinto número de actualizaciones por época. Se publicará la frecuencia con que se alcanza el tope de 200 para valorar este efecto. Las opciones B, C y D de la revisión anterior quedan descritas como alternativas para otra fase: bloques internos completos, rejilla de épocas y reserva tardía para fijar el presupuesto final. [Prechelt, sensibilidad a la regla de parada](https://page.mi.fu-berlin.de/prechelt/Biblio/stop_tricks1997.pdf)
+
+### Relación con el TFG
+
+El TFG separaba un año entero por estación y describía una validación interna aleatoria del 15 % de las filas restantes. La copia de `validacio4.m` usa `randperm` para elegir esas filas. El anexo impreso de la memoria calcula la permutación, pero extrae las filas en el orden de entrada. La versión usada para generar las tablas históricas queda sin confirmar. El TFG usaba Levenberg–Marquardt, `tansig`, MSE, máximo de 100 épocas y `max_fail=5` en la rutina revisada. E incorpora la idea de la muestra interna aleatoria y conserva el resto del entrenamiento moderno de V1. [MathWorks, `trainlm`](https://www.mathworks.com/help/deeplearning/ref/trainlm.html)
+
+El TFG describía dos criterios de selección de arquitectura, por error interno o por error del año apartado. En V2 se puntúa la **misma arquitectura** a lo largo de los años de DEVELOPMENT y se fija antes de evaluar 2020–2025. Esto separa la selección del resultado final. [Cawley y Talbot, evaluación tras selección](https://www.jmlr.org/papers/v11/cawley10a.html) · [Cerqueira et al., estimación de rendimiento temporal](https://doi.org/10.1007/s10994-020-05910-7)
+
+## 7. Series cortas y cobertura por estación
+
+| Estación | Evidencia disponible | Tratamiento en V2 |
+|---|---|---|
+| **IB07 · Sóller** | 2.946 filas brutas hasta el 13/11/2012. Hubo PM preservado en 2.929. | Admisión histórica con las filas aptas. Puede aportar ajustes y evaluación anual de DEVELOPMENT según soporte. En 2020–2025 figura sin observaciones. |
+| **IB09 · Artà** | 4.423 filas brutas. Quality marca una fuera del periodo oficial, del 23/10/2005. V1 no preservó PM evaluable para esta estación. | Revisar la incidencia, conservar el original, aplicar en una vista versionada la decisión de Quality y recalcular PM y las fórmulas para las filas que se admitan. La inclusión científica depende de esa revisión. En 2020–2025 carece de observaciones. |
+| **IB101 · Ciutadella** | 249 filas brutas entre 2008 y 2009. Hubo PM preservado en 246. | Calcular los AHC que resulten identificables e indicar su soporte. Comprobar para ML y ANN si hay años, particiones y filas suficientes para calcular la selección definida. Publicar las causas de falta de soporte. |
+
+Las filas disponibles y el soporte técnico determinan qué se puede ajustar. Para ML se necesitan años con TRAIN y validación externa utilizables. Para ANN, además, ambas partes internas deben tener filas válidas. Para seleccionar y comparar candidatos se requieren años aptos comunes. Cuando no pueda completarse el procedimiento, se indica la causa en lugar de producir una clasificación artificial. Las estaciones cerradas se muestran en el informe histórico con el tipo de evaluación correspondiente. Sus errores de ajuste AHC y los errores de años apartados de ML o ANN se rotulan de acuerdo con el conjunto que produjo cada cifra. [Manifiesto Quality](../../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_dataset_manifest.csv) · [Auditoría por estación](../../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_station_audit.csv)
+
+## 8. Cómo se mide y publica el error
+
+- **Selección en DEVELOPMENT.** Una fila de resultados por candidato y año apartado. RMSE en mm/día, número de filas y trazabilidad de las claves. Publicar la media simple de los RMSE anuales y, de forma separada, el RMSE diario agrupado. Estas dos magnitudes ponderan de forma distinta los años con diferente número de días.
+- **Evaluación final 2020–2025.** Fórmula original, AHC de la granularidad correspondiente, ML seleccionado y ANN A y E. Puntuarlos contra PM en las mismas fechas evaluables de cada contraste. Publicar RMSE, MAE, sesgo medio `estimación − PM`, número de pares y cobertura, por estación y año. Añadir el desglose estacional y mensual cuando haya filas aptas. Una diferencia pareada compara errores de los métodos en las mismas claves.
+- **Disponibilidad.** Publicar dos denominadores cuando corresponda: días previstos del calendario operativo y días con PM evaluable. Informar qué método puede emitir una estimación y por qué se pierde un día. Medir aparte el error de una ausencia simulada ocultando la entrada al método y conservándola para calcular PM.
+- **AHC anual de histórico completo.** Tabla descriptiva propia con error dentro de muestra, años y pares usados. Su resultado no interviene en el orden de los modelos en el bloque final.
+- **Trazabilidad.** Guardar versión de datos y Quality, definición de entradas, claves de cada partición, coeficientes, configuraciones, escaladores, semillas, épocas, resultados por año y predicciones congeladas. Registrar tiempo y memoria por fase, con una comprobación de recursos antes de la campaña.
+
+Antes de la primera ejecución se puede inventariar cuántos días y años aptos aporta cada estación y fórmula sin calcular errores de candidatos en el bloque final. El inventario permite dimensionar el trabajo y marcar las combinaciones que no pueden evaluarse.
+
+## 9. Qué sabemos de V1 y por qué cambia el protocolo
+
+**Sí, ML y ANN V1 eran agrupados.** Sus funciones de ajuste tomaban las filas elegibles de las estaciones primarias y creaban un modelo por combinación de algoritmo y familia en ML, o una ANN por familia y semilla en el ajuste final. Los códigos de estación servían para filtrar y emparejar resultados, y el ajuste no se repetía por código. AHC V1 ya estimaba un coeficiente por estación y fórmula. V2 alinea los tres métodos en el ajuste local. [Ajuste final de ML V1](../src/siar_science/ml_campaign.py#L209) · [Ajuste final de ANN V1](../src/siar_science/ann_campaign.py#L60) · [Protocolo AHC V1](ahc_methodology.md)
+
+AHC V1 ajustó los coeficientes validados en 2004–2015, comparó granularidades en 2016–2020 y evaluó coeficientes congelados en 2021–2025. La variante seleccionada fue HS-Ra anual, HG-Rs estacional y Valiantzas anual. AHC Climatology calculó aparte coeficientes anuales con el histórico elegible completo hasta 2025. ML y ANN V1 usaron ventanas crecientes, selección en DEVELOPMENT 2004–2020 y TEST 2021–2025. [Resultados AHC V1](../results/ahc-20261024T172400Z/README.md) · [Protocolo ML V1](ml_v1_classical_methodology.md) · [Protocolo ANN V1](ann_v1_modern_methodology.md)
+
+En la cohorte pareada de **15.958 filas** de V1, ANN FULL obtuvo **0,051312 mm/día** de RMSE frente a **0,064104** de HGB FULL. Sus sesgos fueron **−0,022449** y **−0,000966 mm/día**, respectivamente. Las comparaciones aproximadas con fórmulas de entradas reducidas dieron los resultados siguientes. Las familias ML y ANN de V1 podían recibir contexto o variables adicionales, y AHC se ajustó con otro corte. V2 controla esas diferencias.
+
+| Fórmula y familia más próxima en V1 | Fórmula original | AHC V1 | HGB | ANN |
+|---|---:|---:|---:|---:|
+| HS-Ra / T | 0,949 | 0,639 anual | 0,547 | 0,521 |
+| HG-Rs / T + Rs | 0,565 | 0,414 anual · 0,401 estacional | 0,302 | 0,342 |
+| Valiantzas / T + RH | 0,629 | 0,524 anual | 0,430 | 0,414 |
+
+RMSE en mm/día frente a PM. [Resultados y linaje ANN V1](ann_v1_modern_explained.md) · [Resultados ML V1](../../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md)
+
+La recuperación de ML V1 en Kaggle evaluó 35 modelos ajustados previamente en el servidor Linux. El intento de recuperación local se interrumpió preventivamente con `SIGTERM` durante la carga del bundle por presión de memoria observada, según el registro operativo revisado por 05. El preflight aislado en Kaggle alcanzó 14,62 GiB de RSS al cargar el bundle y la recuperación completa registró 25,23 GiB de RSS máximo, sin desglose del pico por fase. ANN V1 entrenó en el servidor con CPU. Su DEVELOPMENT duró cerca de 25 minutos y registró aproximadamente 693 MiB de RSS máximo según el log consultado por 05. Son fases y cargas de trabajo distintas. [Incidente de recuperación de TEST](ml-v1-test-recovery-access-incident.md) · [Corrección de serialización](https://github.com/lependens/Capitulo-1/pull/54) · [Preservación de artefactos](../../docs/DATA_LOCATIONS.md)
+
+## 10. Puntos abiertos antes de usar los resultados
+
+El calendario por indicadores, el RMSE medio anual y la conservación de ambas ANN están acordados; 05 debe fijar los desempates y detalles restantes en el contrato ejecutable. **Quality de IB09** y el inventario de soporte de las estaciones cortas se resuelven con evidencia de los datos. Si se quiere recomendar un método para uso operativo, queda fijar **error, sesgo y cobertura aceptables** para cada escenario de sensores. La elección de umbrales operativos y de un periodo adicional de confirmación puede hacerse después de cerrar el protocolo retrospectivo, antes de usar esos datos para decidir.

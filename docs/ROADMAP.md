@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-11-01 (Europe/Madrid), cierre científico ML clásico.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-11-11 (Europe/Madrid), consolidación V2 y frentes operativos.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -13,7 +13,7 @@
 | Preservación / 02B | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows ingestion automation PASS | Productor finaliza/prepara/firma READY; flujo posterior automatizado; mantener verificación y recuperabilidad |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
 | Forecast SIAR / 02 | PILOT RUNNING según parte 02 del 01/11: dos ciclos naturales PASS | Mantener seguimiento y evidencia de backup; sin nueva inspección |
-| AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
+| AEMET Track A / 02 | E2E DEMONSTRATED; dependencia CAPTURE RUNNING superada según parte de 02 | Backup cifrado dedicado, `schedule.approved` y validación operativa pendientes; sin acreditar captura periódica ni backup automático |
 | AEMET Track B | Investigación independiente OPEN | Identificar feed exacto usado por SIAR |
 | Producto / 06 | WEB-V0.3 Scientific Explorer PASS / DEPLOYED en LAN | Consumir ANN v1 publicada y/o validación prospectiva; sin V0.4 inmediato |
 
@@ -66,7 +66,7 @@ source issue time puede ser null; D+0…D+6 y recuperación histórica de emisio
 
 Piloto IB04 → Palma → municipio 07040, capital municipal, no punto exacto de estación. Último parte: **capture timer disabled/inactive**. El servicio específico de backup está disponible, static/inactive, sin timer independiente. El inventario no observó hook de backup en el servicio de captura; no se afirma ejecución automática tras cada intento. Los runs AEMET están en el ámbito separado de preservación general. Con captura deshabilitada, **new AEMET automatic backup = NOT ACTIVE**.
 
-**Dependencia vigente:** SIAR-FORECAST-CAPTURE RUNNING → reactivar AEMET Track A. Se supera la dependencia antigua de esperar SIAR-FORECAST-PILOT RUNNING; nunca depende de SIAR Sync.
+**Dependencia superada según parte de 02:** SIAR-FORECAST-CAPTURE RUNNING. Para AEMET siguen pendientes backup cifrado dedicado, `schedule.approved` y validación operativa; no depende de SIAR Sync.
 
 🟠 Validar reactivación, runtime/configuración, raw independiente /srv/aemet-forecast/raw, backup rclone crypt, restore y scheduler experimental con evidencia de los nuevos ciclos. No se infiere ejecución actual del mero contrato del collector.
 

@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Actualizado: 2026-11-01; cierre de ingestión Windows.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Actualizado: 2026-11-11; consolidación documental V2.** El cierre de ingestión Windows corresponde al 01/11/2026. Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|

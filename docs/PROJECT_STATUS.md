@@ -1,6 +1,6 @@
 # PROJECT STATUS — SIAR / ET₀
 
-**Actualizado: 2026-11-02 (Europe/Madrid), cierre ANN v1 moderna y preservación vigente.** Base releída: `754adceee12cc423ee06eb17b49e36429d25b70d`. La evidencia de ingestión, preservación remota y restore procede de la comprobación operativa del servidor; esta actualización documental no modifica los artefactos científicos. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
+**Actualizado: 2026-11-11 (Europe/Madrid), consolidación documental V2 y frentes operativos.** Base releída: `1e419ad881db1cc9798685ef19f414862461674b`. La evidencia de ingestión, preservación remota y restore procede de la comprobación operativa del servidor; esta actualización documental no modifica los artefactos científicos. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.
 
 ## Cómo leer el estado
 
@@ -22,7 +22,7 @@
 | Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows ingestion PASS | Finalización científica y preparación/READY firmado explícitos; transferencia, verificación servidor, ingestión y preservación posteriores automáticas |
 | SIAR Sync | v2.3.3 canónica; SIAR-SYNC-RUNTIME = HOLD | SIAR-SYNC-PRODUCTION-ALIGNMENT + SIAR-SYNC-INCREMENTAL-2026 |
 | SIAR Forecast | PILOT RUNNING según parte de 02 del 01/11: dos ciclos naturales PASS | Mantener observación y verificación de backup; sin nueva inspección de servidor |
-| AEMET Track A | E2E DEMONSTRATED; capture timer disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING; no depende de SIAR Sync |
+| AEMET Track A | E2E DEMONSTRATED; dependencia CAPTURE RUNNING superada según parte de 02 | Pendientes backup cifrado dedicado, `schedule.approved` y validación operativa; sin afirmar captura periódica ni backup automático |
 | AEMET Track B | OPEN | Investigar feed AEMET exacto utilizado por SIAR, independientemente de Track A |
 | Storage | Incidente CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE | Reabrir solo con nueva evidencia objetiva; sin plan de sustitución del SSD |
 | Producto / 06 | WEB-V0.3 Scientific Explorer PASS / DEPLOYED en LAN | Consumir resultados ANN publicados y/o validación prospectiva; sin V0.4 inmediato |
@@ -181,7 +181,7 @@ Forecast es independiente de SIAR Sync HOLD. Cadencia experimental de captura 08
 
 Track A E2E DEMONSTRATED; PR #18 Collector, #19 comparación id municipal, #20 permisos POSIX. Wrapper y payload raw append-only con bytes, timestamps y provenance preservados. IB04 Son Ferriol → Palma → municipio 07040 representa la capital municipal, no la estación exacta.
 
-Inventario BACKUP-IMPLEMENTATION-INVENTORY-V1: **capture timer disabled / inactive**. `aemet-forecast-backup.service` static/inactive está disponible, **sin timer independiente**. La inspección no observó hook de backup en el servicio de captura: no se afirma backup automático después de cada intento. Los runs AEMET están también dentro del ámbito de preservación general; esto no demuestra nuevas capturas. Por estar deshabilitada la captura, **new AEMET automatic backup = NOT ACTIVE**. La dependencia vigente es **SIAR-FORECAST-CAPTURE = RUNNING → reactivar AEMET Track A prospectivo**. No necesita SIAR Sync ni esperar a SIAR-FORECAST-PILOT RUNNING. Se conserva raw independiente en `/srv/aemet-forecast/raw/` y cada nueva captura relevante debe quedar cubierta por backup externo.
+Inventario BACKUP-IMPLEMENTATION-INVENTORY-V1: **capture timer disabled / inactive**. `aemet-forecast-backup.service` static/inactive está disponible, **sin timer independiente**. La inspección no observó hook de backup en el servicio de captura: no se afirma backup automático después de cada intento. Los runs AEMET están también dentro del ámbito de preservación general; esto no demuestra nuevas capturas. Por estar deshabilitada la captura, **new AEMET automatic backup = NOT ACTIVE**. La dependencia **SIAR-FORECAST-CAPTURE = RUNNING** quedó superada según el parte de 02; siguen pendientes backup cifrado dedicado, `schedule.approved` y validación operativa antes de acreditar captura periódica y backup automático. No necesita SIAR Sync ni esperar a SIAR-FORECAST-PILOT RUNNING. Se conserva raw independiente en `/srv/aemet-forecast/raw/` y cada nueva captura relevante debe quedar cubierta por backup externo.
 
 No están demostrados ET₀, D+n, timezone científico de emisión, recuperación histórica ni entradas suficientes para PM completo. No se infiere timezone ni se integra científicamente con SIAR. **Track B = OPEN**, investigación del feed exacto usado por SIAR, independiente de Track A.
 

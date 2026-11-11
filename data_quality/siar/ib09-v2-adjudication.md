@@ -23,3 +23,7 @@ El inventario incluye días oficiales, observados, ausencias y disponibilidad po
 ## Validación
 
 En Python 3.12.14 con scikit-learn 1.9.1 instalado aisladamente: 106 tests científicos PASS. El prototipo tiene cinco pruebas específicas, incluida separación de viento para PM/HS, rechazo de otro SHA/estación y exclusión de la fecha exterior. No se ejecutaron campañas ni se alteraron raw, POST o Dataset V1. Los tests no sustituyen la validación científica ni la evidencia oficial pendiente.
+
+## Coordinación con 05 — interfaz pendiente
+
+05 solicita un handoff versionado con identidad y fecha de la decisión, estado de admisión, ruta y SHA256 del raw, catálogo y evidencia oficial preservada; periodo inclusivo, ledger por fecha, identidades dual SHA y política separada del dictamen V1. Debe vincular cada fila con los bytes verificados, conservar flags históricos y rechazar hashes distintos, duplicados, contradicciones y admisión pendiente. Los casos de prueba incluirán ambos límites y los días adyacentes, fechas ausentes y observadas. La integración requiere un dataset_id V2 nuevo, hash de política, flags por fila y experimento y un protocolo propio de ML/ANN. La lista de estaciones y el filtro Quality actuales son controles independientes: cambiar uno solo no constituye admisión. La evidencia oficial y la decisión siguen pendientes; este documento no autoriza un handoff de admisión.

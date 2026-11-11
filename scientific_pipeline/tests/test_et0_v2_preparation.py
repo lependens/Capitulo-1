@@ -5,6 +5,7 @@ import unittest
 
 from siar_science.et0_v2 import load_protocol, publish
 from siar_science.et0_v2_ib09 import PENDING_PATH, verify_admission
+from siar_science.et0_v2_kaggle import verify_capsule
 from siar_science.et0_v2_support import choose_candidate, design_vector, inner_split, outer_plan, support
 from siar_science.serialization import digest
 
@@ -86,6 +87,13 @@ class V2PreparationTests(unittest.TestCase):
             self.assertEqual(manifest["test_metrics"], 0)
             for name, item in manifest["outputs"].items():
                 self.assertEqual(digest((a / name).read_bytes()), item["sha256"])
+            manifest_sha = digest((a / "manifest.json").read_bytes())
+            verify_capsule(a, manifest_sha)
+            with self.assertRaisesRegex(ValueError, "manifest SHA256 mismatch"):
+                verify_capsule(a, "0" * 64)
+            (a / "support-inventory.json").write_bytes(b"{}")
+            with self.assertRaisesRegex(ValueError, "Capsule artifact mismatch"):
+                verify_capsule(a, manifest_sha)
             with self.assertRaisesRegex(ValueError, "already exists"):
                 publish(a, view, inventory)
 

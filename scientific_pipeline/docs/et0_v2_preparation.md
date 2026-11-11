@@ -39,7 +39,8 @@ Adjuntar la cápsula DEVELOPMENT como fuente privada y usar el checkout de esta 
 ```bash
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 PYTHONPATH=/ruta/codigo/scientific_pipeline/src python -m siar_science.et0_v2_kaggle \
-  /kaggle/input/ruta-capsula > /kaggle/working/et0-v2-preflight.json
+  /kaggle/input/ruta-capsula --manifest-sha256 SHA256_PUBLICADO_DEL_MANIFIESTO \
+  > /kaggle/working/et0-v2-preflight.json
 ```
 
 La prevalidación solo lee archivos y metadatos del entorno. Al autorizarse el lanzamiento, medir tiempo, pico RSS, memoria del contenedor, swap y disco con una celda estación × familia × calendario y un candidato activo antes de escalar. Mantener un proceso y un hilo por ajuste al inicio y guardar resultados por celda con sus hashes para recuperar una interrupción. El presupuesto de ajustes del inventario permite estimar tiempo y cuotas a partir de esa medición. La evaluación retrospectiva requiere configuraciones y ajustes congelados con hashes antes de abrir los resultados del periodo.

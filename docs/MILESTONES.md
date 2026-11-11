@@ -102,3 +102,8 @@ Se añaden cierres posteriores a las entradas que declaraban estas misiones pend
 
 
 | 2026-11-11 | ET0-V2-METHODOLOGY-DESIGN | AGREED; documentación PASS; inventario pendiente, contrato no congelado, AHC/ML/ANN no ejecutados. | [Decisiones](../scientific_pipeline/docs/et0_v2_decisions.md) | Cierre de diseño sin alterar V1 ni acceder a TEST. |
+
+
+| 2026-11-11 | ET₀ V2 — inventario, excepción y ejecutor | PR #66–#70 publicadas; excepción IB09 solo DEVELOPMENT, Quality V1 FAIL / verificación independiente UNRESOLVED; preparación 4.390 fechas comunes y cero retrospectivas. | [Preparación](../scientific_pipeline/docs/et0_v2_preparation.md) · [ejecución](../scientific_pipeline/docs/et0_v2_execution.md) | Código y contrato publicados no equivalen a resultados científicos definitivos. |
+| 2026-11-11 | ET₀ V2 — parte de ejecución | Piloto aprobado, AHC sellado, ML en Kaggle CPU; ANN A/E, freeze y evaluación retrospectiva pendientes. | Parte 05 del 11/11 comunicado por Dirección 00W; manifiestos no inspeccionados aquí. | Seguimiento operativo comunicado, no verificación independiente ni resultado final. |
+| 2026-11-01 | SIAR Forecast — piloto | Dos ciclos naturales PASS; PILOT RUNNING. | Parte de 02; evento del 01/11 registrado documentalmente el 11/11 por comunicación de Dirección 00W; sin nueva inspección de servidor. | Hito comunicado posterior al gate anteriormente pendiente; mantener seguimiento. |

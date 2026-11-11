@@ -1,6 +1,6 @@
 # ROADMAP — SIAR / ET₀
 
-**Actualizado: 2026-11-01 (Europe/Madrid), cierre científico ML clásico.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
+**Actualizado: 2026-11-11 (Europe/Madrid), consolidación V2 y frentes operativos.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).
 
 ## Leyenda y trabajo paralelo
 
@@ -12,8 +12,8 @@
 | Ciencia / 05 | Dataset v1, cuatro baselines, AHC, ML clásico y ANN moderna v1 PASS | Conservar límites retrospectivos; siguiente fase: validación prospectiva o nuevo contrato científico |
 | Preservación / 02B | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows ingestion automation PASS | Productor finaliza/prepara/firma READY; flujo posterior automatizado; mantener verificación y recuperabilidad |
 | SIAR Sync / 02 | v2.3.3 canónica, snapshot científico 2025 cerrado | HOLD → production alignment + incremental 2026 demostrado |
-| Forecast SIAR / 02 | Timer ACTIVE; reconciliador enabled/active cada 15 min; OAuth Production | Nuevo run automático → backup automático → COMPLETE remoto → CAPTURE RUNNING; mínimo 2 ciclos PILOT RUNNING |
-| AEMET Track A / 02 | E2E DEMONSTRATED; capture disabled/inactive; nuevo backup automático NOT ACTIVE | Reactivar tras SIAR-FORECAST-CAPTURE RUNNING, sin dependencia de Sync |
+| Forecast SIAR / 02 | PILOT RUNNING según parte 02 del 01/11: dos ciclos naturales PASS | Mantener seguimiento y evidencia de backup; sin nueva inspección |
+| AEMET Track A / 02 | E2E DEMONSTRATED; dependencia CAPTURE RUNNING superada según parte de 02 | Backup cifrado dedicado, `schedule.approved` y validación operativa pendientes; sin acreditar captura periódica ni backup automático |
 | AEMET Track B | Investigación independiente OPEN | Identificar feed exacto usado por SIAR |
 | Producto / 06 | WEB-V0.3 Scientific Explorer PASS / DEPLOYED en LAN | Consumir ANN v1 publicada y/o validación prospectiva; sin V0.4 inmediato |
 
@@ -41,6 +41,8 @@ SIAR Sync España sigue siendo futuro, sin implementación actual.
 
 ## Fase 2 — Forecast SIAR prospectivo
 
+**Estado posterior, parte 02 del 01/11 comunicado por 00W el 11/11:** dos ciclos naturales PASS y PILOT RUNNING. Los requisitos de primer y segundo ciclo enumerados abajo se conservan como criterios históricos cumplidos según ese parte, sin nueva verificación del servidor.
+
 ✅ Collector append-only; sesión/CSRF/cálculo/exportZIP/CSV; guard rail de secretos, HTML sensible omitible, ZIP seguro, SHA-256, schemas y publicación atómica. Runtime permanente /opt + /etc + /srv/siar-forecast/raw con identidad dedicada. SMOKE-FC-001, BACKUP-FC-001 y FC-STATIONS-001 PASS; multi-smoke 8 completas de 9 intentadas.
 
 Último parte 24/10: **timer SIAR Forecast ACTIVE** y reconciliador **enabled/active cada 15 minutos**, último Result success. OAuth Production + reauthorization/crypt listing PASS elimina el límite específico de siete días de Testing; no garantiza tokens eternos. Copy to crypt + restore independiente + SHA256 MATCH demostrados.
@@ -58,11 +60,13 @@ source issue time puede ser null; D+0…D+6 y recuperación histórica de emisio
 
 ## Fase 3 — AEMET
 
+**Último estado comunicado por 00W el 11/11, fuente 02W:** E2E Track A demostrado; backup cifrado dedicado y programación aprobada pendientes. No se acredita captura periódica ni backup automático. La información de inventario inferior es histórica, no inspección nueva.
+
 ✅ Track A municipal diario OpenData: E2E DEMONSTRATED, estabilización PASS. PR #18/#19/#20: collector, id municipal y permisos POSIX. Conserva wrapper.raw y payload.raw sin modificar bytes; id 7040 se compara canónicamente con 07040 sin editar raw.
 
 Piloto IB04 → Palma → municipio 07040, capital municipal, no punto exacto de estación. Último parte: **capture timer disabled/inactive**. El servicio específico de backup está disponible, static/inactive, sin timer independiente. El inventario no observó hook de backup en el servicio de captura; no se afirma ejecución automática tras cada intento. Los runs AEMET están en el ámbito separado de preservación general. Con captura deshabilitada, **new AEMET automatic backup = NOT ACTIVE**.
 
-**Dependencia vigente:** SIAR-FORECAST-CAPTURE RUNNING → reactivar AEMET Track A. Se supera la dependencia antigua de esperar SIAR-FORECAST-PILOT RUNNING; nunca depende de SIAR Sync.
+**Dependencia superada según parte de 02:** SIAR-FORECAST-CAPTURE RUNNING. Para AEMET siguen pendientes backup cifrado dedicado, `schedule.approved` y validación operativa; no depende de SIAR Sync.
 
 🟠 Validar reactivación, runtime/configuración, raw independiente /srv/aemet-forecast/raw, backup rclone crypt, restore y scheduler experimental con evidencia de los nuevos ciclos. No se infiere ejecución actual del mero contrato del collector.
 
@@ -140,7 +144,7 @@ STOP ante nueva evidencia de I/O error, emergency_ro, SMART warning, USB reset a
 
 **PROJECT-ARTIFACT-BACKUP-V1 PASS:** snapshot backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED; 82 archivos científicos (1,421,919,603 bytes) + 46 SIAR published Raw = 128 verificados. 221 inventariados no significa 221 respaldados. cryptcheck + restores independientes + hashes PASS; descarga completa redundante INTERRUPTED, no full-download PASS. Secret config/credentials excluidos; crypt/OAuth OFF-SERVER.
 
-Event-driven ingestion PASS (new=0, unchanged=9) y daily reconciliation ENABLED protegen artefactos ya ingeridos al servidor; futuros resultados Windows requieren finalización y READY firmado explícitos, no transferencia manual; el flujo posterior es automático. PROJECT-ARTIFACT-BACKUP-V1 permanece PASS / MAINTAINED. El reconciliador SIAR de 15 min es distinto y no cambia el gate de nuevo run automático con backup/COMPLETE remoto. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
+Event-driven ingestion PASS (new=0, unchanged=9) y daily reconciliation ENABLED protegen artefactos ya ingeridos al servidor; futuros resultados Windows requieren finalización y READY firmado explícitos, no transferencia manual; el flujo posterior es automático. PROJECT-ARTIFACT-BACKUP-V1 permanece PASS / MAINTAINED. El reconciliador SIAR de 15 min es distinto; el parte 02 del 01/11 comunica dos ciclos naturales PASS y PILOT RUNNING. Cada nuevo raw prospectivo relevante requiere backup externo. Mantener rclone copy, no sync; validar restore y material crypt recuperable fuera del servidor. El PASS histórico de backup no acredita que una nueva captura ya tenga copia.
 
 ## Gobierno y actualización
 
@@ -166,4 +170,13 @@ PM/HS/VAL y Dataset v1 intactos. AHC y backup ya están PASS; siguientes experim
 
 ## ET₀ V2 — diseño acordado
 
-**ET0-V2-METHODOLOGY-DESIGN = AGREED**; **ET0-V2-DOCUMENTATION = PASS**. [Revisión](../scientific_pipeline/docs/et0_methodology_review_v2.md) y [decisiones](../scientific_pipeline/docs/et0_v2_decisions.md). **ET0-V2-ELIGIBILITY-INVENTORY = PENDING**; **ET0-V2-EXECUTABLE-CONTRACT = NOT FROZEN**; **ET0-V2-AHC / ML / ANN = NOT RUN**. Siguiente paso: inventario de estaciones y elegibilidad, incluida revisión Quality IB09; sin modificar V1.
+**ET0-V2-METHODOLOGY-DESIGN = AGREED**; **ET0-V2-DOCUMENTATION = PASS**. [Revisión](../scientific_pipeline/docs/et0_methodology_review_v2.md) y [decisiones](../scientific_pipeline/docs/et0_v2_decisions.md). Inventario, preparación y ejecutor publicados mediante PR #66–#70; véase actualización posterior.
+
+
+## ET₀ V2 — avance publicado y ejecución comunicada 11/11
+
+✅ PR #65 diseño; #66–#67 inventario y handoff inicial; #68 excepción IB09 solo DEVELOPMENT; #69 preparación y 4.390 fechas comunes IB09, cero observaciones retrospectivas; #70 ejecutor [AHC → ML → ANN A → ANN E](../scientific_pipeline/docs/et0_v2_execution.md), checkpoints, sellos, freeze y evaluación posterior. Quality V1 IB09 sigue FAIL y la verificación oficial independiente UNRESOLVED.
+
+🟠 **Parte 05 del 11/11, comunicado por 00W:** piloto aprobado, AHC sellado y ML en Kaggle CPU; ANN A/E, freeze global y evaluación retrospectiva pendientes. No verificado aquí contra manifiestos. Siguiente gate: completar fases y verificar sellos/freeze; después evaluación retrospectiva. Sin resultados V2 definitivos ni validación prospectiva independiente.
+
+🟠 SIAR Sync V3 incremental: frente independiente; producción HOLD, ledger, catálogo CCAA y TLS con cierres propios. 02B mantiene preservación general y automatización Windows PASS en su ámbito. WEB V0.3 desplegada; V2 no integrada. AEMET Track B sigue OPEN.

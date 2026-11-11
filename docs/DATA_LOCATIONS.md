@@ -1,6 +1,6 @@
 # Dónde consultar los datos y resultados
 
-**Actualizado: 2026-11-01; cierre de ingestión Windows.** Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
+**Actualizado: 2026-11-11; consolidación documental V2.** El cierre de ingestión Windows corresponde al 01/11/2026. Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 
 | Qué consultar | Ubicación / evidencia | Alcance |
 |---|---|---|
@@ -262,3 +262,10 @@ Montaje de datos read-only; sin recálculo científico, cambios de artefactos ci
 | Snapshot | `backup_20261102T171546Z_40b4cd67` — `REMOTE_VERIFIED` |
 
 Este artefacto publica la ANN moderna v1 sobre `PM_FAO56_V1`; no modifica Dataset v1, raw ni Quality. La preservación remota no convierte la referencia calculada PM en una observación instrumental independiente.
+
+
+## ET₀ V2 — identidades publicadas, 11/11/2026
+
+La [preparación](../scientific_pipeline/docs/et0_v2_preparation.md) documenta el handoff excepcional IB09 y la cápsula DEVELOPMENT; el manifiesto de cápsula tiene SHA256 `0c43f1020a04b0dedeeff84ccb1cbae4285ff00ac20c48473ff6c81b57ecd3e6` según [ejecución](../scientific_pipeline/docs/et0_v2_execution.md). [Inventario de soporte](../scientific_pipeline/docs/et0_v2_support_20261111.md): 4.390 fechas comunes IB09 y cero observaciones 2020–2025. Quality V1 sigue FAIL y verificación oficial UNRESOLVED.
+
+Según parte de 05 del 11/11 comunicado por 00W, piloto aprobado, AHC sellado y ML en ejecución en Kaggle CPU; ANN A/E, freeze y evaluación retrospectiva pendientes. No se ha inspeccionado el directorio de ejecución ni sus manifiestos en esta actualización; no se inventan rutas ni hashes de resultados. Próximo paso: conservar y verificar evidencias, sellos y freeze antes de evaluación y preservación.

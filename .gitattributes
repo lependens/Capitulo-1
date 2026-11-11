@@ -1,3 +1,6 @@
 data_quality/siar/post/SIAR-QA-POST-20261018T233901Z/* -text
 estaciones_baleares.csv text eol=lf
 datos_siar_baleares/IB*_datos_completos.csv text eol=lf
+
+# Preserve byte hashes of the IB09 V2 DEVELOPMENT Quality handoff.
+data_quality/siar/ib09-handoff-v2-development/* text eol=lf

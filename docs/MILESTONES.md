@@ -99,3 +99,6 @@ Se añaden cierres posteriores a las entradas que declaraban estas misiones pend
 ---
 
 | 2026-11-02 | ANN-V1-MODERN-ET0 | PASS: `FEATURE_SET_FULL / MLP [32]`, una capa ReLU de 32 neuronas y Adam; TEST n=15.958, MAE 0.037632, RMSE 0.051312, bias −0.022449, R² 0.999100; 0 negativas/no finitas. | Pipeline/main `754adceee12cc423ee06eb17b49e36429d25b70d`; manifest `1978c8d018b57686b7e2d7fd9457ad2f9399a115e65789a13abd0f0c9359862f`; receipt `science-ann-v1-modern-20261102T065642Z_447f9498.json`; snapshot `backup_20261102T171546Z_40b4cd67` REMOTE_VERIFIED | ANN aproxima PM_FAO56_V1 calculada, no ET₀ instrumental. Champion congelado antes de TEST; TEST retrospective_locked y no globalmente prístino. Mejora RMSE/MAE sobre HGB FULL pero conserva bias negativo mayor. |
+
+
+| 2026-11-11 | ET0-V2-METHODOLOGY-DESIGN | AGREED; documentación PASS; inventario pendiente, contrato no congelado, AHC/ML/ANN no ejecutados. | [Decisiones](../scientific_pipeline/docs/et0_v2_decisions.md) | Cierre de diseño sin alterar V1 ni acceder a TEST. |

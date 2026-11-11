@@ -260,3 +260,8 @@ DEVELOPMENT obtuvo RMSE ponderado **0.074962 mm/día**. En TEST **retrospective_
 Frente al benchmark HGB FULL (RMSE 0.064104; MAE 0.047045), reduce RMSE **0.012791 mm/día** (≈19.95 %) y MAE **0.009413 mm/día** (≈20.01 %). Su bias negativo es mayor que HGB (−0.022449 frente a −0.000966 mm/día), limitación explícita. Mejor/peor año: 2024 / 2022 (RMSE 0.045078 / 0.058756); mejor/peor estación: IB04 / IB02 (0.040756 / 0.065308).
 
 Artefacto canónico: `/srv/siar-project/scientific-artifacts/ann-v1-modern-20261102T065642Z/`; manifest SHA256 `1978c8d018b57686b7e2d7fd9457ad2f9399a115e65789a13abd0f0c9359862f`; receipt `science-ann-v1-modern-20261102T065642Z_447f9498.json`; snapshot `backup_20261102T171546Z_40b4cd67`, **REMOTE_VERIFIED**. El pipeline/main asociado es `754adceee12cc423ee06eb17b49e36429d25b70d`. Véase [documentación ANN](../docs_2.1_Estimación%20Et0%20ANN%20%28tensorflow%29.md).
+
+
+## ET₀ V2 — diseño acordado
+
+**ET0-V2-METHODOLOGY-DESIGN = AGREED**; **ET0-V2-DOCUMENTATION = PASS**. [Revisión](../scientific_pipeline/docs/et0_methodology_review_v2.md) y [decisiones](../scientific_pipeline/docs/et0_v2_decisions.md). **ET0-V2-ELIGIBILITY-INVENTORY = PENDING**; **ET0-V2-EXECUTABLE-CONTRACT = NOT FROZEN**; **ET0-V2-AHC / ML / ANN = NOT RUN**. Siguiente paso: inventario de estaciones y elegibilidad, incluida revisión Quality IB09; sin modificar V1.

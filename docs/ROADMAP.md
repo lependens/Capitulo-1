@@ -162,3 +162,8 @@ PM/HS/VAL y Dataset v1 intactos. AHC y backup ya están PASS; siguientes experim
 ## Cierre ANN v1 — 02/11/2026
 
 ✅ **ANN-V1-MODERN-ET0 = PASS.** Champion `FEATURE_SET_FULL / MLP [32]`; target `PM_FAO56_V1`; TEST retrospective_locked n=15.958, RMSE 0.051312 mm/día. La ANN no es validación instrumental independiente y su bias −0.022449 mm/día debe leerse junto a la mejora de RMSE/MAE frente a HGB FULL. La siguiente decisión científica no es reabrir selección: es validación prospectiva y/o una nueva pregunta con contrato propio. [Documentación ANN](../docs_2.1_Estimación%20Et0%20ANN%20%28tensorflow%29.md).
+
+
+## ET₀ V2 — diseño acordado
+
+**ET0-V2-METHODOLOGY-DESIGN = AGREED**; **ET0-V2-DOCUMENTATION = PASS**. [Revisión](../scientific_pipeline/docs/et0_methodology_review_v2.md) y [decisiones](../scientific_pipeline/docs/et0_v2_decisions.md). **ET0-V2-ELIGIBILITY-INVENTORY = PENDING**; **ET0-V2-EXECUTABLE-CONTRACT = NOT FROZEN**; **ET0-V2-AHC / ML / ANN = NOT RUN**. Siguiente paso: inventario de estaciones y elegibilidad, incluida revisión Quality IB09; sin modificar V1.

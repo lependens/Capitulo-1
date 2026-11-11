@@ -1,0 +1,76 @@
+{
+  "protocol_id": "ET0_V2_STATION_MATCHED_INPUTS",
+  "status": "PREPARATION_ONLY",
+  "dataset_v1_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "target": "PM_FAO56_V1",
+  "development": ["2004-01-01", "2019-12-31"],
+  "retrospective_test": ["2020-01-01", "2025-12-31"],
+  "historical_stations": ["IB07", "IB09", "IB101"],
+  "families": {
+    "HS_RA_V1": ["Tmin", "Tmax", "Ra"],
+    "HG_RS_V1": ["Tmean_extremes", "Rs"],
+    "VALIANTZAS_V1": ["Tmin", "Tmax", "RHmean", "Ra"]
+  },
+  "calendars": {
+    "annual": ["annual"],
+    "seasonal": ["DJF", "MAM", "JJA", "SON"],
+    "monthly": ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+  },
+  "ahc": {
+    "estimator": "ols_through_origin",
+    "support": "at_least_one_pair_and_positive_sum_of_squares",
+    "full_history_annual": "separate_in_sample_only"
+  },
+  "outer_validation": {
+    "strategy": "leave_one_calendar_year_out_within_development",
+    "minimum_supported_folds": 2,
+    "category_support": "observed in both A and E inner fits; same outer scoring keys for AHC, ML, A and E",
+    "objective": "unweighted_mean_annual_rmse",
+    "dispersion": "population_sd_annual_rmse",
+    "refit": "all eligible development rows after development-only selection"
+  },
+  "ml": {
+    "protocol_path": "scientific_pipeline/experiments/ml-v1-classical.json",
+    "protocol_sha256": "45f1c4f3ed20bb70dc3b1ca06a8e23ec14f95aae6b60f574e44a8a261cc07048",
+    "candidate_count_per_station_family_calendar": 37,
+    "complexity_rank": ["LINEAR", "RIDGE", "ELASTIC_NET", "TREE", "RANDOM_FOREST", "EXTRA_TREES", "HIST_GRADIENT_BOOSTING"],
+    "tie_relative_tolerance": 0.001,
+    "tie_order": ["lower annual RMSE SD", "V1 algorithm complexity rank", "lexical candidate id"]
+  },
+  "ib09_handoff": {
+    "handoff_id": "IB09-QUALITY-HANDOFF-V2-DEVELOPMENT-20261111",
+    "path": "data_quality/siar/ib09-handoff-v2-development/handoff.json",
+    "sha256": "9c14247a67ea6fd870d63f985e96c25b02860ccf41bf7beea9b27ccc20b9ca92"
+  },
+  "ann": {
+    "run_order": ["A", "E"],
+    "A": "last 15 percent of outer TRAIN by date",
+    "E": "15 percent of outer TRAIN by SHA256-ranked sampling without replacement",
+    "inner_split_seed_E": 20261111,
+    "architectures": [[16], [32], [64], [64, 32], [64, 32, 16]],
+    "seeds": [20261101, 20261102, 20261103],
+    "activation": "relu",
+    "optimizer": "adam",
+    "alpha": 0.0001,
+    "learning_rate_init": 0.001,
+    "batch_size_max": 256,
+    "shuffle": false,
+    "scaling": "StandardScaler fitted solely on rows fitting weights in each phase",
+    "early_stopping": {"max_epochs": 200, "patience": 15, "min_delta_rmse": 0.0001},
+    "tie_absolute_tolerance": 1e-12,
+    "tie_order": ["lower annual RMSE SD", "fewer parameters", "lexical architecture"],
+    "final_epochs": "per seed median best epoch of supported outer folds, round half up",
+    "predictions": "arithmetic mean of all three seed predictions",
+    "selection": "independent for A and E; retain both for retrospective evaluation"
+  },
+  "metrics": ["n", "coverage", "MAE", "RMSE", "bias", "predictive_R2"],
+  "test_gate": "separate launch authorization and frozen configurations, parameters, preprocessing and hashes",
+  "runtime": {
+    "preferred": "Kaggle CPU after private preflight",
+    "python": ">=3.11",
+    "scikit_learn": "==1.9.1",
+    "threads_per_worker": 1,
+    "workers_initial": 1,
+    "shard": "station-family-calendar with one active candidate; ANN A before E"
+  }
+}

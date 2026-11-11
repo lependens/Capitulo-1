@@ -2,7 +2,7 @@
 
 V2 compara fórmulas empíricas calibradas, ML clásico y redes neuronales (ANN) para estimar la ET₀ diaria cuando faltan entradas de Penman–Monteith. La comparación se hace **por estación meteorológica**, con la **misma información de entrada** y sobre las **mismas fechas evaluables** dentro de cada escenario. La referencia de error es `PM_FAO56_V1` calculada por el proyecto. Este documento describe el experimento acordado para V2. Las cifras de rendimiento que se citan proceden de V1.
 
-[Presentación editable del protocolo V2](assets/et0_v2_experiment_protocol.pptx) · [Registro de decisiones](et0_v2_decisions.md) · [Guía de ANN V1](ann_v1_modern_explained.md)
+[Presentación editable del protocolo V2](assets/et0_v2_experiment_protocol.pptx) · [Registro de decisiones](et0_v2_decisions.md) · [Contrato ejecutable de preparación](et0_v2_preparation.md) · [Guía de ANN V1](ann_v1_modern_explained.md)
 
 ## 1. Decisiones que fijan V2
 
@@ -108,7 +108,7 @@ El TFG describía dos criterios de selección de arquitectura, por error interno
 | Estación | Evidencia disponible | Tratamiento en V2 |
 |---|---|---|
 | **IB07 · Sóller** | 2.946 filas brutas hasta el 13/11/2012. Hubo PM preservado en 2.929. | Admisión histórica con las filas aptas. Puede aportar ajustes y evaluación anual de DEVELOPMENT según soporte. En 2020–2025 figura sin observaciones. |
-| **IB09 · Artà** | 4.423 filas brutas. Quality marca una fuera del periodo oficial, del 23/10/2005. V1 no preservó PM evaluable para esta estación. | Revisar la incidencia, conservar el original, aplicar en una vista versionada la decisión de Quality y recalcular PM y las fórmulas para las filas que se admitan. La inclusión científica depende de esa revisión. En 2020–2025 carece de observaciones. |
+| **IB09 · Artà** | 4.423 filas brutas, incluida la del 23/10/2005 exterior al catálogo. Quality V1 sigue FAIL y la verificación oficial independiente UNRESOLVED. | Excepción de Dirección 00 para DEVELOPMENT V2, 24/10/2005–10/10/2018 inclusive. El recálculo confirma 4.390 pares comunes. Serie histórica separada sin observaciones en 2020–2025. |
 | **IB101 · Ciutadella** | 249 filas brutas entre 2008 y 2009. Hubo PM preservado en 246. | Calcular los AHC que resulten identificables e indicar su soporte. Comprobar para ML y ANN si hay años, particiones y filas suficientes para calcular la selección definida. Publicar las causas de falta de soporte. |
 
 Las filas disponibles y el soporte técnico determinan qué se puede ajustar. Para ML se necesitan años con TRAIN y validación externa utilizables. Para ANN, además, ambas partes internas deben tener filas válidas. Para seleccionar y comparar candidatos se requieren años aptos comunes. Cuando no pueda completarse el procedimiento, se indica la causa en lugar de producir una clasificación artificial. Las estaciones cerradas se muestran en el informe histórico con el tipo de evaluación correspondiente. Sus errores de ajuste AHC y los errores de años apartados de ML o ANN se rotulan de acuerdo con el conjunto que produjo cada cifra. [Manifiesto Quality](../../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_dataset_manifest.csv) · [Auditoría por estación](../../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_station_audit.csv)
@@ -143,4 +143,4 @@ La recuperación de ML V1 en Kaggle evaluó 35 modelos ajustados previamente en 
 
 ## 10. Puntos abiertos antes de usar los resultados
 
-El calendario por indicadores, el RMSE medio anual y la conservación de ambas ANN están acordados; 05 debe fijar los desempates y detalles restantes en el contrato ejecutable. **Quality de IB09** y el inventario de soporte de las estaciones cortas se resuelven con evidencia de los datos. Si se quiere recomendar un método para uso operativo, queda fijar **error, sesgo y cobertura aceptables** para cada escenario de sensores. La elección de umbrales operativos y de un periodo adicional de confirmación puede hacerse después de cerrar el protocolo retrospectivo, antes de usar esos datos para decidir.
+El contrato ejecutable fija calendario, RMSE medio anual, desempates y orden ANN A seguido de ANN E. El [inventario de soporte](et0_v2_support_20261111.md) registra la excepción de IB09 y la cobertura de las series cortas. Para recomendar un método para uso operativo quedan por fijar **error, sesgo y cobertura aceptables** para cada escenario de sensores. La elección de umbrales operativos y de un periodo adicional de confirmación puede hacerse después de cerrar el protocolo retrospectivo, antes de usar esos datos para decidir.

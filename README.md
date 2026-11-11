@@ -30,7 +30,7 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
-**Actualizado: 2026-11-02.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico y ANN moderna v1 PASS, con WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
+**Actualizado: 2026-11-11.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico y ANN moderna v1 PASS, con WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
 
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
 - [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
@@ -461,7 +461,7 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 | WEB-V0.3-ML | READY para consumir outputs ML publicados; sin despliegue nuevo en esta misión |
 | ANN / Forecast integrado / Kc / ETc / riego | ANN-V1-MODERN-ET0 PASS contra PM_FAO56_V1 calculada; integraciones y riego posteriores bajo sus gates |
 
-SIAR Forecast mantiene timer ACTIVE aunque SIAR Sync siga HOLD. El primer ciclo real automático con backup automático y COMPLETE remoto demuestra CAPTURE RUNNING; al menos dos ciclos PASS, PILOT RUNNING. Un timer activo no demuestra esos gates. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
+Según el parte de 02 del 01/11 comunicado por Dirección 00W, SIAR Forecast alcanzó dos ciclos naturales PASS y PILOT RUNNING; esta documentación no constituye una nueva inspección del servidor. SIAR Sync sigue HOLD. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
 
 ---
 
@@ -513,7 +513,7 @@ Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pip
 
 El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 
-En paralelo: demostrar un nuevo ciclo Forecast SIAR real con backup automático y COMPLETE remoto; reactivar AEMET tras CAPTURE RUNNING, asegurar backup de nuevos raw y resolver alignment/incremental 2026 antes de levantar HOLD en Sync. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
+En paralelo: mantener seguimiento del piloto Forecast SIAR comunicado por 02; completar backup cifrado dedicado y programación AEMET con evidencia, y resolver los gates de SIAR Sync V3 antes de levantar HOLD. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
 
 ## Navegación rápida
 
@@ -538,3 +538,8 @@ El proyecto puede resumirse actualmente en una única línea:
 ## Cierre vigente de producto — 01/11/2026
 
 **WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: la ANN moderna v1 ya está publicada; la web podrá consumirla junto con validación prospectiva posterior.
+
+
+## ET₀ V2 — estado 11/11/2026
+
+Diseño, inventario, preparación y ejecutor publicados mediante PR #65–#70. IB09 se admite excepcionalmente solo para DEVELOPMENT V2; Quality V1 sigue FAIL y verificación independiente UNRESOLVED. Según el parte de 05 comunicado por Dirección 00W, piloto aprobado, AHC sellado y ML en ejecución; ANN A/E, freeze y evaluación retrospectiva pendientes. El parte operativo no ha sido verificado aquí mediante manifiestos. [Estado y fuentes](docs/PROJECT_STATUS.md) · [ejecución](scientific_pipeline/docs/et0_v2_execution.md).

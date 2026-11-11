@@ -1,6 +1,7 @@
 """Run resumable V2 DEVELOPMENT stages and freeze their exact outputs."""
 import argparse
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import datetime, timezone
 import gzip
@@ -11,6 +12,7 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
+import sys
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 from time import perf_counter, process_time
 
@@ -109,7 +111,13 @@ def _station_rows(capsule):
 
 def _resource(run):
     disk = shutil.disk_usage(run)
-    total = sum(path.stat().st_size for path in run.rglob("*") if path.is_file())
+    total = 0
+    for path in run.rglob("*"):
+        try:
+            if path.is_file():
+                total += path.stat().st_size
+        except FileNotFoundError:
+            continue  # Another shard just atomically published a staged file.
     memory = None
     if platform.system() == "Linux":
         import resource
@@ -143,7 +151,7 @@ def _store_models(path, models):
     return output
 
 
-def _fit_cell(stage, cell, path, ml_protocol, mode, remaining):
+def _fit_cell(stage, cell, path, ml_protocol, mode, remaining, deadline=float("inf")):
     completed = path / "frozen.json"
     if completed.exists():
         item = read_json(completed)
@@ -169,7 +177,7 @@ def _fit_cell(stage, cell, path, ml_protocol, mode, remaining):
                     "Candidate checkpoint data corrupted")
             summary = summary["summary"]
             resumed += 1
-        elif remaining is not None and fitted >= remaining:
+        elif (remaining is not None and fitted >= remaining) or perf_counter() >= deadline:
             return fitted, resumed, False
         else:
             summary = fit_candidate(stage, cell, cell.plans, config, ml_protocol)
@@ -201,18 +209,26 @@ def _verify_stage(run, stage, keys, mode):
     return sha_file(index_path)
 
 
-def fit_batch(repo, capsule, run, stage, mode, max_candidates=None):
+def shard_keys(keys, shard):
+    index, count = shard
+    require(0 <= index < count, "Invalid V2 shard")
+    return keys[index::count]
+
+
+def fit_batch(repo, capsule, run, stage, mode, max_candidates=None, *, shard=(0, 1), wall_seconds=None):
     protocol, _ = load_protocol(repo)
     ml_protocol = read_json(repo / protocol["ml"]["protocol_path"])
     identifier = run_context(repo, capsule, run, mode)
     inventory = read_json(capsule / "support-inventory.json")
     for prior in STAGES[:STAGES.index(stage)]:
         _verify_stage(run, prior, cells(inventory, prior, protocol, mode), mode)
-    keys = cells(inventory, stage, protocol, mode)
+    require(mode == "official" or shard == (0, 1), "Pilot runs in one process")
+    keys = shard_keys(cells(inventory, stage, protocol, mode), shard)
     indices = {}
     station_rows = None
     before = _resource(run)
     wall, cpu = perf_counter(), process_time()
+    deadline = wall + wall_seconds if wall_seconds is not None else float("inf")
     fitted = resumed = 0
     with threadpool_limits(limits=1):
         for key in keys:
@@ -222,29 +238,54 @@ def fit_batch(repo, capsule, run, stage, mode, max_candidates=None):
                 _verify_refit(path, read_json(completed))
                 indices[path.name] = sha_file(completed)
                 continue
-            if max_candidates is not None and fitted >= max_candidates:
+            if (max_candidates is not None and fitted >= max_candidates) or perf_counter() >= deadline:
                 break
             if station_rows is None:
                 station_rows = _station_rows(capsule)
             station, family, _ = key
             cell = make_cell(station_rows[station], key, protocol, inventory["stations"][station]["support"][family])
             left = max_candidates - fitted if max_candidates is not None else None
-            done, reused, complete = _fit_cell(stage, cell, path, ml_protocol, mode, left)
+            done, reused, complete = _fit_cell(stage, cell, path, ml_protocol, mode, left, deadline)
             fitted += done
             resumed += reused
             if not complete:
                 break
             indices[path.name] = sha_file(completed)
     complete = len(indices) == len(keys)
-    if complete:
+    if complete and shard == (0, 1):
         write_json(run / stage / "index.json", {"mode": mode, "stage": stage, "cells": indices})
     report = {"stage": stage, "mode": mode, "complete": complete, "completed_cells": len(indices),
+              "shard": list(shard),
               "planned_cells": len(keys), "candidate_checkpoints_written": fitted, "candidate_checkpoints_reused": resumed,
               "wall_seconds": perf_counter() - wall, "cpu_seconds": process_time() - cpu, "before": before,
               "after": _resource(run), "pipeline_sha": identifier["pipeline_sha"]}
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     write_json(run / "telemetry" / f"{stage}-{stamp}.json", report)
     return report
+
+
+def seal_stage(repo, capsule, run, stage):
+    run_context(repo, capsule, run, "official")
+    protocol, _ = load_protocol(repo)
+    inventory = read_json(capsule / "support-inventory.json")
+    for prior in STAGES[:STAGES.index(stage)]:
+        _verify_stage(run, prior, cells(inventory, prior, protocol, "official"), "official")
+    keys = cells(inventory, stage, protocol, "official")
+    paths = [cell_path(run, stage, key) for key in keys]
+    entries = {}
+    for key, path in zip(keys, paths, strict=True):
+        item = read_json(path / "frozen.json")
+        require(item["key"] == list(key) and item["mode"] == "official" and item["stage"] == stage,
+                "Foreign cell in stage seal")
+        _verify_refit(path, item)
+        entries[path.name] = sha_file(path / "frozen.json")
+    entry = {"mode": "official", "stage": stage, "cells": entries}
+    output = run / stage / "index.json"
+    if output.exists():
+        require(read_json(output) == entry, "Stage seal changed")
+    else:
+        write_json(output, entry)
+    return sha_file(output)
 
 
 def freeze(repo, capsule, run):
@@ -305,6 +346,46 @@ def pilot(repo, capsule, run):
     return result
 
 
+def drive(repo, capsule, run, *, workers, wall_seconds, through):
+    """Continue the official sequence in a bounded Linux/Kaggle session."""
+    run_context(repo, capsule, run, "official")
+    deadline = perf_counter() + wall_seconds
+    completed = []
+    outcomes = {}
+    for stage in STAGES[:STAGES.index(through) + 1]:
+        if (run / stage / "index.json").is_file():
+            seal_stage(repo, capsule, run, stage)
+            completed.append(stage)
+            continue
+        remaining = int(deadline - perf_counter())
+        if remaining <= 0:
+            break
+        print(f"ET0 V2 {stage}: {workers} shard workers, soft limit {remaining}s", flush=True)
+
+        def worker(index):
+            command = [sys.executable, "-m", "siar_science.et0_v2_campaign",
+                       "--repo", str(repo), "--capsule", str(capsule),
+                       "--run", str(run), "fit", "--stage", stage, "--mode", "official",
+                       "--shard", str(index), str(workers), "--wall-seconds", str(remaining)]
+            result = subprocess.check_output(command, text=True)
+            return json.loads(result)
+
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            batch = list(pool.map(worker, range(workers)))
+        outcomes[stage] = batch
+        if not all(item["complete"] for item in batch):
+            break
+        seal_stage(repo, capsule, run, stage)
+        completed.append(stage)
+    frozen = freeze(repo, capsule, run) if completed == list(STAGES) else None
+    result = {"completed_stages": completed, "worker_count": workers, "soft_wall_seconds": wall_seconds,
+              "through": through, "batches": outcomes, "freeze_sha256": frozen,
+              "test_access": "NONE", "resource": _resource(run)}
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    write_json(run / "telemetry" / f"drive-{stamp}.json", result)
+    return result
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repo", required=True, type=Path)
@@ -315,15 +396,37 @@ def main(argv=None):
     fit.add_argument("--stage", required=True, choices=STAGES)
     fit.add_argument("--mode", choices=("pilot", "official"), default="pilot")
     fit.add_argument("--max-candidates", type=int)
+    fit.add_argument("--shard", nargs=2, type=int, default=(0, 1), metavar=("INDEX", "COUNT"))
+    fit.add_argument("--wall-seconds", type=int, help="Stop starting candidates when this soft deadline is reached")
+    seal = commands.add_parser("seal")
+    seal.add_argument("--stage", required=True, choices=STAGES)
+    commands.add_parser("init")
     commands.add_parser("freeze")
     commands.add_parser("pilot")
+    sequence = commands.add_parser("drive")
+    sequence.add_argument("--workers", type=int, required=True)
+    sequence.add_argument("--wall-seconds", type=int, required=True)
+    sequence.add_argument("--through", choices=STAGES, default=STAGES[-1])
     args = parser.parse_args(argv)
     if args.command == "fit":
         if args.max_candidates is not None and args.max_candidates < 1:
             parser.error("--max-candidates must be positive")
-        result = fit_batch(args.repo, args.capsule, args.run, args.stage, args.mode, args.max_candidates)
+        if args.wall_seconds is not None and args.wall_seconds < 1:
+            parser.error("--wall-seconds must be positive")
+        result = fit_batch(args.repo, args.capsule, args.run, args.stage, args.mode, args.max_candidates,
+                           shard=tuple(args.shard), wall_seconds=args.wall_seconds)
+    elif args.command == "init":
+        result = run_context(args.repo, args.capsule, args.run, "official")
+    elif args.command == "seal":
+        result = {"stage_sha256": seal_stage(args.repo, args.capsule, args.run, args.stage)}
     elif args.command == "freeze":
         result = {"freeze_sha256": freeze(args.repo, args.capsule, args.run)}
+    elif args.command == "drive":
+        allowed = len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else (os.cpu_count() or 1)
+        if not 1 <= args.workers <= allowed or args.wall_seconds < 1:
+            parser.error("Invalid worker count or soft wall budget")
+        result = drive(args.repo, args.capsule, args.run, workers=args.workers,
+                       wall_seconds=args.wall_seconds, through=args.through)
     else:
         result = pilot(args.repo, args.capsule, args.run)
     print(json.dumps(result, sort_keys=True))

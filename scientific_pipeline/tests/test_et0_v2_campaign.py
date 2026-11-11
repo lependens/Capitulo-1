@@ -4,8 +4,8 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from siar_science.et0_v2 import load_protocol
-from siar_science.et0_v2_campaign import _fit_cell, read_json, sha_file
-from siar_science.et0_v2_models import fit_ahc, make_cell
+from siar_science.et0_v2_campaign import _fit_cell, read_json, sha_file, shard_keys
+from siar_science.et0_v2_models import fit_ahc, make_cell, selections
 from siar_science.et0_v2_retrospective import CONTRAST, evaluate, retrospective_metrics, write_csv
 
 
@@ -78,3 +78,18 @@ class V2ExecutionTests(unittest.TestCase):
             self.assertIsNone(table[-1]["coverage_calendar"])
             write_csv(root / "pred.csv.gz", [row])
             self.assertIn("2020-01-01", gzip.decompress((root / "pred.csv.gz").read_bytes()).decode())
+
+    def test_shards_disjoint_and_ml_principal_is_one_of_frozen_algorithm_winners(self):
+        keys = list(range(105))
+        parts = [shard_keys(keys, (i, 4)) for i in range(4)]
+        self.assertEqual(sorted(key for group in parts for key in group), keys)
+        with self.assertRaisesRegex(ValueError, "Invalid V2 shard"):
+            shard_keys(keys, (4, 4))
+        cell = make_cell(small_rows(), KEY, self.protocol)
+        algorithms = self.protocol["ml"]["complexity_rank"]
+        summaries = [{"algorithm": algorithm, "candidate_id": algorithm,
+                      "folds": [{"year": year, "rmse": 1 + index} for year in range(2017, 2020)]}
+                     for index, algorithm in enumerate(algorithms)]
+        principal, winners = selections("ML", cell, summaries)
+        self.assertEqual(principal["candidate_id"], algorithms[0])
+        self.assertIn(principal["candidate_id"], {item["candidate_id"] for item in winners.values()})

@@ -167,7 +167,10 @@ def fit_candidate(stage, cell, plans, config, ml_protocol):
                 folds.append({**score_fold(cell, plan, np.mean([pred for pred, _ in fits], axis=0)),
                               "seeds": [scores for _, scores in fits]})
     n = sum(fold["n"] for fold in folds)
+    average = fsum(fold["rmse"] for fold in folds) / len(folds)
     return {**config, "folds": folds, "n": n,
+            "mean_annual_rmse": average,
+            "sd_annual_rmse": sqrt(fsum((fold["rmse"] - average) ** 2 for fold in folds) / len(folds)),
             "pooled_rmse": sqrt(fsum(fold["n"] * fold["rmse"] ** 2 for fold in folds) / n),
             "warnings": sorted({str(record.message) for record in caught}),
             "wall_seconds": perf_counter() - started}
@@ -183,10 +186,14 @@ def selections(stage, cell, summaries):
         return choose_candidate(group, family_type="ml" if stage == "ML" else "ann",
                                 protocol=cell.protocol, supported_years=years)
 
-    principal = choose(records)
-    chosen = ({algorithm: choose([item for item in records if item["algorithm"] == algorithm])
-               for algorithm in cell.protocol["ml"]["complexity_rank"]} if stage == "ML"
-              else {stage: principal})
+    if stage == "ML":
+        chosen = {algorithm: choose([item for item in records if item["algorithm"] == algorithm])
+                  for algorithm in cell.protocol["ml"]["complexity_rank"]}
+        ids = {item["candidate_id"] for item in chosen.values()}
+        principal = choose([item for item in records if item["candidate_id"] in ids])
+    else:
+        principal = choose(records)
+        chosen = {stage: principal}
     return principal, {label: {**by_id[item["candidate_id"]], **item} for label, item in chosen.items()}
 
 

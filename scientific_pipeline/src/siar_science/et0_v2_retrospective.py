@@ -175,10 +175,32 @@ def _write_csv(stream, first, records):
     writer.writerows(records)
 
 
+def _report(metrics_rows, sha):
+    title = [
+        "# ET₀ V2 · evaluación retrospectiva 2020–2025", "",
+        f"Congelación DEVELOPMENT SHA256 `{sha}`.", "",
+        "Referencia diaria calculada con PM_FAO56_V1. RMSE, MAE y sesgo en mm/día. "
+        "El error usa claves comunes dentro de cada familia y calendario. La cobertura propia usa los días de catálogo.",
+        "", "| Familia | Calendario | Método | Pares comunes | RMSE | MAE | Sesgo | Cobertura propia |",
+        "|---|---|---|---:|---:|---:|---:|---:|",
+    ]
+    for row in metrics_rows:
+        if row["group"] == "global" and row["method"] in CONTRAST and row["n"]:
+            title.append(f"| {row['family']} | {row['calendar']} | {row['method']} | {row['n']} | "
+                         f"{row['rmse']:.4f} | {row['mae']:.4f} | {row['bias']:+.4f} | "
+                         f"{row['coverage_calendar']:.2%} |")
+    title.extend(["", "IB07, IB09 e IB101 son series históricas separadas con cero observaciones retrospectivas.",
+                  "El AHC de histórico completo y su error dentro de muestra figuran en una tabla separada.", "",
+                  "[Predicciones](predictions.csv.gz) · [Métricas por grupo](retrospective-metrics.csv) · "
+                  "[AHC de histórico completo](ahc-full-history-in-sample.csv) · [Manifiesto](manifest.json)", ""])
+    return "\n".join(title)
+
+
 def evaluate(repo, capsule, run, dataset_path, *, expected_freeze_sha, output):
     require(not output.exists(), "Choose a new retrospective output directory")
     require((run / "freeze.json").is_file(), "Freeze all DEVELOPMENT stages before TEST access")
     require(freeze(repo, capsule, run) == expected_freeze_sha, "Incorrect freeze identity")
+    require(dataset_path.is_file() and output.parent.is_dir(), "Check dataset and output parent paths")
     protocol, _ = load_protocol(repo)
     opened = datetime.now(timezone.utc).isoformat()
     access = run / "retrospective-access.json"
@@ -187,6 +209,9 @@ def evaluate(repo, capsule, run, dataset_path, *, expected_freeze_sha, output):
     with access.open("xb") as stream:
         stream.write(json_bytes(entry))
     test_rows = load_retrospective(dataset_path, protocol)
+    opened_event = {"event": "RETROSPECTIVE_OPENED", "freeze_sha256": expected_freeze_sha,
+                    "utc": datetime.now(timezone.utc).isoformat(), "rows": len(test_rows)}
+    write_json(run / "retrospective-opened.json", opened_event)
     station_periods = _station_periods(repo, protocol)
     calendar_days = _calendar_counts(station_periods)
     stations = defaultdict(list)
@@ -221,9 +246,10 @@ def evaluate(repo, capsule, run, dataset_path, *, expected_freeze_sha, output):
         write_csv(staged / "predictions.csv.gz", predictions)
         write_csv(staged / "retrospective-metrics.csv", all_metrics)
         write_csv(staged / "ahc-full-history-in-sample.csv", _history(capsule, test_rows, protocol))
+        (staged / "report.md").write_text(_report(all_metrics, expected_freeze_sha), encoding="utf-8", newline="\n")
         manifest = {"status": "PASS", "period": protocol["retrospective_test"],
                     "target": "calculated PM_FAO56_V1", "identity": read_json(run / "identity.json"),
-                    "test_access": entry, "retrospective_rows": len(test_rows),
+                    "test_access": [entry, opened_event], "retrospective_rows": len(test_rows),
                     "historical_station_observations": dict.fromkeys(protocol["historical_stations"], 0),
                     "outputs": {p.name: {"sha256": sha_file(p), "bytes": p.stat().st_size}
                                 for p in sorted(staged.iterdir())}}

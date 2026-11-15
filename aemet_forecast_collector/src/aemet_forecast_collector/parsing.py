@@ -94,23 +94,27 @@ def _collect_periods(value: Any, output: list[str]) -> None:
             _collect_periods(item, output)
 
 
+def canonical_municipality_id(value: object) -> str:
+    """Canonical INE municipality code; reject ambiguous or invalid values."""
+    if type(value) is int and 0 <= value <= 99999:
+        code = f"{value:05d}"
+    elif type(value) is str and len(value) == 5 and value.isascii() and value.isdigit():
+        code = value
+    else:
+        raise PayloadContractError("invalid municipality id")
+    if not 1 <= int(code[:2]) <= 52 or int(code[2:]) == 0:
+        raise PayloadContractError("municipality id outside permitted domain")
+    return code
+
+
 def summarize_payload(payload: Any, expected_municipality_id: str | None = None) -> dict[str, Any]:
     if not isinstance(payload, list) or len(payload) != 1 or not isinstance(payload[0], dict):
         raise PayloadContractError("payload root must contain exactly one object")
 
     roots = payload
     root = roots[0]
-    if expected_municipality_id is not None:
-        municipality_id = root.get("id")
-        canonical_municipality_id = None
-        if isinstance(municipality_id, str):
-            if len(municipality_id) == 5 and municipality_id.isascii() and municipality_id.isdecimal():
-                canonical_municipality_id = municipality_id
-        elif isinstance(municipality_id, int) and not isinstance(municipality_id, bool):
-            if 0 <= municipality_id <= 99999:
-                canonical_municipality_id = f"{municipality_id:05d}"
-        if canonical_municipality_id != expected_municipality_id:
-            raise PayloadContractError("payload municipality id does not match configured target")
+    if expected_municipality_id is not None and canonical_municipality_id(root.get("id")) != canonical_municipality_id(expected_municipality_id):
+        raise PayloadContractError("payload municipality id does not match configured target")
     issue_time_raw = root.get("elaborado")
     if not isinstance(issue_time_raw, str) or not issue_time_raw.strip():
         raise PayloadContractError("payload elaborado field is missing, empty or not a string")

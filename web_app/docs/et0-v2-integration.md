@@ -12,7 +12,7 @@ Se inspeccionó la copia local de la entrega DRAFT, contrastada con el SHA de la
 |---|---|
 | `/catalog` | Identidad, referencia, estado, estaciones, métodos, entradas y grupos |
 | `/metrics` | `formula, calendar, group, key` y `method` repetible. Filtra filas del CSV publicado |
-| `/series` | `formula, calendar, station, start, end, cohort` y `method` repetible. Límite de 367 días inclusivos. Lee como máximo dos particiones de la estación |
+| `/series` | `formula, calendar, station, start, end, cohort` y `method` repetible. Límite de 367 días inclusivos. Solo abre las particiones de la estación y los años del intervalo |
 | `/evolution` | `formula, calendar`, `station` opcional y `method` repetible. Usa filas año o estación-año |
 | `/in-sample` | `formula, station`. Coeficiente AHC anual de histórico completo y métricas dentro de muestra |
 

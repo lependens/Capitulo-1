@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
+
 # Dónde consultar los datos y resultados
 
 **Actualizado: 2026-11-11; consolidación documental V2.** El cierre de ingestión Windows corresponde al 01/11/2026. Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.

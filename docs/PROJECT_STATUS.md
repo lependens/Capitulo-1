@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
+
 # PROJECT STATUS — SIAR / ET₀
 
 **Actualizado: 2026-11-11 (Europe/Madrid), consolidación documental V2 y frentes operativos.** Base releída: `1e419ad881db1cc9798685ef19f414862461674b`. La evidencia de ingestión, preservación remota y restore procede de la comprobación operativa del servidor; esta actualización documental no modifica los artefactos científicos. Un runtime fusionado no demuestra una campaña científica completada; un PASS histórico no acredita que un timer siga ejecutándose hoy.

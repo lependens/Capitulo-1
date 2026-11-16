@@ -1,0 +1,34 @@
+.v2-preview {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  color: #163332;
+  font-family: "Source Sans 3", system-ui, sans-serif;
+}
+.v2-heading { padding: 1rem 0 2rem; }
+.v2-heading h1 { max-width: 20ch; margin: .35em 0; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1; }
+.v2-heading a, .v2-preview a { color: #145d53; text-decoration: underline; }
+.v2-demo { display: table; padding: .3rem .65rem; background: #ffe7b3; color: #4e3105; font-weight: 700; }
+.v2-panel { min-width: 0; margin-bottom: 1rem; padding: clamp(.8rem, 2.2vw, 1.5rem); border: 1px solid #bfceca; border-radius: 12px; background: #fffdf7; }
+.v2-panel h2 { margin: 0 0 1rem; }
+.v2-filters { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%, 150px),1fr)); gap: .8rem; }
+.v2-preview label { display: flex; flex-direction: column; gap: .35rem; font-weight: 600; }
+.v2-preview select, .v2-preview input[type=date] { min-height: 44px; width: 100%; min-width: 0; background: white; color: inherit; border: 1px solid #74958d; border-radius: 6px; padding: .35rem; font: inherit; }
+.v2-preview fieldset { display: flex; flex-wrap: wrap; gap: .2rem 1rem; border: 0; border-top: 1px solid #cbd9d2; padding: .45rem 0 0; }
+.v2-preview fieldset label { flex-direction: row; align-items: center; min-height: 44px; }
+.v2-preview input[type=checkbox] { accent-color: #17635a; }
+.v2-table-context { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: .8rem; margin-bottom: .8rem; }
+.v2-table { max-width: 100%; overflow-x: auto; }
+.v2-table table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.v2-table th, .v2-table td { padding: .6rem .8rem; border-bottom: 1px solid #dae4de; white-space: nowrap; }
+.v2-table thead { background: #e9f1ed; }
+.v2-table caption { text-align: left; padding: .5rem 0; }
+.v2-preview summary { padding: .5rem 0; cursor: pointer; font-weight: 600; }
+.v2-preview code { overflow-wrap: anywhere; }
+.v2-preview .chart { height: 340px; width: 100%; }
+.v2-empty { padding: .7rem; background: #e9f1ed; }
+@media print {
+  .v2-preview { padding: 0; }
+  .v2-panel { break-inside: avoid; }
+  .v2-heading a { display: none; }
+}

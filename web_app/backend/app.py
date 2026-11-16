@@ -47,6 +47,9 @@ def create_app(data_dir=None):
             path = str(folder / filename).replace("'", "''")
             db.execute(f"CREATE VIEW {view} AS SELECT * FROM read_parquet('{path}')")
     api.state.db = db
+    if os.environ.get("WEB_ET0_V2_PREVIEW") == "1":
+        from .et0_v2_preview import router as preview_router
+        api.include_router(preview_router)
     if explorer_enabled:
         from .explorer import router
         api.include_router(router(folder, db, stations))

@@ -17,6 +17,8 @@ xychart-beta
 
 En cada familia las barras son, por orden, AHC, ML, ANN A y ANN E. Las familias requieren entradas distintas; la figura no equivale a una comparación con sensores idénticos.
 
+En el desglose anual de ANN A, IB11 presenta el mayor RMSE de las estaciones evaluadas en las tres familias: 0,607 para HS-Ra, 0,467 para HG-Rs y 0,506 mm/día para Valiantzas. Los menores corresponden a IB04 (0,469), IB08 (0,309) e IB03 (0,388), respectivamente. Las estaciones no tienen necesariamente la misma cobertura temporal, por lo que estos extremos son descriptivos y no prueban una causa ni una clasificación ajustada por condiciones.
+
 La referencia es PM_FAO56_V1 calculada: el experimento mide concordancia con esa fórmula, no precisión frente a mediciones instrumentales independientes. Los errores de cada familia y calendario usan fechas y estaciones comunes a fórmula, AHC, ML principal, ANN A y ANN E; la cobertura usa días de catálogo. Las diferencias entre familias no implican igualdad de entradas.
 
 | Familia | Resolución | Método | n común | RMSE | MAE | Sesgo | R² | Cobertura propia | Mejora RMSE frente a AHC |

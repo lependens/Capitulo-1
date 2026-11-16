@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
+
 > **Estado operativo — 01/11/2026:** **WEB-V0.3-SCIENTIFIC-EXPLORER PASS / DEPLOYED** en [LAN](http://192.168.1.43:8088/). Desktop, mobile y API PASS; paquete de 19 archivos ingerido por 02B y snapshot `backup_20261101T123421Z_8022d3fd` **REMOTE_VERIFIED**. [Cierre, hashes, receipt, comprobaciones y rollback](docs/release-v03.md). [Ciencia ML publicada y límites](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
 
 > **Histórico comunicado por Dirección 00 — 31/10/2026:** WEB-V0.2-AHC PASS / DEPLOYED, PR #46/#47 fusionadas; derivado `web-derived-v02-ahc-20261031` preservado y REMOTE_VERIFIED. Sin datos recalculados ni artefactos científicos modificados. [Identidad, receipt y backup anteriores](../docs/DATA_LOCATIONS.md).

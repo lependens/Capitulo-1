@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
+
 # Capítulo 1 — Proyectos y ampliaciones del TFG
 
 Este repositorio contiene la evolución y ampliación del trabajo realizado originalmente en el TFG, incorporando nuevas herramientas, datos actualizados, automatización, análisis de evapotranspiración de referencia (ET₀), Machine Learning y futuras aplicaciones orientadas a la predicción y al riego.
@@ -542,4 +544,4 @@ El proyecto puede resumirse actualmente en una única línea:
 
 ## ET₀ V2 — estado 11/11/2026
 
-Diseño, inventario, preparación y ejecutor publicados mediante PR #65–#70. IB09 se admite excepcionalmente solo para DEVELOPMENT V2; Quality V1 sigue FAIL y verificación independiente UNRESOLVED. Según el parte de 05 comunicado por Dirección 00W, piloto aprobado, AHC sellado y ML en ejecución; ANN A/E, freeze y evaluación retrospectiva pendientes. El parte operativo no ha sido verificado aquí mediante manifiestos. [Estado y fuentes](docs/PROJECT_STATUS.md) · [ejecución](scientific_pipeline/docs/et0_v2_execution.md).
+Diseño, inventario, preparación y ejecutor publicados mediante PR #65–#70. IB09 se admite excepcionalmente solo para DEVELOPMENT V2; Quality V1 sigue FAIL y verificación independiente UNRESOLVED. Según el parte de 05 comunicado por Dirección 00W, DEVELOPMENT y retrospectiva se han ejecutado; la validación científica y de integridad y la preservación externa están pendientes. El parte operativo no ha sido verificado aquí mediante manifiestos. [Estado y fuentes](docs/PROJECT_STATUS.md) · [ejecución](scientific_pipeline/docs/et0_v2_execution.md).

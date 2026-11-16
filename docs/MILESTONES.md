@@ -110,3 +110,6 @@ Se añaden cierres posteriores a las entradas que declaraban estas misiones pend
 
 
 | 2026-11-14–16 | Preservación V3, AEMET y DEVELOPMENT V2 | 02B reporta preservación V3 PASS; 02wA reporta A1 PASS y run A2 COMPLETE con reconciliación pendiente; 05 reporta cuatro fases DEVELOPMENT completas y freeze verificado localmente. | [Parte consolidado](PROJECT_UPDATE_2026-11-16.md); PR #72–#74 abiertas en Draft el 16/11. | Preservación final V2 pendiente; retrospectiva NO-GO; no se infiere A2 global PASS ni piloto A3 activo. |
+
+
+| 2026-11-16 | ET₀ V2 — retrospectiva ejecutada | `EXECUTED_VALIDATION_PENDING`; Kaggle `370251881`, predicciones, métricas e informe generados según 05. | Parte 05 comunicado por Dirección 00W; manifest SHA256 `f771dc3564270528c203d9af709b2b88649a552ef7dd831bf4503d04a2fd8daa`; [estado](PROJECT_UPDATE_2026-11-16.md). | Supera el NO-GO anterior como estado de ejecución; integridad, revisión científica, preservación y publicación pendientes. Sin reentrenamiento ni reselección con TEST según 05. |

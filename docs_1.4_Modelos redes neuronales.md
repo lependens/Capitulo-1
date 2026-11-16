@@ -1,5 +1,12 @@
 # 1.3 Análisis de Errores y Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 Este documento combina el análisis de errores de los modelos empíricos (Penman-Monteith estándar, cielo claro, Hargreaves, Valiantzas, ajustados) con la implementación de **Redes Neuronales Artificiales (ANN)** para estimar la evapotranspiración de referencia (ET₀). Los errores se calculan frente a los valores de referencia de Penman-Monteith (PM) proporcionados por el SIAR, para las estaciones IB01 a IB05. Las métricas evaluadas son:
 - **MSE**: Mean Squared Error (mm²/día²)
 - **RRMSE**: Root Mean Squared Error relativo (adimensional)
@@ -128,3 +135,41 @@ El TFG evaluó los modelos empíricos Hargreaves (HGR), Valiantzas (HG), y Hargr
   - **Número de estaciones**: TFG usa 11 estaciones, Python solo 5. Incluir IB06-IB11 en Python podría aumentar errores ligeramente (si esas estaciones tienen más variabilidad), acercándose al TFG.
 - **Conclusión**: Los resultados de Python son coherentes con el TFG (mismas tendencias), con mejoras esperadas (~6-37% en métricas) debido a datos actualizados y depuración estricta. Para alinear más, genera datos para IB06-IB11 y compara subperíodos comunes (ej. hasta 2020).
 
+
+---
+
+## ACTUALIZACIÓN 23/10/2026 — ANN histórica y trabajo científico vigente
+
+Los modelos, entrenamientos y métricas anteriores son **HISTÓRICO / LEGACY** y no representan una ANN v1 validada con el nuevo dataset. No se regeneran modelos ni se atribuyen a la nueva arquitectura resultados históricos.
+
+Quality está cerrado con POST corregido; Dataset Observational v1 construido/validado y primera ejecución oficial PM/HS PASS ([evidencia](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md)). Antes de nuevos modelos: auditar Valiantzas → VALIANTZAS_V1 → comparar baselines clásicos; después estadística/regresión, árboles, boosting y ANN.
+
+Cualquier aprendizaje futuro exige split cronológico TRAIN < VALIDATION < TEST, transformaciones y parámetros aprendidos solo en TRAIN. No reutilizar AHC ni filtros ajustados sobre toda la serie como evidencia fuera de muestra. [ROADMAP](docs/ROADMAP.md).
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Cuatro referencias clásicas antes de nuevos modelos
+
+Los modelos ANN anteriores siguen HISTÓRICO / LEGACY. Dataset v1 y **PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1**, con comparación común n=70.860, ya están PASS ([resultados](scientific_pipeline/results/four-classical-20261024T042250Z/README.md)). No queda implementar esos baselines como etapa previa.
+
+El siguiente orden es **preservación de artefactos científicos → AHC-METHODOLOGY-REVIEW → contrato de evaluación temporal → modelos calibrados simples → regresión/árboles/boosting → ANN después**. No se inicia entrenamiento ni se reetiquetan modelos históricos.
+
+AHC legacy full-series/in-sample no demuestra generalización. La misión AHC específica definirá usos climatológicos/predictivos y validación antes de AHC_V1; esta actualización no decide todo el dataset frente a TRAIN. ML mantiene separación temporal sin leakage. [ROADMAP](docs/ROADMAP.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — ML preparado, sin entrenamiento nuevo
+
+AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 PASS superan los gates pendientes anteriores. [Contrato ML](scientific_pipeline/docs/ml_experiment_contract.md) **FROZEN / READY FOR FUTURE EXPERIMENTS**: linear/regularized regression → trees → random forest/extra trees → boosting → ANN después. Congelar presupuesto/candidatos/semillas del experimento antes de ajustar; no ML ni ANN entrenado en esta etapa.
+
+AHC_VALIDATED es OLS0 por estación contra PM, solo TRAIN 2004–2015; VALIDATION 2016–2020 selecciona y TEST 2021–2025 retrospective_locked evalúa sin refit. AHC_CLIMATOLOGY posterior a TEST permanece separado. Los modelos ANN antiguos siguen legacy y no reciben resultados de esta validación.
+
+[Visualization contract](scientific_pipeline/docs/visualization_contract.md) FROZEN/AVAILABLE TO 06, sin web construida ni recálculo de ciencia desde UI. Los artefactos Windows futuros requieren ingestión explícita para entrar en backup; no están automáticamente protegidos por el snapshot existente.
+
+---
+
+## ACTUALIZACIÓN 02/11/2026 — ANN moderna v1
+
+Los resultados de este documento siguen siendo **HISTÓRICO / LEGACY**. La ANN vigente no deriva de estos scripts ni sustituye sus registros: **ANN-V1-MODERN-ET0 = PASS**, con `FEATURE_SET_FULL / MLP [32]` y target `PM_FAO56_V1` calculada. El cierre moderno usa protocolo temporal, seeds congeladas y TEST `retrospective_locked`; sus métricas, límites y preservación están en [2.1 — ANN moderna](docs_2.1_Estimación%20Et0%20ANN%20%28tensorflow%29.md). No se interpreta como validación frente a ET₀ instrumental independiente.

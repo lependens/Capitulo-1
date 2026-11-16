@@ -48,3 +48,7 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+# Frontend
+node_modules/
+*.tsbuildinfo

@@ -30,12 +30,24 @@ La documentación histórica de esta evolución se conserva en los diferentes ar
 
 ## Estado actual y componentes
 
+**Actualizado: 2026-11-11.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico y ANN moderna v1 PASS, con WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
+
 - [Estado actual del proyecto](docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
-- [Hoja de ruta](docs/ROADMAP.md) — fases, dependencias y próximos hitos.
+- [Hoja de ruta](docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
+- [Hitos del proyecto](docs/MILESTONES.md) — decisiones y resultados materiales, registro append-only.
 - [Calidad SIAR](docs/siar/quality.md) — política y formatos de Quality Audit v1.
-- [Estado de sincronización SIAR](docs/siar/sync-status.md) — alcance temporal y certificación pendiente.
+- [Estado de sincronización SIAR](docs/siar/sync-status.md) — Quality cerrado, POST corregido y runtime Sync HOLD.
 - [SIAR Sync](siar-sync/README.md) — documentación del componente y de su configuración.
-- [Forecast Collector](forecast_collector/README.md) — estado y límites del capturador raw v0.1.
+- [Forecast SIAR](forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
+- [AEMET Forecast Collector](aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
+- [Pipeline científico y resultados oficiales](scientific_pipeline/README.md) — cuatro baselines, AHC y ML clásico PASS, con linaje y límites de evaluación.
+- [Modelos ML clásicos — explicación 1.2.6](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) — de ecuaciones y calibración a modelos aprendidos, resultados y límites.
+- [Aplicación web](web_app/README.md) — WEB-V0.3 Scientific Explorer desplegada en LAN, consumo de ciencia publicada read-only.
+- [Dónde consultar los datos y resultados](docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
+- [Backup y recuperación](docs/backup/README.md) — cobertura, operación y restore; ingestión Windows PASS tras finalización explícita y READY firmado (01/11/2026).
+- [Consolidación AHC/backup](docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — registro histórico del cierre AHC/backup del 25/10.
+- [Auditoría documental 24/10](docs/REPO_AUDIT_2026-10-24.md) — registro histórico de la etapa anterior.
+- [Auditoría documental 23/10](docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.
 - [Archivo legacy](legacy/README.md) — código y resultados históricos/no productivos.
 
 ## 2.1 Objetivos
@@ -198,20 +210,29 @@ El proyecto actual se organiza en varias capas:
 Capitulo-1/
 ├── siar-sync/
 ├── forecast_collector/
+├── aemet_forecast_collector/
 ├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
-├── data_quality/siar/         # reservado para informes; aún vacío de auditorías
+├── data_quality/siar/         # POST original y POST corregido versionados
+├── scientific_pipeline/      # cuatro baselines, AHC y runtime ML rolling
+├── web_app/                  # WEB-V0.3 Scientific Explorer, consulta read-only
 ├── legacy/                    # código y datos históricos
 ├── docs/
+│   ├── PROJECT_STATUS.md
+│   ├── ROADMAP.md
+│   ├── MILESTONES.md
+│   ├── backup/               # arquitectura, cobertura, operación y restore
 │   └── siar/
 ├── estaciones_baleares.csv
 └── README.md
 ```
 
-El backfill temporal de adquisición ha alcanzado las 12 estaciones: IB01–IB11 e IB101 tienen su CSV canónico. La certificación científica de calidad sigue pendiente; el alcance temporal alcanzado no implica que cada día tenga datos ni que el conjunto esté certificado.
+El backfill temporal de adquisición ha alcanzado las 12 estaciones: IB01–IB11 e IB101 tienen su CSV canónico. Quality está COMPLETE con POST corregido; la cobertura observacional es 96.987410 % por 2.345 ausencias SIAR confirmadas. No equivale a observaciones completas para todos los días ni a validación instrumental exhaustiva.
 
 ---
 
-# 4. Etapa actual — 2026
+# 4. Evolución de la infraestructura — contexto 2026
+
+**Estado vigente:** SIAR-SYNC-RUNTIME HOLD hasta production alignment e incremental 2026 demostrado. El snapshot científico 2025 ya está cerrado. Las capacidades enumeradas debajo no significan que la adquisición rutinaria esté actualmente activa.
 
 Durante 2026 el proyecto ha dejado de centrarse únicamente en scripts independientes y ha comenzado a desarrollar una infraestructura reproducible.
 
@@ -233,11 +254,13 @@ Sus funciones principales son:
 * automatización;
 * control mediante Git.
 
-La adquisición histórica debe mantenerse estable mientras se desarrollan las siguientes etapas.
+La reactivación de Sync exige sus gates propios; no condiciona la captura prospectiva de Forecast.
 
 ---
 
-# 5. Próximas etapas
+# 5. Perspectiva histórica de las siguientes etapas
+
+Esta sección conserva el planteamiento original. Dataset v1 y la primera ejecución oficial PM/HS ya existen; la secuencia vigente está en ROADMAP e incorpora auditoría Valiantzas antes de nuevos modelos. Parquet/DuckDB siguen siendo opciones derivadas, no requisitos del raw.
 
 ## 5.1 Dataset científico
 
@@ -417,28 +440,28 @@ La validación temporal y espacial será una parte fundamental de la metodologí
 
 ---
 
-# 7. Estado general
+# 7. Estado general — 31/10/2026
 
-| Área                      | Estado                           |
-| ------------------------- | -------------------------------- |
-| Datos históricos SIAR     | 🟠 12 CSV canónicos IB01–IB11 + IB101; backfill temporal alcanzado, certificación científica pendiente |
-| SIAR Sync                 | 🟢 v2.3.3 desplegada; backfill temporal alcanzado para 12 estaciones |
-| Control de cobertura      | 🟢 Implementado                  |
-| Validación de datos       | 🟢 Implementado                  |
-| Docker                    | 🟢 Implementado                  |
-| Git / trazabilidad        | 🟢 Implementado                  |
-| ET₀ Penman-Monteith       | 🟢 Implementado inicialmente     |
-| Métodos empíricos         | 🟢 Implementado inicialmente     |
-| Redes neuronales          | 🟢 Primera etapa implementada    |
-| Dataset científico        | 🟡 Próxima etapa                 |
-| Nuevos modelos ML         | 🟡 Próxima etapa                 |
-| Forecast Collector        | 🟠 v0.1 en main; E2E demostrado, PR #14 fusionada y LIVE-IB04 #2 completo; despliegue pendiente |
-| Archivo legacy            | 🟢 Código y resultados históricos separados bajo `legacy/` |
-| Predicción propia de ET₀  | ⚪ Futura                         |
-| Aplicación web            | ⚪ Futura                         |
-| Kc / necesidades de riego | ⚪ Futura                         |
+| Área | Estado |
+|---|---|
+| Quality SIAR | COMPLETE; POST corregido SIAR-QA-POST-20261020T193140Z |
+| Datos observacionales | 75.496 filas raw; 75.495 oficiales; 2.345 ausencias confirmadas, 1 RECOVERED; cobertura 96.987410 % |
+| Dataset Observational v1 | Construido/validado PASS; backup SHA256 PASS en snapshot aceptado |
+| Cuatro baselines oficiales | PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1 PASS; comparación común n=70.860 (PR #36) |
+| AHC temporal | AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS; OLS0 TRAIN, TEST retrospective_locked; climatología separada |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows automation PASS; finalización y READY firmado explícitos, transferencia/preservación posteriores automáticas |
+| SIAR Sync v2.3.3 | HOLD hasta alignment e incremental 2026 demostrado |
+| Forecast SIAR | Timer ACTIVE; reconciliador cada 15 min enabled/active; OAuth Production; nuevo run real → backup automático → COMPLETE remoto pendiente |
+| AEMET Track A | E2E DEMONSTRATED; captura disabled/inactive, nuevo backup automático NOT ACTIVE; reactivar tras CAPTURE RUNNING |
+| AEMET Track B | OPEN |
+| Storage | CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE |
+| ANN y dashboards legacy | Historia preservada, sin convertir resultados antiguos en v1 |
+| WEB-V0.2-AHC | PASS / DEPLOYED en LAN; cuatro baselines y AHC publicados, datos read-only |
+| ML clásico | ML-V1-CLASSICAL-MODELS PASS; champion HGB FULL; evaluación retrospectiva recuperada |
+| WEB-V0.3-ML | READY para consumir outputs ML publicados; sin despliegue nuevo en esta misión |
+| ANN / Forecast integrado / Kc / ETc / riego | ANN-V1-MODERN-ET0 PASS contra PM_FAO56_V1 calculada; integraciones y riego posteriores bajo sus gates |
 
-Raw Forecast Capturer v0.1 está implementado y fusionado en `main` mediante PR #8; el gate sintético previo al merge pasó 29 tests. El contrato E2E fue demostrado, PR #14 está fusionada y `LIVE-IB04 #2` está completo. El capturador aún no está desplegado. El siguiente gate es acordar con 02 el almacenamiento definitivo bajo `/srv` y el backup off-site.
+Según el parte de 02 del 01/11 comunicado por Dirección 00W, SIAR Forecast alcanzó dos ciclos naturales PASS y PILOT RUNNING; esta documentación no constituye una nueva inspección del servidor. SIAR Sync sigue HOLD. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
 
 ---
 
@@ -486,37 +509,16 @@ De esta forma, GitHub funciona simultáneamente como:
 
 # 9. Punto de partida para la siguiente etapa
 
-La infraestructura de datos históricos constituye actualmente la base sobre la que se desarrollarán las siguientes fases.
+Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.3 Scientific Explorer desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica y la ANN moderna v1 están PASS; WEB-V0.3 Scientific Explorer permanece PASS / DEPLOYED. [Backup canónico](docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
 
-El flujo previsto es:
+El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
 
-```text
-          SIAR
-           ↓
-       SIAR Sync
-           ↓
-    Datos históricos
-           ↓
-   Dataset científico
-           ↓
-     ┌─────┴─────┐
-     ↓           ↓
-    ET₀          ML
-     │           │
-     └─────┬─────┘
-           ↓
-      Predicción
-           ↓
-       Aplicación
-           ↓
-         Riego
-```
-
-El siguiente objetivo práctico es consolidar el dataset y comenzar la nueva fase de modelado y predicción sin comprometer la infraestructura de adquisición ya construida.
-
----
+En paralelo: mantener seguimiento del piloto Forecast SIAR comunicado por 02; completar backup cifrado dedicado y programación AEMET con evidencia, y resolver los gates de SIAR Sync V3 antes de levantar HOLD. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md) y [MILESTONES](docs/MILESTONES.md) separan estado, futuro e historia.
 
 ## Navegación rápida
+
+- **Estado e hitos:** [PROJECT_STATUS](docs/PROJECT_STATUS.md), [ROADMAP](docs/ROADMAP.md), [MILESTONES](docs/MILESTONES.md).
+- **Capturadores:** [Forecast SIAR](forecast_collector/README.md), [AEMET Track A](aemet_forecast_collector/README.md).
 
 * **Objetivos:** [`docs_1.0_Objetivos alcanzables.md`](docs_1.0_Objetivos%20alcanzables.md)
 * **Obtención de datos:** [`docs_1.1_Obtención de datos.md`](docs_1.1_Obtenci%C3%B3n%20de%20datos.md)
@@ -532,3 +534,12 @@ El siguiente objetivo práctico es consolidar el dataset y comenzar la nueva fas
 El proyecto puede resumirse actualmente en una única línea:
 
 > **Construir una infraestructura reproducible de datos meteorológicos de las Islas Baleares que permita estudiar, estimar y predecir ET₀ mediante métodos físicos, empíricos y de Machine Learning, con una futura aplicación práctica orientada al riego.**
+
+## Cierre vigente de producto — 01/11/2026
+
+**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: la ANN moderna v1 ya está publicada; la web podrá consumirla junto con validación prospectiva posterior.
+
+
+## ET₀ V2 — estado 11/11/2026
+
+Diseño, inventario, preparación y ejecutor publicados mediante PR #65–#70. IB09 se admite excepcionalmente solo para DEVELOPMENT V2; Quality V1 sigue FAIL y verificación independiente UNRESOLVED. Según el parte de 05 comunicado por Dirección 00W, piloto aprobado, AHC sellado y ML en ejecución; ANN A/E, freeze y evaluación retrospectiva pendientes. El parte operativo no ha sido verificado aquí mediante manifiestos. [Estado y fuentes](docs/PROJECT_STATUS.md) · [ejecución](scientific_pipeline/docs/et0_v2_execution.md).

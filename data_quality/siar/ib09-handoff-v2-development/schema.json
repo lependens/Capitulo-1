@@ -1,0 +1,319 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lependens/Capitulo-1/schema/ib09-quality-handoff-v2-development-2.0.0.json",
+  "title": "IB09 Quality V2 DEVELOPMENT exception",
+  "type": "object",
+  "required": [
+    "handoff_id",
+    "schema_version",
+    "quality_policy_id",
+    "quality_policy_version",
+    "audit_id",
+    "audit_source_repo_sha",
+    "source_repo_sha",
+    "decision_id",
+    "decision_authority",
+    "decision_date",
+    "supersedes",
+    "raw_path",
+    "raw_sha256",
+    "catalog_path",
+    "catalog_sha256",
+    "official_source_ref",
+    "official_source_sha256",
+    "official_source_checked_at",
+    "ledger_path",
+    "ledger_sha256",
+    "station_code",
+    "official_start_date",
+    "official_end_date",
+    "inclusivity",
+    "observed_official_rows",
+    "outside_period_rows",
+    "confirmed_no_data_count",
+    "quality_v1_status",
+    "official_period_verification_status",
+    "v2_scientific_admission_status",
+    "decision_effective",
+    "decision_conditions",
+    "policy",
+    "catalog_period",
+    "official_period_verification",
+    "admission",
+    "quality_post",
+    "outside_dates",
+    "raw_rows"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "handoff_id": {
+      "const": "IB09-QUALITY-HANDOFF-V2-DEVELOPMENT-20261111"
+    },
+    "schema_version": {
+      "const": "2.0.0"
+    },
+    "quality_policy_id": {
+      "const": "IB09-QUALITY-V2-DEVELOPMENT-EXCEPTION"
+    },
+    "quality_policy_version": {
+      "const": "1.0.0"
+    },
+    "audit_id": {
+      "const": "SIAR-QA-POST-20261020T193140Z"
+    },
+    "audit_source_repo_sha": {
+      "const": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865"
+    },
+    "source_repo_sha": {
+      "const": "97aa8cc0062de5ba6d2ec1af7668495a352c3777"
+    },
+    "decision_id": {
+      "const": "DIRECTION-00-IB09-DEVELOPMENT-20261111"
+    },
+    "decision_authority": {
+      "const": "Direccion 00"
+    },
+    "decision_date": {
+      "const": "2026-11-11"
+    },
+    "supersedes": {
+      "type": "object",
+      "required": [
+        "handoff_id",
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "handoff_id": {
+          "const": "IB09-QUALITY-HANDOFF-V2-20261111"
+        },
+        "path": {
+          "const": "data_quality/siar/ib09-handoff-v2/handoff.json"
+        },
+        "sha256": {
+          "const": "0592a57c73691409ef062272577204bf081b0dec111815f4a2197ed100c5b8bc"
+        }
+      }
+    },
+    "raw_path": {
+      "const": "datos_siar_baleares/IB09_datos_completos.csv"
+    },
+    "raw_sha256": {
+      "const": "2cbd9bb289404264fc78dad21322562d9d22b64ce4bbc87e51512ca763ea7a8a"
+    },
+    "catalog_path": {
+      "const": "estaciones_baleares.csv"
+    },
+    "catalog_sha256": {
+      "const": "98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357"
+    },
+    "official_source_ref": {
+      "const": "https://servicio.mapa.gob.es/siarweb/consultaDatos/inicio"
+    },
+    "official_source_sha256": {
+      "const": null
+    },
+    "official_source_checked_at": {
+      "const": "2026-11-11"
+    },
+    "ledger_path": {
+      "const": "data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_missing_days.csv"
+    },
+    "ledger_sha256": {
+      "const": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969"
+    },
+    "station_code": {
+      "const": "IB09"
+    },
+    "official_start_date": {
+      "const": "2005-10-24"
+    },
+    "official_end_date": {
+      "const": "2018-10-10"
+    },
+    "inclusivity": {
+      "const": "BOTH_INCLUSIVE"
+    },
+    "observed_official_rows": {
+      "const": 4422
+    },
+    "outside_period_rows": {
+      "const": 1
+    },
+    "confirmed_no_data_count": {
+      "const": 313
+    },
+    "quality_v1_status": {
+      "const": "FAIL"
+    },
+    "official_period_verification_status": {
+      "const": "UNRESOLVED"
+    },
+    "v2_scientific_admission_status": {
+      "const": "APPROVED"
+    },
+    "decision_effective": {
+      "const": true
+    },
+    "decision_conditions": {
+      "const": [
+        "development_only",
+        "verify_raw_bytes_and_row_binding",
+        "reconcile_raw_catalog_post_ledger",
+        "apply_method_specific_eligibility",
+        "stop_on_official_contradiction_or_reconciliation_failure",
+        "no_campaign_launch"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "required": [
+        "inside",
+        "outside",
+        "prototype_path",
+        "row_binding_responsibility",
+        "activation",
+        "prototype_sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "inside": {
+          "const": "CANDIDATE_ONLY"
+        },
+        "outside": {
+          "const": "OUTSIDE_OFFICIAL_PERIOD"
+        },
+        "prototype_path": {
+          "const": "scientific_pipeline/src/siar_science/quality_ib09_v2.py"
+        },
+        "row_binding_responsibility": {
+          "const": "V2_CONSUMER_05"
+        },
+        "activation": {
+          "const": "DEVELOPMENT_ONLY_AFTER_VALIDATION"
+        },
+        "prototype_sha256": {
+          "const": "3bd22a5250382c6ba4eda3c0d91e0225da9e2c874bff4fcc71743649cfa0cc1b"
+        }
+      }
+    },
+    "catalog_period": {
+      "type": "object",
+      "required": [
+        "start",
+        "end",
+        "inclusive"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "const": "2005-10-24"
+        },
+        "end": {
+          "const": "2018-10-10"
+        },
+        "inclusive": {
+          "const": true
+        }
+      }
+    },
+    "official_period_verification": {
+      "type": "object",
+      "required": [
+        "status",
+        "start",
+        "end",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "UNRESOLVED"
+        },
+        "start": {
+          "const": null
+        },
+        "end": {
+          "const": null
+        },
+        "evidence": {
+          "const": null
+        }
+      }
+    },
+    "admission": {
+      "type": "object",
+      "required": [
+        "status",
+        "scope",
+        "basis",
+        "decision_ref",
+        "decided_at_utc",
+        "timestamp_source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "APPROVED"
+        },
+        "scope": {
+          "const": "DEVELOPMENT_ONLY"
+        },
+        "basis": {
+          "const": "DIRECTION_00_CATALOG_EXCEPTION"
+        },
+        "decision_ref": {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "const": "data_quality/siar/ib09-handoff-v2-development/decision.md"
+            },
+            "sha256": {
+              "const": "31d391e0f2bb468616971fe920963fed0bed377e95812f95f36dca19fc401ec0"
+            }
+          }
+        },
+        "decided_at_utc": {
+          "const": "2026-11-11T13:35:49Z"
+        },
+        "timestamp_source": {
+          "const": "SOURCE_TURN_STARTED_AT"
+        }
+      }
+    },
+    "quality_post": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "const": "SIAR-QA-POST-20261020T193140Z"
+        },
+        "path": {
+          "const": "data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/quality-post-package.json"
+        },
+        "sha256": {
+          "const": "a2d1293fcc54254769dbc80c7105b08b4b03b6a14392df0a4e5ef19b4ef51d07"
+        }
+      }
+    },
+    "outside_dates": {
+      "const": [
+        "2005-10-23"
+      ]
+    },
+    "raw_rows": {
+      "const": 4423
+    }
+  }
+}

@@ -1,0 +1,37 @@
+name: Web application
+on:
+  push:
+    paths: ['web_app/**', '.github/workflows/web-app.yml', '.dockerignore']
+  pull_request:
+    paths: ['web_app/**', '.github/workflows/web-app.yml', '.dockerignore']
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r web_app/requirements-test.txt
+      - run: python -m pytest web_app/tests -q
+      - run: docker build -f web_app/Dockerfile.backend -t siar-et0-backend-test .
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web_app/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web_app/frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test -- --run
+      - run: npm run build
+      - run: docker build -f web_app/Dockerfile.frontend -t siar-et0-frontend-test .
+        working-directory: .

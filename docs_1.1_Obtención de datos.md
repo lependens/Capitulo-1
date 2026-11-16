@@ -1,5 +1,14 @@
 # 1. Obtención de datos históricos y actuales de las estaciones meteorológicas de Baleares
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
+> **Lectura histórica.** Las secciones anteriores a la actualización del 18/10/2026 conservan los estados intermedios de la adquisición, incluidos planes que después se realizaron. El estado consolidado a esa fecha se explica en la sección final «ACTUALIZACIÓN 18/10/2026 — Arquitectura de adquisición consolidada»; para cambios posteriores, consultar [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
 **Objetivo:** Conseguir todos los datos históricos y actualizados hasta 2024 de las estaciones meteorológicas de las Islas Baleares de la pagina web del SIAR de manera automatizada, para almacenarlos en una **base de datos local** en formato CSV.
 
 **A CONTINUACIÓN SE INDICAN LOS PASOS QUE SE VAN DANDO**
@@ -1380,3 +1389,205 @@ El worker productivo tiene SHA-256 `7d48be629cd6cf584bed491f9e30da57f62a025f6765
 Se validaron la autenticación real y `Info/ACCESOS`. Los CSV de IB01–IB09 permanecieron byte a byte idénticos tras ambos despliegues. El TLS deja de ser un bloqueador inmediato para SIAR Sync; el siguiente objetivo de adquisición es reanudar y completar el backfill histórico.
 
 La v2.3.3 queda incorporada como versión canónica de GitHub mediante la PR #4; esta actualización no despliega ni sustituye la instancia productiva.
+
+---
+
+# ACTUALIZACIÓN 18/10/2026 — Arquitectura de adquisición consolidada
+
+Esta actualización continúa la bitácora: no sustituye los ensayos iniciales, las consultas mensuales ni los estados intermedios descritos arriba. Durante esa evolución se pasó de scripts locales de adquisición a tres líneas separadas: observaciones SIAR, predicciones SIAR y predicciones municipales AEMET. Cada una conserva sus propios originales y su trazabilidad; ninguna equivale todavía a un dataset científico integrado.
+
+La [situación vigente](docs/PROJECT_STATUS.md), la [dirección futura](docs/ROADMAP.md) y el [registro de hitos](docs/MILESTONES.md) tienen sus documentos propios. Aquí se explica qué cambió técnicamente y qué límites conserva la adquisición.
+
+## SIAR Sync: de las consultas históricas a v2.3.3 operativa
+
+La producción utiliza **SIAR Sync v2.3.3**. Tanto v2.3.2 como v2.3.3 fueron desplegadas y validadas; las secciones anteriores que las presentan como futuras describen el momento previo a esos despliegues. El código canónico está en [siar-sync/](siar-sync/README.md), separado del material histórico archivado bajo `legacy/`.
+
+La adquisición actual utiliza autenticación dinámica SIAR y consultas en bloques de **como máximo siete días**. Mantiene el contrato de **23 columnas canónicas**, detecta huecos y refresca datos recientes. Los reintentos HTTP permiten gestionar fallos de consulta sin tratar automáticamente una petición fallida como ausencia de observaciones.
+
+La escritura del CSV es atómica. La persistencia local no depende de que Git funcione: un fallo al publicar no debe hacer perder los datos ya adquiridos; los checkpoints Git aportan trazabilidad de la evolución del repositorio. El modo final esperado es **0644** y el saneamiento operativo posterior a v2.3.2 ya dejó los **12/12 CSV en 0644**, con SHA-256 PRE y POST idénticos para los doce archivos. Ese saneamiento no cambió contenido ni constituyó una nueva versión funcional.
+
+La compatibilidad TLS incorporada en v2.3.3 mantiene activa la verificación del servidor. `SIAR_CA_BUNDLE` es opcional: sin definirla o vacía se utiliza TLS estándar; al definirla se usa el bundle indicado, conservando la verificación. **No se utiliza `verify=False`.**
+
+También quedó resuelta **INC-INFRA-001**, la acumulación de procesos zombies: `init: true` es requisito canónico del servicio Docker. La validación de `docker-init` como PID 1 y de los checkpoints Git permitió cerrar la incidencia. No se trata de correcciones pendientes.
+
+## Inventario observado y separación entre cobertura temporal y calidad
+
+El inventario oficial comprende **12 estaciones: 9 ACTIVE y 3 CLOSED**.
+
+| Estado oficial | Estaciones |
+|---|---|
+| ACTIVE | IB01, IB02, IB03, IB04, IB05, IB06, IB08, IB10, IB11 |
+| CLOSED | IB07, IB09, IB101 |
+
+El backfill temporal alcanzó las doce estaciones y existen sus doce CSV canónicos `IB*_datos_completos.csv` en `datos_siar_baleares/`. El catálogo canónico del repositorio sigue siendo [estaciones_baleares.csv](estaciones_baleares.csv).
+
+**Adquisición temporal alcanzada no significa certificación científica completa.** Tener un archivo y alcanzar el extremo temporal previsto no demuestra que todas las fechas o todas las observaciones sean conformes.
+
+Quality Audit v1 produjo un **snapshot PRE completado**:
+
+| Medida del PRE | Resultado |
+|---|---:|
+| Días esperados | 77.840 |
+| Días con dato | 75.494 |
+| Huecos PRE | 2.346 |
+| Cobertura ponderada | 96,99 % |
+
+Estas cifras describen exclusivamente el PRE preservado; no son un resultado POST ni una medida actualizada de la recuperación. En ese snapshot los huecos se registraron como `PENDING_RETRY / NOT_ATTEMPTED / attempt_count=0`.
+
+R1 quedó superada como etapa histórica y **Quality Recovery R2 continúa en ejecución autónoma**. Un `INVALID_RESPONSE` aislado no bloquea globalmente R2. **Quality POST permanece pendiente y Dataset Observational v1 todavía no está generado.**
+
+La [especificación Quality](docs/siar/quality.md) distingue huecos de errores de consulta: `CONFIRMED_NO_DATA` exige una respuesta SIAR válida con cero registros. Los periodos oficiales terminan en `Fecha_Baja` para las cerradas y emplean un cutoff explícito para las activas. No se interpolan, imputan ni corrigen manualmente observaciones raw. Recovery puede incorporar registros reales devueltos por SIAR mediante el mecanismo canónico; esta actualización documental no altera ni reinterpreta los raw. El seguimiento de esa etapa está en [sync-status](docs/siar/sync-status.md).
+
+## Forecast SIAR: del descubrimiento HTTP a conservar emisiones
+
+La investigación que en las secciones anteriores figuraba como próxima ya demostró un flujo HTTP público reproducible: GET `/inicio`, sesión y CSRF, validación del formulario, cálculo mediante `/calculo` y exportación `/exportCSV` en la misma sesión. El resultado incluye ZIP/CSV oficial; la cabecera forecast observada es:
+
+```text
+Fecha;Kc;ET0;ETc;Pe;ETc - Pe
+```
+
+Esto prueba una vía de adquisición, pero no cierra por sí solo la semántica temporal. El instante de emisión de la fuente todavía no está demostrado: `source.source_issue_at = null`. **No se han asignado D+0…D+6** y no se ha demostrado que pueda recuperarse un histórico de emisiones. Por eso cada emisión capturada debe conservarse, en lugar de sobrescribirse con la siguiente.
+
+El [Raw Forecast Collector SIAR](forecast_collector/README.md) ya está implementado. Utiliza `run_id` y `capture_id`, metadata, SHA-256, estados `complete / partial / failed`, conservación append-only y publicación atómica. La captura raw preserva evidencia de lo recibido sin convertirla todavía en variables científicas normalizadas.
+
+El HTML no se conserva incondicionalmente: su política contempla `persisted`, `omitted_sensitive` y `not_available`. Si contiene material sensible reutilizable puede omitirse; ZIP/CSV y las demás evidencias permitidas se preservan según el contrato. Omitir HTML sensible no equivale a perder la exportación oficial ni autoriza guardar credenciales.
+
+## Forecast SIAR: runtime y backup ya demostrados
+
+La infraestructura permanente utiliza una identidad de servicio dedicada, `siar-forecast`, y separa release, configuración y datos:
+
+| Ubicación | Función |
+|---|---|
+| `/opt/siar-forecast/` | Runtime y releases |
+| `/etc/siar-forecast/` | Configuración |
+| `/srv/siar-forecast/raw/` | Almacenamiento raw independiente |
+
+Los gates **SMOKE-FC-001 = PASS**, **BACKUP-FC-001 = PASS** y **FC-STATIONS-001 = PASS** sustituyen a los antiguos planes de aprovisionamiento e inventario. El smoke demostró la ejecución desde el runtime permanente, con validación TLS, hashes y schemas.
+
+El backup utiliza **rclone hacia Google Drive mediante rclone crypt**, con contenido, nombres y directorios cifrados. Se emplea `rclone copy`, no `sync`. Se validó un restore independiente y la integridad de los artefactos restaurados. Esta prueba de backup no debe confundirse con el cierre completo de recuperación ante pérdida total del servidor: el material de recuperación externa mantiene su gate propio.
+
+## Inventario Forecast: IB08 activa, con indisponibilidad externa observada
+
+Las nueve estaciones oficialmente ACTIVE constituyen el inventario Forecast activo; IB07, IB09 e IB101 se excluyen operacionalmente por estar CLOSED. La prueba **FC-MULTI-SMOKE-001** intentó las nueve activas: **ocho capturas completas y una fallida, IB08**.
+
+Para IB08 deben conservarse dos estados distintos:
+
+| Dimensión | Estado o evidencia |
+|---|---|
+| Estado oficial | `ACTIVE` |
+| Estado operativo | `TEMPORARILY_UNAVAILABLE_EXTERNAL` |
+| Identificador SIAR observado | `8_7` |
+| Comarca | Menorca, `703` |
+| Endpoint/catálogo de comarca 703 | HTTP 500 |
+| Control Mallorca, comarca 702 | HTTP 200 |
+
+Esta evidencia delimita la indisponibilidad observada, pero **no demuestra la causa interna exacta en SIAR/MAPA**. IB08 no se convierte en CLOSED ni se elimina del inventario activo.
+
+## Piloto SIAR en observación operativa
+
+A la fecha de esta actualización, el piloto está **en observación operativa**. Todavía no se consolida **`SIAR-FORECAST-PILOT = RUNNING`**: el cierre de ese gate requiere observar al menos dos ciclos programados y confirmar su resultado.
+
+El target operativo inicial es **IB01, IB02, IB03, IB04, IB05, IB06, IB10 e IB11**; IB08 se vigila separadamente. La cadencia experimental prevista para los ciclos en observación es **08:00, 14:00 y 20:00, zona `Europe/Madrid`**.
+
+La existencia del runtime, del backup y de una prueba multiestación no sustituye la validación de esos ciclos. Esta distinción evita presentar como operación periódica consolidada lo que todavía se está observando.
+
+## AEMET: Track A demostrado y piloto prospectivo condicionado
+
+La antigua «Próxima investigación: AEMET» queda como contexto histórico. **Track A = PASS**, **AEMET-TRACK-A-STABILIZE = PASS** y **AEMET final E2E = DEMONSTRATED**. La implementación se incorporó mediante [PR #18](https://github.com/lependens/Capitulo-1/pull/18), la comparación canónica de municipality id mediante [PR #19](https://github.com/lependens/Capitulo-1/pull/19) y la política POSIX de ancestros mediante [PR #20](https://github.com/lependens/Capitulo-1/pull/20).
+
+El producto adquirido es la **predicción municipal diaria AEMET OpenData**. El piloto inicial relaciona **IB04 Son Ferriol → Palma → municipio `07040`**. Palma/07040 representa el producto municipal de la capital: no es un forecast puntual exacto de la estación SIAR.
+
+El [Collector AEMET](aemet_forecast_collector/README.md) preserva los bytes recibidos en `wrapper.raw` y `payload.raw`, junto a hashes, metadata y manifiestos de ejecución/captura. La canonicalización necesaria para comparar el id observado `7040` con el configurado `"07040"` no modifica el raw.
+
+Los límites científicos permanecen explícitos: **ET₀ = NO; D+n = NO; timezone de emisión inferida = NO; integración SIAR/AEMET = NO**. **Track B sigue OPEN**: no se ha demostrado cuál es el feed AEMET exacto utilizado por SIAR.
+
+**AEMET-PROSPECTIVE-PILOT está preparado como siguiente hito, condicionado a que primero SIAR-FORECAST-PILOT alcance RUNNING.** Después corresponde habilitar runtime permanente, `/opt` y `/etc`, raw independiente en `/srv/aemet-forecast/raw`, backup rclone crypt, restore validado y scheduler experimental. El contrato validado del Collector no demuestra por sí solo ese despliegue prospectivo.
+
+## Arquitectura de adquisición: tres originales separados
+
+```mermaid
+flowchart TD
+    F["Fuentes"] --> O["SIAR observado"]
+    F --> S["SIAR Forecast"]
+    F --> A["AEMET Forecast"]
+    O --> SY["SIAR Sync"]
+    S --> SC["Raw Collector SIAR"]
+    A --> AC["Raw Collector AEMET"]
+    SY --> CSV["CSV raw: 23 columnas"]
+    SC --> SR["Raw SIAR append-only"]
+    AC --> AR["Raw AEMET append-only"]
+    CSV -.-> D["Datasets derivados futuros"]
+    SR -.-> D
+    AR -.-> D
+    D --> E["Capa científica ET₀"]
+```
+
+Las flechas discontinuas representan trabajo futuro, no una integración ya realizada. Los tres originales mantienen sus contratos y ubicaciones propios; no deben mezclarse prematuramente.
+
+**Adquisición, procesamiento científico, modelado y producto son capas distintas.** La captura prospectiva puede avanzar en paralelo al cierre Quality y a la preparación científica, sin esperar a los modelos y sin atribuir a los raw una semántica aún no demostrada.
+
+## Del cierre Quality al dataset científico reproducible
+
+La secuencia prevista para las observaciones es: **Quality POST → Dataset Observational v1 reproducible → FAO-56 Penman-Monteith → Hargreaves-Samani → baselines → ML posterior**. Cada etapa requiere su propia validación; no se da por generado Dataset v1.
+
+La propuesta histórica «CSV → Parquet → DuckDB → ML» no es una decisión irreversible sobre los originales. Parquet y DuckDB pueden ser opciones para almacenamiento o análisis de datos derivados; no sustituyen el raw ni son un requisito impuesto a la adquisición.
+
+Existe trabajo en paralelo sobre `scientific_pipeline/`, con la [PR #23 en Draft](https://github.com/lependens/Capitulo-1/pull/23) al preparar esta actualización. Sus resultados provisionales y los detalles de PM/Hargreaves quedan fuera de esta bitácora. La separación permite avanzar en adquisición y en diseño científico sin confundir implementación en revisión con resultados certificados.
+
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Cierre observacional y adquisición prospectiva
+
+Esta actualización supera los estados PRE/R2/POST pendiente de las secciones anteriores. **Quality completeness = COMPLETE**: POST vigente **SIAR-QA-POST-20261020T193140Z**, superseding del original SIAR-QA-POST-20261018T233901Z preservado. PR #29 corrigió el ledger, que omitía la fecha recuperada ya presente en raw; no modificó observaciones.
+
+12 estaciones, 9 ACTIVE y 3 CLOSED; 75.496 filas raw, 75.495 dentro de periodo oficial; 2.346 entradas ledger = 1 RECOVERED + 2.345 CONFIRMED_NO_DATA + 0 PENDING_RETRY. Cobertura 96.987410 %: la auditoría está completa y la serie observacional es incompleta por ausencias SIAR confirmadas. Las cifras PRE de 75.494 observados y 2.346 huecos siguen siendo exclusivamente PRE.
+
+IB07/2012-11-13 es RECOVERED con evidencia FORENSIC-IB07-001/F2 y 23/23 campos verificados. La procedencia de escritura original sigue diferenciada de la confirmación de contenido. IB09/2005-10-23 permanece raw PRESERVED / OUTSIDE_OFFICIAL_PERIOD. CATALOG-TZ-001 continúa OPEN / NON_BLOCKING.
+
+Publicación canónica source_repo_sha = `2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9`; audit_source_repo_sha = `18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865`. Los informes conservan el SHA auditado y los hashes acreditan continuidad con la publicación. [Estado observacional](docs/siar/sync-status.md).
+
+**Dataset Observational v1 ya está construido y validado estructuralmente**, SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`. La ejecución oficial PM/HS también está PASS y publicada mediante PR #31; las afirmaciones anteriores de dataset/ejecución pendiente son históricas. El JSON completo es un artefacto derivado preservado localmente, no se afirma que esté íntegro en Git. [Datos y resultados](docs/DATA_LOCATIONS.md).
+
+**SIAR-SYNC-RUNTIME = HOLD.** v2.3.3 sigue siendo el componente observacional; su reactivación exige SIAR-SYNC-PRODUCTION-ALIGNMENT y SIAR-SYNC-INCREMENTAL-2026. El default 2025-12-31 no demuestra un modo incremental 2026; /start podría reabrir aproximadamente 1.958 huecos históricos de activas. Panel y worker deben distinguir gaps históricos, lag actual y Fecha_Baja. El snapshot científico 2025 ya cerrado no depende de reactivar Sync.
+
+Forecast SIAR mantiene Collector/runtime/raw append-only/TLS/hashes/schemas y backup rclone crypt + restore demostrados. Ocho funcionales: IB01, IB02, IB03, IB04, IB05, IB06, IB10, IB11. IB08 sigue ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL, vigilada por separado sin bloquear las demás.
+
+Tras el incidente los timers quedaron pausados según el último parte. La dependencia vigente **no es SIAR Sync**: 1 ciclo automático real → SIAR-FORECAST-CAPTURE RUNNING; mínimo 2 → SIAR-FORECAST-PILOT RUNNING. No se afirma que estos gates hayan pasado. No reconstruir emisiones perdidas ni asignar D+0…D+6; source issue timestamp puede permanecer null.
+
+AEMET Track A E2E DEMONSTRATED; piloto IB04 → Palma → municipio 07040, capital municipal y no forecast puntual de estación. Wrapper/payload raw con bytes y provenance preservados. Tras la pausa, **SIAR-FORECAST-CAPTURE RUNNING habilita reactivar AEMET**, sin esperar Sync ni el gate PILOT. ET₀, D+n, timezone científico de emisión, histórico y PM completo siguen sin demostrarse; Track B OPEN.
+
+Toshiba CLOSED_OPERATIONALLY / MONITORING y STORAGE-DATA-PRESERVATION PASS: 238/238 archivos de datos por size/SHA256, 12/12 CSV contra POST y 242 archivos totales sin discrepancias; copia descifrada en PC fuera del Toshiba. No hubo evidencia actual de fallo físico activo en el parte recibido. Cualquier nuevo I/O error/emergency_ro/SMART warning/USB reset asociado/corrupción activa STOP de infraestructura.
+
+Cada nuevo raw prospectivo relevante requiere backup externo. GitHub es autoridad de código/docs/artefactos versionables; Drive cifrado conserva raw/preservación; PC/OneDrive es copia adicional, sin atribuir auditoría independiente a OneDrive. Adquisición, ciencia, modelado y producto siguen separados.
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Timer activo y alcance real de preservación
+
+Las menciones de timers Forecast SIAR pausados de las actualizaciones anteriores son históricas. **Parte 02 comunicado por Dirección 00 el 24/10: timer SIAR Forecast ACTIVE**; reconciliador **enabled/active cada 15 min**, último Result success. Procesa runs publicados pendientes complete/partial/failed bajo /srv/siar-forecast/raw/runs/ mediante rclone copy, no sync. Excluye raw/tmp, CSV SIAR Sync, código, /etc completo y resto del servidor.
+
+OAuth Google/rclone está **Production**, reauthorization y CLI crypt listing PASS. Testing causaba el límite específico de siete días; Production con nueva autorización lo elimina, sin garantizar que tokens nunca puedan invalidarse. Copy a crypt y restore independiente PASS, SHA256 MATCH; no se publica configuración ni secretos.
+
+Todavía falta **nuevo run Forecast SIAR real automático → backup automático → COMPLETE remoto**. Primer ciclo completo PASS → SIAR-FORECAST-CAPTURE RUNNING; al menos dos → SIAR-FORECAST-PILOT RUNNING. El timer activo no basta. Ocho estaciones funcionales; IB08 continúa ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL sin bloquear las demás. No reconstruir emisiones perdidas, asignar D+n ni inventar issue timestamp.
+
+AEMET Track A E2E DEMONSTRATED, **capture timer disabled/inactive**. Su backup se dispara tras cada intento success/failure y no tiene timer independiente: nuevo backup automático NOT ACTIVE mientras no haya captura. Gate vigente: CAPTURE RUNNING → reactivar AEMET; no depende de SIAR Sync.
+
+**SIAR-SYNC-RUNTIME HOLD** sigue condicionado a production alignment e incremental 2026 demostrado, sin reabrir Recovery. Quality CLOSED/COMPLETE, POST corregido y Dataset v1 sin cambios. Storage incidente CLOSED_OPERATIONALLY / MONITORING, STORAGE-DATA-PRESERVATION PASS y SSD IN SERVICE; no hay roadmap de sustitución.
+
+Se han publicado cuatro baselines oficiales, con CSV científico completo fuera de Git. La nueva prioridad **PROJECT-ARTIFACT-BACKUP-V1** abarca dataset, handoff, scientific-results completos, predictions, exports, manifests, futuros ML artifacts, raw Forecast y configuración recuperable. El reconciliador limitado a runs SIAR no cubre todo ese alcance. [Dónde están los bytes y evidencias](docs/DATA_LOCATIONS.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Preservación externa aceptada, adquisición sin cambio
+
+**PROJECT-ARTIFACT-BACKUP-V1 PASS:** backup_20261024T215639Z_63d0ef01 REMOTE_VERIFIED; 82 scientific-results (1,421,919,603 bytes) y 46 SIAR published Raw = 128 archivos verificados. 221 entradas inventariadas no significa 221 respaldadas. Dataset v1 y CSV de cuatro métodos verifican sus SHA256 conocidos.
+
+cryptcheck PASS + restores independientes de 2 artefactos científicos y 2 referencias operativas, hashes PASS. La descarga completa redundante fue INTERRUPTED: no full-download verification PASS. Secret config/credentials excluidos; material crypt/OAuth OFF-SERVER, sin publicar valores.
+
+Preservación general de material ya ingerido: event-driven ingestion PASS (new=0, unchanged=9), daily reconciliation ENABLED. Es distinta del reconciliador SIAR Forecast de 15 min. Futuros resultados solo Windows NO están automáticamente protegidos: explicit transfer/ingestion → servidor → backup system → Drive crypt.
+
+La misión backup NO cambió SIAR Forecast: captura y reconciliador ACTIVE, nuevo run real automático + backup + COMPLETE remoto pendiente; no CAPTURE RUNNING nuevo. AEMET disabled/inactive, captures=0, gate=CLOSED, espera CAPTURE RUNNING. Sync HOLD e incremental/alignment pendientes. [Estado maestro](docs/PROJECT_STATUS.md).
+
+AHC temporal ya está PASS sin modificar raw/Quality/Dataset; preservación no es nueva adquisición ni normalización científica. [Dónde consultar bytes y evidencia](docs/DATA_LOCATIONS.md).

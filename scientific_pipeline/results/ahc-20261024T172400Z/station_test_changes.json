@@ -1,0 +1,222 @@
+{
+  "cohort": "common_7",
+  "comparisons": [
+    {
+      "ahc_rmse": 0.6790402485150941,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 0.9115751781459298,
+      "n": 1826,
+      "relative_rmse_change": -0.25509133553174723,
+      "station_code": "IB01"
+    },
+    {
+      "ahc_rmse": 0.5937429555752946,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 0.8103828316724899,
+      "n": 1651,
+      "relative_rmse_change": -0.2673302883898566,
+      "station_code": "IB02"
+    },
+    {
+      "ahc_rmse": 0.5522704389160156,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 0.7539800358893542,
+      "n": 1826,
+      "relative_rmse_change": -0.2675264428393159,
+      "station_code": "IB03"
+    },
+    {
+      "ahc_rmse": 0.5565793647256216,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 0.8339683446192655,
+      "n": 1758,
+      "relative_rmse_change": -0.33261332001789734,
+      "station_code": "IB04"
+    },
+    {
+      "ahc_rmse": 0.5881109205069717,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 1.0328111592656732,
+      "n": 1788,
+      "relative_rmse_change": -0.43057265093348007,
+      "station_code": "IB05"
+    },
+    {
+      "ahc_rmse": 0.6221646742715359,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 1.18312521535644,
+      "n": 1824,
+      "relative_rmse_change": -0.47413454958434265,
+      "station_code": "IB06"
+    },
+    {
+      "ahc_rmse": 0.6638166996819072,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 0.9886416468335993,
+      "n": 1731,
+      "relative_rmse_change": -0.3285568114513835,
+      "station_code": "IB08"
+    },
+    {
+      "ahc_rmse": 0.5822600007927602,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 1.0718688643132372,
+      "n": 1732,
+      "relative_rmse_change": -0.4567805632027355,
+      "station_code": "IB10"
+    },
+    {
+      "ahc_rmse": 0.8488160171241868,
+      "base_method_id": "HS_RA_V1",
+      "baseline_rmse": 0.8628858459307414,
+      "n": 1822,
+      "relative_rmse_change": -0.016305550581118156,
+      "station_code": "IB11"
+    },
+    {
+      "ahc_rmse": 0.4197609121395077,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.49000073493033636,
+      "n": 1826,
+      "relative_rmse_change": -0.14334636212497653,
+      "station_code": "IB01"
+    },
+    {
+      "ahc_rmse": 0.4314056321625445,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.4398399493413863,
+      "n": 1651,
+      "relative_rmse_change": -0.01917587793348763,
+      "station_code": "IB02"
+    },
+    {
+      "ahc_rmse": 0.40769397495520987,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.42717515108361226,
+      "n": 1826,
+      "relative_rmse_change": -0.045604656729176796,
+      "station_code": "IB03"
+    },
+    {
+      "ahc_rmse": 0.37676354994055605,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.540630789435368,
+      "n": 1758,
+      "relative_rmse_change": -0.30310378671912874,
+      "station_code": "IB04"
+    },
+    {
+      "ahc_rmse": 0.37072304858127547,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.6307007028317121,
+      "n": 1788,
+      "relative_rmse_change": -0.41220447842089314,
+      "station_code": "IB05"
+    },
+    {
+      "ahc_rmse": 0.41393332655881504,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.5369181755005393,
+      "n": 1824,
+      "relative_rmse_change": -0.229056967250312,
+      "station_code": "IB06"
+    },
+    {
+      "ahc_rmse": 0.3436085314997452,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.6234247486005353,
+      "n": 1731,
+      "relative_rmse_change": -0.44883719763920493,
+      "station_code": "IB08"
+    },
+    {
+      "ahc_rmse": 0.38824521303741955,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.7178670302005853,
+      "n": 1732,
+      "relative_rmse_change": -0.45916834635944115,
+      "station_code": "IB10"
+    },
+    {
+      "ahc_rmse": 0.540639356299703,
+      "base_method_id": "HG_RS_V1",
+      "baseline_rmse": 0.6114011152896397,
+      "n": 1822,
+      "relative_rmse_change": -0.11573704597580703,
+      "station_code": "IB11"
+    },
+    {
+      "ahc_rmse": 0.562861728471408,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.5886052903014493,
+      "n": 1826,
+      "relative_rmse_change": -0.04373654510793956,
+      "station_code": "IB01"
+    },
+    {
+      "ahc_rmse": 0.49817391062700545,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.5188525172032674,
+      "n": 1651,
+      "relative_rmse_change": -0.039854497936570366,
+      "station_code": "IB02"
+    },
+    {
+      "ahc_rmse": 0.4480730584855341,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.45810937395223406,
+      "n": 1826,
+      "relative_rmse_change": -0.02190812071823367,
+      "station_code": "IB03"
+    },
+    {
+      "ahc_rmse": 0.49859298919907163,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.5770747684560235,
+      "n": 1758,
+      "relative_rmse_change": -0.1359993254720382,
+      "station_code": "IB04"
+    },
+    {
+      "ahc_rmse": 0.4779154510006955,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.6995786325216597,
+      "n": 1788,
+      "relative_rmse_change": -0.3168524183221124,
+      "station_code": "IB05"
+    },
+    {
+      "ahc_rmse": 0.4848701581455277,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.6300926693726184,
+      "n": 1824,
+      "relative_rmse_change": -0.23047802059288902,
+      "station_code": "IB06"
+    },
+    {
+      "ahc_rmse": 0.5198507596353539,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.6717171932166803,
+      "n": 1731,
+      "relative_rmse_change": -0.22608686380957033,
+      "station_code": "IB08"
+    },
+    {
+      "ahc_rmse": 0.5331270739019194,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.7408669408547273,
+      "n": 1732,
+      "relative_rmse_change": -0.28040104841652325,
+      "station_code": "IB10"
+    },
+    {
+      "ahc_rmse": 0.6592130637362626,
+      "base_method_id": "VALIANTZAS_V1",
+      "baseline_rmse": 0.7146240505420574,
+      "n": 1822,
+      "relative_rmse_change": -0.07753865373515534,
+      "station_code": "IB11"
+    }
+  ],
+  "reference": "PM_FAO56_V1"
+}

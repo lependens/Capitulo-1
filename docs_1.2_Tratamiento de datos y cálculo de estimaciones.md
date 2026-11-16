@@ -1,5 +1,28 @@
 # 1.2 Depuración y Verificación de Datos Meteorológicos: Guía Paso a Paso
 
+> **Estado vigente — 01/11/2026:** Dataset v1, cuatro baselines, AHC y **ML-V1-CLASSICAL-MODELS PASS**. El proyecto distingue **formulaciones deterministas/empíricas**, **calibraciones AHC** y **modelos ML aprendidos**. ANN moderna NOT STARTED; WEB-V0.3-ML READY. La explicación narrativa de la campaña está en [1.2.6 — Modelos ML clásicos](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md). Las notas y secciones fechadas anteriormente se conservan como historia, no como estado vigente.
+
+La transición siguiente representa evolución metodológica, no un único pipeline que use AHC como predictor ML. El target ML es PM calculado; los modelos no validan ET₀ instrumental independiente.
+
+```mermaid
+flowchart TD
+    O[Observaciones] --> D[PM y métodos simplificados]
+    D --> A[Calibración AHC]
+    D --> M[ML clásico]
+    A -. Comparación .-> M
+    M --> N[ANN futura]
+```
+
+
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
+> **Contexto histórico.** Las secciones iniciales conservan la metodología legacy utilizada durante el desarrollo original, con sus scripts, inventario y decisiones de depuración. No constituyen instrucciones vigentes de ejecución. La implementación científica vigente desde octubre de 2026 se explica en la actualización final de este documento y en [scientific_pipeline/](scientific_pipeline/README.md), autoridad técnica detallada.
+
 **Objetivo**
 
 Esta sección describe el proceso completo para depurar y verificar los datos diarios de las estaciones meteorológicas de las Islas Baleares, enfocándonos en la estimación de **ET₀** (evapotranspiración de referencia) proporcionada por el SIAR. El objetivo es limpiar los datos brutos, calcular ET₀ usando el modelo Penman-Monteith (PM) estándar y variantes, agregar estimaciones alternativas (Hargreaves y Valiantzas), y finalmente evaluar los errores comparativos.
@@ -148,3 +171,344 @@ Evalúa la precisión de los modelos comparando con ET₀ de SIAR usando `calcul
 
 ---
 
+
+# ACTUALIZACIÓN 19/10/2026 — Pipeline científico reproducible ET₀ v1
+
+## Del pipeline histórico a una capa científica independiente
+
+El recorrido original —adquisición, `filtra.py`, `PM2.py`, variantes, AHC y scripts de errores— permitió explorar datos y fórmulas. Sus secciones anteriores se conservan como bitácora metodológica, incluidos ejemplos ilustrativos y nombres históricos que no siempre coinciden con los archivos finalmente archivados. No deben interpretarse como resultados de la implementación v1 ni como instrucciones para ejecutar legacy contra los CSV canónicos.
+
+La evolución actual separa adquisición, certificación de calidad y cálculo científico. La [PR #23](https://github.com/lependens/Capitulo-1/pull/23), fusionada mediante `419d1b6a47f5e93005b14449ca426a1981b07407`, incorporó el paquete instalable [scientific_pipeline/](scientific_pipeline/README.md). **ET0-BASELINES-PREP = READY_FOR_DATASET_V1**: la capa está implementada y validada, pero todavía no se ha ejecutado oficialmente sobre Dataset Observational v1.
+
+La entrega acredita **48 tests matemáticos/sintéticos PASS** y **CI PASS con Python 3.11, 3.12 y 3.13**, según el [estado de integración](scientific_pipeline/docs/mission_status.md). Es evidencia de software; no sustituye Quality POST ni genera resultados científicos de las estaciones.
+
+```mermaid
+flowchart TD
+    Q["Quality POST y handoff autorizado"] --> D["Dataset Observational v1"]
+    D --> S["scientific_pipeline: QC y elegibilidad"]
+    S --> PM["PM_FAO56_V1"]
+    S --> HS["HS_RA_V1"]
+    PM --> E["Evaluación: cohortes propias y pareadas"]
+    HS --> E
+    E --> M["n, MAE, RMSE, bias y R²"]
+    M --> R["Run manifest, hashes y provenance"]
+```
+
+El diagrama describe el flujo preparado para la ejecución futura autorizada, no un dataset o una evaluación oficial ya producidos.
+
+## Entrada: observaciones originales, POST y metadatos trazables
+
+El nuevo punto de partida no es un CSV «depurado» mediante eliminación destructiva. **Dataset Observational v1 combinará CSV SIAR canónicos, Quality POST, catálogo/metadatos y hashes/provenance**. Su construcción espera **SIAR-QUALITY-CLOSEOUT + Quality POST + handoff autorizado de Dirección 00**. PRE no se puede presentar como POST.
+
+El [contrato del dataset y del handoff](scientific_pipeline/docs/contracts.md) define una representación JSON UTF-8 `observational-v1`: conserva las 23 columnas de origen, identifica cada fila por estación/fecha y mantiene `TempMedia`, `EtPMon`, flags y procedencia. Los ausentes no se convierten en cero; las fechas sin observación se representan en un ledger de huecos, sin fabricar filas meteorológicas. Las contradicciones de identidad, fechas, duplicados, esquema o hashes son errores de integridad que deben resolverse, no promediarse ni repararse silenciosamente.
+
+El inventario vigente es de **12 estaciones, incluida IB101: 9 ACTIVE y 3 CLOSED**. Las cerradas son **IB07, IB09 e IB101**. Las referencias anteriores a «11 activas IB01–IB11» quedan identificadas como contexto histórico y no definen el inventario científico actual. Los periodos oficiales y el conjunto definitivo se contrastarán con POST.
+
+**Dataset Observational v1 todavía no está generado.** La existencia del constructor y de sus pruebas sintéticas no equivale a disponer del dataset definitivo.
+
+## De borrar filas a conservar observaciones y explicar su elegibilidad
+
+La depuración histórica eliminaba filas con NaN en un conjunto global de variables y aplicaba ±3σ; el filtro podía descartar una observación útil para un método por una variable que ese método no necesitaba. Además, estimar umbrales sobre toda la serie mezcla información temporal que una evaluación posterior debería reservar.
+
+La política vigente conserva la observación, asigna **QC flags** y determina **elegibilidad por modelo**. No aplica `dropna` global ni utiliza ±3σ como paso obligatorio de los baselines. No interpola ni imputa observaciones raw.
+
+Se distinguen tres preguntas:
+
+| Capa | Pregunta |
+|---|---|
+| Integridad de origen | ¿Son coherentes identidad, fecha, esquema, unicidad y hashes? |
+| Plausibilidad física | ¿Qué variables o resultados requieren revisión o presentan dominios inválidos? |
+| Elegibilidad de modelo | ¿Dispone este método de sus entradas válidas y de un dominio calculable? |
+
+Los flags científicos no sustituyen el dictamen POST ni implican siempre exclusión. Los valores originales permanecen; una predicción no calculable se informa como `null` con motivos. Una predicción negativa se conserva y marca, sin recortarla automáticamente a cero.
+
+## Elegibilidad PM y HS: decisiones por método
+
+PM requiere extremos térmicos y de humedad, viento, radiación medida, fecha, latitud, altitud y la política de altura del viento. HS necesita extremos térmicos, fecha y latitud para calcular Ra; no exige humedad, viento, radiación medida ni altitud.
+
+Por ejemplo, con **`Radiacion` ausente, PM_FAO56_V1 no es elegible y HS_RA_V1 puede seguir siéndolo**. Dataset v1 conserva esa fila. También `EtPMon` ausente puede impedir evaluar sin impedir predecir: referencia evaluable y entradas del método son decisiones distintas.
+
+El registro de elegibilidad distingue las combinaciones lógicas por fila:
+
+| PM | HS | Lectura |
+|---|---|---|
+| Sí | Sí | Ambos métodos disponen de entradas y dominios válidos. |
+| No | Sí | Solo HS; por ejemplo, radiación medida ausente con sus demás entradas válidas. |
+| Sí | No | Combinación lógica distinguible por el registro; no se introduce una exclusión HS artificial para producirla. |
+| No | No | Ninguno; por ejemplo, faltan extremos térmicos necesarios para ambos. |
+
+**Evaluar cada método por separado no significa que las cuatro combinaciones deban tener filas.** En las reglas de entrada actuales de v1, PM exige también los requisitos de HS: la elegibilidad PM implica la de HS. «Solo PM» no es una cohorte que se afirme observada ni una nueva regla científica; la disponibilidad de una salida de un comando que solo ejecuta PM tampoco prueba que HS sea inelegible. La implementación detallada de estas reglas está en [quality.py](scientific_pipeline/src/siar_science/quality.py).
+
+Para la comparación se conservarán **cohortes propias y cohorte pareada PM ∩ HS**: cobertura real de cada método y comparación sobre las mismas estaciones/fechas, sin exigir de antemano una máscara global común a toda observación.
+
+## Unidades: interpretación v1 resuelta, procedencia parcial explícita
+
+La decisión vigente es **RESOLVED_FOR_V1**:
+
+| Campo SIAR | Interpretación v1 | Tratamiento |
+|---|---|---|
+| `Radiacion` | MJ/m²/día | Lectura directa, **sin ×0.0864** |
+| `VelViento` | m/s | Lectura directa, **sin /3.6** |
+
+La [evidencia offline](scientific_pipeline/docs/units_offline_evidence.md) combina documentación, recorrido de adquisición y contraste numérico. La [forense preservada](scientific_pipeline/docs/units_offline_forensic.md) contrastó **75.236 pares en 12 estaciones, 2004–2025**. Sobre la cohorte canónica común y el kernel histórico `legacy_pm2`, la hipótesis directa produjo:
+
+| Diagnóstico forense | mm/día |
+|---|---:|
+| Bias, predicción − EtPMon | −0.0232 |
+| MAE | 0.0257 |
+| RMSE | 0.0878 |
+
+Las hipótesis de conversión dieron errores muy superiores. Estas cifras corresponden al experimento forense y a su kernel identificado: **no son métricas oficiales de PM_FAO56_V1 sobre Dataset Observational v1**, ni se eligen unidades solo por minimizar error contra SIAR.
+
+Se mantienen **UNITS_PROVENANCE_PARTIAL** y **station_period_provenance_not_exhaustively_verified** como limitaciones documentadas, no bloqueos vigentes. La conclusión no certifica cualquier lote futuro ni acredita retrospectivamente la instrumentación de cada estación/periodo.
+
+Para PM v1, `VelViento` se utiliza directamente como **u2 bajo la convención SIAR de 2 m**. La procedencia instrumental histórica no está exhaustivamente verificada; altitud de estación no significa altura del anemómetro. Una futura evidencia positiva de altura diferente exige detener y revisar PM en el ámbito afectado hasta resolución explícita, sin alterar raw ni convertir alturas por conjetura. No bloquea automáticamente HS.
+
+## PM_FAO56_V1: baseline físico principal
+
+El baseline principal es Penman–Monteith diario FAO-56, con decisiones congeladas y verificables en [assumptions.md](scientific_pipeline/docs/assumptions.md):
+
+| Decisión | Convención v1 |
+|---|---|
+| Temperatura de cálculo | `Tcalc = (Tmax + Tmin) / 2`; se conserva `TempMedia` SIAR |
+| Flujo de calor del suelo | `G = 0` para el cálculo diario |
+| Constante psicrométrica | `gamma = 0.000665 × P`, con P en kPa |
+| Albedo | `0.23` |
+| Viento | u2 en m/s según convención SIAR de 2 m |
+| Radiación solar medida | MJ/m²/día, sin conversión adicional |
+
+La presión de vapor de saturación es la media de las presiones a Tmax y Tmin. La presión real utiliza extremos emparejados: **ea = [e°(Tmin)·RHmax + e°(Tmax)·RHmin] / 200**. No se sustituyen inconsistencias por un déficit ficticio cero ni se emplea un fallback silencioso de humedad media.
+
+`solar.py` calcula radiación extraterrestre Ra y de cielo claro Rso a partir de fecha, latitud y altitud donde corresponde; `atmosphere.py` contiene presión y relaciones de vapor; `penman_monteith.py` calcula radiación neta y el cociente PM. La política de nubosidad limita Rs/Rso por arriba a 1, **sin floor inferior por defecto**. Se marcan ratios extremos, Rnl negativa o ET₀ negativa; no se ajusta la fórmula para acercarla artificialmente a `EtPMon`.
+
+**EtPMon es una referencia SIAR calculada, no una medición independiente de ET₀ real.** La evaluación cuantifica acuerdo con esa referencia; no demuestra por sí sola exactitud respecto a una medición de terreno independiente.
+
+### Diferencias principales respecto al PM legacy
+
+| Aspecto | Legacy | PM v1 |
+|---|---|---|
+| Temperatura de cálculo | `TempMedia` SIAR en distintas operaciones de PM2 | Media de extremos Tcalc |
+| Gamma | Dependiente de lambda(T) en PM2 | `0.000665 × P` |
+| Decisiones numéricas | Fallbacks y límites implícitos | Dominios, motivos y flags explícitos; sin sustituciones silenciosas |
+| Ejecución | Rutas hardcoded y scripts interactivos | Funciones reutilizables, CLI y manifiestos |
+| Metadatos | Algunos derivados con placeholders históricos | Catálogo versionado, metadatos y hashes trazables |
+
+La [auditoría legacy](scientific_pipeline/docs/legacy_audit.md) detalla otras diferencias de constantes y tratamiento radiativo. Conservar las ecuaciones de referencia no obliga a reproducir todos los comportamientos de PM2 ni a reutilizar sus resultados.
+
+## HS_RA_V1: Hargreaves–Samani sin calibración
+
+El segundo baseline utiliza Ra calculada, no radiación solar medida:
+
+```text
+ET0 = 0.0023 × 0.408 × Ra × (Tcalc + 17.8) × sqrt(Tmax - Tmin)
+Tcalc = (Tmax + Tmin) / 2
+Ra: MJ/m²/día; temperaturas: °C; ET0: mm/día
+```
+
+**HS_RA_V1 no usa AHC ni está calibrado sobre Baleares.** El factor 0.408 convierte el término energético dentro de la fórmula; no es una transformación adicional de la columna `Radiacion`, que este método no necesita.
+
+Hargreaves con Rs, Valiantzas y AHC se conservan como historia o posibles experimentos posteriores, no como baselines primarios de v1. La implementación se encuentra en [hargreaves.py](scientific_pipeline/src/siar_science/hargreaves.py).
+
+## AHC histórico y prevención de leakage
+
+La auditoría identificó AHC estimado sobre toda la serie y evaluación sobre los mismos días: ajuste dentro de muestra y fuga temporal de información. En la variante auditada, el objetivo del ajuste era `ET0_calc`; eso no elimina el problema de evaluar sobre el periodo empleado para aprender el coeficiente.
+
+PM y HS v1 **no aprenden parámetros**. Una futura calibración, AHC o ML requerirá separación cronológica **TRAIN → VALIDATION → TEST**: parámetros, escalas y filtros aprendidos se ajustan solo en TRAIN, se selecciona con VALIDATION y se evalúa en TEST tras congelar la configuración. No se hereda el ajuste global histórico ni se presenta su mejora dentro de muestra como generalización.
+
+## Metadatos históricos: hallazgo IB03/IB04
+
+La auditoría reprodujo determinados outputs históricos de IB03 e IB04 con **latitud ≈39.5° y altitud 100 m**, compatibles con placeholders preservados en el código histórico. Es evidencia sobre cálculos derivados legacy; no invalida las observaciones SIAR originales ni demuestra por sí sola qué script generó cada archivo.
+
+La implementación nueva contrasta metadatos con el catálogo identificado por hash y conserva su procedencia. Los outputs históricos no se modifican: sirven para explicar la evolución metodológica, no como oráculo ni baseline oficial actual.
+
+## Métricas y cohortes: qué se comparará
+
+El error firmado es **predicción − EtPMon**. Las métricas principales son:
+
+| Métrica | Definición y lectura |
+|---|---|
+| n | Número de pares evaluables en la cohorte |
+| MAE | Media del valor absoluto del error, mm/día |
+| RMSE | Raíz de la media del error cuadrático, mm/día |
+| Bias / MBE | Media del error firmado, mm/día |
+| R² predictivo | `1 − SSE/SST`, respecto a la media de la referencia |
+
+**Pearson² no es R² predictivo.** La expresión histórica `sqrt(MSE) / media` es RRMSE, no RMSE en mm/día. Por tanto no se deben trasladar directamente los nombres o rankings antiguos a los nuevos resultados.
+
+Los valores **EtPMon = 0 no se eliminan automáticamente de MAE, RMSE, bias o R²**. La referencia evaluable es finita, no negativa, aceptada por Quality y dentro del periodo oficial; una referencia ausente impide evaluar, no necesariamente predecir. Los negativos se conservan y marcan, pero se excluyen de la evaluación según la política v1. Con n<2 o SST=0, R² es indefinido (`null`); una cohorte vacía informa n=0 y métricas `null`. Si se recuperan métricas relativas que dividan por referencia, deberán especificar su propia política de ceros.
+
+Se producirán **PM own cohort**, **HS own cohort** y **PM ∩ HS paired cohort**. Las cohortes propias permiten conocer disponibilidad, cobertura y capacidad operativa de cada método; la pareada permite la comparación principal directa sobre las mismas fechas y estaciones con referencia evaluable. No se confunde cobertura de predicción con número de pares de evaluación.
+
+Las métricas globales reúnen pares, no promedian RMSE o R² de estaciones. La implementación permite desgloses temporales y por estación; los tamaños y hashes de selección hacen visibles diferencias de cobertura.
+
+## Reproducibilidad y artefactos de ejecución
+
+Cada ejecución futura identificará `dataset_id` y `run_id`, Quality POST, hashes de fuentes y catálogo, SHA del pipeline y hashes del código, método, parámetros, unidades, configuración, métricas y hashes de outputs. Los flags y las limitaciones aceptadas acompañan los resultados.
+
+| Artefacto | Finalidad |
+|---|---|
+| `predictions.json` | Predicciones, elegibilidad y motivos por fila/método |
+| `metrics.json` | Métricas y cohortes de evaluación |
+| `manifest.json` | Procedencia, configuración, identidad de ejecución y hashes |
+
+Se exige un destino nuevo: **no se sobrescriben ejecuciones previas**. La validación puede producir estos artefactos sin calcular ET₀ y con métricas vacías; los cálculos por separado no equivalen a una evaluación. Un fallo se distingue de una ejecución exitosa, sin publicar diagnósticos parciales como resultados completos.
+
+## Paquete e interfaz preparados
+
+Los módulos principales distribuyen responsabilidades explícitas:
+
+| Módulo | Responsabilidad |
+|---|---|
+| `datasets.py` | Construcción desde handoff y validación de dataset/procedencia |
+| `quality.py` | QC y elegibilidad por método |
+| `solar.py` | Geometría solar, Ra y Rso |
+| `atmosphere.py` | Presión y relaciones de vapor |
+| `penman_monteith.py` | Radiación neta y PM diario |
+| `hargreaves.py` | HS con Ra y coeficientes fijos |
+| `metrics.py` | Evaluación y cohortes |
+| `pipeline.py` | Orquestación, outputs y manifiestos |
+| `cli.py` | Interfaz no interactiva |
+
+La CLI `python -m siar_science` ya implementa:
+
+| Comando | Función |
+|---|---|
+| `build-dataset` | Construir desde POST y handoff autorizado; no autoautoriza el cierre |
+| `validate` | Verificar dataset, procedencia y elegibilidad |
+| `calculate-pm` | Calcular PM sobre el dataset autorizado |
+| `calculate-hargreaves` | Calcular HS sobre el dataset autorizado |
+| `evaluate` | Evaluar predicciones existentes del mismo dataset, sin recalcularlas silenciosamente |
+| `run-baselines` | Ejecutar ambos métodos y evaluación propia/pareada |
+
+Los ejemplos del [README técnico](scientific_pipeline/README.md) muestran una interfaz preparada, no prueban la existencia de Dataset Observational v1. Esta actualización no ejecuta esos comandos ni genera métricas nuevas.
+
+## Estado y siguiente gate científico
+
+- **Software científico = READY; ET0-BASELINES-PREP = READY_FOR_DATASET_V1.**
+- **Dataset Observational v1 = PENDING QUALITY POST**, cierre Quality y handoff autorizado.
+- **PM_FAO56_V1 = implementado y testeado; pendiente de ejecución oficial.**
+- **HS_RA_V1 = implementado y testeado; pendiente de ejecución oficial.**
+- **Resultados científicos v1 = todavía no generados.**
+
+La actualización de `docs_1.3_Análisis errores.md` corresponde a una etapa posterior: Quality POST → Dataset Observational v1 → PM_FAO56_V1 y HS_RA_V1 → resultados reproducibles. Hasta entonces permanece como análisis histórico legacy; esta misión no reinterpreta sus tablas ni anticipa nuevas conclusiones.
+
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Dataset y ejecución oficial v1 disponibles
+
+Las afirmaciones de la actualización de 19/10 sobre POST, dataset y ejecución oficial pendientes son **HISTÓRICAS / SUPERADAS**. Quality está COMPLETE con POST corregido SIAR-QA-POST-20261020T193140Z. Dataset siar-balears-observational-v1 fue construido y validado estructuralmente PASS; SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`.
+
+El dataset conserva 75.496 filas raw, 75.495 oficiales, 1 OUTSIDE_OFFICIAL_PERIOD y ledger de 2.346 = 2.345 CONFIRMED_NO_DATA + 1 RECOVERED. No interpola, imputa ni crea filas meteorológicas ausentes; mantiene 23 columnas, Quality, estados y provenance.
+
+**PM-VPD-FLOAT-TOLERANCE-AND-BASELINES = PASS**, publicado mediante PR #31 después del fix PR #30. En tres fechas IB10 con RHmin=RHmax=100 %, ea superaba es en ~2.22e-16 a 4.44e-16 kPa por redondeo. La tolerancia explícita absoluta 1e-12 kPa, relativa 0.0, trata solo ese exceso con presiones finitas/no negativas; fuera del margen se conserva el error y VPD positivo no se altera. No modifica raw, dataset, Quality, humedad ni presiones; parámetros y tests están documentados en [supuestos](scientific_pipeline/docs/assumptions.md).
+
+PM calculó 70.896 y HS 70.979 predicciones, 0 fallos; pares evaluables propios 70.861 y 70.912, intersección 70.861. Los [resultados oficiales](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md) conservan métricas, cohortes y hashes. No son los diagnósticos forenses ni los resultados legacy anteriores. EtPMon sigue siendo referencia SIAR calculada, sin independencia instrumental.
+
+LIMITACIONES ABIERTAS: IB09 conserva 4.423 filas pero la política heredada Quality FAIL de estación excluye todas de evaluación, incluidas 4.422 oficiales; muestra corta IB101; UNITS_PROVENANCE_PARTIAL y viento 2 m por convención sin verificación instrumental exhaustiva. No se cambian estas reglas en esta actualización.
+
+**Valiantzas = LEGACY / FUTURE BASELINE REVIEW.** La variante histórica documentada es:
+```text
+ET0_val = 0.408 * 0.0135 * 0.338 * Ra *
+          (Tmax - Tmin)^0.3 * (1 - RH/100)^0.2 * (T + 17.8)
+RH histórico = HumedadMedia
+```
+Su presencia en la bitácora no la valida como baseline v1. Próxima secuencia: auditar fórmula/unidades/inputs → VALIANTZAS_V1 reproducible → comparar PM/HS/Valiantzas → modelos posteriores. PM_FAO56_V1 y HS_RA_V1 siguen sin calibración, AHC ni ML.
+
+[Ubicaciones](docs/DATA_LOCATIONS.md) distingue evidencia compacta Git del dataset y run completos locales; no se mueve ni regenera ningún artefacto. La implementación y el contrato científico siguen bajo scientific_pipeline/.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Tres baselines clásicos oficiales
+
+**VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS**. Supera el estado
+Valiantzas LEGACY / FUTURE BASELINE REVIEW de la actualización del 23/10;
+el texto y resultados históricos anteriores se conservan como tales.
+
+Se adopta Martí et al. (2024), Ecs.1b+3, con factor 0.408 y coeficiente
+expandido **0.001861704**, Ra en MJ/m²/día, `(1.001−RHmedia/100)^0.2` y
+Tcalc de extremos. [Decisión, fuentes y unidades](scientific_pipeline/docs/valiantzas_v1.md).
+No es transcripción literal de Ec.4 ni copia del factor 1−RH/100 legacy.
+Sin calibración local ni sustitución silenciosa de TempMedia original.
+
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`, intacto. Pipeline `4ac52e25c803cb2301316c5cb1353bf30cdb427a`
+([PR #33](https://github.com/lependens/Capitulo-1/pull/33)); 68 tests y CI Python 3.11/3.12/3.13 PASS.
+PM/HS mantienen exactamente predicciones y elegibilidad oficiales anteriores.
+VAL: 70.944 predicciones, 70.878 pares propios, 0 fallos.
+
+[Informe de ejecución, cohortes, desgloses, CSV y hashes](scientific_pipeline/results/classical-20261024T034529Z/README.md).
+EtPMon sigue siendo referencia calculada SIAR, no validación instrumental
+independiente. Se retienen IB09 Quality FAIL, IB101 corto, unidades/procedencia
+parcial y convención de viento 2 m; raw/Quality/Dataset sin cambios.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Hargreaves-Rs y cuatro baselines oficiales
+
+**HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
+Se incorpora HG_RS_V1: **0.0135×0.408×Radiacion×(Tcalc+17.8)**, Rs medida en
+MJ/m²/día, salida mm/día, Tcalc=(Tmax+Tmin)/2. Sin Ra, √TD, humedad, viento
+ni calibración local. Legacy usaba TempMedia; se conservan su código y resultados.
+[Contrato y fuentes](scientific_pipeline/docs/hargreaves_rs_v1.md).
+
+HG-Rs: 70978 predicciones, 70912 evaluables, 0 fallos.
+Cohorte común de cuatro: **70860**. PM/HS/VAL conservan exactamente todas
+sus predicciones, elegibilidad, métricas y hashes de cohortes anteriores.
+Pipeline `a0b440fa3ab92e4593be521e4e819c6421327656`, [PR #35](https://github.com/lependens/Capitulo-1/pull/35); 75 tests y CI PASS.
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` sin cambios.
+
+[Resultados completos, cohortes, estaciones, temporadas, CSV y hashes](scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+EtPMon calculada SIAR comparte Rs con PM/HG-Rs; no es validación instrumental
+independiente. Se conservan procedencia parcial, viento convencional 2 m,
+IB09 FAIL, IB101 corto y límites empíricos. Raw/Quality/Dataset sin cambios.
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Cuatro baselines y revisión AHC separada
+
+**VIGENTE:** PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 oficiales PASS; PR #33/#34 y #35/#36 completan las ampliaciones. **75 tests y CI 3.11/3.12/3.13 PASS**. Dataset v1, raw y Quality permanecen intactos. Las secciones anteriores de «Valiantzas pendiente» describen estados históricos.
+
+La autoridad VAL v1 es [valiantzas_v1.md](scientific_pipeline/docs/valiantzas_v1.md), Martí et al. (2024), Ecs.1b+3, conversión 0.408 y coeficiente expandido 0.001861704, con factor **(1.001−RHmedia/100)^0.2**. No usar la variante legacy con factor 1−RH/100 como autoridad vigente.
+
+[HG_RS_V1](scientific_pipeline/docs/hargreaves_rs_v1.md) usa **0.0135 × 0.408 × Rs_medida × (Tcalc+17.8)**, Tcalc=(Tmax+Tmin)/2, Rs en MJ/m²/día. No usa Ra, sqrt(TD), humedad ni viento; no es sustituir simplemente Ra por Rs dentro de HS. HS_RA_V1 sigue 0.0023×0.408×Ra×(Tcalc+17.8)×sqrt(TD), sin Rs medida ni humedad.
+
+La comparación [oficial de cuatro](scientific_pipeline/results/four-classical-20261024T042250Z/README.md) usa PM_HS_VAL_HGRS **n=70.860**. HG-Rs mejora RMSE/R² respecto a VAL; VAL mejora MAE/bias en esa cohorte. No hay vencedor universal. La similitud de inputs con EtPMon puede favorecer concordancia; no es causalidad demostrada ni regla «más inputs siempre mejor». Separar precisión frente a referencia calculada SIAR de requisitos de inputs y disponibilidad operacional. EtPMon no es ET₀ instrumental independiente.
+
+**AHC legacy = mean(ET0_calc / ET0_empirical)** por estación sobre toda la serie; ET0_empirical_adjusted = AHC × ET0_empirical y evaluación en los mismos días: HISTÓRICO / full-series / in-sample, no validación predictiva.
+
+**AHC-METHODOLOGY-REVIEW** revisará bibliografía, coeficiente climatológico de estación frente a calibración predictiva, estabilidad temporal y escalas anual/estacional/mensual si procede. AHC estimado de datos es parámetro calibrado. Antes de AHC_V1 debe definirse validación temporal; esta misión no decide si usa todo el dataset o solo TRAIN. Las recomendaciones anteriores forman parte de su contexto histórico y no cierran esa revisión.
+
+Prioridad previa: **PROJECT-ARTIFACT-BACKUP-V1** para los artefactos masivos externos. Después revisión AHC → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. [ROADMAP](docs/ROADMAP.md) y [ubicaciones](docs/DATA_LOCATIONS.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — AHC validado y climatología diferenciada
+
+Las menciones anteriores de revisión AHC pendiente son históricas. **AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**, PR #38/#39, 86 tests y CI 3.11/3.12/3.13 PASS. El estimador vigente es **a=Σ(x·PM)/Σ(x²)**, OLS sin intercepto por estación, ET0_adjusted=a×x; referencia primaria PM_FAO56_V1, EtPMon secundaria calculada, ninguna ET medida.
+
+AHC_VALIDATED se ajusta solo TRAIN 2004–2015, se congela antes de VALIDATION 2016–2020 y TEST 2021–2025; sin refit TRAIN+VALIDATION ni random split. TEST retrospective_locked porque el histórico ya fue inspeccionado; no confirmación prospectiva nunca vista. [Metodología preregistrada](scientific_pipeline/docs/ahc_methodology.md).
+
+VALIDATION eligió HS annual, HG-Rs seasonal y VAL annual; mensual no justificó complejidad extra. No reseleccionar tras TEST. AHC_CLIMATOLOGY se calculó después de TEST con todo el histórico declarado hasta 2025, con identidad/finalidad separadas; no atribuirle métricas TEST. IB101 SHORT_SERIES_DESCRIPTIVE, deployable=false; IB09 UNAVAILABLE/FAIL.
+
+Estabilidad PASS no implica error estable todos los años: conservar empeoramientos como IB11/2025/HS RMSE 0.756→0.897, ≈+18.57 %. El mean(PM/x) full-series/in-sample legacy permanece histórico, no es OLS0 validado. [Resultados y métricas oficiales](scientific_pipeline/results/ahc-20261024T172400Z/README.md).
+
+PROJECT-ARTIFACT-BACKUP-V1 PASS cubre el snapshot remoto aceptado, sin proteger automáticamente nuevos resultados solo Windows. Contratos ML/visualización FROZEN, sin ML/ANN entrenado ni web construida. No se recalculan baselines ni raw/Quality/Dataset.
+
+## ACTUALIZACIÓN 01/11/2026 — ML clásico aprendido y cierre científico
+
+**ML-V1-CLASSICAL-MODELS = PASS**, cierre autorizado por Dirección 00. Las formulaciones PM/HS/HG-Rs/Valiantzas no calibradas, el ajuste AHC y los modelos aprendidos son niveles metodológicos distintos. La nueva [sección 1.2.6](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) explica target, algoritmos, inputs, rolling-origin, cohortes, resultados y preservación sin reemplazar esta bitácora.
+
+DEVELOPMENT 2004–2020 seleccionó y congeló 35 configuraciones entre 185 candidatos; TEST 2021–2025 mantiene retrospective_locked. Champion elegido en desarrollo: ML_HIST_GRADIENT_BOOSTING__FEATURE_SET_FULL. TEST común n=15.958: MAE 0.047045, RMSE 0.064104, bias -0.000966 mm/día, R² 0.998595 contra PM_FAO56_V1. Son cifras del cierre comunicado, no métricas recalculadas en esta documentación.
+
+La recuperación final es **retrospective_recovery_evaluation**: intento original TEST_ACCESS_UNKNOWN y acceso técnico previo documentado. Modelos congelados antes de recovery; sin reselección, entrenamiento ni refit después de TEST. No afirmar primera/única apertura ni holdout prístino/prospectivo. FULL incluye variables cercanas a PM; aproximarla no demuestra exactitud frente a ET₀ instrumental.
+
+Dataset v1, baselines y AHC **PASS**; ML clásico **PASS**; ANN moderna **NOT STARTED**; WEB-V0.3-ML **READY**, sin despliegue en esta misión. Raw, Quality, resultados, contratos ejecutables y ciencia permanecen sin cambios. Run, hashes, receipt, snapshot REMOTE_VERIFIED y restore 77 archivos constan en [DATA_LOCATIONS](docs/DATA_LOCATIONS.md).
+
+---
+
+## ACTUALIZACIÓN 02/11/2026 — ANN moderna v1 publicada
+
+**ANN-V1-MODERN-ET0 = PASS.** Esta etapa sucede a los baselines, AHC y ML clásico; no reinterpreta sus resultados ni cambia raw, Quality o Dataset v1. La ANN seleccionada en DEVELOPMENT es **FEATURE_SET_FULL / MLP [32]**: una capa oculta de 32 neuronas, ReLU y Adam, con semillas 20261101–20261103. Su target es **PM_FAO56_V1**, referencia calculada: el resultado no es validación frente a ET₀ instrumental independiente.
+
+TEST 2021–2025, **retrospective_locked**, obtuvo n=15.958, MAE 0.037632, RMSE 0.051312, bias −0.022449 mm/día y R² 0.999100; cobertura 99.8748 %, 0 predicciones negativas y 0 no finitas. No se usó TEST para arquitectura, selección, entrenamiento ni refit; se abrió una vez tras congelar champion. No es un holdout globalmente prístino porque el periodo fue usado anteriormente en otros experimentos ML.
+
+Frente a HGB FULL, la ANN reduce RMSE ≈19.95 % y MAE ≈20.01 %, pero tiene bias negativo mayor. La documentación metodológica y el linaje de artefactos se conservan en [2.1 — ANN](docs_2.1_Estimación%20Et0%20ANN%20%28tensorflow%29.md); futuros trabajos deberán partir de validación prospectiva u otro contrato científico, no de reabrir esta selección.

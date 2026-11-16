@@ -1,0 +1,1646 @@
+{
+  "mission": "VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT",
+  "status": "PASS",
+  "timestamp_utc": "2026-10-24T03:48:57.920123+00:00",
+  "code_pr": "https://github.com/lependens/Capitulo-1/pull/33",
+  "source_reference": "Marti et al. (2024), Eqs. 1b + 3; doi:10.1016/j.agwat.2024.108903",
+  "formula": "0.408 * 0.0135 * 0.338 * Ra_MJ * (Tmax-Tmin)^0.3 * (1.001-RHmean_pct/100)^0.2 * ((Tmax+Tmin)/2+17.8)",
+  "pipeline_sha": "4ac52e25c803cb2301316c5cb1353bf30cdb427a",
+  "pm_hs_producer_sha": "39c101e5999245eb15e3c6c1c867d90b4ac44468",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "dataset_unchanged": true,
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "quality_post": {
+    "id": "SIAR-QA-POST-20261020T193140Z",
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\quality-post-package.json",
+    "reports": {
+      "siar_dataset_manifest.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_dataset_manifest.csv",
+        "sha256": "b37c6ef2cf47f4ac7ac7308d0414b39429c5a35c352ec09581f9f4751468337b"
+      },
+      "siar_missing_days.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_missing_days.csv",
+        "sha256": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969"
+      },
+      "siar_station_audit.csv": {
+        "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\data_quality\\siar\\post\\SIAR-QA-POST-20261020T193140Z\\siar_station_audit.csv",
+        "sha256": "e444cebf4165939c24cb0e9c132b241363bb60b0808e4403e1cf2ac33bd6be7d"
+      }
+    },
+    "sha256": "a2d1293fcc54254769dbc80c7105b08b4b03b6a14392df0a4e5ef19b4ef51d07"
+  },
+  "catalog": {
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\estaciones_baleares.csv",
+    "sha256": "98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357"
+  },
+  "handoff_sha256": "2b47f9802edbc33d71916701df57237092f563f0fe527fbfe401faf522a724ed",
+  "counts": {
+    "HS_RA_V1": {
+      "calculated": 70979,
+      "eligible": 70979,
+      "evaluated": 70912,
+      "failed": 0,
+      "input": 75496
+    },
+    "PM_FAO56_V1": {
+      "calculated": 70896,
+      "eligible": 70896,
+      "evaluated": 70861,
+      "failed": 0,
+      "input": 75496
+    },
+    "VALIANTZAS_V1": {
+      "calculated": 70944,
+      "eligible": 70944,
+      "evaluated": 70878,
+      "failed": 0,
+      "input": 75496
+    }
+  },
+  "dataset_counts": {
+    "stations": 12,
+    "rows": 75496,
+    "official_period_observations": 75495,
+    "confirmed_no_data": 2345,
+    "recovered": 1,
+    "pending_retry": 0,
+    "outside_period": 1
+  },
+  "cohorts": {
+    "HS_RA_V1": {
+      "n": 70979,
+      "sha256": "517221493be6c51a40eedc379ff38d19532b13c7ff2178ccc7c07e89ebc34da4"
+    },
+    "HS_RA_V1:evaluation": {
+      "n": 70912,
+      "sha256": "cec417bac9d01ee4b4fe5d7db6b724c5486388a59a0c77c829a461c58a15c20a"
+    },
+    "HS_VAL:evaluation": {
+      "n": 70878,
+      "sha256": "57253501aa017c52226c2b7b5ecec5abf8e88437b788690de67801d3e59e9c26"
+    },
+    "PM_FAO56_V1": {
+      "n": 70896,
+      "sha256": "2776f5ee2ecf0f34c3d16826ffc2245464c85a96118793ce5c8088c57e5ac38e"
+    },
+    "PM_FAO56_V1:evaluation": {
+      "n": 70861,
+      "sha256": "4e9050b9466844b901d244061005d188f2bb48d63c43b81091182ffcf55f4b7b"
+    },
+    "PM_HS:evaluation": {
+      "n": 70861,
+      "sha256": "4e9050b9466844b901d244061005d188f2bb48d63c43b81091182ffcf55f4b7b"
+    },
+    "PM_HS_VAL:evaluation": {
+      "n": 70860,
+      "sha256": "c500c0d6af32c44bc8f66980cdaf2fad821784dc0b57924e5971c7f0aa558d46"
+    },
+    "PM_VAL:evaluation": {
+      "n": 70860,
+      "sha256": "c500c0d6af32c44bc8f66980cdaf2fad821784dc0b57924e5971c7f0aa558d46"
+    },
+    "VALIANTZAS_V1": {
+      "n": 70944,
+      "sha256": "a0bb648665a0c4435f1d665bc9d87f2150d47e11a52f1555486ccda57f254690"
+    },
+    "VALIANTZAS_V1:evaluation": {
+      "n": 70878,
+      "sha256": "57253501aa017c52226c2b7b5ecec5abf8e88437b788690de67801d3e59e9c26"
+    },
+    "paired_evaluation": {
+      "n": 70861,
+      "sha256": "4e9050b9466844b901d244061005d188f2bb48d63c43b81091182ffcf55f4b7b"
+    },
+    "paired_predictions": {
+      "n": 70896,
+      "sha256": "2776f5ee2ecf0f34c3d16826ffc2245464c85a96118793ce5c8088c57e5ac38e"
+    }
+  },
+  "global_metrics": [
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0015647003946330043,
+      "cohort": "own",
+      "group": "global",
+      "key": "all",
+      "mae": 0.011540180962837652,
+      "method": "ET0_FAO56",
+      "n": 70861,
+      "r2": 0.9997345275855555,
+      "rmse": 0.028298163518052984,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.4613589382969264,
+      "cohort": "own",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7128949208739026,
+      "method": "ET0_Hargreaves",
+      "n": 70912,
+      "r2": 0.7464788157966427,
+      "rmse": 0.874487741281507,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.16885124676687094,
+      "cohort": "own",
+      "group": "global",
+      "key": "all",
+      "mae": 0.45599028629368504,
+      "method": "ET0_Valiantzas",
+      "n": 70878,
+      "r2": 0.8770128784517119,
+      "rmse": 0.6090799733404084,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0015647003946330043,
+      "cohort": "PM_HS",
+      "group": "global",
+      "key": "all",
+      "mae": 0.011540180962837652,
+      "method": "ET0_FAO56",
+      "n": 70861,
+      "r2": 0.9997345275855555,
+      "rmse": 0.028298163518052984,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.46160288619804046,
+      "cohort": "PM_HS",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7128503055079738,
+      "method": "ET0_Hargreaves",
+      "n": 70861,
+      "r2": 0.746552369698538,
+      "rmse": 0.8743648077937455,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0015646696808179973,
+      "cohort": "PM_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.01154029102633803,
+      "method": "ET0_FAO56",
+      "n": 70860,
+      "r2": 0.9997345270536758,
+      "rmse": 0.028298359704107972,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.1689194745772153,
+      "cohort": "PM_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.4559515282259562,
+      "method": "ET0_Valiantzas",
+      "n": 70860,
+      "r2": 0.8770552205569098,
+      "rmse": 0.608984408603537,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.4614549150850561,
+      "cohort": "HS_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7128499182165524,
+      "method": "ET0_Hargreaves",
+      "n": 70878,
+      "r2": 0.7465146633976805,
+      "rmse": 0.8744216911727707,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.16885124676687094,
+      "cohort": "HS_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.45599028629368504,
+      "method": "ET0_Valiantzas",
+      "n": 70878,
+      "r2": 0.8770128784517119,
+      "rmse": 0.6090799733404084,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0015646696808179973,
+      "cohort": "PM_HS_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.01154029102633803,
+      "method": "ET0_FAO56",
+      "n": 70860,
+      "r2": 0.9997345270536758,
+      "rmse": 0.028298359704107972,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.46162686804835434,
+      "cohort": "PM_HS_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.7128428979335801,
+      "method": "ET0_Hargreaves",
+      "n": 70860,
+      "r2": 0.7465589668247886,
+      "rmse": 0.874358613897714,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.1689194745772153,
+      "cohort": "PM_HS_VAL",
+      "group": "global",
+      "key": "all",
+      "mae": 0.4559515282259562,
+      "method": "ET0_Valiantzas",
+      "n": 70860,
+      "r2": 0.8770552205569098,
+      "rmse": 0.608984408603537,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    }
+  ],
+  "configuration_sha256": "1c7124ab3435aa3d958bc816ca0879cbac432884faf64ec44f873be330505b90",
+  "run_started_at_utc": "2026-10-24T03:46:08.837611Z",
+  "run_finished_at_utc": "2026-10-24T03:47:14.584551Z",
+  "result_manifest_sha256": "7ab3ff1f168fbdb4a32984e413ad5a2fd6a6af8b9ccde4d95c08bad2f38926f6",
+  "val_manifest_sha256": "4a4beee832859863d4421880276fa4697169e061d1520ad3cfc2496f17b0de44",
+  "csv": {
+    "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\comparison\\classical-baselines.csv",
+    "sha256": "66486b4138b7194ded3cd53f4d4d31f08e53ce3051d7c17ee43b30cdc957ed5f",
+    "rows": 75496,
+    "roundtrip": "PASS"
+  },
+  "pm_hs_exact_regression": "PASS: every prediction and eligibility identical to official PM/HS",
+  "source_bytes_and_post_checks": "PASS",
+  "raw_modifications": "NONE",
+  "quality_modifications": "NONE",
+  "dataset_modifications": "NONE",
+  "tests": {
+    "n": 68,
+    "status": "PASS",
+    "ci_python": [
+      "3.11",
+      "3.12",
+      "3.13"
+    ],
+    "ci_url": "https://github.com/lependens/Capitulo-1/actions/runs/40058668854"
+  },
+  "ranges": {
+    "PM_FAO56_V1": {
+      "min": 0.3762767505017529,
+      "max": 8.315602149804128,
+      "negative": 0
+    },
+    "HS_RA_V1": {
+      "min": 0.3833446703349837,
+      "max": 9.487610155798253,
+      "negative": 0
+    },
+    "VALIANTZAS_V1": {
+      "min": 0.2458364916273787,
+      "max": 8.429273498855183,
+      "negative": 0
+    }
+  },
+  "zero_reference_evaluated": {
+    "PM_FAO56_V1": 47,
+    "HS_RA_V1": 47,
+    "VALIANTZAS_V1": 47
+  },
+  "flags": {
+    "low_rs_rso:negative_cloud_factor": 3167,
+    "negative_net_longwave_radiation": 2935,
+    "low_rs_rso:review": 1171,
+    "rs_above_rso": 526,
+    "missing_or_nonfinite:EtPMon": 173,
+    "missing_or_nonfinite:TempMedia": 93,
+    "missing_or_nonfinite:TempMin": 108,
+    "missing_or_nonfinite:TempMax": 109,
+    "missing_or_nonfinite:HumedadMin": 110,
+    "missing_or_nonfinite:HumedadMax": 118,
+    "missing_or_nonfinite:VelViento": 78,
+    "missing_or_nonfinite:Radiacion": 47,
+    "valiantzas:missing_or_nonfinite:HumedadMedia": 91,
+    "valiantzas:rh_100_percent_positive_humidity_factor": 29,
+    "temperature_order:TempMedia": 4
+  },
+  "ineligibility_reasons": {
+    "pm": {
+      "missing_or_nonfinite:TempMin": 108,
+      "missing_or_nonfinite:TempMax": 109,
+      "missing_or_nonfinite:HumedadMin": 110,
+      "missing_or_nonfinite:HumedadMax": 118,
+      "missing_or_nonfinite:VelViento": 78,
+      "missing_or_nonfinite:Radiacion": 47,
+      "not_observed_in_official_period": 1,
+      "source_quality_not_accepted": 4423
+    },
+    "hargreaves": {
+      "missing_or_nonfinite:TempMin": 108,
+      "missing_or_nonfinite:TempMax": 109,
+      "not_observed_in_official_period": 1,
+      "source_quality_not_accepted": 4423
+    },
+    "valiantzas": {
+      "missing_or_nonfinite:TempMin": 108,
+      "missing_or_nonfinite:TempMax": 109,
+      "missing_or_nonfinite:HumedadMedia": 91,
+      "not_observed_in_official_period": 1,
+      "source_quality_not_accepted": 4423
+    }
+  },
+  "station_coverage": {
+    "IB01": {
+      "PM_FAO56_V1": 7704,
+      "HS_RA_V1": 7704,
+      "VALIANTZAS_V1": 7704
+    },
+    "IB02": {
+      "PM_FAO56_V1": 7696,
+      "HS_RA_V1": 7697,
+      "VALIANTZAS_V1": 7696
+    },
+    "IB03": {
+      "PM_FAO56_V1": 7870,
+      "HS_RA_V1": 7870,
+      "VALIANTZAS_V1": 7870
+    },
+    "IB04": {
+      "PM_FAO56_V1": 7711,
+      "HS_RA_V1": 7716,
+      "VALIANTZAS_V1": 7711
+    },
+    "IB05": {
+      "PM_FAO56_V1": 7830,
+      "HS_RA_V1": 7830,
+      "VALIANTZAS_V1": 7830
+    },
+    "IB06": {
+      "PM_FAO56_V1": 7860,
+      "HS_RA_V1": 7862,
+      "VALIANTZAS_V1": 7860
+    },
+    "IB07": {
+      "PM_FAO56_V1": 2929,
+      "HS_RA_V1": 2943,
+      "VALIANTZAS_V1": 2943
+    },
+    "IB08": {
+      "PM_FAO56_V1": 7055,
+      "HS_RA_V1": 7083,
+      "VALIANTZAS_V1": 7079
+    },
+    "IB09": {
+      "PM_FAO56_V1": 0,
+      "HS_RA_V1": 0,
+      "VALIANTZAS_V1": 0
+    },
+    "IB10": {
+      "PM_FAO56_V1": 6978,
+      "HS_RA_V1": 6995,
+      "VALIANTZAS_V1": 6983
+    },
+    "IB101": {
+      "PM_FAO56_V1": 246,
+      "HS_RA_V1": 248,
+      "VALIANTZAS_V1": 248
+    },
+    "IB11": {
+      "PM_FAO56_V1": 7017,
+      "HS_RA_V1": 7031,
+      "VALIANTZAS_V1": 7020
+    }
+  },
+  "station_metrics": [
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.0008707245059364253,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB01",
+      "mae": 0.010304115264048449,
+      "method": "ET0_FAO56",
+      "n": 7702,
+      "r2": 0.9997899177699197,
+      "rmse": 0.025523920160815422,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.44388067046894714,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB01",
+      "mae": 0.6459674449668102,
+      "method": "ET0_Hargreaves",
+      "n": 7702,
+      "r2": 0.7980442687104528,
+      "rmse": 0.7913722352234109,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.12860772342194554,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB01",
+      "mae": 0.3897930509304604,
+      "method": "ET0_Valiantzas",
+      "n": 7702,
+      "r2": 0.9131787160977656,
+      "rmse": 0.5188786721432881,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.0004703586380101676,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB02",
+      "mae": 0.010308413695116161,
+      "method": "ET0_FAO56",
+      "n": 7693,
+      "r2": 0.9997699151464455,
+      "rmse": 0.028499633934919,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.3902470270674232,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB02",
+      "mae": 0.6179834954098712,
+      "method": "ET0_Hargreaves",
+      "n": 7693,
+      "r2": 0.833749263894596,
+      "rmse": 0.7660851697450985,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.04585817199939934,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB02",
+      "mae": 0.3833136506821966,
+      "method": "ET0_Valiantzas",
+      "n": 7693,
+      "r2": 0.9224524750756564,
+      "rmse": 0.5232138566549791,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0020059007471920813,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB03",
+      "mae": 0.009345330421335264,
+      "method": "ET0_FAO56",
+      "n": 7864,
+      "r2": 0.999780971291566,
+      "rmse": 0.026640375489128818,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.4073561956293507,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB03",
+      "mae": 0.5790511805440008,
+      "method": "ET0_Hargreaves",
+      "n": 7864,
+      "r2": 0.8427645700492433,
+      "rmse": 0.713781071664059,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.05016637539038898,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB03",
+      "mae": 0.3527984440020037,
+      "method": "ET0_Valiantzas",
+      "n": 7864,
+      "r2": 0.9305433097727174,
+      "rmse": 0.47440238405518315,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0031156497778038377,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB04",
+      "mae": 0.010728456031448771,
+      "method": "ET0_FAO56",
+      "n": 7707,
+      "r2": 0.9998006214646402,
+      "rmse": 0.02471684736031797,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.5529827548184869,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB04",
+      "mae": 0.641010957964787,
+      "method": "ET0_Hargreaves",
+      "n": 7707,
+      "r2": 0.8046898764040517,
+      "rmse": 0.7735996281906664,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.2682792480887695,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB04",
+      "mae": 0.40276805660749204,
+      "method": "ET0_Valiantzas",
+      "n": 7707,
+      "r2": 0.9048208324092369,
+      "rmse": 0.5400386290049981,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.003528540958193513,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB05",
+      "mae": 0.010161818821109187,
+      "method": "ET0_FAO56",
+      "n": 7826,
+      "r2": 0.9998290954723965,
+      "rmse": 0.022719329329301794,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.6906379313381301,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB05",
+      "mae": 0.7518896478574826,
+      "method": "ET0_Hargreaves",
+      "n": 7826,
+      "r2": 0.733324893786782,
+      "rmse": 0.8974493786132355,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.3902806671575601,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB05",
+      "mae": 0.46755483542890236,
+      "method": "ET0_Valiantzas",
+      "n": 7826,
+      "r2": 0.876046078487138,
+      "rmse": 0.6118554859954445,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.005399698862145554,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB06",
+      "mae": 0.013374777218143251,
+      "method": "ET0_FAO56",
+      "n": 7859,
+      "r2": 0.9997606586895939,
+      "rmse": 0.026689885842495,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.7693721649313541,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB06",
+      "mae": 0.8865447866152774,
+      "method": "ET0_Hargreaves",
+      "n": 7859,
+      "r2": 0.6349440133124022,
+      "rmse": 1.0423597222544803,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.2830123667623572,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB06",
+      "mae": 0.436821846788228,
+      "method": "ET0_Valiantzas",
+      "n": 7859,
+      "r2": 0.8908426080960758,
+      "rmse": 0.5699863551437198,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.0018287012065535259,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB07",
+      "mae": 0.012567727786902558,
+      "method": "ET0_FAO56",
+      "n": 2928,
+      "r2": 0.9998251569947441,
+      "rmse": 0.02065601887902045,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.8899588753600444,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB07",
+      "mae": 0.91840145424451,
+      "method": "ET0_Hargreaves",
+      "n": 2928,
+      "r2": 0.5430469736270975,
+      "rmse": 1.0559862651356269,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.7049212222862781,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB07",
+      "mae": 0.7211184557249566,
+      "method": "ET0_Valiantzas",
+      "n": 2928,
+      "r2": 0.6925054565328355,
+      "rmse": 0.8662459104174756,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0039963634423387275,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB08",
+      "mae": 0.013411670529463973,
+      "method": "ET0_FAO56",
+      "n": 7050,
+      "r2": 0.9997327716319443,
+      "rmse": 0.02619884071888272,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.5188836639099196,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB08",
+      "mae": 0.7145557124161844,
+      "method": "ET0_Hargreaves",
+      "n": 7050,
+      "r2": 0.6991619443425467,
+      "rmse": 0.8790370521419033,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.30144345894344915,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB08",
+      "mae": 0.47075305782760113,
+      "method": "ET0_Valiantzas",
+      "n": 7050,
+      "r2": 0.8533800712537687,
+      "rmse": 0.6136733969718305,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": null,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB09",
+      "mae": null,
+      "method": "ET0_FAO56",
+      "n": 0,
+      "r2": null,
+      "rmse": null,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": null,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB09",
+      "mae": null,
+      "method": "ET0_Hargreaves",
+      "n": 0,
+      "r2": null,
+      "rmse": null,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": null,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB09",
+      "mae": null,
+      "method": "ET0_Valiantzas",
+      "n": 0,
+      "r2": null,
+      "rmse": null,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.002032393454631858,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB10",
+      "mae": 0.013373718555595932,
+      "method": "ET0_FAO56",
+      "n": 6975,
+      "r2": 0.9996510139171748,
+      "rmse": 0.030262557723250646,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.7151753329944184,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB10",
+      "mae": 0.7839180910323704,
+      "method": "ET0_Hargreaves",
+      "n": 6975,
+      "r2": 0.6613895498549387,
+      "rmse": 0.9426527857935391,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.3790281082140782,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB10",
+      "mae": 0.4674279311733517,
+      "method": "ET0_Valiantzas",
+      "n": 6975,
+      "r2": 0.8448561598897854,
+      "rmse": 0.6380707628587785,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.047891872649376666,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB101",
+      "mae": 0.057131300344904844,
+      "method": "ET0_FAO56",
+      "n": 243,
+      "r2": 0.998037613485978,
+      "rmse": 0.08713385264712589,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.3428079855287651,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB101",
+      "mae": 0.5607508345545381,
+      "method": "ET0_Hargreaves",
+      "n": 243,
+      "r2": 0.8406032767193721,
+      "rmse": 0.7852977195062022,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.4261239128891507,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB101",
+      "mae": 0.5530160645664657,
+      "method": "ET0_Valiantzas",
+      "n": 243,
+      "r2": 0.8650519920422023,
+      "rmse": 0.722566596357387,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.0025602595268659086,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB11",
+      "mae": 0.01137177604236038,
+      "method": "ET0_FAO56",
+      "n": 7013,
+      "r2": 0.9994069918586701,
+      "rmse": 0.0400162133416935,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.5412448262811722,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB11",
+      "mae": 0.728118820614096,
+      "method": "ET0_Hargreaves",
+      "n": 7013,
+      "r2": 0.6666426727238026,
+      "rmse": 0.9487693899049536,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.548084348419078,
+      "cohort": "PM_HS_VAL",
+      "group": "station",
+      "key": "IB11",
+      "mae": 0.6505294831847567,
+      "method": "ET0_Valiantzas",
+      "n": 7013,
+      "r2": 0.7475701659736085,
+      "rmse": 0.8256120116115465,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    }
+  ],
+  "season_metrics": [
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.004036495742681661,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "DJF",
+      "mae": 0.010002461741481115,
+      "method": "ET0_FAO56",
+      "n": 17176,
+      "r2": 0.9916946222674126,
+      "rmse": 0.04719015164870927,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.2689040716289031,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "DJF",
+      "mae": 0.5242201232705411,
+      "method": "ET0_Hargreaves",
+      "n": 17176,
+      "r2": -0.4558302283427149,
+      "rmse": 0.6247798934887827,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.08334255580741574,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "DJF",
+      "mae": 0.32197925927445736,
+      "method": "ET0_Valiantzas",
+      "n": 17176,
+      "r2": 0.3353475141881844,
+      "rmse": 0.42215213991448625,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.004523948075200146,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "JJA",
+      "mae": 0.01195025671781395,
+      "method": "ET0_FAO56",
+      "n": 18058,
+      "r2": 0.9996153520768924,
+      "rmse": 0.018286064036332175,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.647641815391054,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "JJA",
+      "mae": 0.9079308698695154,
+      "method": "ET0_Hargreaves",
+      "n": 18058,
+      "r2": -0.3752043358268189,
+      "rmse": 1.093382596422237,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.29470078157195967,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "JJA",
+      "mae": 0.6253757318148429,
+      "method": "ET0_Valiantzas",
+      "n": 18058,
+      "r2": 0.2558885393355773,
+      "rmse": 0.8042804961127435,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": -0.005691457710058197,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "MAM",
+      "mae": 0.016344142365492177,
+      "method": "ET0_FAO56",
+      "n": 17597,
+      "r2": 0.9995924791598083,
+      "rmse": 0.023235659426809267,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.4662312611737689,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "MAM",
+      "mae": 0.7210155223563598,
+      "method": "ET0_Hargreaves",
+      "n": 17597,
+      "r2": 0.4123917108247527,
+      "rmse": 0.8823157820120496,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.12027698641394212,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "MAM",
+      "mae": 0.44988291220493437,
+      "method": "ET0_Valiantzas",
+      "n": 17597,
+      "r2": 0.736906197646192,
+      "rmse": 0.5903851152495893,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 9.11138280988861e-05,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "SON",
+      "mae": 0.00790599202611254,
+      "method": "ET0_FAO56",
+      "n": 18029,
+      "r2": 0.9998521988922979,
+      "rmse": 0.012805238209068419,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.4544232142881958,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "SON",
+      "mae": 0.6891628551372846,
+      "method": "ET0_Hargreaves",
+      "n": 18029,
+      "r2": 0.3910039995538652,
+      "rmse": 0.8219701334393164,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    },
+    {
+      "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+      "bias": 0.17194083900608553,
+      "cohort": "PM_HS_VAL",
+      "group": "season",
+      "key": "SON",
+      "mae": 0.41981169014424063,
+      "method": "ET0_Valiantzas",
+      "n": 18029,
+      "r2": 0.7298412378988535,
+      "rmse": 0.5474675043962127,
+      "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+    }
+  ],
+  "largest_station_year_rmse": {
+    "ET0_FAO56": [
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 0.0025890606316659906,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2020",
+        "mae": 0.018965503407722125,
+        "method": "ET0_FAO56",
+        "n": 366,
+        "r2": 0.9951426942513257,
+        "rmse": 0.1267392017472855,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.04314762412191873,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB101:2009",
+        "mae": 0.0469735557488389,
+        "method": "ET0_FAO56",
+        "n": 217,
+        "r2": 0.9988327310065809,
+        "rmse": 0.06486502055311744,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.0011447849344002937,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2016",
+        "mae": 0.01384033575777181,
+        "method": "ET0_FAO56",
+        "n": 362,
+        "r2": 0.9985406922223803,
+        "rmse": 0.059858386983181966,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.00014043097146563134,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2012",
+        "mae": 0.013917036883278716,
+        "method": "ET0_FAO56",
+        "n": 349,
+        "r2": 0.9987154158444806,
+        "rmse": 0.058713167474119164,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 0.0025375009514677633,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB02:2020",
+        "mae": 0.01164633941883545,
+        "method": "ET0_FAO56",
+        "n": 366,
+        "r2": 0.999063824173688,
+        "rmse": 0.05669044412534189,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      }
+    ],
+    "ET0_Hargreaves": [
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 1.1496920577719874,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB06:2025",
+        "mae": 1.1854428140969462,
+        "method": "ET0_Hargreaves",
+        "n": 363,
+        "r2": 0.3222446131406532,
+        "rmse": 1.3709382200225773,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 1.0992736703372135,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB06:2024",
+        "mae": 1.1371593842307373,
+        "method": "ET0_Hargreaves",
+        "n": 366,
+        "r2": 0.37569934119702486,
+        "rmse": 1.2987512606291156,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 1.1069614263284873,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB10:2023",
+        "mae": 1.1299744692105607,
+        "method": "ET0_Hargreaves",
+        "n": 363,
+        "r2": 0.21547110289767857,
+        "rmse": 1.2958589009998045,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 1.0736152226169249,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB10:2015",
+        "mae": 1.1034215224145045,
+        "method": "ET0_Hargreaves",
+        "n": 365,
+        "r2": 0.46688128788716055,
+        "rmse": 1.2564793632515163,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 1.051189340725111,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB05:2025",
+        "mae": 1.0562746299628056,
+        "method": "ET0_Hargreaves",
+        "n": 365,
+        "r2": 0.494232149235995,
+        "rmse": 1.2112047729273383,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      }
+    ],
+    "ET0_Valiantzas": [
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.8001139194648177,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2007",
+        "mae": 0.8597251277760127,
+        "method": "ET0_Valiantzas",
+        "n": 359,
+        "r2": 0.5947291068776099,
+        "rmse": 1.0483553358215671,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": 0.8201904866541598,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB07:2012",
+        "mae": 0.8256326522425919,
+        "method": "ET0_Valiantzas",
+        "n": 318,
+        "r2": 0.6001959822695299,
+        "rmse": 0.9983606639198754,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.6862478271354245,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2009",
+        "mae": 0.7778229837498016,
+        "method": "ET0_Valiantzas",
+        "n": 363,
+        "r2": 0.6975525097934314,
+        "rmse": 0.9601168213112729,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.7117552708032755,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2008",
+        "mae": 0.776438400799459,
+        "method": "ET0_Valiantzas",
+        "n": 364,
+        "r2": 0.6567731760735303,
+        "rmse": 0.9546052162481443,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      },
+      {
+        "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+        "bias": -0.6662765682920863,
+        "cohort": "PM_HS_VAL",
+        "group": "station_year",
+        "key": "IB11:2010",
+        "mae": 0.7614334475648462,
+        "method": "ET0_Valiantzas",
+        "n": 364,
+        "r2": 0.6811472693248124,
+        "rmse": 0.9455090202752148,
+        "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9"
+      }
+    ]
+  },
+  "largest_val_errors": [
+    {
+      "station_code": "IB05",
+      "date": "2010-07-15",
+      "prediction": 5.601745007887092,
+      "reference": 2.144274,
+      "error": 3.4574710078870923,
+      "inputs": {
+        "DirViento": 53.49,
+        "DirVientoVelMax": 96.8,
+        "Estacion": "IB05",
+        "EtPMon": 2.144274,
+        "Fecha": "2010-07-15",
+        "HorMinHumMax": 2340.0,
+        "HorMinHumMin": 1030.0,
+        "HorMinTempMax": 1400.0,
+        "HorMinTempMin": 530.0,
+        "HorMinVelMax": 1659.0,
+        "HumedadMax": 91.2,
+        "HumedadMedia": 72.106,
+        "HumedadMin": 48.72,
+        "PePMon": 0.0,
+        "Precipitacion": 0.6,
+        "Radiacion": 3.913,
+        "TempMax": 32.42,
+        "TempMedia": 26.259,
+        "TempMin": 18.71,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 1.134,
+        "VelVientoMax": 4.773
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 40.80835843602928,
+        "rs_estimated_mj_m2_day": 23.452549079422905,
+        "tmean_calc_c": 25.565
+      }
+    },
+    {
+      "station_code": "IB02",
+      "date": "2009-01-24",
+      "prediction": 1.4979383336574055,
+      "reference": 4.923190116882324,
+      "error": -3.425251783224919,
+      "inputs": {
+        "DirViento": 269.4,
+        "DirVientoVelMax": 282.1,
+        "Estacion": "IB02",
+        "EtPMon": 4.923190116882324,
+        "Fecha": "2009-01-24",
+        "HorMinHumMax": 20.0,
+        "HorMinHumMin": 1530.0,
+        "HorMinTempMax": 450.0,
+        "HorMinTempMin": 0.0,
+        "HorMinVelMax": 1719.0,
+        "HumedadMax": 65.48,
+        "HumedadMedia": 42.39,
+        "HumedadMin": 26.86,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 11.58,
+        "TempMax": 17.06,
+        "TempMedia": 14.95,
+        "TempMin": 10.94,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 9.27,
+        "VelVientoMax": 21.15
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 16.401385693869585,
+        "rs_estimated_mj_m2_day": 8.552102223280748,
+        "tmean_calc_c": 14.0
+      }
+    },
+    {
+      "station_code": "IB06",
+      "date": "2009-01-24",
+      "prediction": 1.6059174381326178,
+      "reference": 5.02902889251709,
+      "error": -3.423111454384472,
+      "inputs": {
+        "DirViento": 271.1,
+        "DirVientoVelMax": 298.9,
+        "Estacion": "IB06",
+        "EtPMon": 5.02902889251709,
+        "Fecha": "2009-01-24",
+        "HorMinHumMax": 50.0,
+        "HorMinHumMin": 1320.0,
+        "HorMinTempMax": 450.0,
+        "HorMinTempMin": 0.0,
+        "HorMinVelMax": 1712.0,
+        "HumedadMax": 67.79,
+        "HumedadMedia": 41.77,
+        "HumedadMin": 29.53,
+        "PePMon": 0.0,
+        "Precipitacion": 0.4,
+        "Radiacion": 11.07,
+        "TempMax": 18.66,
+        "TempMedia": 15.47,
+        "TempMin": 11.81,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 8.89,
+        "VelVientoMax": 21.96
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 16.328741141558808,
+        "rs_estimated_mj_m2_day": 8.825818076867582,
+        "tmean_calc_c": 15.235
+      }
+    },
+    {
+      "station_code": "IB04",
+      "date": "2013-07-13",
+      "prediction": 5.788718542928459,
+      "reference": 2.399152,
+      "error": 3.389566542928459,
+      "inputs": {
+        "DirViento": 61.51,
+        "DirVientoVelMax": 190.3,
+        "Estacion": "IB04",
+        "EtPMon": 2.399152,
+        "Fecha": "2013-07-13",
+        "HorMinHumMax": 2310.0,
+        "HorMinHumMin": 1730.0,
+        "HorMinTempMax": 1730.0,
+        "HorMinTempMin": 2330.0,
+        "HorMinVelMax": 1739.0,
+        "HumedadMax": 87.7,
+        "HumedadMedia": 63.18,
+        "HumedadMin": 33.27,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 7.83,
+        "TempMax": 32.2,
+        "TempMedia": 25.35,
+        "TempMin": 20.27,
+        "TempSuelo1": 29.76,
+        "TempSuelo2": 29.97,
+        "VelViento": 0.489,
+        "VelVientoMax": 4.185
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 40.96654419765101,
+        "rs_estimated_mj_m2_day": 23.866597099836408,
+        "tmean_calc_c": 26.235
+      }
+    },
+    {
+      "station_code": "IB10",
+      "date": "2013-07-13",
+      "prediction": 5.916259765881164,
+      "reference": 2.683391,
+      "error": 3.232868765881164,
+      "inputs": {
+        "DirViento": 35.04,
+        "DirVientoVelMax": 38.93,
+        "Estacion": "IB10",
+        "EtPMon": 2.683391,
+        "Fecha": "2013-07-13",
+        "HorMinHumMax": 2220.0,
+        "HorMinHumMin": 1500.0,
+        "HorMinTempMax": 1730.0,
+        "HorMinTempMin": 2330.0,
+        "HorMinVelMax": 1340.0,
+        "HumedadMax": 87.0,
+        "HumedadMedia": 58.93,
+        "HumedadMin": 31.78,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 9.42,
+        "TempMax": 32.2,
+        "TempMedia": 25.35,
+        "TempMin": 20.27,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 0.52,
+        "VelVientoMax": 3.087
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 40.96663526927318,
+        "rs_estimated_mj_m2_day": 24.392443184640648,
+        "tmean_calc_c": 26.235
+      }
+    },
+    {
+      "station_code": "IB10",
+      "date": "2019-07-08",
+      "prediction": 7.297735145404232,
+      "reference": 4.087784,
+      "error": 3.209951145404232,
+      "inputs": {
+        "DirViento": 37.574,
+        "DirVientoVelMax": 216.5,
+        "Estacion": "IB10",
+        "EtPMon": 4.087784,
+        "Fecha": "2019-07-08",
+        "HorMinHumMax": 1800.0,
+        "HorMinHumMin": 1030.0,
+        "HorMinTempMax": 1130.0,
+        "HorMinTempMin": 1740.0,
+        "HorMinVelMax": 1300.0,
+        "HumedadMax": 95.2,
+        "HumedadMedia": 51.84,
+        "HumedadMin": 26.37,
+        "PePMon": 0.0,
+        "Precipitacion": 0.609,
+        "Radiacion": 11.77,
+        "TempMax": 37.85,
+        "TempMedia": 29.17,
+        "TempMin": 21.5,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 1.123,
+        "VelVientoMax": 2.583
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 41.3085263095717,
+        "rs_estimated_mj_m2_day": 27.908030735146816,
+        "tmean_calc_c": 29.675
+      }
+    },
+    {
+      "station_code": "IB07",
+      "date": "2006-06-20",
+      "prediction": 6.517317503810908,
+      "reference": 3.3164773,
+      "error": 3.200840203810908,
+      "inputs": {
+        "DirViento": 317.5,
+        "DirVientoVelMax": 24.04,
+        "Estacion": "IB07",
+        "EtPMon": 3.3164773,
+        "Fecha": "2006-06-20",
+        "HorMinHumMax": 2120.0,
+        "HorMinHumMin": 1240.0,
+        "HorMinTempMax": 1240.0,
+        "HorMinTempMin": 2120.0,
+        "HorMinVelMax": 1820.0,
+        "HumedadMax": 86.2,
+        "HumedadMedia": 62.8,
+        "HumedadMin": 20.99,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 10.89,
+        "TempMax": 35.57,
+        "TempMedia": 26.05,
+        "TempMin": 22.02,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 0.618,
+        "VelVientoMax": 4.234
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 41.8692687677704,
+        "rs_estimated_mj_m2_day": 25.394264066326055,
+        "tmean_calc_c": 28.795
+      }
+    },
+    {
+      "station_code": "IB06",
+      "date": "2013-03-30",
+      "prediction": 2.748749232643336,
+      "reference": 5.911233,
+      "error": -3.1624837673566644,
+      "inputs": {
+        "DirViento": 283.6,
+        "DirVientoVelMax": 310.3,
+        "Estacion": "IB06",
+        "EtPMon": 5.911233,
+        "Fecha": "2013-03-30",
+        "HorMinHumMax": 0.0,
+        "HorMinHumMin": 1710.0,
+        "HorMinTempMax": 930.0,
+        "HorMinTempMin": 430.0,
+        "HorMinVelMax": 1813.0,
+        "HumedadMax": 64.04,
+        "HumedadMedia": 43.5,
+        "HumedadMin": 29.85,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 22.58,
+        "TempMax": 20.09,
+        "TempMedia": 18.67,
+        "TempMin": 16.43,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 5.833,
+        "VelVientoMax": 16.83
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 31.087883446876887,
+        "rs_estimated_mj_m2_day": 13.839342807594418,
+        "tmean_calc_c": 18.259999999999998
+      }
+    },
+    {
+      "station_code": "IB07",
+      "date": "2009-08-12",
+      "prediction": 5.664708560886195,
+      "reference": 2.6271296,
+      "error": 3.0375789608861954,
+      "inputs": {
+        "DirViento": 12.43,
+        "DirVientoVelMax": 0.757,
+        "Estacion": "IB07",
+        "EtPMon": 2.6271296,
+        "Fecha": "2009-08-12",
+        "HorMinHumMax": 0.0,
+        "HorMinHumMin": 1140.0,
+        "HorMinTempMax": 1440.0,
+        "HorMinTempMin": 510.0,
+        "HorMinVelMax": 1102.0,
+        "HumedadMax": 79.6,
+        "HumedadMedia": 61.0,
+        "HumedadMin": 37.93,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 12.04,
+        "TempMax": 33.58,
+        "TempMedia": 25.19,
+        "TempMin": 18.84,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 0.201,
+        "VelVientoMax": 2.44
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 37.21610978067404,
+        "rs_estimated_mj_m2_day": 23.36857719207787,
+        "tmean_calc_c": 26.21
+      }
+    },
+    {
+      "station_code": "IB10",
+      "date": "2021-08-10",
+      "prediction": 6.220844628995935,
+      "reference": 3.205778,
+      "error": 3.015066628995935,
+      "inputs": {
+        "DirViento": 210.2,
+        "DirVientoVelMax": 164.8,
+        "Estacion": "IB10",
+        "EtPMon": 3.205778,
+        "Fecha": "2021-08-10",
+        "HorMinHumMax": 2350.0,
+        "HorMinHumMin": 1320.0,
+        "HorMinTempMax": 1250.0,
+        "HorMinTempMin": 450.0,
+        "HorMinVelMax": 1705.0,
+        "HumedadMax": 80.5,
+        "HumedadMedia": 54.31,
+        "HumedadMin": 26.02,
+        "PePMon": 0.0,
+        "Precipitacion": 0.0,
+        "Radiacion": 15.53,
+        "TempMax": 35.54,
+        "TempMedia": 27.44,
+        "TempMin": 19.82,
+        "TempSuelo1": null,
+        "TempSuelo2": null,
+        "VelViento": 0.19,
+        "VelVientoMax": 4.087
+      },
+      "diagnostics": {
+        "ra_mj_m2_day": 37.58619611812589,
+        "rs_estimated_mj_m2_day": 24.833330415198166,
+        "tmean_calc_c": 27.68
+      }
+    }
+  ],
+  "limitations": [
+    "EtPMon calculated SIAR reference; not independent ground truth",
+    "UNITS_PROVENANCE_PARTIAL",
+    "Wind 2 m / SIAR convention; station_period_provenance not exhaustively verified",
+    "All 4423 IB09 source rows retained but excluded by unchanged Quality FAIL policy",
+    "IB101 short period: 249 source observations",
+    "Empirical radiation from RHmean and temperature; extrapolation/advection/cold/saturation limitations",
+    "Reference evapotranspiration assumes well-watered reference conditions; not actual crop ET",
+    "Unit-explicit composition of Marti Eqs.1b+3, not literal Eq.4 or certified author-code reproduction",
+    "No imputation, local calibration, learned coefficients, AHC, ML or forecast",
+    "Large artifacts preserved locally outside Git; no independent backup certification in this mission"
+  ]
+}

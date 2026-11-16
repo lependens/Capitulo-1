@@ -1,5 +1,12 @@
 # 2.1 Estimación de ET₀ mediante Redes Neuronales Artificiales (ANN)
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 Este documento explica paso a paso cómo se implementaron las **Redes Neuronales Artificiales (ANN)** para estimar la evapotranspiración de referencia **ET₀**, replicando la metodología del TFG original, pero adaptada a **Python/Keras con TensorFlow**. Se integra como continuación natural del documento:
 
 **`docs_1.2_Tratamiento de datos y cálculo de estimaciones.md`**
@@ -173,3 +180,66 @@ model.fit(X_train_scaled, y_train_scaled, epochs=30, batch_size=128, verbose=0)
 - Aplicar redes LSTM para series temporales. 
 
 Este tutorial es reproducible; ajusta `estaciones` para más datos. ¡Ejecuta y compárteme `nn_errors_summary.csv` para analizar! 😊
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Contexto histórico de TensorFlow
+
+La implementación ANN y sus resultados anteriores se conservan como **HISTÓRICO / LEGACY**. No constituyen nuevos resultados ML sobre Dataset Observational v1.
+
+El dataset actual está construido/validado desde POST corregido y la ejecución oficial PM/HS está PASS, con [resultados reproducibles](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md). Valiantzas sigue pendiente de auditoría y baseline reproducible antes de una comparación de tres métodos y del avance a ML.
+
+Las futuras redes se evaluarán con partición temporal sin leakage y parámetros/transformaciones ajustados exclusivamente en TRAIN. Esta actualización no instala TensorFlow, entrena modelos ni modifica artefactos científicos. [Estado vigente](docs/PROJECT_STATUS.md).
+
+
+---
+
+## ACTUALIZACIÓN 24/10/2026 — Referencias oficiales y prioridad de preservación
+
+ANN/TensorFlow anterior permanece HISTÓRICO / LEGACY. Los cuatro baselines clásicos PM_FAO56_V1, HS_RA_V1, VALIANTZAS_V1 y HG_RS_V1 y su comparación son PASS; [evidencia](scientific_pipeline/results/four-classical-20261024T042250Z/README.md). EtPMon es referencia calculada, no medición independiente.
+
+Antes de nuevos modelos: PROJECT-ARTIFACT-BACKUP-V1 → AHC-METHODOLOGY-REVIEW → contrato temporal → modelos calibrados simples → regresión/árboles/boosting → ANN. La revisión AHC no está cerrada y definirá estimación/validación en misión separada; no se decide aquí uso de todo el dataset frente a TRAIN. Ningún nuevo artefacto ML ni entrenamiento se genera en esta misión.
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Contratos listos y límites de nuevos artefactos
+
+AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION y PROJECT-ARTIFACT-BACKUP-V1 PASS; el contexto anterior de metodología/preservación pendientes queda histórico. [Contrato ML](scientific_pipeline/docs/ml_experiment_contract.md) FROZEN/READY, [visualización](scientific_pipeline/docs/visualization_contract.md) FROZEN/AVAILABLE TO 06. No ML/ANN entrenado ni web construida; TensorFlow anterior sigue legacy.
+
+Siguiente orden: regresión lineal/regularizada, árboles, RF/extra trees, boosting, ANN después. TEST AHC retrospective_locked, con ajuste solo TRAIN y climatología separada, no test prospectivo nunca visto. No reutilizar AHC_CLIMATOLOGY como si acreditara métricas TEST.
+
+Snapshot remoto aceptado cubre un scope concreto; futuros resultados exclusivamente Windows requieren transferencia/ingestión explícita al servidor antes de preservación automática. [DATA_LOCATIONS](docs/DATA_LOCATIONS.md).
+
+---
+
+## ACTUALIZACIÓN 02/11/2026 — ANN moderna v1: cierre científico
+
+Las secciones anteriores describen ANN TensorFlow **histórica / legacy**. No son la implementación científica vigente ni se les atribuyen los resultados siguientes.
+
+**ANN-V1-MODERN-ET0 = PASS.** La campaña moderna aproxima **PM_FAO56_V1**, una referencia calculada; no demuestra precisión frente a ET₀ instrumental observada de manera independiente. El champion seleccionado solo con DEVELOPMENT 2004–2020 es **FEATURE_SET_FULL / MLP [32]**: una capa oculta, 32 neuronas, activación ReLU y optimizador Adam. Las semillas congeladas fueron `20261101`, `20261102` y `20261103`; el RMSE ponderado de DEVELOPMENT fue **0.074962 mm/día**.
+
+### Evaluación TEST y límites
+
+TEST 2021–2025 se abrió una vez después de congelar arquitectura/champion. No participó en arquitectura, selección, entrenamiento ni refit. Conserva etiqueta **retrospective_locked** y no es globalmente prístino porque ese periodo había sido usado antes en otros experimentos ML.
+
+| Métrica TEST | Valor |
+|---|---:|
+| n | 15.958 |
+| MAE | 0.037632 mm/día |
+| RMSE | 0.051312 mm/día |
+| bias | −0.022449 mm/día |
+| R² | 0.999100 |
+| cobertura | 99.8748 % |
+| predicciones negativas / no finitas | 0 / 0 |
+
+Ante HGB FULL (RMSE 0.064104; MAE 0.047045), la ANN reduce RMSE en **0.012791 mm/día** (≈19.95 %) y MAE en **0.009413 mm/día** (≈20.01 %). No hay una mejora sin matiz: el bias ANN, **−0.022449 mm/día**, es mayor en magnitud que el de HGB, **−0.000966 mm/día**. Mejor/peor año: 2024/2022 (RMSE 0.045078/0.058756); mejor/peor estación: IB04/IB02 (0.040756/0.065308).
+
+### Linaje y preservación
+
+- Pipeline/main: `754adceee12cc423ee06eb17b49e36429d25b70d`.
+- Artefacto: `/srv/siar-project/scientific-artifacts/ann-v1-modern-20261102T065642Z/`.
+- Manifest SHA256: `1978c8d018b57686b7e2d7fd9457ad2f9399a115e65789a13abd0f0c9359862f`.
+- Receipt: `science-ann-v1-modern-20261102T065642Z_447f9498.json`, estado `published-verified`.
+- Snapshot: `backup_20261102T171546Z_40b4cd67`, **REMOTE_VERIFIED**.
+
+Dataset v1, raw y Quality no fueron modificados. La siguiente evolución no presupone reabrir esta selección: requiere validación prospectiva y/o un nuevo contrato científico.

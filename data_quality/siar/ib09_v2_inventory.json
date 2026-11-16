@@ -1,0 +1,179 @@
+{
+  "all_methods_intersection": 4390,
+  "annual": {
+    "2005": {
+      "HG_RS_V1": 69,
+      "HS_RA_V1": 69,
+      "PM_FAO56_V1": 69,
+      "VALIANTZAS_V1": 69,
+      "all_methods": 69,
+      "expected": 69,
+      "observed": 69
+    },
+    "2006": {
+      "HG_RS_V1": 364,
+      "HS_RA_V1": 364,
+      "PM_FAO56_V1": 364,
+      "VALIANTZAS_V1": 364,
+      "all_methods": 364,
+      "confirmed_no_data": 1,
+      "expected": 365,
+      "observed": 364
+    },
+    "2007": {
+      "HG_RS_V1": 363,
+      "HS_RA_V1": 363,
+      "PM_FAO56_V1": 362,
+      "VALIANTZAS_V1": 363,
+      "all_methods": 362,
+      "confirmed_no_data": 1,
+      "expected": 365,
+      "observed": 364
+    },
+    "2008": {
+      "HG_RS_V1": 364,
+      "HS_RA_V1": 364,
+      "PM_FAO56_V1": 363,
+      "VALIANTZAS_V1": 364,
+      "all_methods": 363,
+      "expected": 366,
+      "observed": 366
+    },
+    "2009": {
+      "HG_RS_V1": 364,
+      "HS_RA_V1": 364,
+      "PM_FAO56_V1": 364,
+      "VALIANTZAS_V1": 364,
+      "all_methods": 364,
+      "expected": 365,
+      "observed": 365
+    },
+    "2010": {
+      "HG_RS_V1": 364,
+      "HS_RA_V1": 364,
+      "PM_FAO56_V1": 364,
+      "VALIANTZAS_V1": 364,
+      "all_methods": 364,
+      "expected": 365,
+      "observed": 365
+    },
+    "2011": {
+      "HG_RS_V1": 305,
+      "HS_RA_V1": 305,
+      "PM_FAO56_V1": 305,
+      "VALIANTZAS_V1": 305,
+      "all_methods": 305,
+      "confirmed_no_data": 60,
+      "expected": 365,
+      "observed": 305
+    },
+    "2012": {
+      "HG_RS_V1": 366,
+      "HS_RA_V1": 366,
+      "PM_FAO56_V1": 365,
+      "VALIANTZAS_V1": 366,
+      "all_methods": 365,
+      "expected": 366,
+      "observed": 366
+    },
+    "2013": {
+      "HG_RS_V1": 365,
+      "HS_RA_V1": 365,
+      "PM_FAO56_V1": 365,
+      "VALIANTZAS_V1": 365,
+      "all_methods": 365,
+      "expected": 365,
+      "observed": 365
+    },
+    "2014": {
+      "HG_RS_V1": 365,
+      "HS_RA_V1": 365,
+      "PM_FAO56_V1": 359,
+      "VALIANTZAS_V1": 365,
+      "all_methods": 359,
+      "expected": 365,
+      "observed": 365
+    },
+    "2015": {
+      "HG_RS_V1": 365,
+      "HS_RA_V1": 365,
+      "PM_FAO56_V1": 362,
+      "VALIANTZAS_V1": 363,
+      "all_methods": 362,
+      "expected": 365,
+      "observed": 365
+    },
+    "2016": {
+      "HG_RS_V1": 366,
+      "HS_RA_V1": 366,
+      "PM_FAO56_V1": 366,
+      "VALIANTZAS_V1": 366,
+      "all_methods": 366,
+      "expected": 366,
+      "observed": 366
+    },
+    "2017": {
+      "HG_RS_V1": 205,
+      "HS_RA_V1": 205,
+      "PM_FAO56_V1": 201,
+      "VALIANTZAS_V1": 201,
+      "all_methods": 201,
+      "confirmed_no_data": 149,
+      "expected": 365,
+      "observed": 216
+    },
+    "2018": {
+      "HG_RS_V1": 181,
+      "HS_RA_V1": 181,
+      "PM_FAO56_V1": 181,
+      "VALIANTZAS_V1": 181,
+      "all_methods": 181,
+      "confirmed_no_data": 102,
+      "expected": 283,
+      "observed": 181
+    }
+  },
+  "confirmed_no_data": 313,
+  "ledger_sha256": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969",
+  "method_eligible": {
+    "HG_RS_V1": 4406,
+    "HS_RA_V1": 4406,
+    "PM_FAO56_V1": 4390,
+    "VALIANTZAS_V1": 4400
+  },
+  "official_period": [
+    "2005-10-24",
+    "2018-10-10"
+  ],
+  "official_rows": 4422,
+  "outside_dates": [
+    "2005-10-23"
+  ],
+  "policy": "QUALITY-IB09-V2-PROTOTYPE",
+  "raw_rows": 4423,
+  "raw_sha256": "2cbd9bb289404264fc78dad21322562d9d22b64ce4bbc87e51512ca763ea7a8a",
+  "reasons": {
+    "HG_RS_V1": {
+      "missing_or_nonfinite:Radiacion": 11,
+      "missing_or_nonfinite:TempMax": 16,
+      "missing_or_nonfinite:TempMin": 15
+    },
+    "HS_RA_V1": {
+      "missing_or_nonfinite:TempMax": 16,
+      "missing_or_nonfinite:TempMin": 15
+    },
+    "PM_FAO56_V1": {
+      "missing_or_nonfinite:HumedadMax": 20,
+      "missing_or_nonfinite:HumedadMin": 20,
+      "missing_or_nonfinite:Radiacion": 11,
+      "missing_or_nonfinite:TempMax": 16,
+      "missing_or_nonfinite:TempMin": 15,
+      "missing_or_nonfinite:VelViento": 18
+    },
+    "VALIANTZAS_V1": {
+      "missing_or_nonfinite:HumedadMedia": 17,
+      "missing_or_nonfinite:TempMax": 16,
+      "missing_or_nonfinite:TempMin": 15
+    }
+  }
+}

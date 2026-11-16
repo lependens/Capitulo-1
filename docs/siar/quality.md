@@ -4,13 +4,13 @@
 
 Definir una auditoría reproducible de los 12 CSV canónicos de Baleares: IB01–IB11 y IB101, almacenados en datos_siar_baleares/.
 
-El backfill temporal de adquisición ha alcanzado las 12 estaciones, pero la certificación científica de calidad y cobertura sigue pendiente. Esta especificación no declara los datos completos ni válidos. No modifica los CSV raw, no inicia una segunda pasada de adquisición y no genera resultados de auditoría por sí sola.
+El backfill temporal alcanzó las 12 estaciones y Quality está COMPLETE. El POST vigente es SIAR-QA-POST-20261020T193140Z; supersedes al original preservado. La cobertura observacional 96.987410 % refleja 2.345 ausencias SIAR confirmadas, no una auditoría inconclusa. Esta especificación fija reglas; los resultados están en [sync-status](sync-status.md) y los [artefactos POST](../../data_quality/siar/README.md). No modifica raw ni genera resultados por sí sola.
 
 ## Fuentes y autoridad del catálogo
 
 estaciones_baleares.csv en la raíz del repositorio es un snapshot local reproducible y versionado, útil para repetir auditorías y registrar su SHA-256. No es por sí solo la autoridad vigente sobre el catálogo SIAR.
 
-Antes de certificar, contrastar códigos, estado y fechas de instalación/baja con Info/ESTACIONES de SIAR, que es la autoridad a consultar. Registrar el snapshot local empleado y su hash; documentar discrepancias y no certificar estaciones afectadas hasta resolverlas.
+Antes de certificar, contrastar códigos, estado y fechas de instalación/baja con Info/ESTACIONES de SIAR, que es la autoridad a consultar. Registrar el snapshot local empleado y su hash, y documentar discrepancias. El hallazgo CATALOG-TZ (huso 31 en el snapshot local frente a 30 en Info/ESTACIONES) queda pendiente de investigación semántica: no corregir automáticamente `estaciones_baleares.csv` ni usar ese campo científicamente hasta conocer su significado. Por sí solo no degrada el resultado PRE ni bloquea la certificación observacional, salvo que se demuestre que afecta al periodo o a la semántica de los datos.
 
 El esquema raw SIAR esperado es de 23 columnas. No se modifica.
 
@@ -38,7 +38,7 @@ Los valores deben identificar el estado realmente usado; no se rellenan con valo
 
 ## Formato común de los informes CSV
 
-Los tres informes son artefactos de salida de una ejecución futura, no parte de los CSV raw:
+Los tres informes son artefactos de salida de una ejecución de auditoría; no forman parte de los CSV raw:
 
 - UTF-8 sin BOM, delimitador coma y una fila de encabezado;
 - fechas como YYYY-MM-DD y timestamps UTC ISO 8601 terminados en Z;
@@ -47,7 +47,7 @@ Los tres informes son artefactos de salida de una ejecución futura, no parte de
 - campos desconocidos o no aplicables vacíos, nunca reemplazados por cero;
 - orden estable de columnas según los encabezados especificados abajo.
 
-Los informes **todavía no se han generado**. No añadir filas de ejemplo ni snapshots inventados al repositorio.
+Quality Audit v1 PRE ya se ejecutó. Los informes y snapshots de esa ejecución son artefactos separados: esta actualización documental no los genera, copia ni modifica. No añadir filas de ejemplo ni snapshots inventados.
 
 ## 1. siar_station_audit.csv
 
@@ -108,8 +108,8 @@ Los valores describen los bytes efectivamente auditados. El manifiesto no modifi
 
 El modo canónico esperado de los CSV es 0644. La lógica correctora ya forma parte de SIAR Sync desde v2.3.2; normalizar archivos preexistentes es un **saneamiento operativo posterior a v2.3.2**, no una nueva versión funcional.
 
-PR #15 solo define cómo auditar y documentar el modo. La normalización real se coordina separadamente con 01/02: hash PRE, cambio de modo a 0644, hash POST, comprobación de igualdad de hashes y verificación de que los 12 CSV quedan en 0644. No se deben reescribir los CSV ni modificar contenido, filas, esquema, fechas u observaciones. GitHub no conserva estos bits ordinarios y no puede hacer el saneamiento del filesystem.
+PR #15 definió cómo auditar y documentar el modo. El saneamiento operativo ya completado confirmó 12/12 CSV 0644 y hashes PRE = POST 12/12 sin modificar contenido. Para cualquier normalización futura, coordinar con 01/02: hash PRE, cambio de modo a 0644, hash POST, comprobación de igualdad de hashes y verificación de que los 12 CSV quedan en 0644. No se deben reescribir los CSV ni modificar contenido, filas, esquema, fechas u observaciones. GitHub no conserva estos bits ordinarios y no puede hacer el saneamiento del filesystem.
 
 ## Estructura y ejecución
 
-Los destinos reservados están bajo data_quality/siar/. Su README identifica los informes esperados. La generación de archivos y cualquier segunda pasada de adquisición requieren una decisión posterior; esta PR solo documenta política, formatos y ubicación.
+Los destinos reservados están bajo data_quality/siar/. Su README identifica los informes esperados. Quality Audit v1 PRE y Recovery/POST están completados. El POST corregido publicado es el vigente; PRE y POST original son snapshots históricos preservados. La creación o actualización de resultados pertenece a una ejecución de auditoría autorizada y queda fuera de esta PR documental.

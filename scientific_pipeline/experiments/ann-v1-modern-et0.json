@@ -1,0 +1,110 @@
+{
+  "schema_version": "ann-modern-et0-v1",
+  "experiment_id": "ANN_V1_MODERN_ET0",
+  "base_repo_sha": "19874d26958d24e07b7f9ce0964f77d693431804",
+  "ml_protocol_path": "scientific_pipeline/experiments/ml-v1-classical.json",
+  "ml_protocol_sha256": "45f1c4f3ed20bb70dc3b1ca06a8e23ec14f95aae6b60f574e44a8a261cc07048",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "target": "PM_FAO56_V1",
+  "feature_sets": [
+    "FEATURE_SET_T",
+    "FEATURE_SET_T_RH",
+    "FEATURE_SET_T_RS",
+    "FEATURE_SET_T_RH_RS",
+    "FEATURE_SET_FULL"
+  ],
+  "folds": [
+    {
+      "id": "F1",
+      "train": [
+        "2004-01-01",
+        "2009-12-31"
+      ],
+      "validation": [
+        "2010-01-01",
+        "2012-12-31"
+      ]
+    },
+    {
+      "id": "F2",
+      "train": [
+        "2004-01-01",
+        "2012-12-31"
+      ],
+      "validation": [
+        "2013-01-01",
+        "2015-12-31"
+      ]
+    },
+    {
+      "id": "F3",
+      "train": [
+        "2004-01-01",
+        "2015-12-31"
+      ],
+      "validation": [
+        "2016-01-01",
+        "2018-12-31"
+      ]
+    },
+    {
+      "id": "F4",
+      "train": [
+        "2004-01-01",
+        "2018-12-31"
+      ],
+      "validation": [
+        "2019-01-01",
+        "2020-12-31"
+      ]
+    }
+  ],
+  "development": [
+    "2004-01-01",
+    "2020-12-31"
+  ],
+  "test": [
+    "2021-01-01",
+    "2025-12-31"
+  ],
+  "test_status": "retrospective_locked",
+  "architectures": [
+    [
+      32
+    ],
+    [
+      64,
+      32
+    ],
+    [
+      64,
+      32,
+      16
+    ]
+  ],
+  "activation": "relu",
+  "optimizer": "adam",
+  "alpha": 0.0001,
+  "learning_rate_init": 0.001,
+  "batch_size": 256,
+  "seeds": [
+    20261101,
+    20261102,
+    20261103
+  ],
+  "scaling": "StandardScaler fit on each fold TRAIN only; cyclic features retained as sine/cosine and scaled identically",
+  "imputation": "none",
+  "early_stopping": {
+    "patience_epochs": 15,
+    "min_delta_rmse": 0.0001,
+    "max_epochs": 200,
+    "validation": "last 15% of TRAIN dates, never rolling VALIDATION or TEST",
+    "inner_split": "chronological by distinct dates; scaler fitted on inner fit subset only"
+  },
+  "seed_aggregation": "mean predictions of all three fixed seeds; never select a seed",
+  "selection": "lowest eligible-n-weighted mean rolling VALIDATION RMSE of fixed three-seed ensemble; ties within 1e-12 resolved by weighted fold RMSE SD, then fewer features, then fewer parameters, then lexicographic architecture",
+  "final_refit": "all DEVELOPMENT 2004-2020; fixed per-seed epoch count is median best epoch across four development folds, rounded half up; no internal random early-stop split",
+  "test_access": "only after frozen configuration, weights and their hashes",
+  "prospective": "2026+ reserved for future independent validation; excluded from v1",
+  "status": "FROZEN"
+}

@@ -1,3 +1,5 @@
+> **Estado posterior de preservación — 01/11/2026:** WINDOWS-SCIENCE-INGEST-AUTOMATION PASS; PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED. Las referencias inferiores a transferencia manual/Windows sin protección automática describen el cierre anterior. El límite vigente es finalización/preparación y READY firmado explícitos; después, con clave SFTP desbloqueada en ssh-agent, transferencia, verificación servidor, ingestión y preservación automáticas. [Contrato operativo y evidencia E2E](../docs/backup/windows-ingestion.md). Esta nota no modifica ciencia ni operación Forecast.
+
 # Raw Forecast Capturer v0.1
 
 Batch-only Python component for preserving SIAR forecast responses as immutable, append-only raw captures. It does not assign forecast horizons, normalize ET₀, deduplicate captures, use DuckDB, or depend on SIAR Sync.
@@ -8,7 +10,21 @@ v0.1 entered `main` through PR #8. PR #12 added the validated shared-group stora
 
 The SIAR E2E contract has been manually demonstrated for IB04 — Son Ferriol, Mallorca, Aguacate: `/inicio` → AJAX `/validarForm` → normal form POST `/calculo` → same-session GET `/exportCSV`. R34 demonstrated `C1 + G1 + G2` as a sufficient payload for the tested IB04/Aguacate `/calculo` scenario. The current example configuration conservatively retains the additional G3 fields (`sEstacion`, `chkComarca`, `comarcaSelect`); their presence is not evidence that they are required. `fechaInicial` and `fechaFinal` are intentionally absent. SIAR returned a ZIP containing one CSV with seven forecast rows and columns `Fecha`, `Kc`, `ET0`, `ETc`, `Pe`, and `ETc - Pe`; the HTML result and CSV agreed on dates and forecast values.
 
-`LIVE-IB04 #2` is complete and the SIAR E2E contract has been demonstrated; PR #14 is merged. This code adaptation is not deployed. Permanent storage under `/srv` and off-site backup remain pending coordination with 02; these are the next gates before deployment. Automated tests remain synthetic and do not contact SIAR.
+### Permanent runtime and backup
+
+The permanent runtime is validated as `siar-forecast`, with functional release `e850827e24cff11ae46f51c9bc3e8a2f36b0d2da` and Python 3.14.4. `/opt/siar-forecast` and `/etc/siar-forecast` are operational; `data_root = /srv/siar-forecast/raw` is provisioned and validated.
+
+`SMOKE-FC-001 = PASS` demonstrated a complete IB04/Aguacate run and capture, verified TLS, hashes/schemas, shared-group permissions and safe omission of sensitive HTML. `BACKUP-FC-001 = PASS` demonstrated Google Drive through rclone crypt and an independent restore with hashes/schemas validated. Backup uses `rclone copy`, not `sync`; raw remains outside Git. Recovery after total server loss still requires separately recoverable crypt material and is not implied by the backup test alone.
+
+Latest direction report, 2026-10-24: **SIAR Forecast capture timer ACTIVE**. This supersedes the paused-timers report of 2026-10-23 and is independent of SIAR Sync HOLD. **SIAR-FORECAST-CAPTURE is not yet RUNNING**: first demonstrate a new real automatic capture → automatic backup → remote COMPLETE. One complete PASS cycle establishes CAPTURE RUNNING; at least two automatic PASS cycles establish PILOT RUNNING. Timer state alone is insufficient. Do not reconstruct emissions missed during the pause.
+
+The backup reconciler is **enabled/active every 15 minutes**, last observed Result success. It uses **rclone copy, never sync**, for published runs pending backup/verification under `/srv/siar-forecast/raw/runs/`, including complete/partial/failed. It excludes raw/tmp, SIAR Sync CSVs, general code, all of /etc and the rest of the server. This scope does not satisfy the broader PROJECT-ARTIFACT-BACKUP-V1 gate.
+
+Google/rclone OAuth application status is **Production**; reauthorization and CLI crypt listing PASS. Testing caused the specific seven-day token limit; Production plus a new authorization removes that limit, without guaranteeing tokens can never be invalidated. No config or secret values are published here. Runtime copy to crypt and independent restore passed with SHA256 MATCH, but that does not establish the pending new real-run automatic backup/COMPLETE chain.
+
+Every relevant new raw capture needs external backup. The separate PROJECT-ARTIFACT-BACKUP-V1 closeout is PASS for its explicitly verified snapshot scope (128 scientific/published SIAR raw files). General preservation uses event-driven ingestion plus daily reconciliation for artifacts already ingested to the server; this is separate from the 15-minute SIAR raw reconciler. Future scientific results remaining only on Windows are NOT AUTOMATICALLY PROTECTED. That backup mission did not change this collector's capture/real-run gate. See [project status](../docs/PROJECT_STATUS.md) and [artifact locations](../docs/DATA_LOCATIONS.md). Automated tests remain synthetic and do not contact SIAR.
+
+FC-STATIONS-001 passed; the multi-smoke attempted nine ACTIVE stations, with eight complete and IB08 failed. Operational targets are IB01, IB02, IB03, IB04, IB05, IB06, IB10 and IB11. IB08 remains officially ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL, monitored separately without blocking those eight; the exact internal SIAR/MAPA cause is not established.
 
 The example station and form values are configuration examples only. The SIAR E2E form contract was demonstrated for IB04; verify station configuration before a future capture. No secrets belong in the TOML file.
 
@@ -24,7 +40,7 @@ cp config/config.example.toml config/config.toml
 siar-forecast-raw capture --config config/config.toml
 ```
 
-The command performs one run and exits. Scheduling is deliberately external and not included. The approved experimental cadence is about 08:00, 14:00 and 20:00 Europe/Madrid, configurable by whichever scheduler may later be approved.
+The command performs one run and exits. Scheduling is deliberately external and not included. The approved experimental cadence is about 08:00, 14:00 and 20:00 Europe/Madrid, subject to external scheduler operation and real-cycle/backup validation. The 15-minute backup reconciler has a separate cadence.
 
 ## Storage layout
 

@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "rows": 75496,
+  "three_predictions_eligibility_metrics_cohorts_exact": "PASS",
+  "dataset_unchanged": true,
+  "hgrs_predicted": 70978,
+  "hgrs_failed": 0
+}

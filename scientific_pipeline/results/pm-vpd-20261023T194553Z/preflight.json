@@ -1,0 +1,120 @@
+{
+  "status": "PASS",
+  "timestamp_utc": "2026-10-21T06:00:07.567473+00:00",
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "pipeline_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "pipeline_checkout_clean": true,
+  "handoff_sha256": "2b47f9802edbc33d71916701df57237092f563f0fe527fbfe401faf522a724ed",
+  "handoff_path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\dataset-v1-20261021T055924Z\\inputs\\datos_siar_baleares\\corrected-handoff.json",
+  "quality_post": {
+    "id": "SIAR-QA-POST-20261020T193140Z",
+    "sha256": "a2d1293fcc54254769dbc80c7105b08b4b03b6a14392df0a4e5ef19b4ef51d07",
+    "path": "../data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/quality-post-package.json"
+  },
+  "contractual_file_checks": [
+    {
+      "path": "estaciones_baleares.csv",
+      "sha256": "98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB01_datos_completos.csv",
+      "sha256": "dfadf1ec335d7af040a7caab65c73761ac555fa050e7bb75ffb7a4376b750c53",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB02_datos_completos.csv",
+      "sha256": "a65ba9913d1649fb86fb61b574630e9706154b4f2ad4ac11246b301740d78891",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB03_datos_completos.csv",
+      "sha256": "bf44c363acdc01673c5dd7bc847283bc7620d7af70ba91267608707c730c638d",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB04_datos_completos.csv",
+      "sha256": "2745c212a45078ba2010aaab637c40d56949f7fa50e9946dbe6763d008a11199",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB05_datos_completos.csv",
+      "sha256": "8ee97684d962169db1e3949c02e4a277b683ca0211ccea158e11382bd4905432",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB06_datos_completos.csv",
+      "sha256": "48731bd993a2116bea75fdb779788a1a71505563e1d9cdae8d9a7d5817907cb2",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB07_datos_completos.csv",
+      "sha256": "8641cdf90697064fe07c505618d5a9921cf103e5fc1e1d06b28812b566786c68",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB08_datos_completos.csv",
+      "sha256": "cfe4f124793139ea9b55f147209733fc74ef9e274272ff8bf9ad6115bf4c14cc",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB09_datos_completos.csv",
+      "sha256": "2cbd9bb289404264fc78dad21322562d9d22b64ce4bbc87e51512ca763ea7a8a",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB10_datos_completos.csv",
+      "sha256": "9295b9b071ad6239301544cce1618cec065bae1e6ff7106e4fa0c5def1f69c47",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB101_datos_completos.csv",
+      "sha256": "b2c91aa0c6b8836cba868243ad565755c97f21703e081baae40c66e0f810179a",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "datos_siar_baleares/IB11_datos_completos.csv",
+      "sha256": "bee7da8bdd401bbbf801517861d02f4e0b7e1296cf3229f924cba1c2bec01e07",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/quality-post-package.json",
+      "sha256": "a2d1293fcc54254769dbc80c7105b08b4b03b6a14392df0a4e5ef19b4ef51d07",
+      "canonical_blob": "PASS",
+      "checkout": "CRLF_CHECKOUT_ONLY; materialize exact Git blob"
+    },
+    {
+      "path": "data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_station_audit.csv",
+      "sha256": "e444cebf4165939c24cb0e9c132b241363bb60b0808e4403e1cf2ac33bd6be7d",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_missing_days.csv",
+      "sha256": "55a78e6affff09e2a1e8cb28e0465b2073ad79a1e573a1efe272a52462ba3969",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    },
+    {
+      "path": "data_quality/siar/post/SIAR-QA-POST-20261020T193140Z/siar_dataset_manifest.csv",
+      "sha256": "b37c6ef2cf47f4ac7ac7308d0414b39429c5a35c352ec09581f9f4751468337b",
+      "canonical_blob": "PASS",
+      "checkout": "PASS"
+    }
+  ],
+  "materialization": "Exact source_repo_sha Git blob bytes; checkout EOL differences recorded, never normalized or accepted by scientific validation"
+}

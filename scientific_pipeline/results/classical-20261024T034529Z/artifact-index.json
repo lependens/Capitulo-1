@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "dataset_id": "siar-balears-observational-v1",
+  "dataset_sha256": "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb",
+  "pipeline_sha": "4ac52e25c803cb2301316c5cb1353bf30cdb427a",
+  "source_repo_sha": "2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9",
+  "audit_source_repo_sha": "18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865",
+  "files": [
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\result-summary.json",
+      "sha256": "3739cd5e8d9da312a3469bf4a24966762903d884277a9ec6e85696d6d94ee09e",
+      "bytes": 52328,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\metrics-aggregated.csv",
+      "sha256": "ea549cb8d45d3ba8cbddef3f39890a82aa0738185f8171d89c89c8670df8f0b8",
+      "bytes": 1737976,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\valiantzas\\manifest.json",
+      "sha256": "4a4beee832859863d4421880276fa4697169e061d1520ad3cfc2496f17b0de44",
+      "bytes": 10151,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\valiantzas\\metrics.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\valiantzas\\predictions.json",
+      "sha256": "0ab37d0912665503927db742c128007cf50e3d90ea1f20048c73cd3a87deee82",
+      "bytes": 140828050,
+      "in_git": false
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\comparison\\manifest.json",
+      "sha256": "7ab3ff1f168fbdb4a32984e413ad5a2fd6a6af8b9ccde4d95c08bad2f38926f6",
+      "bytes": 19567,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\comparison\\metrics.json",
+      "sha256": "612584ab25ec34ddcd0da6754cc7abe25b9d949fb2070d7b43687dec8c4fbba9",
+      "bytes": 1689017,
+      "in_git": true
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\comparison\\predictions.json",
+      "sha256": "7c32be4b9c972e9c282f1cea0210e8de5c4f07ae686c7e57d4151d549976a72b",
+      "bytes": 171427681,
+      "in_git": false
+    },
+    {
+      "path": "C:\\Users\\Josep\\.codex\\.chatgpt-projects\\g-p-6ac0c6c1d8908191b03f324e51c278f1\\scientific-results\\classical-20261024T034529Z\\comparison\\classical-baselines.csv",
+      "sha256": "66486b4138b7194ded3cd53f4d4d31f08e53ce3051d7c17ee43b30cdc957ed5f",
+      "bytes": 53548996,
+      "in_git": false
+    }
+  ]
+}

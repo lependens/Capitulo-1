@@ -1,0 +1,13 @@
+**/.git
+**/node_modules
+**/dist
+**/__pycache__
+**/.pytest_cache
+datos_siar_baleares
+data_quality
+legacy
+scientific_pipeline
+siar-sync
+forecast_collector
+aemet_forecast_collector
+**/.env

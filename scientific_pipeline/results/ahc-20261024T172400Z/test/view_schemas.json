@@ -1,0 +1,1175 @@
+{
+  "ahc_coefficients.csv": {
+    "columns": [
+      {
+        "name": "coefficient_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "base_method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "kind",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "granularity",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group_key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "coefficient",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "deployable",
+        "type": "boolean"
+      },
+      {
+        "name": "fit_split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "calibration_start",
+        "type": "string_nullable"
+      },
+      {
+        "name": "calibration_end",
+        "type": "string_nullable"
+      },
+      {
+        "name": "fit_key_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "support",
+        "type": "json"
+      },
+      {
+        "name": "estimate",
+        "type": "json"
+      }
+    ],
+    "rows": 420
+  },
+  "climatological_month_metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 2016
+  },
+  "climatological_season_metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 672
+  },
+  "coverage_metrics.csv": {
+    "columns": [
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_rows",
+        "type": "int64"
+      },
+      {
+        "name": "eligible_n",
+        "type": "int64"
+      },
+      {
+        "name": "predicted_n",
+        "type": "int64"
+      },
+      {
+        "name": "evaluated_PM_n",
+        "type": "int64"
+      },
+      {
+        "name": "evaluated_SIAR_n",
+        "type": "int64"
+      },
+      {
+        "name": "overlapping_reason_counts",
+        "type": "json"
+      },
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 312
+  },
+  "daily_predictions.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "EtPMon",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "HG_RS_AHC_VALIDATED",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "HG_RS_AHC_VALIDATED_SELECTED",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "HG_RS_V1",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "HS_RA_AHC_VALIDATED",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "HS_RA_V1",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "PM_FAO56_V1",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "VALIANTZAS_AHC_VALIDATED",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "VALIANTZAS_V1",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "eligibility",
+        "type": "json"
+      },
+      {
+        "name": "evaluated_PM",
+        "type": "json"
+      },
+      {
+        "name": "evaluated_SIAR",
+        "type": "json"
+      },
+      {
+        "name": "coefficient_ids",
+        "type": "json"
+      },
+      {
+        "name": "observation_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "quality_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "quality_flags",
+        "type": "json"
+      },
+      {
+        "name": "scientific_flags",
+        "type": "json"
+      },
+      {
+        "name": "source_data_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "provenance",
+        "type": "json"
+      }
+    ],
+    "rows": 75496
+  },
+  "input_complexity.csv": {
+    "columns": [
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "weather_inputs",
+        "type": "json"
+      },
+      {
+        "name": "weather_input_count",
+        "type": "int64"
+      },
+      {
+        "name": "context_inputs",
+        "type": "json"
+      },
+      {
+        "name": "prior_station_calibration_required",
+        "type": "boolean"
+      },
+      {
+        "name": "full_PM_inputs_required_at_prediction",
+        "type": "boolean"
+      },
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 8
+  },
+  "metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 228144
+  },
+  "model_metadata.csv": {
+    "columns": [
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "base_method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "version",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "input_parameters",
+        "type": "json"
+      },
+      {
+        "name": "units",
+        "type": "string_nullable"
+      },
+      {
+        "name": "input_requirements",
+        "type": "json"
+      },
+      {
+        "name": "granularity",
+        "type": "string_nullable"
+      },
+      {
+        "name": "coefficient_artifact_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "producer_pipeline_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "base_producer_pipeline_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "test_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "adjustment_kind",
+        "type": "string_nullable"
+      },
+      {
+        "name": "calibration_split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "selection",
+        "type": "json"
+      },
+      {
+        "name": "interpretation",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 8
+  },
+  "monthly_metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 155792
+  },
+  "seasonal_metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 54208
+  },
+  "station_metadata.csv": {
+    "columns": [
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "latitude_deg",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "altitude_m",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "station_name",
+        "type": "string_nullable"
+      },
+      {
+        "name": "catalog_metadata",
+        "type": "json"
+      },
+      {
+        "name": "official_start",
+        "type": "string_nullable"
+      },
+      {
+        "name": "official_end",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_row_count",
+        "type": "int64"
+      },
+      {
+        "name": "first_source_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "last_source_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_quality_statuses",
+        "type": "json"
+      },
+      {
+        "name": "available_splits",
+        "type": "json"
+      },
+      {
+        "name": "station_metadata",
+        "type": "json"
+      },
+      {
+        "name": "catalog_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 12
+  },
+  "station_metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 1736
+  },
+  "yearly_metrics.csv": {
+    "columns": [
+      {
+        "name": "dataset_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "dataset_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "audit_source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "source_repo_sha",
+        "type": "string_nullable"
+      },
+      {
+        "name": "protocol_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "run_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "split",
+        "type": "string_nullable"
+      },
+      {
+        "name": "reference_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "group",
+        "type": "string_nullable"
+      },
+      {
+        "name": "key",
+        "type": "string_nullable"
+      },
+      {
+        "name": "station_code",
+        "type": "string_nullable"
+      },
+      {
+        "name": "start_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "end_date",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "cohort_sha256",
+        "type": "string_nullable"
+      },
+      {
+        "name": "method_id",
+        "type": "string_nullable"
+      },
+      {
+        "name": "r2_status",
+        "type": "string_nullable"
+      },
+      {
+        "name": "n",
+        "type": "int64"
+      },
+      {
+        "name": "mae",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "rmse",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "bias",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "r2",
+        "type": "float64_nullable"
+      },
+      {
+        "name": "model_instance_id",
+        "type": "string_nullable"
+      }
+    ],
+    "rows": 13552
+  }
+}

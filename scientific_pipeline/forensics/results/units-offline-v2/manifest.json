@@ -1,0 +1,757 @@
+{
+  "experiment": "UNITS-OFFLINE-FORENSIC",
+  "schema_version": 1,
+  "source_repo_sha": "87d7cf5d00c8ca587e5208e2ec529455f7abc2c6",
+  "source_tree_dirty": true,
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+  "tool_sha256": "ef31d7330166d3fc919727513d185f02a93662b22fbb4ae998fa7f5d54c5e58c",
+  "catalog_sha256": "ff6ad95d2b9b76d2a2451655395587f5c344e85614308c41322bacdffc9bb8aa",
+  "legacy_pm2_sha256": "aa634fc125418079457bd5b6a5f20e66abef8c6baea1ae88f8a3308399b34dc7",
+  "hypotheses": {
+    "Rad1_Wind1": [
+      1.0,
+      1.0
+    ],
+    "Rad1_Wind2": [
+      1.0,
+      0.2777777777777778
+    ],
+    "Rad2_Wind1": [
+      0.0864,
+      1.0
+    ],
+    "Rad2_Wind2": [
+      0.0864,
+      0.2777777777777778
+    ]
+  },
+  "assumptions": {
+    "wind_height": "assumed 2m, not certified",
+    "tmean": "SIAR TempMedia in both kernels",
+    "bias": "prediction minus EtPMon",
+    "cohort": "same eligible rows for all hypotheses; no sigma; zeros included",
+    "corpus": "never pool overlapping canonical/legacy sources",
+    "metadata": "current catalog; historical placeholders only separate regression/example"
+  },
+  "source_files": [
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB01_datos_completos.csv",
+      "sha256": "faa3c732b4e5c1ecfe9f19eb6510110ae7fe093eac7a1f773eec6f195fe2a994",
+      "station": "IB01",
+      "latitude_deg": 39.01,
+      "altitude_m": 120.0,
+      "rows": 7716,
+      "eligible": 7702,
+      "excluded": {
+        "missing_or_unparseable": 14
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-03-30",
+      "last": "2025-12-31",
+      "cohort_sha256": "4be1ec54b9f9a93d94001b518845fcdc286d0f75240fd28194a8139cfc49ed82",
+      "raw_radiation_quantiles": {
+        "0": 0.294,
+        "0.01": 2.115,
+        "0.5": 15.666,
+        "0.99": 29.88,
+        "1": 31.06
+      },
+      "raw_wind_quantiles": {
+        "0": 0.18,
+        "0.01": 0.345,
+        "0.5": 1.232,
+        "0.99": 3.74,
+        "1": 6.136
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB02_datos_completos.csv",
+      "sha256": "6ffa7b3be5be87928d4472712aba76916afb83a16dc51ea7994b22470b64941c",
+      "station": "IB02",
+      "latitude_deg": 39.683611111111105,
+      "altitude_m": 78.0,
+      "rows": 7697,
+      "eligible": 7693,
+      "excluded": {
+        "missing_or_unparseable": 4
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-03-31",
+      "last": "2025-12-31",
+      "cohort_sha256": "558118d317efd238f3a92674378d600120bf4c3ccc301498301e70546d5fc1b1",
+      "raw_radiation_quantiles": {
+        "0": 0.527,
+        "0.01": 2.044,
+        "0.5": 15.53,
+        "0.99": 30.87,
+        "1": 32.88
+      },
+      "raw_wind_quantiles": {
+        "0": 0.113,
+        "0.01": 0.571,
+        "0.5": 1.436,
+        "0.99": 4.663,
+        "1": 9.27
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB03_datos_completos.csv",
+      "sha256": "5e0f958ec571b7b7fa9080674e1969d5ed8a6ab502ff9173e0a81eb4abf0f8b5",
+      "station": "IB03",
+      "latitude_deg": 39.545833333333334,
+      "altitude_m": 79.0,
+      "rows": 7873,
+      "eligible": 7864,
+      "excluded": {
+        "missing_or_unparseable": 9
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-04-01",
+      "last": "2025-12-31",
+      "cohort_sha256": "29fbeb2593df803d3f5b9106ca796c9a46436b32f9893f7ca1f5cd358816395a",
+      "raw_radiation_quantiles": {
+        "0": 0.57,
+        "0.01": 2.143,
+        "0.5": 15.26,
+        "0.99": 30.01,
+        "1": 31.88
+      },
+      "raw_wind_quantiles": {
+        "0": 0.17,
+        "0.01": 0.458,
+        "0.5": 1.479,
+        "0.99": 4.581,
+        "1": 9.61
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB04_datos_completos.csv",
+      "sha256": "2fc47b1f45b5925bd05f442852da1c61e7a160b6a00b457131890ea0975fba94",
+      "station": "IB04",
+      "latitude_deg": 39.56222222222222,
+      "altitude_m": 8.0,
+      "rows": 7729,
+      "eligible": 7707,
+      "excluded": {
+        "missing_or_unparseable": 22
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-04-01",
+      "last": "2025-12-31",
+      "cohort_sha256": "15a4a92c894e48c72974ce65b21892f837b51a0ad7914fc8ef0952d0d3f02b9d",
+      "raw_radiation_quantiles": {
+        "0": 0.523,
+        "0.01": 2.185,
+        "0.5": 15.55,
+        "0.99": 28.75,
+        "1": 31.47
+      },
+      "raw_wind_quantiles": {
+        "0": 0.073,
+        "0.01": 0.244,
+        "0.5": 1.025,
+        "0.99": 2.996,
+        "1": 5.703
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB05_datos_completos.csv",
+      "sha256": "c6bbeb1c444992728a286522dca13c5f94815eedfd5d2232a476a06e3b15bf28",
+      "station": "IB05",
+      "latitude_deg": 39.47527777777778,
+      "altitude_m": 82.0,
+      "rows": 7834,
+      "eligible": 7826,
+      "excluded": {
+        "missing_or_unparseable": 8
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-04-05",
+      "last": "2025-12-31",
+      "cohort_sha256": "04629110f38970f4853c8f76838263826db873d0ea8f1af87e3bc25eca6fc244",
+      "raw_radiation_quantiles": {
+        "0": 0.521,
+        "0.01": 2.158,
+        "0.5": 15.09,
+        "0.99": 29.51,
+        "1": 31.72
+      },
+      "raw_wind_quantiles": {
+        "0": 0.124,
+        "0.01": 0.222,
+        "0.5": 0.812,
+        "0.99": 2.706,
+        "1": 6.01
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB06_datos_completos.csv",
+      "sha256": "c7d0b6cb5baa59310ccc6576e9a1fbeca732636ac3f09600f8e3b35ee5650091",
+      "station": "IB06",
+      "latitude_deg": 39.80277777777778,
+      "altitude_m": 4.0,
+      "rows": 7862,
+      "eligible": 7859,
+      "excluded": {
+        "missing_or_unparseable": 3
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-04-05",
+      "last": "2025-12-31",
+      "cohort_sha256": "e571ea04bf7679dbadb6b2dbf043502f87d11523cf8322b621a33236676f5ca2",
+      "raw_radiation_quantiles": {
+        "0": 0.528,
+        "0.01": 1.709,
+        "0.5": 15.03,
+        "0.99": 29.41,
+        "1": 30.63
+      },
+      "raw_wind_quantiles": {
+        "0": 0.092,
+        "0.01": 0.244,
+        "0.5": 1.045,
+        "0.99": 3.962,
+        "1": 8.89
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB07_datos_completos.csv",
+      "sha256": "9bb71a1210a96ee9f43d3374044cd26b485b5a6ad3f2f907fb618ede4bdf830d",
+      "station": "IB07",
+      "latitude_deg": 39.780277777777776,
+      "altitude_m": 44.0,
+      "rows": 2945,
+      "eligible": 2927,
+      "excluded": {
+        "missing_or_unparseable": 18
+      },
+      "duplicates": 0,
+      "observed_zero_included": 1,
+      "first": "2004-08-11",
+      "last": "2012-11-12",
+      "cohort_sha256": "9eec5caa914ca28ea86a33e854c1a3bb38a512aee24b748ff47f5832fe9238bb",
+      "raw_radiation_quantiles": {
+        "0": 0.212,
+        "0.01": 1.053,
+        "0.5": 13.93,
+        "0.99": 28.5,
+        "1": 30.22
+      },
+      "raw_wind_quantiles": {
+        "0": 0.01,
+        "0.01": 0.06,
+        "0.5": 0.393,
+        "0.99": 1.538,
+        "1": 2.744
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB08_datos_completos.csv",
+      "sha256": "7ec45e1054dcd6f3aacac0e22e373a453c308cd7b780092dbfa80df342ba6c29",
+      "station": "IB08",
+      "latitude_deg": 40.00361111111111,
+      "altitude_m": 40.0,
+      "rows": 7123,
+      "eligible": 7050,
+      "excluded": {
+        "missing_or_unparseable": 73
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2005-10-05",
+      "last": "2025-12-31",
+      "cohort_sha256": "f287a42d8cb942a432158893d9100880bb818635ea2bf9b6b132a111d63e3e0a",
+      "raw_radiation_quantiles": {
+        "0": 0.447,
+        "0.01": 1.622,
+        "0.5": 13.94,
+        "0.99": 29.42,
+        "1": 30.91
+      },
+      "raw_wind_quantiles": {
+        "0": 0.001,
+        "0.01": 0.154,
+        "0.5": 0.79,
+        "0.99": 3.605,
+        "1": 6.538
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB09_datos_completos.csv",
+      "sha256": "7b0a3faa2f4763070d9e77abe1765e60d3cc111e37f825bbe27d1aa652b7d9e4",
+      "station": "IB09",
+      "latitude_deg": 39.697222222222216,
+      "altitude_m": 105.0,
+      "rows": 4423,
+      "eligible": 4380,
+      "excluded": {
+        "missing_or_unparseable": 43
+      },
+      "duplicates": 0,
+      "observed_zero_included": 3,
+      "first": "2005-10-23",
+      "last": "2018-10-08",
+      "cohort_sha256": "0fbb58d52d50e80772d60d35edce03724e38783f4627c833d805b66008e1c3b3",
+      "raw_radiation_quantiles": {
+        "0": 0.515,
+        "0.01": 1.751,
+        "0.5": 14.58,
+        "0.99": 29.71,
+        "1": 30.87
+      },
+      "raw_wind_quantiles": {
+        "0": 0.043,
+        "0.01": 0.151,
+        "0.5": 0.688,
+        "0.99": 2.471,
+        "1": 4.098
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB101_datos_completos.csv",
+      "sha256": "23419ca32f44d327fc8ecced8d5c02b1bc4ae68326f8709e1a28f81d3091ce2e",
+      "station": "IB101",
+      "latitude_deg": 39.96527777777778,
+      "altitude_m": 21.0,
+      "rows": 249,
+      "eligible": 243,
+      "excluded": {
+        "missing_or_unparseable": 6
+      },
+      "duplicates": 0,
+      "observed_zero_included": 1,
+      "first": "2008-12-05",
+      "last": "2009-08-10",
+      "cohort_sha256": "addc58c7a9d098471f4ed796dc7b7a750c64dcc691415a85b3395e9cff31ba3a",
+      "raw_radiation_quantiles": {
+        "0": 1.521,
+        "0.01": 2.445,
+        "0.5": 18.99,
+        "0.99": 30.36,
+        "1": 30.68
+      },
+      "raw_wind_quantiles": {
+        "0": 0.459,
+        "0.01": 0.555,
+        "0.5": 1.886,
+        "0.99": 5.55,
+        "1": 6.691
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB10_datos_completos.csv",
+      "sha256": "2ffe742531d7e63122394413f5b30dfd06c651e587414ef567d7b6372a5413d4",
+      "station": "IB10",
+      "latitude_deg": 39.551111111111105,
+      "altitude_m": 30.0,
+      "rows": 7007,
+      "eligible": 6971,
+      "excluded": {
+        "missing_or_unparseable": 32,
+        "temperature_order": 4
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2005-10-09",
+      "last": "2025-12-31",
+      "cohort_sha256": "7e038c7d6664a43e360873b8ce26429c6fb89307c0f472fa162175c6af652336",
+      "raw_radiation_quantiles": {
+        "0": 0.627,
+        "0.01": 2.246,
+        "0.5": 14.91,
+        "0.99": 29.11,
+        "1": 31.32
+      },
+      "raw_wind_quantiles": {
+        "0": 0.004,
+        "0.01": 0.164,
+        "0.5": 0.831,
+        "0.99": 2.459,
+        "1": 4.058
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "canonical_snapshot",
+      "path": "datos_siar_baleares/IB11_datos_completos.csv",
+      "sha256": "ac6ebfa89c0f2cb624f73b3057dfc8132993c781ad4a9d1e5fc9b8d0802dc555",
+      "station": "IB11",
+      "latitude_deg": 38.72694444444445,
+      "altitude_m": 7.0,
+      "rows": 7037,
+      "eligible": 7014,
+      "excluded": {
+        "missing_or_unparseable": 23
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2005-10-11",
+      "last": "2025-12-31",
+      "cohort_sha256": "c33bae18c67513e0f3ee1ab9d7da523dd6f4a0b24ceac16194a55c189a3458c4",
+      "raw_radiation_quantiles": {
+        "0": 0.288,
+        "0.01": 2.255,
+        "0.5": 16.26,
+        "0.99": 30.37,
+        "1": 34.043
+      },
+      "raw_wind_quantiles": {
+        "0": 0.185,
+        "0.01": 0.565,
+        "0.5": 2.172,
+        "0.99": 6.121,
+        "1": 8.25
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "legacy_calculated",
+      "path": "legacy/data/siar-derived/csv/IB01_et0_calc.csv",
+      "sha256": "74a3998c9713aee56533868fc4d87b88505d8edf4b61baedbe3acfcafd1ab6e5",
+      "station": "IB01",
+      "latitude_deg": 39.01,
+      "altitude_m": 120.0,
+      "rows": 6787,
+      "eligible": 6787,
+      "excluded": {},
+      "duplicates": 0,
+      "observed_zero_included": 4,
+      "first": "2004-03-30",
+      "last": "2024-12-30",
+      "cohort_sha256": "27aeb49682d745ffc3182ce4a19147fc7adeec1124cc249e4ef93efb44ba3dff",
+      "raw_radiation_quantiles": {
+        "0": 0.865,
+        "0.01": 2.605,
+        "0.5": 16.65,
+        "0.99": 29.96,
+        "1": 31.06
+      },
+      "raw_wind_quantiles": {
+        "0": 0.18,
+        "0.01": 0.341,
+        "0.5": 1.203,
+        "0.99": 2.799,
+        "1": 3.199
+      },
+      "historical_reproduction_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "corpus": "legacy_calculated",
+      "path": "legacy/data/siar-derived/csv/IB02_et0_calc.csv",
+      "sha256": "0eded73419006d40694ecd596dd88bfdc2d02a073fbe4a2011b4b51071bd1e7f",
+      "station": "IB02",
+      "latitude_deg": 39.683611111111105,
+      "altitude_m": 78.0,
+      "rows": 6952,
+      "eligible": 6952,
+      "excluded": {},
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-03-31",
+      "last": "2024-12-31",
+      "cohort_sha256": "404a09e77199a634ba736e9039509034b5f097827835a4644f26daa2b5d03942",
+      "raw_radiation_quantiles": {
+        "0": 0.783,
+        "0.01": 2.833,
+        "0.5": 16.32,
+        "0.99": 30.96,
+        "1": 32.88
+      },
+      "raw_wind_quantiles": {
+        "0": 0.113,
+        "0.01": 0.572,
+        "0.5": 1.404,
+        "0.99": 3.707,
+        "1": 4.098
+      },
+      "historical_reproduction_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "corpus": "legacy_calculated",
+      "path": "legacy/data/siar-derived/csv/IB03_et0_calc.csv",
+      "sha256": "cb3aa9c7e8af58dd05c100e63593df551f79afd74a2fb14f7903bb69b41cad7b",
+      "station": "IB03",
+      "latitude_deg": 39.545833333333334,
+      "altitude_m": 79.0,
+      "rows": 6994,
+      "eligible": 6994,
+      "excluded": {},
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-04-01",
+      "last": "2024-12-31",
+      "cohort_sha256": "c912d92c10dd615c7341b11e577ced07ced9709eb463a2ac9d3ddbca33dedc1f",
+      "raw_radiation_quantiles": {
+        "0": 0.886,
+        "0.01": 2.871,
+        "0.5": 15.78,
+        "0.99": 30.08,
+        "1": 31.88
+      },
+      "raw_wind_quantiles": {
+        "0": 0.17,
+        "0.01": 0.45,
+        "0.5": 1.455,
+        "0.99": 3.692,
+        "1": 4.127
+      },
+      "historical_reproduction_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "corpus": "legacy_calculated",
+      "path": "legacy/data/siar-derived/csv/IB04_et0_calc.csv",
+      "sha256": "f3e63845070fe2fff60b6cfabde861749bbd26836b603b59ceb30eabc99713ec",
+      "station": "IB04",
+      "latitude_deg": 39.56222222222222,
+      "altitude_m": 8.0,
+      "rows": 2047,
+      "eligible": 2047,
+      "excluded": {},
+      "duplicates": 0,
+      "observed_zero_included": 1,
+      "first": "2004-04-01",
+      "last": "2010-03-31",
+      "cohort_sha256": "ef06a59fdcf1a43944334dfd0f4a47d2a9b939f5b1c82ba2339e632a01453885",
+      "raw_radiation_quantiles": {
+        "0": 0.929,
+        "0.01": 2.407,
+        "0.5": 15.5,
+        "0.99": 27.76,
+        "1": 28.56
+      },
+      "raw_wind_quantiles": {
+        "0": 0.131,
+        "0.01": 0.29,
+        "0.5": 1.129,
+        "0.99": 2.569,
+        "1": 2.87
+      },
+      "historical_reproduction_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "corpus": "legacy_calculated",
+      "path": "legacy/data/siar-derived/csv/IB05_et0_calc.csv",
+      "sha256": "ca106df9b1c75292e361029b66f7c49c881fdcc1f86e6a0c5f1fe6a326717c7f",
+      "station": "IB05",
+      "latitude_deg": 39.47527777777778,
+      "altitude_m": 82.0,
+      "rows": 6713,
+      "eligible": 6713,
+      "excluded": {},
+      "duplicates": 0,
+      "observed_zero_included": 4,
+      "first": "2004-04-05",
+      "last": "2024-03-31",
+      "cohort_sha256": "4d3a69a1b3e100370757d6a52069972e38b1b4aea1aeba895edff20c81c048e9",
+      "raw_radiation_quantiles": {
+        "0": 0.796,
+        "0.01": 2.752,
+        "0.5": 15.48,
+        "0.99": 29.52,
+        "1": 31.72
+      },
+      "raw_wind_quantiles": {
+        "0": 0.124,
+        "0.01": 0.221,
+        "0.5": 0.802,
+        "0.99": 2.095,
+        "1": 2.407
+      },
+      "historical_reproduction_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "corpus": "legacy_calculated",
+      "path": "legacy/data/siar-derived/csv/IB06_et0_calc.csv",
+      "sha256": "16275476e0cedcc4d1a01f8b041d5067ee5899796c29946f9ecf030a3cbd3974",
+      "station": "IB06",
+      "latitude_deg": 39.80277777777778,
+      "altitude_m": 4.0,
+      "rows": 5312,
+      "eligible": 5312,
+      "excluded": {},
+      "duplicates": 0,
+      "observed_zero_included": 3,
+      "first": "2004-04-05",
+      "last": "2020-04-05",
+      "cohort_sha256": "7e3b9974606838221128bb9178271a01b489ea3d7c72e118071ec5bf38472f6f",
+      "raw_radiation_quantiles": {
+        "0": 0.74,
+        "0.01": 2.335,
+        "0.5": 16.05,
+        "0.99": 29.67,
+        "1": 30.63
+      },
+      "raw_wind_quantiles": {
+        "0": 0.111,
+        "0.01": 0.243,
+        "0.5": 1.054,
+        "0.99": 2.892,
+        "1": 3.248
+      },
+      "historical_reproduction_max_abs_error": 1.7763568394002505e-15
+    },
+    {
+      "corpus": "legacy_backup",
+      "path": "legacy/data/siar-derived/backups/csv/IB01_datos_completos.csv",
+      "sha256": "5cb1c062ba2f34ce69a41826227d94af9007902dfd01e270d0eea802d412f694",
+      "station": "IB01",
+      "latitude_deg": 39.01,
+      "altitude_m": 120.0,
+      "rows": 7351,
+      "eligible": 7337,
+      "excluded": {
+        "missing_or_unparseable": 14
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-03-30",
+      "last": "2024-12-31",
+      "cohort_sha256": "671891793d960d7fe9ce1a3c5fd28862616317fb0cfb9c0fb5f7b21862ae8cc4",
+      "raw_radiation_quantiles": {
+        "0": 0.294,
+        "0.01": 2.09,
+        "0.5": 15.73,
+        "0.99": 29.9,
+        "1": 31.06
+      },
+      "raw_wind_quantiles": {
+        "0": 0.18,
+        "0.01": 0.345,
+        "0.5": 1.236,
+        "0.99": 3.744,
+        "1": 6.136
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "legacy_backup",
+      "path": "legacy/data/siar-derived/backups/csv/IB02_datos_completos.csv",
+      "sha256": "ee37eec11c453f07e03c85e85e3fb621d1fecea12e682a9ad7126690e85f3d4f",
+      "station": "IB02",
+      "latitude_deg": 39.683611111111105,
+      "altitude_m": 78.0,
+      "rows": 7461,
+      "eligible": 7458,
+      "excluded": {
+        "missing_or_unparseable": 3
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-03-31",
+      "last": "2024-12-31",
+      "cohort_sha256": "ffeab04ba4f87fa802156c93d47380e5caccb1922deb02d560b4db78c9327524",
+      "raw_radiation_quantiles": {
+        "0": 0.527,
+        "0.01": 2.045,
+        "0.5": 15.68,
+        "0.99": 30.9,
+        "1": 32.88
+      },
+      "raw_wind_quantiles": {
+        "0": 0.113,
+        "0.01": 0.576,
+        "0.5": 1.436,
+        "0.99": 4.663,
+        "1": 9.27
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "legacy_backup",
+      "path": "legacy/data/siar-derived/backups/csv/IB03_datos_completos.csv",
+      "sha256": "794ee14a0dbcac0047fd3b53c4632cedff46b71048c1019761618a655d0c9e60",
+      "station": "IB03",
+      "latitude_deg": 39.545833333333334,
+      "altitude_m": 79.0,
+      "rows": 7508,
+      "eligible": 7499,
+      "excluded": {
+        "missing_or_unparseable": 9
+      },
+      "duplicates": 0,
+      "observed_zero_included": 5,
+      "first": "2004-04-01",
+      "last": "2024-12-31",
+      "cohort_sha256": "6d449cd9a64ed73cc68d73e91bec1ba962fb21a16b5fee90d9c8cf5e1a734560",
+      "raw_radiation_quantiles": {
+        "0": 0.57,
+        "0.01": 2.104,
+        "0.5": 15.362,
+        "0.99": 30.07,
+        "1": 31.88
+      },
+      "raw_wind_quantiles": {
+        "0": 0.17,
+        "0.01": 0.455,
+        "0.5": 1.483,
+        "0.99": 4.585,
+        "1": 9.61
+      },
+      "historical_reproduction_max_abs_error": null
+    },
+    {
+      "corpus": "legacy_backup",
+      "path": "legacy/data/siar-derived/backups/csv/IB04_datos_completos.csv",
+      "sha256": "fff9835aa76a39eab786096555d5fdac7abbda007f1f415cf2cb1d118d516820",
+      "station": "IB04",
+      "latitude_deg": 39.56222222222222,
+      "altitude_m": 8.0,
+      "rows": 2185,
+      "eligible": 2184,
+      "excluded": {
+        "missing_or_unparseable": 1
+      },
+      "duplicates": 0,
+      "observed_zero_included": 1,
+      "first": "2004-04-01",
+      "last": "2010-03-31",
+      "cohort_sha256": "0105f97b0dddd6f0eab6b10c7e003aa620e703badfb855e119eeb91a8583606b",
+      "raw_radiation_quantiles": {
+        "0": 0.926,
+        "0.01": 1.95,
+        "0.5": 14.92,
+        "0.99": 27.73,
+        "1": 28.56
+      },
+      "raw_wind_quantiles": {
+        "0": 0.131,
+        "0.01": 0.29,
+        "0.5": 1.152,
+        "0.99": 3.156,
+        "1": 5.703
+      },
+      "historical_reproduction_max_abs_error": null
+    }
+  ],
+  "output_sha256": {
+    "scores.csv": "c7b3e98afac1f5749860bef6387ca19ffb3c76122fde5d4b036fc6d7d14da6c0",
+    "ib04_example.json": "813c83650dc4dbcc94c8655cdd31db9777f790ee4f1233a795b1b2636d7e6d41"
+  }
+}

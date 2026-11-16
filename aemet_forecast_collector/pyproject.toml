@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aemet-forecast-raw"
+version = "0.1.0"
+description = "Append-only raw captures of AEMET municipal daily forecasts"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9", "jsonschema>=4.23,<5"]
+
+[project.scripts]
+aemet-forecast-raw = "aemet_forecast_collector.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

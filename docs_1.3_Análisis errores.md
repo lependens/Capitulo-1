@@ -1,5 +1,12 @@
 > Nota histórica: la aplicación Dash asociada a este análisis se desplegó en Render y fue retirada en octubre de 2026.
 
+> **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).
+
+> **Lectura vigente — 24/10/2026.** Los apartados anteriores a la última actualización conservan snapshots históricos, incluidas tareas después superadas. La consolidación final y [PROJECT_STATUS](docs/PROJECT_STATUS.md) distinguen cuatro baselines oficiales, preservación pendiente y gates operativos actuales; no se reescriben resultados históricos.
+
+> **Estado vigente — 23/10/2026.** Las secciones y actualizaciones anteriores son snapshots históricos; sus planes, inventarios y afirmaciones de estado pueden estar superados. La actualización final de este documento recoge el estado contrastado, y [PROJECT_STATUS](docs/PROJECT_STATUS.md) es la autoridad de estado rápido. La metodología histórica se conserva sin convertir sus resultados en resultados v1.
+
+
 
 
 # 1.3 Análisis de Errores
@@ -204,3 +211,168 @@ Los modelos incluyen PM Estándar, PM Cielo Claro, Hargreaves Ra (con radiación
   - Comparar subperíodos comunes (ej. hasta 2020) para aislar el efecto temporal.
   - Verificar HGRs del TFG vs. Hargreaves Rs en Python para completar la comparación.
 - Futuros análisis podrían explorar AHC estacionales o por región para mejorar la precisión.
+---
+
+## ACTUALIZACIÓN 23/10/2026 — Alcance de este análisis histórico
+
+Las tablas, AHC y comparaciones anteriores permanecen **HISTÓRICO / LEGACY**. No se reetiquetan como resultados v1 ni se usan para inferir mejoras causales. Pearson² y el RRMSE histórico no deben confundirse con R² predictivo y RMSE en mm/día; AHC dentro de muestra no demuestra generalización.
+
+Quality POST corregido y Dataset Observational v1 ya están construidos/validados. Posteriormente la misión **PM-VPD-FLOAT-TOLERANCE-AND-BASELINES = PASS** publicó mediante PR #31 [resultados oficiales PM_FAO56_V1 / HS_RA_V1](scientific_pipeline/results/pm-vpd-20261023T194553Z/README.md). Ese informe, sus métricas y manifiesto son la autoridad actual; esta actualización solo enlaza la evidencia, sin añadir tablas ni reinterpretar los resultados anteriores.
+
+Valiantzas histórico sigue LEGACY / FUTURE BASELINE REVIEW. No es un tercer resultado v1. La futura comparación exige auditoría metodológica, implementación reproducible y cohortes explícitas. Las [limitaciones vigentes](docs/PROJECT_STATUS.md) incluyen EtPMon calculada SIAR, IB09 excluida por Quality FAIL y procedencia instrumental parcial.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Tres baselines clásicos oficiales
+
+**VALIANTZAS-V1-AND-CLASSICAL-BASELINES-EXPORT = PASS**. Supera el estado
+Valiantzas LEGACY / FUTURE BASELINE REVIEW de la actualización del 23/10;
+el texto y resultados históricos anteriores se conservan como tales.
+
+Se adopta Martí et al. (2024), Ecs.1b+3, con factor 0.408 y coeficiente
+expandido **0.001861704**, Ra en MJ/m²/día, `(1.001−RHmedia/100)^0.2` y
+Tcalc de extremos. [Decisión, fuentes y unidades](scientific_pipeline/docs/valiantzas_v1.md).
+No es transcripción literal de Ec.4 ni copia del factor 1−RH/100 legacy.
+Sin calibración local ni sustitución silenciosa de TempMedia original.
+
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`, intacto. Pipeline `4ac52e25c803cb2301316c5cb1353bf30cdb427a`
+([PR #33](https://github.com/lependens/Capitulo-1/pull/33)); 68 tests y CI Python 3.11/3.12/3.13 PASS.
+PM/HS mantienen exactamente predicciones y elegibilidad oficiales anteriores.
+VAL: 70.944 predicciones, 70.878 pares propios, 0 fallos.
+
+[Informe de ejecución, cohortes, desgloses, CSV y hashes](scientific_pipeline/results/classical-20261024T034529Z/README.md).
+EtPMon sigue siendo referencia calculada SIAR, no validación instrumental
+independiente. Se retienen IB09 Quality FAIL, IB101 corto, unidades/procedencia
+parcial y convención de viento 2 m; raw/Quality/Dataset sin cambios.
+
+
+Resultados reales v1, separados de las tablas legacy:
+
+| Grupo | Cohorte | Método | n | MAE | RMSE | bias/MBE | R² predictivo |
+|---|---|---|---:|---:|---:|---:|---:|
+| all | own | PM | 70861 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | own | HS-Ra | 70912 | 0.712895 | 0.874488 | 0.461359 | 0.746479 |
+| all | own | VAL | 70878 | 0.455990 | 0.609080 | 0.168851 | 0.877013 |
+| all | PM_HS | PM | 70861 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | PM_HS | HS-Ra | 70861 | 0.712850 | 0.874365 | 0.461603 | 0.746552 |
+| all | PM_VAL | PM | 70860 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | PM_VAL | VAL | 70860 | 0.455952 | 0.608984 | 0.168919 | 0.877055 |
+| all | HS_VAL | HS-Ra | 70878 | 0.712850 | 0.874422 | 0.461455 | 0.746515 |
+| all | HS_VAL | VAL | 70878 | 0.455990 | 0.609080 | 0.168851 | 0.877013 |
+| all | PM_HS_VAL | PM | 70860 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | PM_HS_VAL | HS-Ra | 70860 | 0.712843 | 0.874359 | 0.461627 | 0.746559 |
+| all | PM_HS_VAL | VAL | 70860 | 0.455952 | 0.608984 | 0.168919 | 0.877055 |
+
+La comparación principal usa PM_HS_VAL. No se ajustan parámetros ni se presenta
+el acuerdo con SIAR como exactitud frente a ET medida. Estaciones, temporadas,
+periodos y extremos se interpretan en el informe enlazado.
+
+
+## ACTUALIZACIÓN 24/10/2026 — Hargreaves-Rs y cuatro baselines oficiales
+
+**HARGREAVES-RS-V1-AND-FOUR-BASELINES = PASS**.
+Se incorpora HG_RS_V1: **0.0135×0.408×Radiacion×(Tcalc+17.8)**, Rs medida en
+MJ/m²/día, salida mm/día, Tcalc=(Tmax+Tmin)/2. Sin Ra, √TD, humedad, viento
+ni calibración local. Legacy usaba TempMedia; se conservan su código y resultados.
+[Contrato y fuentes](scientific_pipeline/docs/hargreaves_rs_v1.md).
+
+HG-Rs: 70978 predicciones, 70912 evaluables, 0 fallos.
+Cohorte común de cuatro: **70860**. PM/HS/VAL conservan exactamente todas
+sus predicciones, elegibilidad, métricas y hashes de cohortes anteriores.
+Pipeline `a0b440fa3ab92e4593be521e4e819c6421327656`, [PR #35](https://github.com/lependens/Capitulo-1/pull/35); 75 tests y CI PASS.
+Dataset SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb` sin cambios.
+
+[Resultados completos, cohortes, estaciones, temporadas, CSV y hashes](scientific_pipeline/results/four-classical-20261024T042250Z/README.md).
+EtPMon calculada SIAR comparte Rs con PM/HG-Rs; no es validación instrumental
+independiente. Se conservan procedencia parcial, viento convencional 2 m,
+IB09 FAIL, IB101 corto y límites empíricos. Raw/Quality/Dataset sin cambios.
+
+
+Resultados reales de cohortes propias y comparación principal de cuatro:
+
+| Grupo | Cohorte | Método | n | MAE | RMSE | bias/MBE | R² predictivo |
+|---|---|---|---:|---:|---:|---:|---:|
+| all | own | PM | 70861 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | own | HS-Ra | 70912 | 0.712895 | 0.874488 | 0.461359 | 0.746479 |
+| all | own | VAL | 70878 | 0.455990 | 0.609080 | 0.168851 | 0.877013 |
+| all | own | HG-Rs | 70912 | 0.471178 | 0.565634 | 0.275611 | 0.893934 |
+| all | PM_HS_VAL_HGRS | PM | 70860 | 0.011540 | 0.028298 | -0.001565 | 0.999735 |
+| all | PM_HS_VAL_HGRS | HS-Ra | 70860 | 0.712843 | 0.874359 | 0.461627 | 0.746559 |
+| all | PM_HS_VAL_HGRS | VAL | 70860 | 0.455952 | 0.608984 | 0.168919 | 0.877055 |
+| all | PM_HS_VAL_HGRS | HG-Rs | 70860 | 0.471171 | 0.565637 | 0.275804 | 0.893935 |
+
+Los resultados históricos y de tres modelos anteriores permanecen preservados.
+No se interpretan como una comparación de cuatro ni como validación de AHC.
+
+
+---
+
+## CONSOLIDACIÓN 24/10/2026 — Interpretación de cuatro métodos y límites AHC
+
+Las tablas oficiales de cuatro anteriores se conservan como resultados publicados sobre Dataset v1, distintas de las tablas legacy y del AHC histórico. Autoridad de métricas/desgloses/hashes: [publicación de cuatro métodos](scientific_pipeline/results/four-classical-20261024T042250Z/README.md), PR #36; cohorte común PM_HS_VAL_HGRS **70.860**.
+
+HG-Rs mejora RMSE/R² respecto a VAL; VAL mejora MAE y bias absoluto. No se declara vencedor universal ni validación independiente frente a ET₀ instrumental: EtPMon es referencia calculada SIAR. HS-Ra usa temperatura/geometría solar; VAL añade humedad media; HG-Rs usa Rs medida; PM integra también humedad, viento y presión/altitud. La similitud de inputs puede favorecer concordancia, interpretación sin causalidad demostrada. Deben compararse también input requirements / operational availability y precisión alcanzable con menos variables.
+
+**AHC legacy:** mean(ET0_calc/ET0_empirical) por estación, calculado sobre toda la serie; multiplicación AHC×ET0_empirical y evaluación sobre los mismos días. Es HISTÓRICO / full-series / in-sample, no validación predictiva. Ningún baseline v1 incorpora ese ajuste.
+
+**AHC-METHODOLOGY-REVIEW pendiente:** distinguir coeficiente climatológico de estación de calibración predictiva, revisar bibliografía/estabilidad temporal y escalas anual/estacional/mensual antes de definir validación temporal e implementar AHC_V1. Si se estima de datos es parámetro calibrado; no se decide aquí todo el dataset frente a solo TRAIN ni se cierra la metodología.
+
+Antes de nuevos modelos, **PROJECT-ARTIFACT-BACKUP-V1** debe resolver preservación del dataset y outputs masivos que hoy permanecen fuera de Git. [Ubicaciones y CSV de 75.496 filas](docs/DATA_LOCATIONS.md).
+
+---
+
+## CIERRE CIENTÍFICO AHC — 24/10/2026
+
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION = PASS.** El pendiente metodológico
+anterior queda cerrado por [protocolo y bibliografía](scientific_pipeline/docs/ahc_methodology.md)
+y [ejecución oficial](scientific_pipeline/results/ahc-20261024T172400Z/README.md).
+No se reescriben coeficientes ni métricas históricas del TFG.
+
+AHC v1 es multiplicador OLS sin intercepto por estación contra PM_FAO56_V1:
+a=Σ(x·PM)/Σ(x²). Para HS, coeficiente físico 0.0023·a; a es adimensional.
+La media de cocientes legacy responde a otro estimando y queda como sensibilidad,
+sin escoger fórmula por TEST. PM/EtPMon son referencias calculadas, no ET medida.
+
+TRAIN 2004–2015 ajusta; VALIDATION 2016–2020 selecciona complejidad;
+TEST 2021–2025 evalúa sin refit. TEST retrospectivo: los baselines de todo el
+histórico ya eran conocidos. No se declara validación prospectiva independiente.
+TEST común de siete métodos contra PM, n=15.958: RMSE HS 0.948651→0.638838,
+HG-Rs 0.564675→0.414241, VAL 0.628676→0.523955 mm/día. HG-Rs estacional,
+elegido solo por VALIDATION, RMSE TEST 0.401392; HS y VAL conservan anual.
+
+Estabilidad robusta por bloques PASS, CV máximo 6,61 %. Esto no garantiza
+estabilidad del error: HS en IB11/2025 empeora RMSE 0.756431→0.896925.
+Se conservan métricas por estación/periodo, sin ajustar parámetros tras TEST.
+AHC_CLIMATOLOGY se obtiene después con el histórico hasta 2025 y nunca sustituye
+AHC_VALIDATED en tablas fuera de muestra. IB101: climatología descriptiva,
+sin coeficiente validado robusto; IB09: FAIL; IB07: sin VALIDATION/TEST.
+
+Pipeline `38503dbe8422982deeb3680bbc3e82fd950da4e1`, PR #38,
+86 tests PASS y CI 3.11/3.12/3.13 PASS. Raw, Quality y Dataset v1 intactos.
+Contratos ML/visualización definidos, sin entrenar ML/ANN ni construir Web.
+La preservación externa de artefactos masivos sigue pendiente; este cierre
+científico no certifica PROJECT-ARTIFACT-BACKUP-V1. [Handoff para 03](scientific_pipeline/docs/ahc_handoff_03.md).
+
+
+---
+
+## ACTUALIZACIÓN 25/10/2026 — Lectura de resultados AHC temporales
+
+**AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS**; [tablas oficiales y hashes](scientific_pipeline/results/ahc-20261024T172400Z/README.md). No confundir las tablas legacy anteriores de mean(PM/x), full-series/in-sample, con el ajuste validado **OLS0 a=Σ(x·PM)/Σ(x²)** solo TRAIN.
+
+TRAIN 2004–2015, VALIDATION 2016–2020 y TEST 2021–2025, globales; sin refit TRAIN+VALIDATION. TEST **retrospective_locked**, no prospectivo nunca visto. Referencia primaria PM_FAO56_V1, SIAR EtPMon secundaria calculada; no ET instrumental independiente.
+
+TEST común contra PM **n=15.958**, ajustes anuales (MAE/RMSE/bias en mm/día):
+
+| Método | MAE | RMSE | bias | R² |
+|---|---:|---:|---:|---:|
+| HS_RA_AHC_VALIDATED | 0.504081 | 0.638838 | 0.230566 | 0.860481 |
+| HG_RS_AHC_VALIDATED | 0.318930 | 0.414241 | 0.003436 | 0.941338 |
+| VALIANTZAS_AHC_VALIDATED | 0.392259 | 0.523955 | 0.166835 | 0.906149 |
+
+VALIDATION seleccionó HS annual, HG-Rs seasonal y VAL annual. HG_RS_AHC_VALIDATED_SELECTED estacional, TEST n=15.958: MAE 0.306919, RMSE 0.401392, bias −0.011504, R² 0.944921. Mensual no justifica más complejidad; no reseleccionar tras TEST ni sustituir el benchmark anual.
+
+Estabilidad PASS: CV muestral máximo 6.612 %, max/min 1.164415. No garantiza mejoras cada año; **IB11/2025/HS RMSE 0.756→0.897, ≈+18.57 %** se conserva. No recalibrar para ocultar empeoramientos.
+
+AHC_CLIMATOLOGY usa todo el histórico declarado hasta 2025 solo después de TEST, separado de AHC_VALIDATED; no atribuir sus coeficientes a métricas TEST. IB101 SHORT_SERIES_DESCRIPTIVE/deployable=false; IB09 UNAVAILABLE/Quality FAIL; IB07 sin validación/test posterior al cierre.
+
+El cierre de preservación posterior confirma PROJECT-ARTIFACT-BACKUP-V1 PASS para su snapshot y scope, sin alterar evidencia científica publicada. [Ubicaciones](docs/DATA_LOCATIONS.md). ML/visualización tienen contrato congelado, sin nuevos modelos ni producto implementados.

@@ -3,15 +3,21 @@ import './et0-v2-preview.css';
 
 const Chart = lazy(() => import('./Chart'));
 
-type Catalog = {
+export type Station = {code: string; name: string; quality_status: string; retrospective: boolean;
+  official_from: string; official_to: string; coverage_percent: number; latitude?: number; longitude?: number;
+  altitude?: number; municipality?: string};
+export type Catalog = {
   mode: string; version: string; reference: string; retrospective_period: string[];
+  status?: string; catalog_sha256?: string; freeze_sha256?: string; dataset_sha256?: string;
+  original_manifest_sha256?: string; source_run_id?: string; station_details?: Station[]; station_catalog_sha256?: string;
   formulas: Record<string, {label: string; inputs: string[]}>;
   methods: Record<string,string>; stations: Record<string,string>; calendars: string[];
   group_keys: Record<string,string[]>;
 };
-type Score = {method: string; n: number; mae: number | null; rmse: number | null;
+type Score = {method: string; n: number; mae: number | null; rmse: number | null; year?: string;
   bias: number | null; r2: number | null; coverage_calendar?: number | null;
-  coefficient?: number; development_pairs?: number; retrospective_pairs?: number; cohort_id?: string};
+  coefficient?: number; development_pairs?: number; retrospective_pairs?: number; cohort_id?: string;
+  calendar_days?: number; pm_days?: number; predicted_days?: number; pm_pairs_own?: number; coverage_pm_own?: number | null};
 type Scores = {rows: Score[]};
 type Point = {date: string} & Record<string, string | number | null>;
 const calendars: Record<string,string> = {annual:'Anual', seasonal:'Estacional', monthly:'Mensual'};
@@ -21,12 +27,12 @@ const decimal = new Intl.NumberFormat('es-ES',{maximumFractionDigits:4});
 const percent = new Intl.NumberFormat('es-ES',{style:'percent',maximumFractionDigits:1});
 const fmt = (v?: number | null) => v == null ? '—' : decimal.format(v);
 
-function useRead<T>(path: string) {
+export function useRead<T>(path: string) {
   const [state, setState] = useState<{path: string; data?: T; error?: string}>();
   useEffect(() => {
     if (!path) return;
     const controller = new AbortController();
-    fetch('/api/et0-v2/' + path,{signal:controller.signal})
+    fetch(path.startsWith('/') ? path : '/api/et0-v2/' + path,{signal:controller.signal})
       .then(async response => {
         if (response.status === 404) throw new Error('La vista previa no está habilitada.');
         if (!response.ok) throw new Error('No se pudo consultar esta selección.');
@@ -41,7 +47,7 @@ function useRead<T>(path: string) {
   return state?.path === path ? state : undefined;
 }
 
-function Select({label, value, options, onChange}: {
+export function Select({label, value, options, onChange}: {
   label: string; value: string; options: Record<string,string>; onChange: (value: string) => void;
 }) {
   return <label>{label}<select value={value} onChange={e=>onChange(e.target.value)}>
@@ -55,8 +61,10 @@ function Results({rows, catalog, methods, inSample = false}: {
   const [sort, setSort] = useState('rmse');
   if (!rows.length) return <p className="v2-empty">Sin resultados para esta selección.</p>;
   const eligible = rows.filter(row=>row.n > 0);
-  const comparable = eligible.length > 0 && eligible.every(row =>
-    row.cohort_id && row.cohort_id === eligible[0].cohort_id && row.n === eligible[0].n);
+  const comparable = eligible.length === rows.length && eligible.length > 0 && eligible.every(row =>
+    row.cohort_id && row.cohort_id === eligible[0].cohort_id && row.n === eligible[0].n &&
+    (catalog.mode === 'synthetic' || (row.coverage_calendar != null &&
+      row.coverage_calendar === eligible[0].coverage_calendar)));
   const metric = (row: Score) => {
     if (sort === 'bias') return row.bias == null ? Infinity : Math.abs(row.bias);
     if (sort === 'r2') return row.r2 == null ? Infinity : -row.r2;
@@ -66,7 +74,7 @@ function Results({rows, catalog, methods, inSample = false}: {
   const missing = inSample ? [] : methods.filter(method=>!rows.some(row=>row.method===method));
   return <>
     {!inSample && <div className="v2-table-context">
-      <span>{comparable ? 'Métricas sobre las mismas fechas y estaciones' : 'Lectura paralela · cohortes distintas o sin soporte'}</span>
+      <span>{comparable ? 'Ordenable · misma cohorte y cobertura' : 'Lectura paralela · consulte cohortes, cobertura y soporte'}</span>
       {comparable && <Select label="Ordenar por" value={sort} onChange={setSort}
         options={{rmse:'RMSE ↑',mae:'MAE ↑',bias:'Sesgo absoluto ↑',r2:'R² ↓'}}/>}
     </div>}
@@ -83,21 +91,28 @@ function Results({rows, catalog, methods, inSample = false}: {
       </table>
     </div>
     {missing.length > 0 && <p>Sin fila para {missing.map(method=>catalog.methods[method]).join(', ')}.</p>}
-    {comparable && <details><summary>Cohorte de ejemplo</summary><code>{eligible[0].cohort_id}</code></details>}
+    {!inSample && <details><summary>Cohortes y denominadores</summary>
+      <ul>{rows.map(row=><li key={row.method}>{catalog.methods[row.method]} · <code>{row.cohort_id}</code>
+        {row.calendar_days != null && <> · {row.predicted_days}/{row.calendar_days} días de catálogo · {row.pm_pairs_own}/{row.pm_days} días con PM
+          {row.coverage_pm_own != null && <> ({percent.format(row.coverage_pm_own)})</>}</>}</li>)}</ul>
+    </details>}
   </>;
 }
 
-function Workspace({catalog}: {catalog: Catalog}) {
+export function Workspace({catalog, initialStation, byFamily = false}: {catalog: Catalog; initialStation?: string; byFamily?: boolean}) {
+  const real = catalog.mode !== 'synthetic';
   const [formula, setFormula] = useState('HG_RS_V1');
   const [calendar, setCalendar] = useState('annual');
   const [view, setView] = useState('metrics');
-  const [group, setGroup] = useState('year');
-  const [key, setKey] = useState('2020');
-  const [compare, setCompare] = useState('2021');
-  const [station, setStation] = useState('DEMO-01');
-  const [start, setStart] = useState('2020-07-01');
-  const [end, setEnd] = useState('2020-07-08');
-  const [methods, setMethods] = useState(Object.keys(catalog.methods));
+  const [group, setGroup] = useState(initialStation ? 'station' : real ? 'global' : 'year');
+  const [key, setKey] = useState(initialStation ?? (real ? 'all' : '2020'));
+  const [compare, setCompare] = useState(real ? '' : '2021');
+  const [station, setStation] = useState(initialStation ?? Object.keys(catalog.stations)[0]);
+  const [start, setStart] = useState(real ? catalog.retrospective_period[0] : '2020-07-01');
+  const [end, setEnd] = useState(real ? '2020-12-31' : '2020-07-08');
+  const [methods, setMethods] = useState(byFamily ? ['AHC'] : Object.keys(catalog.methods).slice(0,5));
+  const [cohort, setCohort] = useState('own');
+  const [family, setFamily] = useState(byFamily ? 'AHC' : 'all');
   const base = new URLSearchParams({formula,calendar});
   const metricPath = (selected: string) => {
     const query = new URLSearchParams(base);
@@ -109,9 +124,15 @@ function Workspace({catalog}: {catalog: Catalog}) {
   const scores = useRead<Scores>(view==='metrics' ? metricPath(key) : '');
   const parallel = useRead<Scores>(view==='metrics' && compare && compare!==key ? metricPath(compare) : '');
   const canReadSeries = Boolean(start && end && start <= end);
-  const series = useRead<{points: Point[]}>(view==='series' && canReadSeries ?
-    'series?' + new URLSearchParams({formula,calendar,station,start,end}) : '');
+  const seriesQuery = new URLSearchParams({formula,calendar,station,start,end,cohort});
+  methods.forEach(method=>seriesQuery.append('method',method));
+  const series = useRead<{points: Point[]}>(['series','scatter'].includes(view) && canReadSeries ?
+    'series?' + seriesQuery : '');
   const history = useRead<Scores>(view==='history' ? 'in-sample?' + new URLSearchParams({formula,station}) : '');
+  const trendQuery = new URLSearchParams(base);
+  if (station) trendQuery.set('station',station);
+  methods.forEach(method=>trendQuery.append('method',method));
+  const evolution = useRead<Scores>(view==='evolution' ? 'evolution?' + trendQuery : '');
   const points = series?.data?.points ?? [];
   const labels = Object.fromEntries(catalog.group_keys[group].map(value=>[value,value==='all'?'Periodo completo':catalog.stations[value]??value]));
   const switchGroup = (value: string) => {
@@ -122,7 +143,8 @@ function Workspace({catalog}: {catalog: Catalog}) {
   return <>
     <section className="v2-panel" aria-label="Selección">
       <div className="v2-filters">
-        <Select label="Vista" value={view} onChange={setView} options={{metrics:'Comparar errores',series:'Series diarias',history:'AHC dentro de muestra'}}/>
+        <Select label="Vista" value={view} onChange={next=>{setView(next);if(!station && next!=='evolution')setStation(Object.keys(catalog.stations)[0]);}} options={{metrics:'Comparar errores',series:'Series diarias',
+          ...(real ? {scatter:'Estimación frente a PM',evolution:'Evolución anual del RMSE'} : {}),history:'AHC dentro de muestra'}}/>
         <Select label="Fórmula" value={formula} onChange={setFormula}
           options={Object.fromEntries(Object.entries(catalog.formulas).map(([id,f])=>[id,f.label]))}/>
         {view!=='history' && <Select label="Calendario del modelo" value={calendar} onChange={setCalendar} options={calendars}/>}
@@ -130,14 +152,22 @@ function Workspace({catalog}: {catalog: Catalog}) {
           <Select label="Agrupar métricas por" value={group} onChange={switchGroup} options={groups}/>
           <Select label="Grupo principal" value={key} onChange={v=>{setKey(v); if(v===compare)setCompare('');}} options={labels}/>
           <Select label="Ver en paralelo" value={compare} onChange={setCompare} options={{'':'Sin segundo grupo',...Object.fromEntries(Object.entries(labels).filter(([id])=>id!==key))}}/>
-        </> : <Select label="Estación" value={station} onChange={setStation} options={catalog.stations}/>}
-        {view==='series' && <><label>Desde<input type="date" value={start} onChange={e=>setStart(e.target.value)}/></label>
-          <label>Hasta<input type="date" value={end} onChange={e=>setEnd(e.target.value)}/></label></>}
+        </> : <Select label="Estación" value={station} onChange={setStation}
+          options={view==='evolution' ? {'':'Todas las estaciones',...catalog.stations} : catalog.stations}/>}
+        {['series','scatter'].includes(view) && <><label>Desde<input type="date" value={start} onChange={e=>setStart(e.target.value)}/></label>
+          <label>Hasta<input type="date" value={end} onChange={e=>setEnd(e.target.value)}/></label>
+          {real && <Select label="Población de la serie" value={cohort} onChange={setCohort}
+            options={{own:'Predicciones disponibles',...(methods.every(m=>!m.startsWith('ML_')) ? {common_core:'Fechas comunes a los cinco métodos principales'} : {})}}/>}</>}
       </div>
       <p>Entradas de {catalog.formulas[formula].label}: {catalog.formulas[formula].inputs.join(' · ')}.</p>
-      {view!=='history' && <fieldset><legend>Métodos</legend>{Object.entries(catalog.methods).map(([id,label])=>
+      {real && view!=='history' && <Select label="Familia de métodos" value={family}
+        options={{all:'Todas',FORMULA:'Empírico',AHC:'AHC',ML:'ML clásico',ANN:'ANN'}}
+        onChange={value=>{setFamily(value); setCohort('own'); setMethods(value==='all' ? Object.keys(catalog.methods).slice(0,5) :
+          Object.keys(catalog.methods).filter(id=>id===value || id.startsWith(value+'_')));}}/>}
+      {view!=='history' && <fieldset><legend>Métodos</legend>{Object.entries(catalog.methods)
+        .filter(([id])=>family==='all' || id===family || id.startsWith(family+'_')).map(([id,label])=>
         <label key={id}><input type="checkbox" checked={methods.includes(id)} disabled={methods.length===1 && methods.includes(id)}
-          onChange={e=>setMethods(e.target.checked?[...methods,id]:methods.filter(m=>m!==id))}/>{label}</label>)}</fieldset>}
+          onChange={e=>{if(id.startsWith('ML_'))setCohort('own'); setMethods(e.target.checked?[...methods,id]:methods.filter(m=>m!==id));}}/>{label}</label>)}</fieldset>}
     </section>
     {view==='metrics' && <div className="v2-results">
       <section className="v2-panel"><h2>{groups[group]} · {labels[key]}</h2>
@@ -151,10 +181,11 @@ function Workspace({catalog}: {catalog: Catalog}) {
       {points.length ? <>
         <Suspense fallback={<p role="status">Cargando gráfico…</p>}><Chart label="ET₀ diaria por método y referencia calculada" option={{
           legend:{type:'scroll',bottom:0}, tooltip:{trigger:'axis'}, grid:{left:55,right:20,bottom:65},
-          xAxis:{type:'category',data:points.map(p=>p.date)}, yAxis:{type:'value',name:'mm/día'},
+          xAxis:{type:'time'}, yAxis:{type:'value',name:'mm/día'},
           series:['reference',...methods].map((id,index)=>({name:catalog.methods[id]??'PM calculada',type:'line',
-            symbol:['circle','rect','triangle','diamond','pin','arrow'][index],connectNulls:false,
-            data:points.map(p=>p[id])})),
+            symbol:['circle','rect','triangle','diamond','pin','arrow'][index%6],connectNulls:false,
+            data:points.flatMap((p,i)=> i>0 && Date.parse(p.date)-Date.parse(points[i-1].date)>86400000 ?
+              [[Date.parse(points[i-1].date)+86400000,null],[Date.parse(p.date),p[id]]] : [[Date.parse(p.date),p[id]]] )})),
         }}/></Suspense>
         <details><summary>Valores diarios en tabla</summary><div className="v2-table" tabIndex={0} role="region" aria-label="Serie diaria en mm/día">
           <table><thead><tr><th scope="col">Fecha</th><th scope="col">PM calculada</th>{methods.map(id=><th scope="col" key={id}>{catalog.methods[id]}</th>)}</tr></thead>
@@ -162,19 +193,55 @@ function Workspace({catalog}: {catalog: Catalog}) {
               {methods.map(id=><td key={id}>{fmt(p[id] as number | null)}</td>)}</tr>)}</tbody></table>
         </div></details>
       </> : <p role="status">{!canReadSeries ? 'Seleccione un intervalo válido.' : series?.error ??
-        (series?.data ? 'Sin puntos de ejemplo. Pruebe Hargreaves Rs, anual, DEMO-01 y julio de 2020.' : 'Consultando serie…')}</p>}
+        (series?.data ? 'Sin predicciones para esta selección.' : 'Consultando serie…')}</p>}
+    </section>}
+    {view==='scatter' && <section className="v2-panel"><h2>Estimación frente a PM calculada</h2>
+      <p>Cada punto empareja la estimación con su referencia diaria. La diagonal indica igualdad.</p>
+      {points.some(point=>point.reference != null && methods.some(method=>point[method]!=null)) ?
+        <Suspense fallback={<p>Cargando gráfico…</p>}><Chart label="Dispersión de estimaciones frente a PM FAO56" option={scatterOptions(points, methods, catalog)}/></Suspense> :
+        <p role="status">{!canReadSeries ? 'Seleccione un intervalo válido.' : series?.error ??
+          (series?.data ? 'Sin pares estimación–PM para esta selección.' : 'Consultando valores diarios…')}</p>}
+    </section>}
+    {view==='evolution' && <section className="v2-panel"><h2>RMSE retrospectivo por año</h2>
+      <p>Cada año representa su propia población evaluada. Las tablas de comparación muestran los denominadores de cada periodo.</p>
+      {evolution?.data ? evolution.data.rows.some(row=>row.n > 0) ? <>
+        <Suspense fallback={<p>Cargando gráfico…</p>}><Chart label="RMSE publicado por año y método" option={{
+          legend:{type:'scroll',bottom:0}, tooltip:{trigger:'axis'}, grid:{left:55,right:20,bottom:65},
+          xAxis:{type:'category',data:catalog.group_keys.year},yAxis:{type:'value',name:'mm/día'},
+          series:methods.map(id=>({name:catalog.methods[id],type:'bar',data:catalog.group_keys.year.map(year=>
+            evolution.data?.rows.find(row=>row.year===year && row.method===id)?.rmse ?? null)})),
+        }}/></Suspense>
+        <details><summary>Valores por año</summary>{catalog.group_keys.year.map(year=><section key={year}>
+          <h3>{year}</h3><Results rows={evolution.data!.rows.filter(row=>row.year===year)} methods={methods} catalog={catalog}/>
+        </section>)}</details>
+      </> : <p className="v2-empty">Sin evaluación retrospectiva para esta selección.</p> :
+        <p role="status">{evolution?.error ?? 'Consultando evolución…'}</p>}
     </section>}
     {view==='history' && <section className="v2-panel"><h2>AHC anual · histórico completo dentro de muestra</h2>
       <p>Los días evaluados también se usaron para ajustar el coeficiente.</p>
       {history?.data ? <Results rows={history.data.rows} methods={methods} catalog={catalog} inSample/> :
         <p role="status">{history?.error ?? 'Consultando histórico…'}</p>}
     </section>}
-    <details className="v2-panel"><summary>Procedencia y versión</summary>
+    {!real && <details className="v2-panel"><summary>Procedencia y versión</summary>
       <p>Versión de demostración <code>{catalog.version}</code>. Referencia prevista <code>{catalog.reference}</code>.
         Los valores de las tablas y los puntos de la serie son ejemplos separados.</p>
       <p>Los datos de estaciones del estudio proceden de SIAR. <a href="https://github.com/lependens/Capitulo-1">Repositorio del estudio</a></p>
-    </details>
+    </details>}
   </>;
+}
+
+function scatterOptions(points: Point[], methods: string[], catalog: Catalog) {
+  const plots = methods.map(id=>({name:catalog.methods[id],type:'scatter',symbolSize:7,
+    data:points.flatMap(p=>typeof p.reference==='number' && typeof p[id]==='number' ? [[p.reference,p[id]]] : [])}));
+  const values = plots.flatMap(plot=>plot.data.flat()) as number[];
+  const min = Math.min(0,...values);
+  const max = Math.max(1,...values);
+  return {
+    legend:{type:'scroll',bottom:0},tooltip:{trigger:'item'},grid:{left:63,right:25,bottom:85},
+    xAxis:{type:'value',min,max,name:'PM calculada (mm/día)',nameLocation:'middle',nameGap:30},
+    yAxis:{type:'value',min,max,name:'Estimación (mm/día)'},
+    series:[...plots,{name:'Igualdad',type:'line',symbol:'none',data:[[min,min],[max,max]],lineStyle:{type:'dashed'}}],
+  };
 }
 
 export default function Et0V2Preview() {
@@ -186,6 +253,7 @@ export default function Et0V2Preview() {
       <p>Evaluación retrospectiva 2020–2025 · Referencia PM FAO56 calculada</p>
       <a href="/">Volver al explorador actual</a>
     </header>
-    {lookup?.data ? <Workspace catalog={lookup.data}/> : <p role="status">{lookup?.error ?? 'Cargando catálogo…'}</p>}
+    {lookup?.data?.mode === 'synthetic' ? <Workspace catalog={lookup.data}/> :
+      <p role="status">{lookup?.error ?? (lookup?.data ? 'Esta instancia usa el catálogo real. Abra el explorador ET₀ V2.' : 'Cargando catálogo…')}</p>}
   </main>;
 }

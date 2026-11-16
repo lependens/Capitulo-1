@@ -4,10 +4,13 @@ import Legacy from './AppV2';
 import Explorer from './Explorer';
 import './style.css';
 const Et0V2Preview = React.lazy(() => import('./Et0V2Preview'));
+const Et0V2 = React.lazy(() => import('./Et0V2'));
 const params = new URLSearchParams(location.search);
 createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    {params.has('legacy') ? <Legacy/> : params.get('preview') === 'et0-v2' ?
+    {params.has('legacy') ? <Legacy/> : params.get('science') === 'et0-v2' ?
+      <React.Suspense fallback={<p role="status">Cargando explorador…</p>}><Et0V2/></React.Suspense> :
+      params.get('preview') === 'et0-v2' ?
       <React.Suspense fallback={<p role="status">Cargando vista previa…</p>}><Et0V2Preview/></React.Suspense> : <Explorer/>}
   </React.StrictMode>,
 );

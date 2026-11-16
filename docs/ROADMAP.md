@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado, preservación final pendiente y retrospectiva NO-GO.
+
 # ROADMAP — SIAR / ET₀
 
 **Actualizado: 2026-11-11 (Europe/Madrid), consolidación V2 y frentes operativos.** Próximos gates y dependencias; estado demostrado en [PROJECT_STATUS](PROJECT_STATUS.md), hitos en [MILESTONES](MILESTONES.md) y ubicaciones en [DATA_LOCATIONS](DATA_LOCATIONS.md).

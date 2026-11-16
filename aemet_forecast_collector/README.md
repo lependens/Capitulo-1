@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado, preservación final pendiente y retrospectiva NO-GO.
+
 # AEMET Raw Municipal Forecast Collector v0.1
 
 Standalone, one-shot Python collector for preserving AEMET's municipal daily forecast responses. It keeps the wrapper and the response fetched from its `datos` URL as separate raw byte artifacts. It does not calculate ET₀, normalize weather variables, assign D+n labels, schedule captures, or depend on the SIAR collector.

@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado, preservación final pendiente y retrospectiva NO-GO.
+
 # Capítulo 1 — Proyectos y ampliaciones del TFG
 
 Este repositorio contiene la evolución y ampliación del trabajo realizado originalmente en el TFG, incorporando nuevas herramientas, datos actualizados, automatización, análisis de evapotranspiración de referencia (ET₀), Machine Learning y futuras aplicaciones orientadas a la predicción y al riego.

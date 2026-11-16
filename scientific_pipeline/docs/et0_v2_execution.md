@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado, preservación final pendiente y retrospectiva NO-GO.
+
 # Ejecución de ET₀ V2
 
 El [contrato de preparación](et0_v2_preparation.md) fija los datos, los folds, las entradas, los candidatos, las reglas de selección y el orden **AHC → ML clásico → ANN A → ANN E**. La cápsula DEVELOPMENT tiene manifiesto SHA256 `0c43f1020a04b0dedeeff84ccb1cbae4285ff00ac20c48473ff6c81b57ecd3e6`. Su vista contiene las 4.390 fechas comunes de IB09 admitidas por la excepción de la PR #68. IB09 se mantiene como serie histórica separada, con cero observaciones retrospectivas.

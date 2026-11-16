@@ -1,3 +1,5 @@
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado, preservación final pendiente y retrospectiva NO-GO.
+
 # SIAR Sync
 
 Componente FastAPI para consultar SIAR y sincronizar los CSV diarios de estaciones de Baleares. La interfaz se sirve desde `templates/index.html`; la lógica de descarga y sincronización está en `siar_worker.py`.

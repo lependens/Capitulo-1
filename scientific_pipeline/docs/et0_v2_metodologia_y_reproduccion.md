@@ -1,6 +1,6 @@
 # ET₀ V2: metodología y reproducción
 
-> Borrador incompleto: la prueba independiente de inferencia y la restauración final están pendientes. No utilizar como certificado de reproducción.
+> Borrador incompleto: la restauración final y la revisión integral están pendientes. No utilizar como certificado de reproducción.
 
 ## Diseño
 
@@ -28,5 +28,26 @@ El cálculo retrospectivo usado quedó asociado al commit `1e419ad881db1cc979868
 
 Los modelos y configuraciones se congelaron antes de la evaluación. Tras la autorización y las verificaciones previas se leyeron los bytes de Dataset v1 en Windows para calcular su SHA, antes del journal del evaluador en Kaggle; esa lectura no inspeccionó filas ni se utilizó para entrenar o seleccionar modelos. El journal registra el acceso de la ejecución retrospectiva en Kaggle, no ese hash previo.
 
-La reproducción completa requiere conservar los artefactos originales y respetar el procedimiento de ejecución, las identidades y las restricciones descritas en [ejecución V2](et0_v2_execution.md). Falta documentar y verificar de forma aislada la carga y predicción de modelos representativos antes de cerrar este apartado.
+La reproducción completa requiere conservar los artefactos originales y respetar el procedimiento de ejecución, las identidades y las restricciones descritas en [ejecución V2](et0_v2_execution.md).
+
+## Reproducción de la evaluación
+
+Usar una copia de trabajo nueva del árbol congelado y comprobar el commit, la cápsula, Dataset v1 y el SHA del freeze antes de ejecutar. El original y sus modelos deben permanecer de solo lectura. Con un entorno compatible y las rutas locales configuradas como `CAPSULE`, `RUN`, `DATASET_V1` y `OUTPUT`, desde la raíz del checkout:
+
+```bash
+export PYTHONPATH="$PWD/scientific_pipeline/src"
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+python -m siar_science.et0_v2_retrospective --repo . --capsule "$CAPSULE" --run "$RUN" \
+  --dataset "$DATASET_V1" --freeze-sha256 97acad7ce7cc39c65d82f6efdc36290ed0325caaef2dedb69d9ffbefe1addfbd --output "$OUTPUT"
+```
+
+La evaluación original es la versión privada Kaggle `370251881`. El manifiesto de salida SHA256 es `f771dc3564270528c203d9af709b2b88649a552ef7dd831bf4503d04a2fd8daa`. Comprobar cada salida con ese manifiesto; los metadatos de tiempo impiden asumir que ejecuciones posteriores produzcan necesariamente un manifiesto byte a byte idéntico.
+
+`et0_v2_retrospective._frozen_predictions` recibe filas elegibles y la celda congelada: aplica el coeficiente AHC, invoca `predict` para ML y aplica el escalador seguido de la media de las tres redes para ANN. `retrospective_metrics` agrupa por estación y calendario y calcula error sobre las claves comunes a los cinco métodos principales. `metrics.metrics` devuelve n, MAE, RMSE, sesgo y R² predictivo; la cobertura propia se contabiliza separadamente.
+
+La prueba aislada de carga e inferencia para Elastic Net, ANN A y ANN E sobre IB01/HG-Rs/annual reproduce exactamente las salidas archivadas; véase el [contrato de inferencia](et0_v2_contrato_inferencia.md). No verifica todas las celdas. La evaluación no vuelve a seleccionar ni ajustar modelos utilizando TEST. `et0_v2_retrospective._history` calcula por separado el AHC del histórico completo; ese ajuste incluye el periodo retrospectivo y su error es exclusivamente in-sample.
+
+## Evidencia y límites aún abiertos
+
+El ZIP original del lote final y los lotes intermedios se conservan por separado; el catálogo web sigue DRAFT. La comparación global y 9.612 filas de métricas se contrastaron contra las predicciones; la restauración independiente del paquete de tablas web permanece en curso. La documentación histórica del TFG no debe tratarse como si describiese esta ejecución V2. Pendiente de revisión: detalle completo de checkpoints y reproducibilidad de todas las estaciones, evaluación por estación y verificación final de preservación.
 

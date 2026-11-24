@@ -281,6 +281,10 @@ Reproducir la evaluación con modelos conservados no equivale a reconstruir toda
 5. Breiman, L. (2001). Random forests. *Machine Learning*, 45, 5–32. [DOI: 10.1023/A:1010933404324](https://doi.org/10.1023/A:1010933404324).
 6. Kingma, D. P. y Ba, J. (2015). Adam: A method for stochastic optimization. [arXiv:1412.6980](https://arxiv.org/abs/1412.6980).
 7. Valiantzas, J. D. (2013). Simplified forms for the standardized FAO-56 Penman–Monteith reference evapotranspiration using limited weather data. *Journal of Hydrology*, 505, 13–23. [DOI: 10.1016/j.jhydrol.2013.09.005](https://doi.org/10.1016/j.jhydrol.2013.09.005). Se cita como antecedente de fórmulas simplificadas; la composición utilizada en V2 se ha verificado específicamente contra [4] y el código, no se atribuye automáticamente a una ecuación concreta de este artículo.
+8. Valiantzas, J. D. (2018). Modification of the Hargreaves–Samani model for estimating solar radiation from temperature and humidity data. *Journal of Irrigation and Drainage Engineering*, 144(1), 06017014. [DOI: 10.1061/(ASCE)IR.1943-4774.0001275](https://doi.org/10.1061/%28ASCE%29IR.1943-4774.0001275). Fuente de la estimación de radiación atribuida en [4], no de una validación independiente de la composición ET₀ V2.
+9. Ferreira, A., Cameira, M. R. y Rolim, J. (2024). Methodology for obtaining ETo data for climate change studies: quality analysis and calibration of the Hargreaves–Samani equation. *Climate*, 12, 205. [DOI: 10.3390/cli12120205](https://doi.org/10.3390/cli12120205).
+10. Bergmeir, C., Hyndman, R. J. y Koo, B. (2018). A note on the validity of cross-validation for evaluating autoregressive time series prediction. *Computational Statistics & Data Analysis*, 120, 70–83. [DOI: 10.1016/j.csda.2017.11.003](https://doi.org/10.1016/j.csda.2017.11.003).
+11. Raimondi, G., Bonato, J. y Maucieri, C. (2026). Machine learning models for reference evapotranspiration estimation in new locations under data-limited conditions in Northeastern Italy. *European Journal of Agronomy*, 178, 128132. [DOI: 10.1016/j.eja.2026.128132](https://doi.org/10.1016/j.eja.2026.128132).
 
 ## Anexos
 
@@ -299,4 +303,336 @@ La [evidencia de certificación](et0_v2_certificacion_evidencia.md) enumera sell
 ### D. Cuestiones para revisión externa
 
 Revisar la atribución y unidades de la composición Valiantzas–Martí, la idoneidad de la estrategia de años retenidos para el uso previsto, los efectos de dependencia temporal y de faltantes, la sensibilidad a la altura efectiva del viento y la interpretación de salidas negativas. Verificar exhaustivamente la bibliografía y considerar estimación de incertidumbre y contraste pareado antes de cualquier afirmación de significación. Confirmar disponibilidad y licencias antes de difundir datos o imágenes.
+
+### E. Reproducción integral desde las entradas preservadas
+
+**Alcance de esta receta.** La campaña histórica se ejecutó, se selló y sus artefactos se auditaron; **esta receta ampliada se ha cotejado con los argumentos y funciones del commit, pero no se ha ejecutado de extremo a extremo para esta revisión**. El piloto histórico, las verificaciones de métricas y la prueba puntual de inferencia están documentados aparte. Reconstruir de nuevo puede consumir muchas horas, producir tiempos y hashes de modelos distintos y requiere autorización y recursos suficientes. No sustituir las salidas oficiales ni usar el TEST para rediseñar el procedimiento. Los ejemplos son para Linux/Kaggle CPU y rutas locales elegidas por quien reproduce.
+
+1. **Recuperación e identidad.** Recuperar una copia íntegra de \`siar-balears-observational-v1/dataset.json\` del paquete Dataset v1 preservado, junto con su manifiesto y fuentes/POST identificados en él. En el puesto donde se preparó consta el archivo \`scientific-results/dataset-v1-20261021T055924Z/dataset.json\` y su \`dataset-build-manifest.json\`; esa ruta es local a aquel puesto, no una URL pública. Si se restaura de otro almacenamiento, comparar bytes con el hash siguiente, no confiar en el nombre. El manifiesto identifica audit SHA \`18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865\`, source SHA \`2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9\`, Quality POST \`SIAR-QA-POST-20261020T193140Z\` y catálogo SHA \`98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357\`. Comprobar con el manifiesto de origen los 12 hashes de CSV y los informes POST; la identidad histórica de los bytes del catálogo se conserva aunque Git pueda alterar finales de línea.
+
+2. **Checkout y dependencias.** Usar una copia limpia, sin modificar los archivos del commit ni publicar credenciales. El handoff IB09 debe estar presente en la ruta versionada y debe haber revisión efectiva de que no existe contradicción oficial; el indicador CLI no reemplaza esa revisión humana. El entorno histórico fue Python 3.13.18, NumPy 2.1.3, SciPy 1.16.3, joblib 1.6.0, threadpoolctl 3.7.0 y scikit-learn 1.9.1. El wheel Linux CPython 3.13 verificado tenía SHA256 \`55e79d6e9b0923f1a978179822bd43d7f5543f45e970a00fe861f43486380aba\`; las demás dependencias se fijaron por versión, no por identidad binaria exhaustiva.
+
+\`\`\`bash
+git clone https://github.com/lependens/Capitulo-1.git et0-v2-repro
+cd et0-v2-repro
+git checkout --detach 1e419ad881db1cc9798685ef19f414862461674b
+test "$(git rev-parse HEAD)" = 1e419ad881db1cc9798685ef19f414862461674b
+git status --porcelain
+export DATASET_V1=/ruta/recuperada/dataset.json
+echo "0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb  $DATASET_V1" | sha256sum -c -
+echo "9c14247a67ea6fd870d63f985e96c25b02860ccf41bf7beea9b27ccc20b9ca92  data_quality/siar/ib09-handoff-v2-development/handoff.json" | sha256sum -c -
+python3.13 -m venv /ruta/nueva/et0-v2-venv
+. /ruta/nueva/et0-v2-venv/bin/activate
+python -m pip install numpy==2.1.3 scipy==1.16.3 joblib==1.6.0 threadpoolctl==3.7.0
+# Instalar el wheel de scikit-learn 1.9.1 para la plataforma CPU correspondiente
+# después de contrastar su SHA histórico; no sustituirlo silenciosamente.
+python -m pip install --no-deps /ruta/verificada/scikit_learn-1.9.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
+export PYTHONPATH="$PWD/scientific_pipeline/src"
+export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
+\`\`\`
+
+3. **Cápsula.** Definir un directorio que no exista, con padre existente, y construir una vista de DEVELOPMENT. El preparador verifica Dataset v1 y handoff, revisa reconciliación y calcula soporte; lee el dataset íntegro para su validación y preparación, aunque la vista emitida sea DEVELOPMENT. Esto no es un procedimiento para afirmar que nadie ha leído bytes de TEST: el aislamiento relevante para la selección es que las filas retrospectivas no entren en el ajuste ni en los criterios. En la reproducción histórica con IB09, solo usar el flag después de revisar la evidencia oficial:
+
+\`\`\`bash
+export CAPSULE=/ruta/nueva/capsule
+python -m siar_science.et0_v2 --repo . --dataset "$DATASET_V1" \
+  --ib09-handoff data_quality/siar/ib09-handoff-v2-development/handoff.json \
+  --official-evidence-reviewed-no-contradiction --output "$CAPSULE"
+sha256sum "$CAPSULE/manifest.json" "$CAPSULE/development.json.gz" "$CAPSULE/support-inventory.json"
+\`\`\`
+
+Esperar \`manifest.json\`, \`development.json.gz\` y \`support-inventory.json\`, sin modelos ni predicciones TEST. El ejecutor oficial **exige** como identidad de cápsula el manifiesto SHA256 \`0c43f1020a04b0dedeeff84ccb1cbae4285ff00ac20c48473ff6c81b57ecd3e6\`; la vista preservada tiene SHA256 \`0f1bb84023dad6b4a261c53a7e6017ceeb92f8fba5b048c8dcc15175e42dcfef\`. Si una reconstrucción no coincide, detenerse y recuperar/verificar la cápsula oficial; no cambiar la constante del código ni afirmar reproducibilidad por semejanza. El inventario comprueba la excepción IB09 y soporte por celda.
+
+4. **Configuración.** No seleccionar estaciones con cambios manuales de código: \`scientific_pipeline/experiments/et0-v2-preparation.json\`, el inventario y los periodos de catálogo determinan las estaciones admitidas, tres familias y calendarios \`annual\`, \`seasonal\`, \`monthly\`. Configuración mínima ilustrativa, extraída del protocolo: DEVELOPMENT \`2004-01-01..2019-12-31\`, retrospectiva \`2020-01-01..2025-12-31\`; HS-Ra=[Tmin,Tmax,Ra], HG-Rs=[Tmedia de extremos,Rs], Valiantzas=[Tmin,Tmax,HRmedia,Ra]. La semilla y malla no se editan para esta réplica. El soporte determina si una celda puede entrenarse; 108 celdas AHC frente a 105 por cada fase de ML y ANN en la ejecución oficial.
+
+5. **Piloto y fases.** Montar solo código y cápsula de desarrollo para el piloto y el ajuste. Usar carpetas nuevas y separadas; en Kaggle elegir sesión privada CPU y preservar configuración, versión, salida y registro. La opción \`--through\` limita la última fase; cada invocación verifica sellos anteriores y continúa las fases necesarias en orden. No ejecutar este ejemplo en el árbol oficial.
+
+\`\`\`bash
+export PILOT=/ruta/nueva/pilot
+export RUN=/ruta/nueva/run
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$PILOT" pilot
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" init
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through AHC
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through ML
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through ANN_A
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through ANN_E
+\`\`\`
+
+Los tiempos son límites suaves entre candidatos, no garantía de finalización. Un lote puede detenerse antes de cerrar una fase; repetir el mismo \`drive\` hasta completarla. Para reanudar en otra sesión, montar la **versión exacta** anterior, conservarla inmutable y copiar su árbol a un área escribible; el ejecutor exige que \`identity.json\` coincida con código, cápsula y versiones. Verifica configuración, hashes de planes y de resumen antes de reutilizar candidatos; no sobreescribir checkpoints válidos ni correr dos trabajadores sobre la misma celda. Conservar por separado salidas y manifiestos de cada lote. Los números de los lotes históricos y su primera aparición verificable están en el capítulo 10.
+
+6. **Sello y freeze.** Los cierres normales los realiza \`drive\` al concluir cada fase; pueden verificarse explícitamente, en orden, con la CLI siguiente. La identidad, índices y modelos deben comprobarse antes de cualquier retrospectiva. El freeze histórico fija \`97acad7ce7cc39c65d82f6efdc36290ed0325caaef2dedb69d9ffbefe1addfbd\`; una reconstrucción independiente no se debe declarar idéntica sin comparar sus bytes y artefactos.
+
+\`\`\`bash
+for stage in AHC ML ANN_A ANN_E; do
+  python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" seal --stage "$stage"
+done
+python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" freeze
+sha256sum "$RUN/freeze.json" "$RUN"/{AHC,ML,ANN_A,ANN_E}/index.json
+\`\`\`
+
+7. **Evaluación y tablas.** Solo tras congelar, verificar y obtener la autorización correspondiente, usar el comando retrospectivo del capítulo 15 con \`FREEZE_SHA\` igual al hash **de esa ejecución**. El evaluador registra intención, verifica integridad de freeze, carga modelos sin reajuste y produce predicciones comprimidas, métricas, AHC de histórico completo marcado in-sample, informe y manifiesto. Guardar registro de acceso y comparar cada SHA del manifiesto. El evaluador crea registros de acceso en el árbol de ejecución: por ello se usa una copia de trabajo, no el original de solo lectura. Los derivados web se crean y verifican con los procedimientos y esquemas de [handoff web](et0_v2_handoff_web.md); después, ejecutar los verificadores del capítulo 15. El original histórico tiene 9.612 filas de métricas y 2.081.376 registros expandidos, no todos con predicción presente.
+
+La reproducción de ajustes y selección requiere además fuentes, decisiones de calidad y todas las dependencias; los resultados dependerán de plataforma y bibliotecas. La receta no equivale a una restauración verificada ni a haber reproducido desde cero los 4.935 checkpoints.
+
+### F. Lectura comentada del código científico
+
+Los siguientes extractos son literales del commit científico enlazado; se han omitido líneas entre fragmentos, señaladas por la ubicación indicada. La explicación está fuera de los bloques para distinguirla del código realmente ejecutado.
+
+
+**Entradas: `et0_v2.py`, función `_inputs`; la temperatura HG-Rs procede de extremos.** [Fuente, líneas 33–39](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2.py#L33-L39).
+
+```python
+def _inputs(row, name):
+    values = row["values"]
+    tmin, tmax = values["TempMin"], values["TempMax"]
+    if name == "HG_RS_V1":
+        return [(tmin + tmax) / 2, values["Radiacion"]]
+    ra = row["model_diagnostics"][name]["ra_mj_m2_day"]
+    return [tmin, tmax, ra] if name == "HS_RA_V1" else [tmin, tmax, values["HumedadMedia"], ra]
+```
+
+**Validación interna: `et0_v2_support.py`, `inner_split`; A usa cola cronológica y E ordena por hash.** [Fuente, líneas 27–41](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py#L27-L41).
+
+```python
+def inner_split(train, rule, *, station, family, year, seed):
+    train = sorted(train)
+    if len(train) < 2 or len(set(train)) != len(train):
+        raise ValueError("Inner validation requires at least two unique keys")
+    n_valid = (3 * len(train) + 19) // 20  # ceil(15%)
+    if rule == "A":
+        valid = train[-n_valid:]
+    elif rule == "E":
+        def rank(day):
+            return sha256(f"{seed}:{station}:{family}:{year}:{day}".encode("ascii")).digest(), day
+
+        valid = sorted(sorted(train, key=rank)[:n_valid])
+    else:
+        raise ValueError("Unknown ANN rule")
+    return sorted(set(train).difference(valid)), valid
+```
+
+**Folds: `et0_v2_support.py`, `outer_plan`; el año retenido se excluye, pero pueden quedar años posteriores en entrenamiento.** [Fuente, líneas 44–54](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py#L44-L54).
+
+```python
+def outer_plan(pairs, *, station, family, protocol):
+    """Return exact date keys by fold. Values are used only for AHC support."""
+    start, end = protocol["development"]
+    if any(not start <= day <= end for day in pairs):
+        raise ValueError("Outer planner accepts only DEVELOPMENT dates")
+    by_year = defaultdict(list)
+    for day in sorted(pairs):
+        by_year[day[:4]].append(day)
+    for year, held_out in sorted(by_year.items()):
+        train = sorted(set(pairs).difference(held_out))
+        if len(train) < 2:
+```
+
+**Coeficiente AHC: `et0_v2_models.py`, `ahc_coefficients`; evita dividir si la suma de cuadrados es nula.** [Fuente, líneas 67–76](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L67-L76).
+
+```python
+def ahc_coefficients(groups, empirical, targets):
+    samples = defaultdict(list)
+    for group, x, y in zip(groups, empirical, targets, strict=True):
+        samples[group].append((float(x), float(y)))
+    result = {}
+    for group, pairs in sorted(samples.items()):
+        denominator = fsum(x*x for x, _ in pairs)
+        result[group] = {"n": len(pairs), "sum_x2": denominator,
+                         "coefficient": fsum(x*y for x, y in pairs) / denominator if denominator > 0 else None}
+    return result
+```
+
+**Evaluación de candidato: `et0_v2_models.py`, `fit_candidate`; ML se ajusta por fold y ANN promedia semillas; el criterio primario es la media anual no ponderada.** [Fuente, líneas 151–174](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L151-L174).
+
+```python
+def fit_candidate(stage, cell, plans, config, ml_protocol):
+    started = perf_counter()
+    folds = []
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        for plan in plans:
+            if stage == "ML":
+                train = cell.indices(plan["train"])
+                valid = cell.indices(plan["score"][cell.calendar])
+                estimator = make_estimator(config["algorithm"], config["parameters"], ml_protocol)
+                estimator.fit(cell.x[train], cell.y[train])
+                folds.append(score_fold(cell, plan, estimator.predict(cell.x[valid])))
+                del estimator
+            else:
+                fits = [_fit_seed(cell, plan, stage[-1], config["architecture"], seed)
+                        for seed in cell.protocol["ann"]["seeds"]]
+                folds.append({**score_fold(cell, plan, np.mean([pred for pred, _ in fits], axis=0)),
+                              "seeds": [scores for _, scores in fits]})
+    n = sum(fold["n"] for fold in folds)
+    average = fsum(fold["rmse"] for fold in folds) / len(folds)
+    return {**config, "folds": folds, "n": n,
+            "mean_annual_rmse": average,
+            "sd_annual_rmse": sqrt(fsum((fold["rmse"] - average) ** 2 for fold in folds) / len(folds)),
+            "pooled_rmse": sqrt(fsum(fold["n"] * fold["rmse"] ** 2 for fold in folds) / n),
+```
+
+**ANN: `et0_v2_models.py`, `_fit_seed`; la escala interna no ve validación, la mejor época se elige con RMSE y después se reajusta sobre todo el entrenamiento exterior.** [Fuente, líneas 123–148](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L123-L148).
+
+```python
+def _fit_seed(cell, plan, rule, architecture, seed):
+    inner_fit, inner_valid = map(cell.indices, plan["inner"][rule])
+    train = cell.indices(plan["train"])
+    validation = cell.indices(plan["score"][cell.calendar])
+    scale = StandardScaler().fit(cell.x[inner_fit])
+    fit, valid = scale.transform(cell.x[inner_fit]), scale.transform(cell.x[inner_valid])
+    model = _network(cell, architecture, seed, len(fit))
+    settings = cell.protocol["ann"]["early_stopping"]
+    best, best_epoch, stale = float("inf"), 0, 0
+    for epoch in range(1, settings["max_epochs"] + 1):
+        model.partial_fit(fit, cell.y[inner_fit])
+        loss = sqrt(float(np.mean((model.predict(valid) - cell.y[inner_valid]) ** 2)))
+        if not isfinite(loss):
+            raise ValueError("Nonfinite ANN inner RMSE")
+        if loss < best - settings["min_delta_rmse"]:
+            best, best_epoch, stale = loss, epoch, 0
+        else:
+            stale += 1
+        if stale >= settings["patience"]:
+            break
+    scale = StandardScaler().fit(cell.x[train])
+    model = _epochs(_network(cell, architecture, seed, len(train)),
+                    scale.transform(cell.x[train]), cell.y[train], best_epoch)
+    prediction = model.predict(scale.transform(cell.x[validation]))
+    return prediction, {"seed": seed, "best_epoch": best_epoch, "epochs_run": epoch,
+                        "inner_rmse": best, **metrics(cell.y[validation].tolist(), prediction.tolist())}
+```
+
+**Selección: `et0_v2_models.py`, `selections`; ML conserva un candidato por algoritmo y uno principal; A y E se seleccionan por separado.** [Fuente, líneas 179–197](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L179-L197).
+
+```python
+def selections(stage, cell, summaries):
+    records = [{**item, "yearly_rmse": {fold["year"]: fold["rmse"] for fold in item["folds"]}}
+               for item in summaries]
+    years = [int(plan["year"]) for plan in cell.plans]
+    by_id = {item["candidate_id"]: item for item in summaries}
+
+    def choose(group):
+        return choose_candidate(group, family_type="ml" if stage == "ML" else "ann",
+                                protocol=cell.protocol, supported_years=years)
+
+    if stage == "ML":
+        chosen = {algorithm: choose([item for item in records if item["algorithm"] == algorithm])
+                  for algorithm in cell.protocol["ml"]["complexity_rank"]}
+        ids = {item["candidate_id"] for item in chosen.values()}
+        principal = choose([item for item in records if item["candidate_id"] in ids])
+    else:
+        principal = choose(records)
+        chosen = {stage: principal}
+    return principal, {label: {**by_id[item["candidate_id"]], **item} for label, item in chosen.items()}
+```
+
+**Freeze: `et0_v2_campaign.py`, `freeze`; verifica los cuatro índices y fija identidad y orden.** [Fuente, líneas 291–304](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_campaign.py#L291-L304).
+
+```python
+def freeze(repo, capsule, run):
+    identifier = run_context(repo, capsule, run, "official")
+    protocol, _ = load_protocol(repo)
+    inventory = read_json(capsule / "support-inventory.json")
+    stage_hashes = {stage: _verify_stage(run, stage, cells(inventory, stage, protocol, "official"), "official")
+                    for stage in STAGES}
+    path = run / "freeze.json"
+    entry = {"status": "FROZEN_BEFORE_RETROSPECTIVE_ACCESS", "identity": identifier, "stages": stage_hashes,
+             "stage_order": list(STAGES)}
+    if path.exists():
+        require(read_json(path) == entry, "Frozen campaign identity changed")
+    else:
+        write_json(path, entry)
+    return sha_file(path)
+```
+
+**Inferencia: `et0_v2_retrospective.py`, `_frozen_predictions`; carga modelos guardados y promedia las tres salidas ANN.** [Fuente, líneas 72–79](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_retrospective.py#L72-L79).
+
+```python
+        for label, config in meta["selected"].items():
+            model = joblib.load(path / f"{label}.joblib")
+            if stage == "ML":
+                pred = model.predict(x)
+            else:
+                transformed = model["scale"].transform(x)
+                pred = np.mean([member.predict(transformed) for member in model["models"]], axis=0)
+            require(pred.shape == (len(x),) and np.isfinite(pred).all(), "Invalid frozen retrospective prediction")
+```
+
+**Métricas: `et0_v2_retrospective.py`, `retrospective_metrics`; separa cobertura propia de puntuación sobre claves comunes.** [Fuente, líneas 114–130](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_retrospective.py#L114-L130).
+
+```python
+    for (kind, group), denominator in sorted(calendar_days.items()):
+        records = grouped[kind, group]
+        target_rows = [r for r in records if r["target"] is not None]
+        common = [r for r in target_rows if all(r.get(method) is not None for method in CONTRAST)]
+        cohort_hash = digest(json_bytes([[r["station_code"], r["date"]] for r in common]))
+        for method in methods:
+            emitted = sum(r.get(method) is not None for r in records)
+            paired = sum(r.get(method) is not None for r in target_rows)
+            scored = [r for r in common if r.get(method) is not None]
+            yield {
+                "group": kind, "key": group, "method": method, "calendar_days": denominator,
+                "pm_days": len(target_rows), "predicted_days": emitted, "pm_pairs_own": paired,
+                "coverage_calendar": emitted / denominator if denominator else None,
+                "coverage_pm_own": paired / len(target_rows) if target_rows else None,
+                "common_keys_sha256": cohort_hash if len(scored) == len(common) else
+                digest(json_bytes([[r["station_code"], r["date"]] for r in scored])),
+                **metrics([r["target"] for r in scored], [r[method] for r in scored]),
+```
+
+### G. Nota dimensional y límites de interpretación de Valiantzas–Martí
+
+La ecuación 3 de Martí et al. [4] atribuye a Valiantzas [8] una estimación de radiación solar en función de radiación extraterrestre, temperatura y humedad; en la misma publicación se describen Ra y Rs en MJ m⁻² día⁻¹ y λ=2,45 MJ kg⁻¹. El artículo declara que su ecuación 4 se obtiene al sustituir la ecuación 3 en la 1b, pero **imprime** 0,004563. Esa cifra coincide exactamente con 0,0135×0,338; si Ra se introduce en las unidades energéticas declaradas, la sustitución explícita de 1b incorpora además 1/λ y da 0,004563/2,45 ≈ 0,00186245. V2 utiliza 0,408 en lugar de 1/2,45 y obtiene 0,001861704; la diferencia entre 0,408 y 1/2,45 es una aproximación pequeña, mientras que 0,004563/0,001861704 ≈ 2,451. Sin una aclaración de los autores o material original adicional, no es posible saber si la ecuación impresa omitió una conversión, empleó una convención no explicitada u obedece a otra causa. No se afirma una errata demostrada.
+
+Para un mismo vector válido, sustituir numéricamente el coeficiente V2 por el impreso sin cambiar unidades multiplicaría la fórmula no calibrada aproximadamente por 2,451. Es una diferencia **material** para la interpretación de la fórmula sin ajustar y su comparación con el artículo; las métricas publicadas corresponden a la implementación V2, no a una ejecución de la fórmula impresa. Esta observación no invalida los cálculos V2 descritos ni identifica cuál convención utilizar en una futura versión; cualquier cambio sería versionado y evaluado aparte.
+
+En AHC por mínimos cuadrados sin intercepto, si x′=k x con k positivo constante para todos los pares elegibles y Σx²>0, entonces c′=Σx′y/Σx′²=c/k y c′x′=cx. Así, una diferencia multiplicativa pura queda absorbida **solo** si permanecen idénticos pares, agrupación, soporte y reglas numéricas; no se extrapola esta invariancia a cambios de humedad, exponentes, exclusiones, redondeos o modelos distintos. Los modelos ML/ANN V2 reciben directamente Tmin, Tmax, HR y Ra, no la salida de la fórmula como entrada: cambiar únicamente el coeficiente empírico no exige suponer que sus predicciones existentes cambian, pero podría afectar elegibilidad o soporte si cambiara más que una escala positiva. No se han ejecutado contrafactuales ni recalculado métricas.
+
+### H. Comparación ampliada: errores, sesgos y cobertura
+
+La siguiente tabla procede de \`retrospective-metrics.csv\`, filtros \`group=global\` y \`calendar=annual\`; MAE, RMSE y sesgo están en mm/día, con sesgo = estimación − PM. Las cinco filas de cada familia comparten 19.251 claves en esta comparación. La cobertura de calendario es propia y su denominador no es el número de pares. Las cifras no justifican reseleccionar configuraciones con TEST.
+
+| Familia | Método | n | MAE | RMSE | Sesgo | R² | Cobertura calendario |
+|---|---|---:|---:|---:|---:|---:|---:|
+| HS_RA_V1 | FORMULA | 19251 | 0,7873 | 0,9491 | 0,5780 | 0,6913 | 97,6632 % |
+| HS_RA_V1 | AHC | 19251 | 0,4938 | 0,6307 | 0,1969 | 0,8637 | 97,6632 % |
+| HS_RA_V1 | ML | 19251 | 0,3996 | 0,5530 | 0,1736 | 0,8952 | 97,6632 % |
+| HS_RA_V1 | ANN_A | 19251 | 0,3854 | 0,5331 | 0,1452 | 0,9026 | 97,6632 % |
+| HS_RA_V1 | ANN_E | 19251 | 0,3850 | 0,5327 | 0,1444 | 0,9028 | 97,6632 % |
+| HG_RS_V1 | FORMULA | 19251 | 0,4743 | 0,5670 | 0,2941 | 0,8898 | 97,6632 % |
+| HG_RS_V1 | AHC | 19251 | 0,3146 | 0,4127 | -0,0040 | 0,9416 | 97,6632 % |
+| HG_RS_V1 | ML | 19251 | 0,2973 | 0,3809 | 0,0669 | 0,9503 | 97,6632 % |
+| HG_RS_V1 | ANN_A | 19251 | 0,2849 | 0,3680 | 0,0427 | 0,9536 | 97,6632 % |
+| HG_RS_V1 | ANN_E | 19251 | 0,2839 | 0,3676 | 0,0389 | 0,9537 | 97,6632 % |
+| VALIANTZAS_V1 | FORMULA | 19251 | 0,4701 | 0,6236 | 0,2371 | 0,8667 | 97,5821 % |
+| VALIANTZAS_V1 | AHC | 19251 | 0,3832 | 0,5122 | 0,1347 | 0,9101 | 97,5821 % |
+| VALIANTZAS_V1 | ML | 19251 | 0,3052 | 0,4388 | 0,1129 | 0,9340 | 97,5821 % |
+| VALIANTZAS_V1 | ANN_A | 19251 | 0,2941 | 0,4210 | 0,0879 | 0,9393 | 97,5821 % |
+| VALIANTZAS_V1 | ANN_E | 19251 | 0,2940 | 0,4209 | 0,0878 | 0,9393 | 97,5821 % |
+
+La diferencia ANN E − ANN A del RMSE anual es −0,000424 mm/día en HS-Ra, −0,000438 en HG-Rs y −0,000062 en Valiantzas, a partir de los valores sin redondear de esa tabla. Son diferencias descriptivas pequeñas; no se ha cuantificado su incertidumbre. En HG-Rs mensual, ANN A obtiene 0,3279 frente a 0,3285 de ANN E, ilustrando que el menor valor depende de familia y resolución. Escoger el mínimo en este TEST para sustituir el modelo ya congelado sería reselección retrospectiva.
+
+Figura H1. RMSE de ANN A con HG-Rs anual por estación, en mm/día, sobre las claves comunes de cada estación (tabla del capítulo 4). Las alturas comparan error, pero cada estación aporta diferente número de pares.
+
+```mermaid
+xychart-beta
+    title "ANN A y HG-Rs anual: RMSE por estación"
+    x-axis ["IB01", "IB02", "IB03", "IB04", "IB05", "IB06", "IB08", "IB10", "IB11"]
+    y-axis "RMSE (mm/día)" 0 --> 0.5
+    bar [0.3683, 0.3933, 0.3715, 0.3231, 0.3283, 0.3824, 0.3092, 0.3406, 0.4674]
+```
+
+Figura H2. ANN A con HG-Rs: RMSE común por resolución, mm/día. Las predicciones siguen siendo diarias.
+
+```mermaid
+xychart-beta
+    title "ANN A y HG-Rs: resolución de ajuste"
+    x-axis ["Anual", "Estacional", "Mensual"]
+    y-axis "RMSE (mm/día)" 0 --> 0.4
+    bar [0.3680, 0.3368, 0.3279]
+```
+
+**Por qué más segmentos no aseguran mejora.** Los indicadores mensuales permiten diferencias sistemáticas entre meses, pero fraccionan el soporte de calibración y aumentan parámetros o flexibilidad respecto al ajuste anual. Pueden reducir sesgo estacional, pero también aumentar varianza y fragilidad frente a meses con pocos pares. En los datos globales, ANN A de HS-Ra pasa de 0,5331 anual a 0,5353 mensual, mientras HG-Rs baja de 0,3680 a 0,3279; los valores no establecen por sí solos la causa de esas diferencias. Los autores Ferreira et al. [9] examinaron calibración y complejidad en otra región; no es una validación de la causalidad en Baleares.
+
+Dejar un año fuera puede usar años posteriores al retenido en el entrenamiento. Por ello mide estabilidad entre años del periodo de desarrollo y no simula estrictamente una predicción operativa hacia el futuro. Bergmeir et al. [10] estudian condiciones específicas bajo las que cierta validación cruzada puede aplicarse a modelos autorregresivos; esas condiciones no se han demostrado aquí. El TEST 2020–2025 permanece posterior al desarrollo, pero es retrospectivo y las estaciones se conocían. Un ensayo prospectivo y una prueba espacial con estaciones no vistas responden a preguntas adicionales [11].
 

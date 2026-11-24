@@ -1,6 +1,6 @@
 # ET₀ V2: resultados retrospectivos 2020–2025
 
-> Borrador para revisión. La preservación y la publicación definitiva siguen pendientes de comprobación.
+> Preservación y catálogo técnico verificados; publicación oficial NOT_PUBLISHED, pendiente de aprobación de Dirección.
 
 En las tres comparaciones anuales, ML y ambas variantes ANN reducen el RMSE frente a AHC en las mismas claves. ANN A y ANN E quedan muy próximas: sus diferencias anuales son inferiores a 0,001 mm/día en las tres familias. Esto describe la concordancia con PM en esta muestra y no demuestra que las redes midan mejor la ET₀ física.
 

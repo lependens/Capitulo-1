@@ -94,3 +94,11 @@ docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-verified
 Verificar a continuación `/api/et0-v2/catalog` y el estado de los contenedores. Se conservaron también las imágenes `siar-et0-v2-review-backend:before-verified-20261124` y `siar-et0-v2-review-frontend:before-verified-20261124` para una restauración adicional si fuera necesaria.
 
 Antes del cambio se comprobó el SHA del catálogo, los 111 archivos de su inventario y la paridad de consultas representativas entre DRAFT y VERIFIED: métricas globales y por estación, predicciones diarias y AHC dentro de muestra. El cambio no supone publicación ni autorización de acceso por Internet.
+
+## Registro de V0.3 y resultados ET₀ V1 — 24-11-2026
+
+Josep comunicó que la retirada de la aplicación V0.3 desde CasaOS fue accidental. En la inspección anterior, el puerto 8088 no respondía, los contenedores V0.3 no figuraban y la copia `/home/josep/siar-et0-web` mostraba sus archivos `web_app` como eliminados. No se ha atribuido una causa técnica adicional ni se ha ejecutado una recuperación de la aplicación.
+
+Los derivados utilizados por V0.3 se localizaron en `/home/josep/siar-et0-web-data/releases/web-v0.3-explorer-20261101/data-verified`; las pruebas de aceptación de V0.3 se ejecutaron con esos datos y el paquete ML V1 de `/home/josep/project-artifact-inbox/science-ml-v1-test-recovery-20261101T090828Z/scientific-results/ml-v1-test-recovery-20261101T090828Z/`, montados en solo lectura. Esto verifica su disponibilidad en aquella inspección; no acredita una restauración completa de la web.
+
+El código de la versión originalmente desplegada está identificado por el commit `c44d1187760e19ed67269c0dbc05d2c5b0255ad1`. El snapshot de preservación comunicado es `backup_20261101T123421Z_8022d3fd`. Identidades, hashes y detalles de preservación figuran en [release-v03.md](release-v03.md). Cualquier recuperación futura debe utilizar una copia independiente y verificar antes las rutas, el snapshot y los hashes; no regenerar resultados científicos ni sobrescribir la copia antigua.

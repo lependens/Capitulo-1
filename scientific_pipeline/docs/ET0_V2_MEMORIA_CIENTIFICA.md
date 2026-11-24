@@ -54,6 +54,25 @@ En la tabla siguiente `PM n` cuenta días con referencia y `pred n` salidas pres
 
 La localización exacta, altitud, fechas de vigencia y procedencia de cada sensor deben leerse del catálogo de estaciones asociado al dataset; no se infieren coordenadas a partir del código. Las series cortas no tienen la misma capacidad de validación temporal: IB101 presenta solo 246 pares en los ejemplos anuales siguientes y tres celdas mensuales sin soporte de selección.
 
+La siguiente identificación procede de `inputs/estaciones_baleares.csv`, SHA256 `98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357`, y de los metadatos incorporados en Dataset v1. La fecha de instalación o baja es la **de catálogo**, no prueba de funcionamiento continuo ni de validez histórica independiente del periodo. Latitud se expresa en grados decimales norte y altitud en metros.
+
+| Código | Nombre de catálogo | Latitud | Altitud | Instalación | Baja |
+|---|---|---:|---:|---|---|
+| IB01 | Santa Eulalia | 39,0100 | 120 | 2004-03-30 | — |
+| IB02 | Inca | 39,6836 | 78 | 2004-03-31 | — |
+| IB03 | Manacor | 39,5458 | 79 | 2004-04-01 | — |
+| IB04 | Son Ferriol | 39,5622 | 8 | 2004-04-01 | — |
+| IB05 | Felanitx | 39,4753 | 82 | 2004-04-05 | — |
+| IB06 | Sa Pobla | 39,8028 | 4 | 2004-04-05 | — |
+| IB07 | Sóller | 39,7803 | 44 | 2004-08-11 | 2012-11-13 |
+| IB08 | Es Mercadal | 40,0036 | 40 | 2005-10-05 | — |
+| IB09 | Artá | 39,6972 | 105 | 2005-10-24 | 2018-10-10 |
+| IB10 | Calviá | 39,5511 | 30 | 2005-10-08 | — |
+| IB101 | Ciutadella | 39,9653 | 21 | 2008-12-02 | 2009-08-10 |
+| IB11 | S' Estany des Peix | 38,7269 | 7 | 2005-10-10 | — |
+
+Las coordenadas se reproducen del dataset sin reinterpretar su fuente; no se ha reconstruido la historia de cambios de emplazamiento. La baja de IB07 coincide con el día RECOVERED `2012-11-13` del ledger corregido. En IB09 la excepción se limita a las fechas de catálogo citadas, no equivale a certificar externamente ese periodo.
+
 ## 5. Fundamentos matemáticos
 
 ### 5.1. Penman–Monteith de referencia
@@ -175,6 +194,20 @@ En el cuadro, los cinco métodos de una fila se puntúan en 19.251 pares comunes
 
 La mejora relativa de ANN E frente a AHC anual es 15,5 % para HS-Ra, 10,9 % para HG-Rs y 17,8 % para Valiantzas. No son diferencias de precisión física demostrada. La cobertura propia de calendario global es 97,66 % en HS-Ra/HG-Rs y 97,58 % en Valiantzas; el denominador y cobertura no son los de la intersección de error. La comparación entre las tres fórmulas en la intersección de claves también usa 19.251 pares: la familia HG-Rs requiere un sensor de radiación que HS-Ra no necesita.
 
+```mermaid
+xychart-beta
+    title "RMSE retrospectivo anual respecto a PM calculado (mm/día)"
+    x-axis ["HS-Ra", "HG-Rs", "Valiantzas"]
+    y-axis "RMSE (mm/día)" 0 --> 1
+    bar [0.9491, 0.5670, 0.6236]
+    bar [0.6307, 0.4127, 0.5122]
+    bar [0.5530, 0.3809, 0.4388]
+    bar [0.5331, 0.3680, 0.4210]
+    bar [0.5327, 0.3676, 0.4209]
+```
+
+En cada familia las barras siguen el orden fórmula, AHC, ML, ANN A, ANN E. Es una figura de **concordancia con la referencia**; las familias no requieren los mismos sensores.
+
 En HG-Rs anual ANN A, IB08 muestra 0,3092 e IB11 0,4674 mm/día; no se ha ajustado esta comparación por cobertura o clima. Los valores negativos presentes incluyen ANN A en IB02/2023-01-27/Valiantzas mensual (−0,03365) e IB10/2023-02-27 (−0,02169), y ANN E en la primera clave (−0,03292). Se contaron 377 filas negativas en regresión lineal, 373 en Ridge y 367 en Elastic Net; las filas se distinguen por familia y resolución y no equivalen a fechas únicas. No se truncaron las predicciones ni se recalcularon métricas.
 
 ## 13. Discusión
@@ -200,6 +233,17 @@ La reproducción requiere el commit de portada, dataset con hash indicado, cáps
 El árbol de resultados original se conserva en `/srv/siar-project/scientific-artifacts/et0-v2/original/retrospective-20261116/et0-v2-retrospective-370251881.zip` con SHA256 `2fddd95c2374a95b4bd1885a6d13f4455ed89d45b8e0d9e854e4d846d40cd420`. El catálogo técnico VERIFIED está en `/srv/siar-project/scientific-artifacts/et0-v2-verified-catalog-20261124/catalog.json`, SHA256 `fef85f0a6ae981792d867a9de2b10b9f7787bc680461820d2284cd20453df4ab`; apunta a los derivados de `et0-v2/derived/v1/`. El inventario que lo vincula fue firmado; snapshot cifrado `backup_20261124T160201Z_5a69c7b9`, restauración independiente PASS. Publicación oficial: NOT_PUBLISHED.
 
 Los comprobadores `scientific_pipeline/tools/verify_et0_v2_freeze.py`, `verify_et0_v2_metrics.py`, `verify_et0_v2_cohorts.py` y `verify_et0_v2_coverage.py` permiten repetir controles de integridad, aritmética, cohortes y razones de cobertura. La trazabilidad individual está en el paquete de evidencias, `checkpoint-trace.json`, SHA256 `4165faa41500314caa424f75318dfff5aa3a2e63e0ea05f34b4d7e82ae12f1eb`. La recuperación de los seis archivos de evidencia fue contrastada con sus fuentes y manifiesto; el catálogo y el ZIP retrospectivo tienen pruebas de recuperación separadas.
+
+Ejemplo de verificación **sin recalcular ni modificar modelos**, desde la raíz del repositorio y usando una copia accesible del ZIP original y de las tablas de inspección:
+
+```bash
+python scientific_pipeline/tools/verify_et0_v2_freeze.py "$RETROSPECTIVE_ZIP"
+python scientific_pipeline/tools/verify_et0_v2_metrics.py "$INSPECTION_DIR"
+python scientific_pipeline/tools/verify_et0_v2_cohorts.py "$INSPECTION_DIR"
+python scientific_pipeline/tools/verify_et0_v2_coverage.py "$INSPECTION_DIR/retrospective-metrics.csv"
+```
+
+El directorio de inspección debe incluir `predictions.csv.gz` y `retrospective-metrics.csv`; los comprobadores no descargan ni construyen por sí solos dichas entradas. Para reproducir la retrospectiva en vez de comprobar sus tablas, utilizar el comando completo documentado en [metodología y reproducción](et0_v2_metodologia_y_reproduccion.md) en una carpeta de salida nueva y tras verificar las identidades de cápsula, dataset y freeze.
 
 Reproducir la evaluación con modelos conservados no equivale a reconstruir toda la selección, ni a demostrar exactitud física. Para reproducir selección serían necesarios datos, código, dependencias, semilleros, particiones y todas las decisiones de soporte; las dependencias distintas del wheel de scikit-learn están identificadas por versión y no por hash binario exhaustivo.
 

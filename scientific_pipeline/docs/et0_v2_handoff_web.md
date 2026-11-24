@@ -15,3 +15,5 @@ Estaciones retrospectivas: IB01, IB02, IB03, IB04, IB05, IB06, IB08, IB10 e IB11
 
 Ejemplo SQL sobre una vista registrada `predictions`: `SELECT date, method_id, prediction, reference_value FROM predictions WHERE station_id='IB01' AND method_family='HG_RS_V1' AND resolution='annual' AND date BETWEEN '2020-01-01' AND '2020-12-31';` La aplicación debe leer únicamente una versión del catálogo explícitamente aprobada y verificar su identidad.
 
+
+**Advertencia para interfaz:** Existen predicciones negativas de ANN y de regresiones lineales. Deben mostrarse con una indicación de que son salidas no restringidas y no representan necesariamente ET₀ física; conservar los valores y métricas sin truncarlos. Véanse los recuentos y ejemplos en [evidencia de certificación](et0_v2_certificacion_evidencia.md). No presentar `common_core` como cohorte idéntica de todas las variantes ML sin comprobar su intersección específica.

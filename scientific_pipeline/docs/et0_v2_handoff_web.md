@@ -17,3 +17,7 @@ Ejemplo SQL sobre una vista registrada `predictions`: `SELECT date, method_id, p
 
 
 **Advertencia para interfaz:** Existen predicciones negativas de ANN y de regresiones lineales. Deben mostrarse con una indicación de que son salidas no restringidas y no representan necesariamente ET₀ física; conservar los valores y métricas sin truncarlos. Véanse los recuentos y ejemplos en [evidencia de certificación](et0_v2_certificacion_evidencia.md). No presentar `common_core` como cohorte idéntica de todas las variantes ML sin comprobar su intersección específica.
+
+## Catálogo técnico verificado
+
+Se ha preparado un catálogo separado en `/srv/siar-project/scientific-artifacts/et0-v2-verified-catalog-20261124/catalog.json`, SHA256 `fef85f0a6ae981792d867a9de2b10b9f7787bc680461820d2284cd20453df4ab`. El inventario del paquete fue firmado por el propietario; el servidor comprobó su firma y los hashes. La copia remota `backup_20261124T160201Z_5a69c7b9` consta como verificada y el catálogo se restauró independientemente con hash idéntico. `server_root` señala los mismos derivados en `et0-v2/derived/v1/`; el catálogo DRAFT original y los datos no se modificaron. El catálogo verificado tiene `publication_status=NOT_PUBLISHED`: su existencia no sustituye la aprobación de Dirección para publicación.

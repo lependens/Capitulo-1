@@ -21,3 +21,7 @@ Se contrastó la cadena SHA256 desde `freeze.json` hasta los cuatro índices, la
 La lectura del archivo de dataset para calcular su hash desde Windows tuvo lugar tras la autorización de Dirección y antes del journal de Kaggle; no debe confundirse con entrenamiento o selección. La incidencia sobre el hash del notebook permanece abierta como procedencia, sin atribuirle una causa no demostrada.
 
 La cohorte `common_core` incluye las familias principales FORMULA, AHC, ML, ANN A y ANN E. Para variantes individuales de ML, una comparación pareada requiere su propia intersección y denominador; no presentar esos subconjuntos como si fueran automáticamente idénticos. `eligibility_status` representa presencia de salida y no sustituye la elegibilidad científica completa.
+
+## Repetición de comprobaciones
+
+Los comprobadores añadidos a esta PR permiten verificar, respectivamente, la cadena de artefactos dentro del ZIP retrospectivo y las 9.612 filas de métricas a partir de las predicciones expandidas. Uso: `python scientific_pipeline/tools/verify_et0_v2_freeze.py RUTA_DEL_ZIP` y `python scientific_pipeline/tools/verify_et0_v2_metrics.py DIRECTORIO_CON_CSV`. El directorio debe contener los archivos originales de la inspección `predictions.csv.gz` y `retrospective-metrics.csv`. Los resultados son pruebas de integridad y consistencia aritmética, no sustituyen la revisión científica independiente ni prueban ausencia absoluta de accesos no registrados.

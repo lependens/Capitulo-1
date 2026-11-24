@@ -1,9 +1,9 @@
-# ET₀ V2: handoff de lectura — DRAFT
+# ET₀ V2: handoff de lectura — catálogo técnico VERIFIED
 
-No habilitar consumo oficial hasta terminar la restauración independiente y la aprobación del catálogo. No recalcular modelos desde la web.
+El catálogo técnico definitivo está verificado y restaurado independientemente. La publicación oficial sigue NOT_PUBLISHED y requiere aprobación de Dirección. No recalcular modelos desde la web.
 
 - Original íntegro: `/srv/siar-project/scientific-artifacts/et0-v2/original/retrospective-20261116/et0-v2-retrospective-370251881.zip`, SHA256 `2fddd95c2374a95b4bd1885a6d13f4455ed89d45b8e0d9e854e4d846d40cd420`.
-- Derivados borrador: `/srv/siar-project/scientific-artifacts/et0-v2/derived/v1/`; `catalog.json` SHA256 `f497074a39d25a38d637329a87a652c470875502a2c9f796cf2eca6706148d81`.
+- Datos derivados y catálogo anterior DRAFT: `/srv/siar-project/scientific-artifacts/et0-v2/derived/v1/`; `catalog.json` SHA256 `f497074a39d25a38d637329a87a652c470875502a2c9f796cf2eca6706148d81`.
 - Predicciones: `parquet/station_id=IB01/year=2020/predictions.parquet` y equivalentes por estación/año; `csv-partitions/IB01-2020.csv` y equivalentes.
 - Métricas: `retrospective-metrics.csv`. AHC histórico completo: `ahc-full-history-in-sample.csv`.
 

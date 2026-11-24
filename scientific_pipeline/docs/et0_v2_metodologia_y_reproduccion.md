@@ -1,6 +1,6 @@
 # ET₀ V2: metodología y reproducción
 
-> Borrador incompleto: la revisión integral está pendiente. No utilizar como certificado de reproducción.
+> Documento preparado para revisión de Dirección. La ejecución completa no se ha repetido; las comprobaciones reproducibles y sus límites se detallan en la evidencia de certificación.
 
 ## Diseño
 
@@ -49,5 +49,5 @@ La prueba aislada de carga e inferencia para Elastic Net, ANN A y ANN E sobre IB
 
 ## Evidencia y límites aún abiertos
 
-El ZIP original del lote final y los lotes intermedios se conservan por separado; el catálogo web sigue DRAFT. La comparación global y 9.612 filas de métricas se contrastaron contra las predicciones. La restauración independiente del paquete web pasó: snapshot `backup_20261116T163815Z_35960ca0`, ZIP restaurado SHA256 `c502530fa70321246c26ed0c9c59aaf766d4ac619251bc1ab99f854695701690`. La documentación histórica del TFG no debe tratarse como si describiese esta ejecución V2. Pendiente de revisión: detalle completo de checkpoints y reproducibilidad de todas las estaciones y evaluación por estación.
+El ZIP original del lote final y los lotes intermedios se conservan por separado; el catálogo web sigue DRAFT. La comparación global y 9.612 filas de métricas se contrastaron contra las predicciones. La restauración independiente del paquete web pasó: snapshot `backup_20261116T163815Z_35960ca0`, ZIP restaurado SHA256 `c502530fa70321246c26ed0c9c59aaf766d4ac619251bc1ab99f854695701690`. La documentación histórica del TFG no debe tratarse como si describiese esta ejecución V2. La cadena de hashes y la trazabilidad por lote de los 4.935 checkpoints se contrastaron; las 9.612 filas de métricas y sus cohortes se verificaron desde predicciones. La inferencia independiente sigue siendo una prueba puntual, no una repetición de todas las celdas.
 

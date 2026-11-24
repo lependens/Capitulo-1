@@ -1,8 +1,8 @@
 """Trace matching frozen bytes to earliest available saved Kaggle batch."""
-import collections, hashlib, json, zipfile
+import collections, hashlib, json, zipfile, sys
 from pathlib import Path
 
-base = Path(__file__).resolve().parent.parent
+base = Path(sys.argv[1]) if len(sys.argv)==2 else sys.exit('Usage: python trace_et0_v2_batches.py SCIENTIFIC_RESULTS_DIRECTORY')
 target = base / 'et0-v2-retrospective-370251881-preservation/et0-v2-retrospective-370251881.zip'
 batches = [
  ('369095500', base/'et0-v2-development-369095500-preservation/et0-v2-lote-369095500.zip'),

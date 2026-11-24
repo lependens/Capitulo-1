@@ -1,4 +1,4 @@
-# Evidencia de certificación ET₀ V2 — revisión pendiente
+# Evidencia de certificación técnica ET₀ V2
 
 El ZIP retrospectivo Kaggle `370251881` conserva 108 celdas AHC, 105 ML, 105 ANN A y 105 ANN E; en el árbol congelado se inventariaron 3.885 checkpoints de candidatos ML y 525 para cada ANN, además de 735 modelos ML y 105 modelos por variante ANN. La mera cuenta no reemplaza el cotejo de hashes y relaciones; el expediente previo registra los cuatro índices y su verificación.
 
@@ -10,7 +10,7 @@ La copia cifrada y restauración independiente del ZIP retrospectivo están regi
 
 Al intersectar estación y fecha sobre la salida anual, las tres fórmulas y PM calculado tienen 19.251 pares comunes. RMSE en mm/día: HS-Ra 0,9491; HG-Rs 0,5670; Valiantzas 0,6236. El denominador de 19.272 es el número de claves observadas en el archivo, no días de catálogo. El contraste no iguala sensores, ni usa observaciones instrumentales independientes. La tabla derivada y sus hashes permanecen pendientes; no utilizar estas cifras como clasificación operativa sin evaluar cobertura y disponibilidad de entradas.
 
-El catálogo continúa DRAFT hasta verificar integralmente el árbol instalado y la firma del catálogo definitivo. Las salidas originales no se han alterado.
+El catálogo anterior se conserva DRAFT; el catálogo técnico definitivo está VERIFIED y la publicación sigue NOT_PUBLISHED. Las salidas originales no se han alterado.
 
 ## Verificación adicional del árbol instalado (24-11-2026)
 
@@ -30,9 +30,9 @@ La auditoría preservada del lote 01 registra 51 candidatos con avisos de conver
 
 ## Trazabilidad de checkpoints por lote conservado
 
-Se cotejaron por ruta y SHA256 los 4.935 checkpoints incluidos en el árbol congelado con los lotes conservados. Primer lote disponible con bytes idénticos: ML 3.885 en `368475953`; ANN A 304 en `368475953`, 85 en `369095500` y 136 en `369223074`; ANN E 101 en `369632717`, 101 en `369691836`, 206 en `369788169` y 117 en `369953511`. La primera aparición comprobada no demuestra por sí sola el instante de creación. La relación detallada de ruta, tamaño, hash y lote se encuentra en el archivo de inspección `checkpoint-trace.json`, SHA256 `4165faa41500314caa424f75318dfff5aa3a2e63e0ea05f34b4d7e82ae12f1eb`; su preservación como evidencia adicional está pendiente.
+Se cotejaron por ruta y SHA256 los 4.935 checkpoints incluidos en el árbol congelado con los lotes conservados. Primer lote disponible con bytes idénticos: ML 3.885 en `368475953`; ANN A 304 en `368475953`, 85 en `369095500` y 136 en `369223074`; ANN E 101 en `369632717`, 101 en `369691836`, 206 en `369788169` y 117 en `369953511`. La primera aparición comprobada no demuestra por sí sola el instante de creación. La relación detallada de ruta, tamaño, hash y lote se encuentra en el archivo de inspección `checkpoint-trace.json`, SHA256 `4165faa41500314caa424f75318dfff5aa3a2e63e0ea05f34b4d7e82ae12f1eb`; su preservación remota y restauración independiente se verificaron.
 
-Los comprobadores de esta PR se ejecutaron de nuevo: cadena del freeze PASS y 9.612 filas de métricas PASS, con la salvedad ya indicada de R² indefinido o casi constante. El catálogo candidato preparado localmente permanece sin firma y pendiente de certificación; el DRAFT instalado no se ha modificado.
+Los comprobadores de esta PR se ejecutaron de nuevo: cadena del freeze PASS y 9.612 filas de métricas PASS, con la salvedad ya indicada de R² indefinido o casi constante. El catálogo candidato histórico se conserva; el catálogo técnico definitivo está VERIFIED y el DRAFT instalado no se ha modificado.
 
 ## Valores fuera de rango físico
 
@@ -40,7 +40,7 @@ Una comprobación de todos los valores presentes no encontró valores infinitos 
 
 Se verificaron además las dos razones de cobertura en las 9.612 filas: `coverage_calendar = predicted_days / calendar_days` y `coverage_pm_own = pm_pairs_own / pm_days` cuando el denominador es positivo. Son denominadores distintos; un pronóstico puede existir en un día sin referencia PM. La comprobación aritmética de la razón no sustituye la comprobación independiente del calendario de cada estación.
 
-El paquete adicional de seis archivos con el catálogo candidato y la trazabilidad fue firmado por el propietario, recibido con `published-verified` (lote `science-20261124T124326Z-d8398c59`) y figura en el snapshot `backup_20261124T134355Z_2e5ca9e9`, cuyo servicio registra `REMOTE_VERIFIED`. La restauración independiente de los seis archivos del paquete pasó: se cotejó cada SHA256 con el manifiesto remoto y el original del servidor. Recibo `/srv/siar-project/ingestion-receipts/et0-v2-certification-evidence-restore-20261124.json`, SHA256 `8f578fb13b9fe5617f27b709f414bae9905cde4a8e03d798a3d82f8aa072e931`; copia restaurada `/tmp/et0-cert-restore-wwql1l4t`. El manifiesto del snapshot tiene SHA256 `ce4fcad6e58fe5ab3281a49743ed0e0e46d66399b7c284403325c97d491ae6e5`. el catálogo candidato permanece sin certificación ni firma de catálogo final.
+El paquete adicional de seis archivos con el catálogo candidato y la trazabilidad fue firmado por el propietario, recibido con `published-verified` (lote `science-20261124T124326Z-d8398c59`) y figura en el snapshot `backup_20261124T134355Z_2e5ca9e9`, cuyo servicio registra `REMOTE_VERIFIED`. La restauración independiente de los seis archivos del paquete pasó: se cotejó cada SHA256 con el manifiesto remoto y el original del servidor. Recibo `/srv/siar-project/ingestion-receipts/et0-v2-certification-evidence-restore-20261124.json`, SHA256 `8f578fb13b9fe5617f27b709f414bae9905cde4a8e03d798a3d82f8aa072e931`; copia restaurada `/tmp/et0-cert-restore-wwql1l4t`. El manifiesto del snapshot tiene SHA256 `ce4fcad6e58fe5ab3281a49743ed0e0e46d66399b7c284403325c97d491ae6e5`. El catálogo candidato histórico se conserva por trazabilidad; el catálogo técnico definitivo consta por separado.
 
 Una comprobación independiente reconstruyó la lista ordenada de claves estación-fecha, con la serialización del pipeline congelado, para cada una de las 9.612 filas de métricas. Todos los SHA256 de cohorte coinciden y las claves de las filas de métricas son únicas. El procedimiento reproducible está en `scientific_pipeline/tools/verify_et0_v2_cohorts.py`; requiere el directorio con las predicciones y métricas originales de inspección.
 

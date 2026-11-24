@@ -8,7 +8,7 @@ export type Station = {code: string; name: string; quality_status: string; retro
   altitude?: number; municipality?: string};
 export type Catalog = {
   mode: string; version: string; reference: string; retrospective_period: string[];
-  status?: string; catalog_sha256?: string; freeze_sha256?: string; dataset_sha256?: string;
+  status?: string; publication_status?: string; limitations?: string[]; catalog_sha256?: string; freeze_sha256?: string; dataset_sha256?: string;
   original_manifest_sha256?: string; source_run_id?: string; station_details?: Station[]; station_catalog_sha256?: string;
   formulas: Record<string, {label: string; inputs: string[]}>;
   methods: Record<string,string>; stations: Record<string,string>; calendars: string[];

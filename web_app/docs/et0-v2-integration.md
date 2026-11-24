@@ -74,3 +74,23 @@ docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-review.e
 No aplicar estos comandos al proyecto de 8088. Tras una actualización, verificar el SHA y estado del catálogo, los montajes y la respuesta real de la API antes de utilizarla; no sustituir el SHA configurado sin verificar la nueva publicación de ciencia.
 
 La interfaz permite filtrar por entradas exactas o por subconjunto de variables disponibles. El filtro selecciona una familia de fórmula cada vez; no habilita ranking cruzado entre fórmulas sin población común publicada. Las fichas aún no incluyen matriz de disponibilidad variable × año ni promedios anuales ni correlaciones. Residuales, distribuciones, matriz de resultados por estación y fichas completas de parámetros/coeficientes quedan pendientes de completar o de concretar con las tablas publicadas. Las pruebas visuales y automáticas de esta instancia no constituyen certificación científica.
+
+## Catálogo VERIFIED en revisión LAN (24-11-2026)
+
+La instancia `192.168.1.43:8090/?science=et0-v2` utiliza `et0-v2-retrospective-20261116` con catálogo técnicamente `VERIFIED` y publicación científica `NOT_PUBLISHED`. La fuente canónica es `/srv/siar-project/scientific-artifacts/et0-v2-verified-catalog-20261124/catalog.json`; su copia de lectura es `/home/josep/siar-et0-v2-verified-prep/catalog.json`, protegida por un directorio 700. Ambas tienen SHA256 `fef85f0a6ae981792d867a9de2b10b9f7787bc680461820d2284cd20453df4ab`. Los archivos de datos y el catálogo se montan de solo lectura. No se ha modificado el catálogo canónico ni los datos científicos.
+
+La configuración adicional `/home/josep/siar-et0-v2-verified-prep/compose.verified.yaml` monta la copia sobre `/et0-v2/catalog.json` y fija su SHA. El entorno continúa en modo `review`, ya que VERIFIED no implica publicación científica. Para arrancar o actualizar desde `~/siar-et0-v2-review-work/web_app`:
+
+```bash
+docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-review.env -f compose.yaml -f compose.et0-v2-review.yaml -f /home/josep/siar-et0-v2-verified-prep/compose.verified.yaml up -d --build
+```
+
+Para volver a la configuración DRAFT, sin tocar datos científicos, ejecutar desde el mismo directorio:
+
+```bash
+docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-verified-prep/review-draft.env -f compose.yaml -f compose.et0-v2-review.yaml up -d --force-recreate
+```
+
+Verificar a continuación `/api/et0-v2/catalog` y el estado de los contenedores. Se conservaron también las imágenes `siar-et0-v2-review-backend:before-verified-20261124` y `siar-et0-v2-review-frontend:before-verified-20261124` para una restauración adicional si fuera necesaria.
+
+Antes del cambio se comprobó el SHA del catálogo, los 111 archivos de su inventario y la paridad de consultas representativas entre DRAFT y VERIFIED: métricas globales y por estación, predicciones diarias y AHC dentro de muestra. El cambio no supone publicación ni autorización de acceso por Internet.

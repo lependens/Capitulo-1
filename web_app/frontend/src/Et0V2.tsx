@@ -128,7 +128,8 @@ function ModelPage({catalog}: {catalog: Catalog}) {
       <dt>Resoluciones</dt><dd>Anual, estacional y mensual. Estacional y mensual añaden indicadores de calendario.</dd>
       <dt>Procedimiento</dt><dd>{explanations[method] ?? 'Candidato ML clásico congelado por estación, fórmula y calendario.'}</dd>
       <dt>Evaluación</dt><dd>DEVELOPMENT 2004–2019. Retrospectiva 2020–2025 con configuraciones congeladas.</dd>
-      <dt>Referencia</dt><dd>PM_FAO56_V1 calculada. Las métricas describen concordancia con esa referencia.</dd></dl>
+      <dt>Referencia</dt><dd>PM_FAO56_V1 calculada, no una medición instrumental independiente. Las métricas describen concordancia con esa referencia.</dd></dl>
+    <p>El AHC de histórico completo se evalúa dentro de muestra. Algunos modelos no restringidos producen predicciones negativas, conservadas sin recorte. Las comparaciones requieren cohortes y coberturas compatibles. Las estaciones históricas tienen periodos más cortos; IB09 mantiene Quality V1 FAIL y su excepción se limita a DEVELOPMENT.</p>
     <button onClick={()=>window.print()}>Imprimir ficha</button>
   </section>;
 }
@@ -160,12 +161,12 @@ function ExplorerV2({catalog}: {catalog: Catalog}) {
     {section==='sources' && <section className="v2-panel"><h2>Fuentes y auditoría</h2>
       <p>Observaciones de estaciones procedentes de SIAR. La referencia diaria es PM FAO56 calculada.</p>
       <dl>{Object.entries({
-        'Versión de resultados':catalog.version,'Estado del catálogo':catalog.status,'Ejecución':catalog.source_run_id,
+        'Versión de resultados':catalog.version,'Integridad técnica':catalog.status,'Publicación científica':catalog.publication_status ?? 'no indicada','Ejecución':catalog.source_run_id,
         'Catálogo SHA‑256':catalog.catalog_sha256,'Manifiesto original SHA‑256':catalog.original_manifest_sha256,
         'Dataset SHA‑256':catalog.dataset_sha256,'Freeze SHA‑256':catalog.freeze_sha256,
         'Catálogo de estaciones SHA‑256':catalog.station_catalog_sha256,
       }).map(([key,value])=><div key={key}><dt>{key}</dt><dd><code>{value??'—'}</code></dd></div>)}</dl>
-      <h3>Cómo leer las métricas</h3>
+      <h3>Limitaciones científicas</h3><p>La referencia PM FAO56 es calculada y no constituye una medición instrumental independiente. El AHC de histórico completo es dentro de muestra. Algunas predicciones negativas de modelos no restringidos se conservan sin recorte. La comparación depende de cohortes y coberturas compatibles. IB07, IB09 e IB101 tienen periodos históricos limitados; IB09 conserva Quality V1 FAIL y su excepción se limita a DEVELOPMENT.</p><details><summary>Limitaciones publicadas en el catálogo</summary><ul>{catalog.limitations?.map((item)=><li key={item}>{item}</li>)}</ul></details><h3>Cómo leer las métricas</h3>
       <p>MAE indica el tamaño medio del error absoluto. RMSE da más peso a errores grandes. Un sesgo positivo indica sobreestimación.
         R² predictivo mide concordancia relativa y puede ser negativo. n cuenta pares evaluados. La cobertura indica disponibilidad respecto a días de catálogo.</p>
       <a href="https://github.com/lependens/Capitulo-1/pull/76">Documentación científica de la entrega</a>
@@ -177,7 +178,7 @@ export default function Et0V2() {
   const lookup = useRead<Catalog>('catalog');
   return <main className="v2-preview">
     <header className="v2-heading"><span>SIAR · Baleares</span>
-      {lookup?.data?.mode === 'review' && <p className="v2-demo">Entorno de revisión · {lookup.data.status} · Pendiente de aprobación científica</p>}
+      {lookup?.data?.mode === 'review' && <p className="v2-demo">{lookup.data.status === 'VERIFIED' && lookup.data.publication_status === 'NOT_PUBLISHED' ? 'Resultados verificados · Pendientes de publicación científica' : `Entorno de revisión · ${lookup.data.status} · Publicación: ${lookup.data.publication_status ?? 'no indicada'}`}</p>}
       <h1>Explorador científico ET₀ V2</h1>
       <p>Retrospectiva 2020–2025 · Referencia PM FAO56 calculada</p>
     </header>

@@ -114,7 +114,7 @@ def router(directory, catalog_sha, stations, location_path=None, mode="approved"
     station_names = {row["code"]: row["name"] for row in stations}
     station_ids = [*contract["stations"], *contract["historical_stations_without_retrospective_data"]]
     source = {
-        "mode": mode, "status": contract["status"], "version": contract["result_version"],
+        "mode": mode, "status": contract["status"], "publication_status": contract.get("publication_status", "UNKNOWN"), "limitations": contract.get("limitations", []), "version": contract["result_version"],
         "schema_version": contract["schema_version"], "catalog_sha256": catalog_sha,
         "reference": contract["reference_id"], "reference_kind": "calculated",
         "retrospective_period": contract["period"],

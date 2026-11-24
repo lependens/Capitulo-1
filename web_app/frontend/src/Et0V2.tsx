@@ -71,6 +71,7 @@ function StationPage({catalog, current, select, compare}: {
         Cobertura de observaciones SIAR {station.coverage_percent}% · Quality V1 {station.quality_status}.</p>}
       {station && !station.retrospective && <p>Serie histórica sin observaciones para la evaluación V2 de 2020–2025.</p>}
       {current==='IB09' && <p>IB09 conserva Quality V1 FAIL. Su admisión excepcional se limita a DEVELOPMENT.</p>}
+      <p>Disponibilidad variable × año, medias anuales y correlaciones: pendientes de tablas científicas publicadas con método, soporte y cobertura.</p>
       <div className="v2-filters">
         <Select label="Variable histórica" value={variable} options={variableOptions}
           onChange={id=>setVariable(id as Variable)}/>

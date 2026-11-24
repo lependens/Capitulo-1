@@ -102,6 +102,13 @@ function Results({rows, catalog, methods, inSample = false}: {
 export function Workspace({catalog, initialStation, byFamily = false}: {catalog: Catalog; initialStation?: string; byFamily?: boolean}) {
   const real = catalog.mode !== 'synthetic';
   const [formula, setFormula] = useState('HG_RS_V1');
+  const [inputMode, setInputMode] = useState('all');
+  const [availableInputs, setAvailableInputs] = useState<string[]>([]);
+  const inputNames = [...new Set(Object.values(catalog.formulas).flatMap(f => f.inputs))];
+  const matchingFormulas = Object.entries(catalog.formulas).filter(([, f]) => inputMode === 'all' ||
+    (f.inputs.every(input => availableInputs.includes(input)) &&
+      (inputMode !== 'exact' || f.inputs.length === availableInputs.length)));
+  const activeFormula = matchingFormulas.some(([id]) => id === formula) ? formula : matchingFormulas[0]?.[0];
   const [calendar, setCalendar] = useState('annual');
   const [view, setView] = useState('metrics');
   const [group, setGroup] = useState(initialStation ? 'station' : real ? 'global' : 'year');
@@ -113,7 +120,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
   const [methods, setMethods] = useState(byFamily ? ['AHC'] : Object.keys(catalog.methods).slice(0,5));
   const [cohort, setCohort] = useState('own');
   const [family, setFamily] = useState(byFamily ? 'AHC' : 'all');
-  const base = new URLSearchParams({formula,calendar});
+  const base = new URLSearchParams({formula: activeFormula ?? formula,calendar});
   const metricPath = (selected: string) => {
     const query = new URLSearchParams(base);
     query.set('group',group);
@@ -121,14 +128,14 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
     methods.forEach(method=>query.append('method',method));
     return 'metrics?' + query;
   };
-  const scores = useRead<Scores>(view==='metrics' ? metricPath(key) : '');
+  const scores = useRead<Scores>(activeFormula && view==='metrics' ? metricPath(key) : '');
   const parallel = useRead<Scores>(view==='metrics' && compare && compare!==key ? metricPath(compare) : '');
   const canReadSeries = Boolean(start && end && start <= end);
-  const seriesQuery = new URLSearchParams({formula,calendar,station,start,end,cohort});
+  const seriesQuery = new URLSearchParams({formula: activeFormula ?? formula,calendar,station,start,end,cohort});
   methods.forEach(method=>seriesQuery.append('method',method));
   const series = useRead<{points: Point[]}>(['series','scatter'].includes(view) && canReadSeries ?
     'series?' + seriesQuery : '');
-  const history = useRead<Scores>(view==='history' ? 'in-sample?' + new URLSearchParams({formula,station}) : '');
+  const history = useRead<Scores>(view==='history' ? 'in-sample?' + new URLSearchParams({formula: activeFormula ?? formula,station}) : '');
   const trendQuery = new URLSearchParams(base);
   if (station) trendQuery.set('station',station);
   methods.forEach(method=>trendQuery.append('method',method));
@@ -141,12 +148,19 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
     setCompare('');
   };
   return <>
-    <section className="v2-panel" aria-label="Selección">
+    <section className="v2-panel" aria-label="Filtros de variables">
+      <h3>Filtrar por variables disponibles</h3>
+      <Select label="Criterio de variables" value={inputMode} onChange={setInputMode} options={{all:'Todas las fórmulas',exact:'Utiliza exactamente estas variables',subset:'Puede funcionar con estas variables'}}/>
+      {inputMode !== 'all' && <fieldset><legend>Variables meteorológicas</legend>{inputNames.map(input => <label key={input}><input type="checkbox" checked={availableInputs.includes(input)} onChange={e=>setAvailableInputs(e.target.checked ? [...availableInputs,input] : availableInputs.filter(v=>v!==input))}/>{input}</label>)}</fieldset>}
+      <p>El filtro selecciona fórmulas por sus entradas publicadas; no permite clasificar fórmulas distintas sin una cohorte común publicada.</p>
+      {!activeFormula && <p role="status">Ninguna fórmula publicada coincide con las variables elegidas.</p>}
+    </section>
+    {activeFormula && <section className="v2-panel" aria-label="Selección">
       <div className="v2-filters">
         <Select label="Vista" value={view} onChange={next=>{setView(next);if(!station && next!=='evolution')setStation(Object.keys(catalog.stations)[0]);}} options={{metrics:'Comparar errores',series:'Series diarias',
           ...(real ? {scatter:'Estimación frente a PM',evolution:'Evolución anual del RMSE'} : {}),history:'AHC dentro de muestra'}}/>
-        <Select label="Fórmula" value={formula} onChange={setFormula}
-          options={Object.fromEntries(Object.entries(catalog.formulas).map(([id,f])=>[id,f.label]))}/>
+        <Select label="Fórmula" value={activeFormula} onChange={setFormula}
+          options={Object.fromEntries(matchingFormulas.map(([id,f])=>[id,f.label]))}/>
         {view!=='history' && <Select label="Calendario del modelo" value={calendar} onChange={setCalendar} options={calendars}/>}
         {view==='metrics' ? <>
           <Select label="Agrupar métricas por" value={group} onChange={switchGroup} options={groups}/>
@@ -159,7 +173,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
           {real && <Select label="Población de la serie" value={cohort} onChange={setCohort}
             options={{own:'Predicciones disponibles',...(methods.every(m=>!m.startsWith('ML_')) ? {common_core:'Fechas comunes a los cinco métodos principales'} : {})}}/>}</>}
       </div>
-      <p>Entradas de {catalog.formulas[formula].label}: {catalog.formulas[formula].inputs.join(' · ')}.</p>
+      <p>Entradas de {catalog.formulas[activeFormula].label}: {catalog.formulas[activeFormula].inputs.join(' · ')}.</p>
       {real && view!=='history' && <Select label="Familia de métodos" value={family}
         options={{all:'Todas',FORMULA:'Empírico',AHC:'AHC',ML:'ML clásico',ANN:'ANN'}}
         onChange={value=>{setFamily(value); setCohort('own'); setMethods(value==='all' ? Object.keys(catalog.methods).slice(0,5) :
@@ -168,8 +182,8 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
         .filter(([id])=>family==='all' || id===family || id.startsWith(family+'_')).map(([id,label])=>
         <label key={id}><input type="checkbox" checked={methods.includes(id)} disabled={methods.length===1 && methods.includes(id)}
           onChange={e=>{if(id.startsWith('ML_'))setCohort('own'); setMethods(e.target.checked?[...methods,id]:methods.filter(m=>m!==id));}}/>{label}</label>)}</fieldset>}
-    </section>
-    {view==='metrics' && <div className="v2-results">
+    </section>}
+    {activeFormula && view==='metrics' && <div className="v2-results">
       <section className="v2-panel"><h2>{groups[group]} · {labels[key]}</h2>
         {scores?.data ? <Results rows={scores.data.rows} methods={methods} catalog={catalog}/> :
           <p role="status">{scores?.error ?? 'Consultando métricas…'}</p>}</section>
@@ -177,7 +191,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
         {parallel?.data ? <Results rows={parallel.data.rows} methods={methods} catalog={catalog}/> :
           <p role="status">{parallel?.error ?? 'Consultando métricas…'}</p>}</section>}
     </div>}
-    {view==='series' && <section className="v2-panel"><h2>ET₀ diaria estimada y de referencia</h2>
+    {activeFormula && view==='series' && <section className="v2-panel"><h2>ET₀ diaria estimada y de referencia</h2>
       {points.length ? <>
         <Suspense fallback={<p role="status">Cargando gráfico…</p>}><Chart label="ET₀ diaria por método y referencia calculada" option={{
           legend:{type:'scroll',bottom:0}, tooltip:{trigger:'axis'}, grid:{left:55,right:20,bottom:65},
@@ -195,14 +209,14 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
       </> : <p role="status">{!canReadSeries ? 'Seleccione un intervalo válido.' : series?.error ??
         (series?.data ? 'Sin predicciones para esta selección.' : 'Consultando serie…')}</p>}
     </section>}
-    {view==='scatter' && <section className="v2-panel"><h2>Estimación frente a PM calculada</h2>
+    {activeFormula && view==='scatter' && <section className="v2-panel"><h2>Estimación frente a PM calculada</h2>
       <p>Cada punto empareja la estimación con su referencia diaria. La diagonal indica igualdad.</p>
       {points.some(point=>point.reference != null && methods.some(method=>point[method]!=null)) ?
         <Suspense fallback={<p>Cargando gráfico…</p>}><Chart label="Dispersión de estimaciones frente a PM FAO56" option={scatterOptions(points, methods, catalog)}/></Suspense> :
         <p role="status">{!canReadSeries ? 'Seleccione un intervalo válido.' : series?.error ??
           (series?.data ? 'Sin pares estimación–PM para esta selección.' : 'Consultando valores diarios…')}</p>}
     </section>}
-    {view==='evolution' && <section className="v2-panel"><h2>RMSE retrospectivo por año</h2>
+    {activeFormula && view==='evolution' && <section className="v2-panel"><h2>RMSE retrospectivo por año</h2>
       <p>Cada año representa su propia población evaluada. Las tablas de comparación muestran los denominadores de cada periodo.</p>
       {evolution?.data ? evolution.data.rows.some(row=>row.n > 0) ? <>
         <Suspense fallback={<p>Cargando gráfico…</p>}><Chart label="RMSE publicado por año y método" option={{
@@ -217,7 +231,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
       </> : <p className="v2-empty">Sin evaluación retrospectiva para esta selección.</p> :
         <p role="status">{evolution?.error ?? 'Consultando evolución…'}</p>}
     </section>}
-    {view==='history' && <section className="v2-panel"><h2>AHC anual · histórico completo dentro de muestra</h2>
+    {activeFormula && view==='history' && <section className="v2-panel"><h2>AHC anual · histórico completo dentro de muestra</h2>
       <p>Los días evaluados también se usaron para ajustar el coeficiente.</p>
       {history?.data ? <Results rows={history.data.rows} methods={methods} catalog={catalog} inSample/> :
         <p role="status">{history?.error ?? 'Consultando histórico…'}</p>}

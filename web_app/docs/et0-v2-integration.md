@@ -53,3 +53,24 @@ Los montajes científicos son de solo lectura. Verificar salud, puerto ligado a 
 - Los grupos estación×mes, estación×temporada y fechas arbitrarias precisan publicación propia si se necesitan métricas oficiales. Los coeficientes AHC por grupo y las fichas de ganador por celda requieren un extracto de metadatos del freeze autorizado para la web. La tabla disponible de histórico completo aporta su coeficiente anual y sus pares.
 
 La futura inferencia sobre nueva meteorología se mantiene como módulo independiente.
+
+## Instancia LAN de revisión (24-11-2026)
+
+En iaserver se ha preparado una instancia independiente en `192.168.1.43:8090`, con entrada `/?science=et0-v2` y proyecto Compose `siar-et0-v2-review`. La web anterior continúa en 8088. El archivo de configuración está en `/home/josep/siar-et0-v2-review.env`, y la copia de trabajo en `/home/josep/siar-et0-v2-review-work`. El backend monta el derivado V2, el catálogo SIAR y el derivado de observaciones V1 con `:ro`. La exposición es en la red local: los usuarios de esa red pueden abrir esta instancia sin autenticación adicional.
+
+Para iniciar o reconstruir después de actualizar el código, desde `~/siar-et0-v2-review-work/web_app`:
+
+```bash
+docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-review.env -f compose.yaml -f compose.et0-v2-review.yaml up -d --build
+```
+
+Para comprobar o retirar exclusivamente esta instancia, respectivamente:
+
+```bash
+docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-review.env -f compose.yaml -f compose.et0-v2-review.yaml ps
+docker compose -p siar-et0-v2-review --env-file /home/josep/siar-et0-v2-review.env -f compose.yaml -f compose.et0-v2-review.yaml down
+```
+
+No aplicar estos comandos al proyecto de 8088. Tras una actualización, verificar el SHA y estado del catálogo, los montajes y la respuesta real de la API antes de utilizarla; no sustituir el SHA configurado sin verificar la nueva publicación de ciencia.
+
+La interfaz permite filtrar por entradas exactas o por subconjunto de variables disponibles. El filtro selecciona una familia de fórmula cada vez; no habilita ranking cruzado entre fórmulas sin población común publicada. Las fichas aún no incluyen matriz de disponibilidad variable × año ni promedios anuales ni correlaciones. Residuales, distribuciones, matriz de resultados por estación y fichas completas de parámetros/coeficientes quedan pendientes de completar o de concretar con las tablas publicadas. Las pruebas visuales y automáticas de esta instancia no constituyen certificación científica.

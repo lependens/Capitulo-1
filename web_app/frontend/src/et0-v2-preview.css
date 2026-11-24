@@ -50,3 +50,4 @@
   .v2-map button { display: block; }
   .v2-table { overflow: visible; }
 }
+.v2-preview input[type=checkbox] { width: 1.2rem; height: 1.2rem; min-height: 0; flex: none; margin: 0; padding: 0; }

@@ -308,11 +308,11 @@ Revisar la atribución y unidades de la composición Valiantzas–Martí, la ido
 
 **Alcance de esta receta.** La campaña histórica se ejecutó, se selló y sus artefactos se auditaron; **esta receta ampliada se ha cotejado con los argumentos y funciones del commit, pero no se ha ejecutado de extremo a extremo para esta revisión**. El piloto histórico, las verificaciones de métricas y la prueba puntual de inferencia están documentados aparte. Reconstruir de nuevo puede consumir muchas horas, producir tiempos y hashes de modelos distintos y requiere autorización y recursos suficientes. No sustituir las salidas oficiales ni usar el TEST para rediseñar el procedimiento. Los ejemplos son para Linux/Kaggle CPU y rutas locales elegidas por quien reproduce.
 
-1. **Recuperación e identidad.** Recuperar una copia íntegra de \`siar-balears-observational-v1/dataset.json\` del paquete Dataset v1 preservado, junto con su manifiesto y fuentes/POST identificados en él. En el puesto donde se preparó consta el archivo \`scientific-results/dataset-v1-20261021T055924Z/dataset.json\` y su \`dataset-build-manifest.json\`; esa ruta es local a aquel puesto, no una URL pública. Si se restaura de otro almacenamiento, comparar bytes con el hash siguiente, no confiar en el nombre. El manifiesto identifica audit SHA \`18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865\`, source SHA \`2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9\`, Quality POST \`SIAR-QA-POST-20261020T193140Z\` y catálogo SHA \`98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357\`. Comprobar con el manifiesto de origen los 12 hashes de CSV y los informes POST; la identidad histórica de los bytes del catálogo se conserva aunque Git pueda alterar finales de línea.
+1. **Recuperación e identidad.** Recuperar una copia íntegra de `siar-balears-observational-v1/dataset.json` del paquete Dataset v1 preservado, junto con su manifiesto y fuentes/POST identificados en él. En el puesto donde se preparó consta el archivo `scientific-results/dataset-v1-20261021T055924Z/dataset.json` y su `dataset-build-manifest.json`; esa ruta es local a aquel puesto, no una URL pública. Si se restaura de otro almacenamiento, comparar bytes con el hash siguiente, no confiar en el nombre. El manifiesto identifica audit SHA `18e6d893d119d7a6bd2959d6fdeb69fbdfa2c865`, source SHA `2c4874c73b6f818793cd2e0af42eeeb4cea9a6e9`, Quality POST `SIAR-QA-POST-20261020T193140Z` y catálogo SHA `98abd16dcd6ea42ad46a30c331df47150f07dffdca140c14e4445890ce68a357`. Comprobar con el manifiesto de origen los 12 hashes de CSV y los informes POST; la identidad histórica de los bytes del catálogo se conserva aunque Git pueda alterar finales de línea.
 
-2. **Checkout y dependencias.** Usar una copia limpia, sin modificar los archivos del commit ni publicar credenciales. El handoff IB09 debe estar presente en la ruta versionada y debe haber revisión efectiva de que no existe contradicción oficial; el indicador CLI no reemplaza esa revisión humana. El entorno histórico fue Python 3.13.18, NumPy 2.1.3, SciPy 1.16.3, joblib 1.6.0, threadpoolctl 3.7.0 y scikit-learn 1.9.1. El wheel Linux CPython 3.13 verificado tenía SHA256 \`55e79d6e9b0923f1a978179822bd43d7f5543f45e970a00fe861f43486380aba\`; las demás dependencias se fijaron por versión, no por identidad binaria exhaustiva.
+2. **Checkout y dependencias.** Usar una copia limpia, sin modificar los archivos del commit ni publicar credenciales. El handoff IB09 debe estar presente en la ruta versionada y debe haber revisión efectiva de que no existe contradicción oficial; el indicador CLI no reemplaza esa revisión humana. El entorno histórico fue Python 3.13.18, NumPy 2.1.3, SciPy 1.16.3, joblib 1.6.0, threadpoolctl 3.7.0 y scikit-learn 1.9.1. El wheel Linux CPython 3.13 verificado tenía SHA256 `55e79d6e9b0923f1a978179822bd43d7f5543f45e970a00fe861f43486380aba`; las demás dependencias se fijaron por versión, no por identidad binaria exhaustiva.
 
-\`\`\`bash
+```bash
 git clone https://github.com/lependens/Capitulo-1.git et0-v2-repro
 cd et0-v2-repro
 git checkout --detach 1e419ad881db1cc9798685ef19f414862461674b
@@ -329,25 +329,25 @@ python -m pip install numpy==2.1.3 scipy==1.16.3 joblib==1.6.0 threadpoolctl==3.
 python -m pip install --no-deps /ruta/verificada/scikit_learn-1.9.1-cp313-cp313-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl
 export PYTHONPATH="$PWD/scientific_pipeline/src"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
-\`\`\`
+```
 
 3. **Cápsula.** Definir un directorio que no exista, con padre existente, y construir una vista de DEVELOPMENT. El preparador verifica Dataset v1 y handoff, revisa reconciliación y calcula soporte; lee el dataset íntegro para su validación y preparación, aunque la vista emitida sea DEVELOPMENT. Esto no es un procedimiento para afirmar que nadie ha leído bytes de TEST: el aislamiento relevante para la selección es que las filas retrospectivas no entren en el ajuste ni en los criterios. En la reproducción histórica con IB09, solo usar el flag después de revisar la evidencia oficial:
 
-\`\`\`bash
+```bash
 export CAPSULE=/ruta/nueva/capsule
 python -m siar_science.et0_v2 --repo . --dataset "$DATASET_V1" \
   --ib09-handoff data_quality/siar/ib09-handoff-v2-development/handoff.json \
   --official-evidence-reviewed-no-contradiction --output "$CAPSULE"
 sha256sum "$CAPSULE/manifest.json" "$CAPSULE/development.json.gz" "$CAPSULE/support-inventory.json"
-\`\`\`
+```
 
-Esperar \`manifest.json\`, \`development.json.gz\` y \`support-inventory.json\`, sin modelos ni predicciones TEST. El ejecutor oficial **exige** como identidad de cápsula el manifiesto SHA256 \`0c43f1020a04b0dedeeff84ccb1cbae4285ff00ac20c48473ff6c81b57ecd3e6\`; la vista preservada tiene SHA256 \`0f1bb84023dad6b4a261c53a7e6017ceeb92f8fba5b048c8dcc15175e42dcfef\`. Si una reconstrucción no coincide, detenerse y recuperar/verificar la cápsula oficial; no cambiar la constante del código ni afirmar reproducibilidad por semejanza. El inventario comprueba la excepción IB09 y soporte por celda.
+Esperar `manifest.json`, `development.json.gz` y `support-inventory.json`, sin modelos ni predicciones TEST. El ejecutor oficial **exige** como identidad de cápsula el manifiesto SHA256 `0c43f1020a04b0dedeeff84ccb1cbae4285ff00ac20c48473ff6c81b57ecd3e6`; la vista preservada tiene SHA256 `0f1bb84023dad6b4a261c53a7e6017ceeb92f8fba5b048c8dcc15175e42dcfef`. Si una reconstrucción no coincide, detenerse y recuperar/verificar la cápsula oficial; no cambiar la constante del código ni afirmar reproducibilidad por semejanza. El inventario comprueba la excepción IB09 y soporte por celda.
 
-4. **Configuración.** No seleccionar estaciones con cambios manuales de código: \`scientific_pipeline/experiments/et0-v2-preparation.json\`, el inventario y los periodos de catálogo determinan las estaciones admitidas, tres familias y calendarios \`annual\`, \`seasonal\`, \`monthly\`. Configuración mínima ilustrativa, extraída del protocolo: DEVELOPMENT \`2004-01-01..2019-12-31\`, retrospectiva \`2020-01-01..2025-12-31\`; HS-Ra=[Tmin,Tmax,Ra], HG-Rs=[Tmedia de extremos,Rs], Valiantzas=[Tmin,Tmax,HRmedia,Ra]. La semilla y malla no se editan para esta réplica. El soporte determina si una celda puede entrenarse; 108 celdas AHC frente a 105 por cada fase de ML y ANN en la ejecución oficial.
+4. **Configuración.** No seleccionar estaciones con cambios manuales de código: `scientific_pipeline/experiments/et0-v2-preparation.json`, el inventario y los periodos de catálogo determinan las estaciones admitidas, tres familias y calendarios `annual`, `seasonal`, `monthly`. Configuración mínima ilustrativa, extraída del protocolo: DEVELOPMENT `2004-01-01..2019-12-31`, retrospectiva `2020-01-01..2025-12-31`; HS-Ra=[Tmin,Tmax,Ra], HG-Rs=[Tmedia de extremos,Rs], Valiantzas=[Tmin,Tmax,HRmedia,Ra]. La semilla y malla no se editan para esta réplica. El soporte determina si una celda puede entrenarse; 108 celdas AHC frente a 105 por cada fase de ML y ANN en la ejecución oficial.
 
-5. **Piloto y fases.** Montar solo código y cápsula de desarrollo para el piloto y el ajuste. Usar carpetas nuevas y separadas; en Kaggle elegir sesión privada CPU y preservar configuración, versión, salida y registro. La opción \`--through\` limita la última fase; cada invocación verifica sellos anteriores y continúa las fases necesarias en orden. No ejecutar este ejemplo en el árbol oficial.
+5. **Piloto y fases.** Montar solo código y cápsula de desarrollo para el piloto y el ajuste. Usar carpetas nuevas y separadas; en Kaggle elegir sesión privada CPU y preservar configuración, versión, salida y registro. La opción `--through` limita la última fase; cada invocación verifica sellos anteriores y continúa las fases necesarias en orden. No ejecutar este ejemplo en el árbol oficial.
 
-\`\`\`bash
+```bash
 export PILOT=/ruta/nueva/pilot
 export RUN=/ruta/nueva/run
 python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$PILOT" pilot
@@ -356,21 +356,21 @@ python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN
 python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through ML
 python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through ANN_A
 python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" drive --workers 4 --wall-seconds 28800 --through ANN_E
-\`\`\`
+```
 
-Los tiempos son límites suaves entre candidatos, no garantía de finalización. Un lote puede detenerse antes de cerrar una fase; repetir el mismo \`drive\` hasta completarla. Para reanudar en otra sesión, montar la **versión exacta** anterior, conservarla inmutable y copiar su árbol a un área escribible; el ejecutor exige que \`identity.json\` coincida con código, cápsula y versiones. Verifica configuración, hashes de planes y de resumen antes de reutilizar candidatos; no sobreescribir checkpoints válidos ni correr dos trabajadores sobre la misma celda. Conservar por separado salidas y manifiestos de cada lote. Los números de los lotes históricos y su primera aparición verificable están en el capítulo 10.
+Los tiempos son límites suaves entre candidatos, no garantía de finalización. Un lote puede detenerse antes de cerrar una fase; repetir el mismo `drive` hasta completarla. Para reanudar en otra sesión, montar la **versión exacta** anterior, conservarla inmutable y copiar su árbol a un área escribible; el ejecutor exige que `identity.json` coincida con código, cápsula y versiones. Verifica configuración, hashes de planes y de resumen antes de reutilizar candidatos; no sobreescribir checkpoints válidos ni correr dos trabajadores sobre la misma celda. Conservar por separado salidas y manifiestos de cada lote. Los números de los lotes históricos y su primera aparición verificable están en el capítulo 10.
 
-6. **Sello y freeze.** Los cierres normales los realiza \`drive\` al concluir cada fase; pueden verificarse explícitamente, en orden, con la CLI siguiente. La identidad, índices y modelos deben comprobarse antes de cualquier retrospectiva. El freeze histórico fija \`97acad7ce7cc39c65d82f6efdc36290ed0325caaef2dedb69d9ffbefe1addfbd\`; una reconstrucción independiente no se debe declarar idéntica sin comparar sus bytes y artefactos.
+6. **Sello y freeze.** Los cierres normales los realiza `drive` al concluir cada fase; pueden verificarse explícitamente, en orden, con la CLI siguiente. La identidad, índices y modelos deben comprobarse antes de cualquier retrospectiva. El freeze histórico fija `97acad7ce7cc39c65d82f6efdc36290ed0325caaef2dedb69d9ffbefe1addfbd`; una reconstrucción independiente no se debe declarar idéntica sin comparar sus bytes y artefactos.
 
-\`\`\`bash
+```bash
 for stage in AHC ML ANN_A ANN_E; do
   python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" seal --stage "$stage"
 done
 python -m siar_science.et0_v2_campaign --repo . --capsule "$CAPSULE" --run "$RUN" freeze
 sha256sum "$RUN/freeze.json" "$RUN"/{AHC,ML,ANN_A,ANN_E}/index.json
-\`\`\`
+```
 
-7. **Evaluación y tablas.** Solo tras congelar, verificar y obtener la autorización correspondiente, usar el comando retrospectivo del capítulo 15 con \`FREEZE_SHA\` igual al hash **de esa ejecución**. El evaluador registra intención, verifica integridad de freeze, carga modelos sin reajuste y produce predicciones comprimidas, métricas, AHC de histórico completo marcado in-sample, informe y manifiesto. Guardar registro de acceso y comparar cada SHA del manifiesto. El evaluador crea registros de acceso en el árbol de ejecución: por ello se usa una copia de trabajo, no el original de solo lectura. Los derivados web se crean y verifican con los procedimientos y esquemas de [handoff web](et0_v2_handoff_web.md); después, ejecutar los verificadores del capítulo 15. El original histórico tiene 9.612 filas de métricas y 2.081.376 registros expandidos, no todos con predicción presente.
+7. **Evaluación y tablas.** Solo tras congelar, verificar y obtener la autorización correspondiente, usar el comando retrospectivo del capítulo 15 con `FREEZE_SHA` igual al hash **de esa ejecución**. El evaluador registra intención, verifica integridad de freeze, carga modelos sin reajuste y produce predicciones comprimidas, métricas, AHC de histórico completo marcado in-sample, informe y manifiesto. Guardar registro de acceso y comparar cada SHA del manifiesto. El evaluador crea registros de acceso en el árbol de ejecución: por ello se usa una copia de trabajo, no el original de solo lectura. Los derivados web se crean y verifican con los procedimientos y esquemas de [handoff web](et0_v2_handoff_web.md); después, ejecutar los verificadores del capítulo 15. El original histórico tiene 9.612 filas de métricas y 2.081.376 registros expandidos, no todos con predicción presente.
 
 La reproducción de ajustes y selección requiere además fuentes, decisiones de calidad y todas las dependencias; los resultados dependerán de plataforma y bibliotecas. La receta no equivale a una restauración verificada ni a haber reproducido desde cero los 4.935 checkpoints.
 
@@ -590,7 +590,7 @@ En AHC por mínimos cuadrados sin intercepto, si x′=k x con k positivo constan
 
 ### H. Comparación ampliada: errores, sesgos y cobertura
 
-La siguiente tabla procede de \`retrospective-metrics.csv\`, filtros \`group=global\` y \`calendar=annual\`; MAE, RMSE y sesgo están en mm/día, con sesgo = estimación − PM. Las cinco filas de cada familia comparten 19.251 claves en esta comparación. La cobertura de calendario es propia y su denominador no es el número de pares. Las cifras no justifican reseleccionar configuraciones con TEST.
+La siguiente tabla procede de `retrospective-metrics.csv`, filtros `group=global` y `calendar=annual`; MAE, RMSE y sesgo están en mm/día, con sesgo = estimación − PM. Las cinco filas de cada familia comparten 19.251 claves en esta comparación. La cobertura de calendario es propia y su denominador no es el número de pares. Las cifras no justifican reseleccionar configuraciones con TEST.
 
 | Familia | Método | n | MAE | RMSE | Sesgo | R² | Cobertura calendario |
 |---|---|---:|---:|---:|---:|---:|---:|

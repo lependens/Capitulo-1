@@ -1,6 +1,20 @@
-> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
-
 # Dónde consultar los datos y resultados
+
+## Rutas vigentes del corte del 25/11
+
+| Datos | Ubicación y referencia |
+|---|---|
+| Observaciones históricas | [CSV Baleares](../datos_siar_baleares) y [Quality POST](siar/quality.md) |
+| Adquisición evolutiva | [CSV V3 en GitHub](../datos_siar_v3); ruta efectiva CSV y SQLite pendiente de confirmar con 01 |
+| Forecast | `/srv/siar-forecast/raw/` y `/srv/aemet-forecast/raw/`; ver [cobertura de preservación](backup/coverage.md) |
+| Web V1 | Derivado histórico bajo `/home/josep/siar-et0-web-data/releases/web-v0.3-explorer-20261101/data-verified`; [acta y hashes](../web_app/docs/release-v03.md) |
+| Resultados V2 | `/srv/siar-project/scientific-artifacts/et0-v2/derived/v1/` |
+| Catálogo V2 VERIFIED | `/srv/siar-project/scientific-artifacts/et0-v2-verified-catalog-20261124/catalog.json`; [identidad, snapshots y restore](../scientific_pipeline/docs/et0_v2_certificacion_evidencia.md) |
+
+Las entradas fechadas que siguen conservan evidencia de sus respectivos cortes. Para estado de ejecución consultar el [inventario](PROJECT_STATUS.md).
+
+## Referencias históricas y procedimientos generales
+
 
 **Actualizado: 2026-11-11; consolidación documental V2.** El cierre de ingestión Windows corresponde al 01/11/2026. Distinguir artefacto completo, evidencia compacta versionada y ubicación operativa externa. Esta guía no crea ni mueve datos.
 

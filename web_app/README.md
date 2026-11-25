@@ -1,4 +1,4 @@
-> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
+> **Corte del 25/11/2026.** Las dos instancias LAN documentadas son [V0.3, resultados V1](http://192.168.1.43:8088/) y [ET₀ V2, revisión](http://192.168.1.43:8090/?science=et0-v2). La [guía de integración](docs/et0-v2-integration.md) concentra el acceso, el catálogo VERIFIED, la reversión y la recuperación aislada de V0.3.
 
 > **Estado operativo — 01/11/2026:** **WEB-V0.3-SCIENTIFIC-EXPLORER PASS / DEPLOYED** en [LAN](http://192.168.1.43:8088/). Desktop, mobile y API PASS; paquete de 19 archivos ingerido por 02B y snapshot `backup_20261101T123421Z_8022d3fd` **REMOTE_VERIFIED**. [Cierre, hashes, receipt, comprobaciones y rollback](docs/release-v03.md). [Ciencia ML publicada y límites](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md).
 

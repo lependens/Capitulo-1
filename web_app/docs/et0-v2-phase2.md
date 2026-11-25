@@ -19,7 +19,7 @@ La aplicación reúne estaciones, comparador, AHC, ML, ANN, diagnóstico tempora
 | Fondo de islas que coincida con estaciones | Costa georreferenciada y marcadores SIAR | Estaciones | Implementada | Seleccionar IB01, IB08 o IB11 en el mapa |
 | Medias de variables por estación | Medias históricas con número de días válidos por variable | Estaciones | Implementada | Tabla bajo el mapa |
 | Temperatura y humedad a la vez y segunda variable | Selección múltiple simultánea y dispersión de dos variables por pares válidos | Estaciones | Implementada | Marcar temperatura y humedad, alternar Segunda variable |
-| Serie histórica 2009–2020 | Consulta de todo el intervalo, con agrupación visual documentada para series largas | Estaciones | Implementada | Indicar 01/01/2009 a 31/12/2020 |
+| Serie histórica 2009–2020 | Consulta de todo el intervalo, con agrupación visual documentada para series largas | Estaciones | Implementada | Introducir 01/01/2009 a 31/12/2020 y pulsar Aplicar fechas |
 | Medias por año y referencia histórica | Gráfico de medias anuales y línea histórica activable | Estaciones | Implementada | Medias por año |
 | Medias por mes | Gráfico climatológico mensual y tabla de días válidos | Estaciones | Implementada | Medias por mes del calendario |
 | Comparar Rs, Ra y Valiantzas | Filtro múltiple y puntos por grupo con símbolos por familia | Comparador | Implementada | Ejemplo Enfrentar 2020 y 2025 con tres familias |

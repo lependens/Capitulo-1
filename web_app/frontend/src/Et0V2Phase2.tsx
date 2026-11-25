@@ -32,7 +32,7 @@ const examples: [string,Page,string,Preset?][] = [
   ['Evolución diaria de ET₀','temporal','Elige una estación y un intervalo. Cambia de la serie diaria a dispersión o residuos.'],
   ['Cómo interpretar las métricas','metodo','Consulta las fórmulas y el significado de las métricas.'],
   ['Enfrentar 2020 y 2025 con tres familias','comparar','Compara el AHC anual en ambas anualidades. Cada año tiene días distintos, así que observa la variación descriptiva.',{station:'IB01',methods:['AHC'],calendars:['annual'],families:['HS_RA_V1','HG_RS_V1','VALIANTZAS_V1'],years:['2020','2025']}],
-  ['Medias históricas de una estación','estaciones','Selecciona la estación en el mapa, marca las variables y cambia a Medias por año o Medias por mes del calendario.'],
+  ['Medias históricas de una estación','estaciones','Selecciona la estación en el mapa, marca las variables, aplica las fechas y cambia a Medias por año o Medias por mes del calendario.'],
 ];
 const guidance: [Page,string][] = [
   ['inicio','Sigue el flujo desde los datos SIAR hasta TEST y consulta el tamaño del experimento.'],

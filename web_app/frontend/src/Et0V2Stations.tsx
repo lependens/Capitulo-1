@@ -42,8 +42,7 @@ export function StationPage({catalog,current,select,compare}:{
   const [second,setSecond]=useState<Variable|''>('');
   const [view,setView]=useState('daily');
   const [stationMean,setStationMean]=useState(true);
-  const [start,setStart]=useState('');
-  const [end,setEnd]=useState('');
+  const [{start,end},setRange]=useState({start:'',end:''});
   const [offset,setOffset]=useState(0);
   const station=catalog.station_details?.find(s=>s.code===current);
   const summary=useRead<{variables:Variable[];rows:Row[]}>('weather/stations');
@@ -65,7 +64,7 @@ export function StationPage({catalog,current,select,compare}:{
   if (end) dailyQuery.set('to',end);
   const [showDaily,setShowDaily]=useState(false);
   const daily=useRead<{rows:Row[]}>(showDaily&&valid&&keys.length?'/api/observations?'+dailyQuery:'');
-  const choose=(code:string)=>{setStart('');setEnd('');setOffset(0);select(code);};
+  const choose=(code:string)=>{setRange({start:'',end:''});setOffset(0);select(code);};
   const keyLabel=(key:Variable)=>variables[key][0]+' ('+variables[key][1]+')';
   const periodLabel=(period:string|number|null)=>mode==='month'?labels.format(new Date(Date.UTC(2020,Number(period)-1,1))):String(period??'—');
   const groups=[...new Set(keys.map(k=>variables[k][1]))];
@@ -101,10 +100,19 @@ export function StationPage({catalog,current,select,compare}:{
           onChange={v=>{setView(v);setSecond('');}}/>
         <Select label="Segunda variable · dispersión" value={second} options={{'':'Sin dispersión',...Object.fromEntries(options.filter(k=>k!==first).map(k=>[k,keyLabel(k)]))}}
           onChange={id=>setSecond(id as Variable|'')}/>
-        <label>Desde<input aria-label="Desde" type="date" value={start} onChange={e=>{setOffset(0);setStart(e.target.value);}}/></label>
-        <label>Hasta<input aria-label="Hasta" type="date" value={end} onChange={e=>{setOffset(0);setEnd(e.target.value);}}/></label>
       </div>
-      {history&&<p>Datos disponibles del {history.first_date} al {history.last_date}. Deja las fechas vacías para consultar todo el histórico.</p>}
+      <form key={current} className="v2-filters" onSubmit={event=>{
+        event.preventDefault();
+        const fields=new FormData(event.currentTarget);
+        setRange({start:String(fields.get('desde')??''),end:String(fields.get('hasta')??'')});setOffset(0);
+      }} onReset={()=>{setRange({start:'',end:''});setOffset(0);}}>
+        <label>Desde<input type="date" name="desde"/></label>
+        <label>Hasta<input type="date" name="hasta"/></label>
+        <button type="submit">Aplicar fechas</button>
+        <button type="reset">Todo el histórico</button>
+      </form>
+      {valid&&(start||end)&&<p role="status">Intervalo consultado: {start||'inicio del histórico'} a {end||'fin del histórico'}.</p>}
+      {history&&<p>Datos disponibles del {history.first_date} al {history.last_date}. Usa Todo el histórico para quitar los filtros de fecha.</p>}
       {!scatter&&(mode==='year'||mode==='month')&&<label className="p2-inline"><input type="checkbox" checked={stationMean} onChange={e=>setStationMean(e.target.checked)}/> Mostrar media histórica de la estación</label>}
       {scatter&&<p>Cada punto muestra un día con las dos observaciones disponibles. El eje horizontal utiliza la primera variable marcada. La nube describe asociación entre variables.</p>}
       {response?.data&&response.data.stride>1&&<p>{scatter?`Muestreo visual de un par de cada ${response.data.stride}.`:`Vista cronológica agrupada en bloques de hasta ${response.data.stride} días con observación. Se muestran las medias de cada bloque.`}</p>}

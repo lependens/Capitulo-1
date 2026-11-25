@@ -1,0 +1,1 @@
+siar-forecast-web ALL=(root) NOPASSWD: /usr/local/libexec/siar-forecast-web-control *

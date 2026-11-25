@@ -1,0 +1,8 @@
+[Unit]
+Description=Refresh SIAR Forecast quality index
+[Timer]
+OnBootSec=3min
+OnUnitInactiveSec=10min
+Unit=siar-forecast-quality.service
+[Install]
+WantedBy=timers.target

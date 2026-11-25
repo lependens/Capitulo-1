@@ -1,0 +1,24 @@
+[Unit]
+Description=SIAR Forecast LAN administration
+After=network-online.target
+Wants=network-online.target
+[Service]
+Type=simple
+User=siar-forecast-web
+Group=siar-forecast-web
+SupplementaryGroups=siar-forecast
+EnvironmentFile=/etc/siar-forecast-web/environment
+ExecStart=/usr/bin/python3 /opt/siar-forecast/web/server.py
+Restart=on-failure
+RestartSec=5
+UMask=0077
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET
+[Install]
+WantedBy=multi-user.target

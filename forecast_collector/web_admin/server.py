@@ -1,0 +1,83 @@
+#!/usr/bin/python3
+"""LAN-only SIAR Forecast administrator, served through TLS."""
+import base64,csv,hmac,io,json,os,re,ssl,subprocess,urllib.parse
+from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
+from pathlib import Path
+
+ROOT=Path('/srv/siar-forecast/raw/runs')
+INDEX=Path('/var/lib/siar-forecast-quality/status.json')
+PASSWORD=Path('/etc/siar-forecast-web/password')
+HELPER='/usr/local/libexec/siar-forecast-web-control'
+ORIGIN=os.environ.get('SIAR_WEB_ORIGIN','https://127.0.0.1:8091')
+BIND=os.environ.get('SIAR_WEB_BIND','127.0.0.1')
+PORT=int(os.environ.get('SIAR_WEB_PORT','8091'))
+ACTIONS={'resume','pause','capture','restart','reconcile'}
+ID=re.compile(r'^run_[A-Za-z0-9._-]+$'); STATION=re.compile(r'^IB(?:01|02|03|04|05|06|10|11)$')
+
+def load():
+ data=json.loads(INDEX.read_text(encoding='utf-8'))
+ if not isinstance(data,list):raise ValueError('index')
+ return data
+
+def get_csv(run,station):
+ if not ID.fullmatch(run) or not STATION.fullmatch(station):raise ValueError('invalid selector')
+ records=[r for r in load() if r.get('run_id')==run]
+ if len(records)!=1:raise ValueError('unknown run')
+ captures=[c for c in records[0]['captures'] if c.get('station')==station]
+ if len(captures)!=1:raise ValueError('unknown station')
+ cap=captures[0].get('capture_id','')
+ if not re.fullmatch(r'cap_[A-Za-z0-9._-]+',cap):raise ValueError('invalid capture')
+ matches=list(ROOT.glob('*/*/*/'+run+'/'+station+'/'+cap+'/forecast.csv'))
+ if len(matches)!=1:raise ValueError('missing csv')
+ path=matches[0]
+ if any(p.is_symlink() for p in (path,path.parent,path.parent.parent,path.parent.parent.parent)):raise ValueError('unsafe path')
+ path.resolve(strict=True).relative_to(ROOT.resolve(strict=True))
+ raw=path.read_bytes()
+ if len(raw)>1000000:raise ValueError('csv too large')
+ return raw
+
+def execute(action):
+ if action not in ACTIONS and action not in ('logs','preservation'):raise ValueError('invalid action')
+ return subprocess.run(['sudo','-n',HELPER,action],capture_output=True,text=True,timeout=30,check=False)
+
+class Handler(BaseHTTPRequestHandler):
+ def log_message(self,*args):pass
+ def reply(self,code,data,kind='application/json; charset=utf-8'):
+  if not isinstance(data,bytes):data=data.encode('utf-8')
+  self.send_response(code);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(data)));self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff');self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'");self.end_headers();self.wfile.write(data)
+ def auth(self):
+  try:
+   a=self.headers.get('Authorization',''); scheme,encoded=a.split(' ',1); user,pwd=base64.b64decode(encoded,validate=True).decode().split(':',1)
+   expected=PASSWORD.read_text().strip(); ok=scheme=='Basic' and user=='admin' and hmac.compare_digest(pwd,expected) and len(expected)>=32
+  except Exception:ok=False
+  if not ok:
+   self.send_response(401);self.send_header('WWW-Authenticate','Basic realm="SIAR Forecast", charset="UTF-8"');self.send_header('Content-Length','0');self.send_header('Cache-Control','no-store');self.end_headers()
+  return ok
+ def do_GET(self):
+  if not self.auth():return
+  u=urllib.parse.urlsplit(self.path)
+  try:
+   if u.path=='/':return self.reply(200,Path('/opt/siar-forecast/web/index.html').read_bytes(),'text/html; charset=utf-8')
+   if u.path=='/app.js':return self.reply(200,Path('/opt/siar-forecast/web/app.js').read_bytes(),'text/javascript; charset=utf-8')
+   if u.path=='/style.css':return self.reply(200,Path('/opt/siar-forecast/web/style.css').read_bytes(),'text/css; charset=utf-8')
+   if u.path=='/api/runs':return self.reply(200,json.dumps(load(),ensure_ascii=False))
+   if u.path=='/api/system':
+    p=subprocess.run(['systemctl','show','siar-forecast-capture.timer','siar-forecast-backup.service','siar-forecast-quality.service','--property=Id,ActiveState,Result,NextElapseUSecRealtime,LastTriggerUSec','--no-pager'],capture_output=True,text=True,timeout=10);return self.reply(200,json.dumps({'text':p.stdout}))
+   if u.path=='/api/csv':
+    q=urllib.parse.parse_qs(u.query);return self.reply(200,get_csv(q.get('run',[''])[0],q.get('station',[''])[0]),'text/csv; charset=utf-8')
+   if u.path=='/api/preservation':
+    p=execute('preservation');return self.reply(200 if p.returncode==0 else 503,p.stdout if p.returncode==0 else '{}')
+   if u.path=='/api/logs':
+    p=execute('logs');return self.reply(200 if p.returncode==0 else 503,json.dumps({'text':p.stdout[-30000:]}))
+   self.reply(404,'{}')
+  except (OSError,ValueError,KeyError,json.JSONDecodeError,subprocess.SubprocessError):self.reply(503,json.dumps({'error':'Datos no disponibles'}))
+ def do_POST(self):
+  if not self.auth():return
+  if self.headers.get('Origin')!=ORIGIN or self.headers.get('X-SIAR-Request')!='1' or self.headers.get('Content-Length','0')!='0':return self.reply(403,'{}')
+  action=urllib.parse.urlsplit(self.path).path.removeprefix('/api/action/')
+  try:
+   p=execute(action);self.reply(200 if p.returncode==0 else 409,json.dumps({'ok':p.returncode==0,'message':p.stdout[-1000:] or p.stderr[-1000:]}))
+  except (ValueError,subprocess.SubprocessError):self.reply(400,'{}')
+if __name__=='__main__':
+ server=ThreadingHTTPServer((BIND,PORT),Handler)
+ ctx=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER);ctx.minimum_version=ssl.TLSVersion.TLSv1_2;ctx.load_cert_chain('/etc/siar-forecast-web/server.crt','/etc/siar-forecast-web/server.key');server.socket=ctx.wrap_socket(server.socket,server_side=True);server.serve_forever()

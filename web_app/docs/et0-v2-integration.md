@@ -102,3 +102,24 @@ Josep comunicó que la retirada de la aplicación V0.3 desde CasaOS fue accident
 Los derivados utilizados por V0.3 se localizaron en `/home/josep/siar-et0-web-data/releases/web-v0.3-explorer-20261101/data-verified`; las pruebas de aceptación de V0.3 se ejecutaron con esos datos y el paquete ML V1 de `/home/josep/project-artifact-inbox/science-ml-v1-test-recovery-20261101T090828Z/scientific-results/ml-v1-test-recovery-20261101T090828Z/`, montados en solo lectura. Esto verifica su disponibilidad en aquella inspección; no acredita una restauración completa de la web.
 
 El código de la versión originalmente desplegada está identificado por el commit `c44d1187760e19ed67269c0dbc05d2c5b0255ad1`. El snapshot de preservación comunicado es `backup_20261101T123421Z_8022d3fd`. Identidades, hashes y detalles de preservación figuran en [release-v03.md](release-v03.md). Cualquier recuperación futura debe utilizar una copia independiente y verificar antes las rutas, el snapshot y los hashes; no regenerar resultados científicos ni sobrescribir la copia antigua.
+
+## Recuperación operativa de V0.3 — 25-11-2026
+
+La aplicación V0.3 se reconstruyó en una copia independiente `/home/josep/siar-et0-v03-recovery` desde el commit `c44d1187760e19ed67269c0dbc05d2c5b0255ad1`, sin modificar la antigua copia de trabajo. Su estado y diff previos se conservaron en `/home/josep/siar-et0-v03-recovery-evidence/`. El proyecto Compose independiente `siar-et0-v03-recovery` usa el derivado histórico en `/home/josep/siar-et0-web-data/releases/web-v0.3-explorer-20261101/data-verified`, montado de solo lectura.
+
+La web recuperada arrancó en `192.168.1.43:8088`, con backend y frontend saludables, 75.496 observaciones y navegación comprobada. Se verificó el SHA del `info.json` (`9893055e97d75684a311f7270ee57d90dd9b7e934d01efb0679e0c90c4da3b94`) y los 18 hashes de artefactos que declara. Una consulta AHC SELECTED, common_all, devolvió n=15.958 y RMSE=0,40139207829124707. La instancia V2 siguió activa en 8090, VERIFIED y NOT_PUBLISHED. La sección anterior refleja la situación previa a esta recuperación.
+
+Para iniciar o reconstruir V0.3, después de verificar que 8088 está libre:
+
+```bash
+cd /home/josep/siar-et0-v03-recovery/web_app
+docker compose -p siar-et0-v03-recovery --env-file /home/josep/siar-et0-v03-recovery-evidence/recovery.env -f compose.yaml up -d --build
+```
+
+Para dejarla apagada sin borrar los datos ni las imágenes:
+
+```bash
+docker compose -p siar-et0-v03-recovery --env-file /home/josep/siar-et0-v03-recovery-evidence/recovery.env -f compose.yaml stop
+```
+
+Verificar `/api/health` y los servicios después de iniciar. Este proyecto es independiente de `siar-et0-v2-review`. El registro local de la recuperación se encuentra en `/home/josep/siar-et0-v03-recovery-evidence/RECOVERY.md`.

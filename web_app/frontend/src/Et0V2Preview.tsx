@@ -99,7 +99,7 @@ function Results({rows, catalog, methods, inSample = false}: {
   </>;
 }
 
-export function Workspace({catalog, initialStation, byFamily = false}: {catalog: Catalog; initialStation?: string; byFamily?: boolean}) {
+export function Workspace({catalog, initialStation, byFamily = false, initialView = "metrics"}: {catalog: Catalog; initialStation?: string; byFamily?: boolean; initialView?: string}) {
   const real = catalog.mode !== 'synthetic';
   const [formula, setFormula] = useState('HG_RS_V1');
   const [inputMode, setInputMode] = useState('all');
@@ -110,7 +110,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
       (inputMode !== 'exact' || f.inputs.length === availableInputs.length)));
   const activeFormula = matchingFormulas.some(([id]) => id === formula) ? formula : matchingFormulas[0]?.[0];
   const [calendar, setCalendar] = useState('annual');
-  const [view, setView] = useState('metrics');
+  const [view, setView] = useState(initialView);
   const [group, setGroup] = useState(initialStation ? 'station' : real ? 'global' : 'year');
   const [key, setKey] = useState(initialStation ?? (real ? 'all' : '2020'));
   const [compare, setCompare] = useState(real ? '' : '2021');
@@ -133,7 +133,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
   const canReadSeries = Boolean(start && end && start <= end);
   const seriesQuery = new URLSearchParams({formula: activeFormula ?? formula,calendar,station,start,end,cohort});
   methods.forEach(method=>seriesQuery.append('method',method));
-  const series = useRead<{points: Point[]}>(['series','scatter'].includes(view) && canReadSeries ?
+  const series = useRead<{points: Point[]}>(['series','scatter','residual','distribution'].includes(view) && canReadSeries ?
     'series?' + seriesQuery : '');
   const history = useRead<Scores>(view==='history' ? 'in-sample?' + new URLSearchParams({formula: activeFormula ?? formula,station}) : '');
   const trendQuery = new URLSearchParams(base);
@@ -158,7 +158,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
     {activeFormula && <section className="v2-panel" aria-label="Selección">
       <div className="v2-filters">
         <Select label="Vista" value={view} onChange={next=>{setView(next);if(!station && next!=='evolution')setStation(Object.keys(catalog.stations)[0]);}} options={{metrics:'Comparar errores',series:'Series diarias',
-          ...(real ? {scatter:'Estimación frente a PM',evolution:'Evolución anual del RMSE'} : {}),history:'AHC dentro de muestra'}}/>
+          ...(real ? {scatter:'Estimación frente a PM',residual:'Residuos diarios',distribution:'Distribución de residuos',evolution:'Evolución anual del RMSE'} : {}),history:'AHC dentro de muestra'}}/>
         <Select label="Fórmula" value={activeFormula} onChange={setFormula}
           options={Object.fromEntries(matchingFormulas.map(([id,f])=>[id,f.label]))}/>
         {view!=='history' && <Select label="Calendario del modelo" value={calendar} onChange={setCalendar} options={calendars}/>}
@@ -168,7 +168,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
           <Select label="Ver en paralelo" value={compare} onChange={setCompare} options={{'':'Sin segundo grupo',...Object.fromEntries(Object.entries(labels).filter(([id])=>id!==key))}}/>
         </> : <Select label="Estación" value={station} onChange={setStation}
           options={view==='evolution' ? {'':'Todas las estaciones',...catalog.stations} : catalog.stations}/>}
-        {['series','scatter'].includes(view) && <><label>Desde<input type="date" value={start} onChange={e=>setStart(e.target.value)}/></label>
+        {['series','scatter','residual','distribution'].includes(view) && <><label>Desde<input type="date" value={start} onChange={e=>setStart(e.target.value)}/></label>
           <label>Hasta<input type="date" value={end} onChange={e=>setEnd(e.target.value)}/></label>
           {real && <Select label="Población de la serie" value={cohort} onChange={setCohort}
             options={{own:'Predicciones disponibles',...(methods.every(m=>!m.startsWith('ML_')) ? {common_core:'Fechas comunes a los cinco métodos principales'} : {})}}/>}</>}
@@ -195,7 +195,7 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
       {points.length ? <>
         <Suspense fallback={<p role="status">Cargando gráfico…</p>}><Chart label="ET₀ diaria por método y referencia calculada" option={{
           legend:{type:'scroll',bottom:0}, tooltip:{trigger:'axis'}, grid:{left:55,right:20,bottom:65},
-          xAxis:{type:'time'}, yAxis:{type:'value',name:'mm/día'},
+          xAxis:{type:'time'}, yAxis:{type:'value',name:'mm/día'}, dataZoom:[{type:'inside'}],
           series:['reference',...methods].map((id,index)=>({name:catalog.methods[id]??'PM calculada',type:'line',
             symbol:['circle','rect','triangle','diamond','pin','arrow'][index%6],connectNulls:false,
             data:points.flatMap((p,i)=> i>0 && Date.parse(p.date)-Date.parse(points[i-1].date)>86400000 ?
@@ -215,6 +215,25 @@ export function Workspace({catalog, initialStation, byFamily = false}: {catalog:
         <Suspense fallback={<p>Cargando gráfico…</p>}><Chart label="Dispersión de estimaciones frente a PM FAO56" option={scatterOptions(points, methods, catalog)}/></Suspense> :
         <p role="status">{!canReadSeries ? 'Seleccione un intervalo válido.' : series?.error ??
           (series?.data ? 'Sin pares estimación–PM para esta selección.' : 'Consultando valores diarios…')}</p>}
+    </section>}
+    {activeFormula && ['residual','distribution'].includes(view) && <section className="v2-panel">
+      <h2>{view==='residual'?'Residuos diarios':'Distribución de residuos'}</h2>
+      <p>Diagnóstico visual del intervalo y la selección. Residuo = estimación − PM, en mm/día. Solo se muestran pares con ambos valores.</p>
+      {points.length?<Suspense fallback={<p>Cargando gráfico…</p>}><Chart label={view==='residual'?'Residuos diarios':'Distribución de residuos por bandas de 0,5 mm/día'} option={{
+        legend:{type:'scroll',bottom:0},tooltip:{trigger:'item'}, grid:{left:60,right:28,bottom:60},
+        xAxis:{type:view==='residual'?'time':'value',name:view==='residual'?'':'mm/día'},
+        yAxis:{type:'value',name:view==='residual'?'mm/día':'Pares por banda'},
+        series:methods.map(id=>{
+          const residuals=points.flatMap(point=>{
+            const predicted=point[id];
+            return typeof point.reference==='number'&&typeof predicted==='number'?[[Date.parse(point.date),predicted-point.reference]]:[];
+          });
+          const bins=new Map<number,number>();
+          residuals.forEach(([,r])=>{const start=Math.floor(r*2)/2;bins.set(start,(bins.get(start)??0)+1);});
+          return {name:catalog.methods[id],type:view==='residual'?'scatter':'bar',
+            data:view==='residual'?residuals:[...bins].sort(([a],[b])=>a-b)};
+        }),
+      }}/></Suspense>:<p role="status">{!canReadSeries?'Selecciona un intervalo válido.':series?.error??(series?.data?'No hay pares para la selección.':'Consultando predicciones…')}</p>}
     </section>}
     {activeFormula && view==='evolution' && <section className="v2-panel"><h2>RMSE retrospectivo por año</h2>
       <p>Cada año representa su propia población evaluada. Las tablas de comparación muestran los denominadores de cada periodo.</p>

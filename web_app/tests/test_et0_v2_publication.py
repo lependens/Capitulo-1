@@ -66,3 +66,41 @@ def test_real_series_retains_publication_values(v2):
     assert client.get("/api/et0-v2/series", params=dict(params, cohort="common_core")).status_code == 422
     assert client.get("/api/et0-v2/series", params=dict(params, end="2022-01-01")).status_code == 422
     assert client.get("/api/et0-v2/series", params=dict(params, station="IB09")).json()["points"] == []
+
+
+def test_comparison_matches_published_metrics(v2):
+    client, _ = v2
+    selection = dict(formula="HG_RS_V1", group="station", key=["IB01", "IB04"],
+                     calendar=["annual", "monthly"], method=["AHC", "ANN_A"])
+    response = client.get("/api/et0-v2/comparison", params=selection)
+    assert response.status_code == 200
+    rows = response.json()["rows"]
+    expected = []
+    for key in selection["key"]:
+        for calendar in selection["calendar"]:
+            result = client.get("/api/et0-v2/metrics", params=dict(
+                selection, key=key, calendar=calendar))
+            expected.extend(result.json()["rows"])
+    identity = lambda row: (row["key"], row["calendar"], row["method"])
+    assert len(rows) == 8
+    assert sorted(rows, key=identity) == sorted(expected, key=identity)
+    assert client.get("/api/et0-v2/comparison", params=dict(
+        selection, key=["wrong"])).status_code == 422
+
+
+def test_comparison_combines_published_families_and_years(v2):
+    client, _ = v2
+    families = ["HG_RS_V1", "HS_RA_V1", "VALIANTZAS_V1"]
+    years = ["IB01:2020", "IB01:2025"]
+    selection = dict(formula=families, group="station_year", key=years,
+                     calendar=["annual"], method=["AHC"])
+    response = client.get("/api/et0-v2/comparison", params=selection)
+    assert response.status_code == 200
+    rows = response.json()["rows"]
+    assert {(r["family"], r["key"]) for r in rows} == {(f, y) for f in families for y in years}
+    for row in rows:
+        original = client.get("/api/et0-v2/metrics", params=dict(
+            selection, formula=row["family"], key=row["key"], calendar="annual")).json()["rows"][0]
+        assert row == original
+    assert {r["cohort_id"] for r in rows if r["key"] == years[0]}.isdisjoint(
+        r["cohort_id"] for r in rows if r["key"] == years[1])

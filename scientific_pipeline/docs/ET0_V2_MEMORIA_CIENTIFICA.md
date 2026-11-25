@@ -8,6 +8,8 @@
 
 1. Resumen y abstract · 2. Introducción y antecedentes · 3. Objetivos e hipótesis · 4. Datos y estaciones · 5. Fundamentos matemáticos · 6. Diseño experimental · 7. AHC · 8. Aprendizaje automático clásico · 9. Redes neuronales · 10. Implementación y Kaggle · 11. Evaluación retrospectiva · 12. Resultados · 13. Discusión · 14. Conclusiones · 15. Reproducibilidad y auditoría · 16. Bibliografía · Anexos.
 
+[Diseño y fold real](#6-diseño-experimental) · [AHC e IB01](#7-ajuste-ahc) · [ML](#8-aprendizaje-automático-clásico) · [ANN](#9-redes-ann-a-y-ann-e) · [Inventario de ajustes](#101-inventario-auditado-de-ajustes-y-artefactos) · [Resultados y figuras](#12-resultados) · [Experimentos futuros](#141-diseños-que-podrían-evaluarse-en-futuras-campañas) · [Reproducción](#15-reproducibilidad-y-auditoría) · [Bibliografía](#16-bibliografía) · [Malla ML](#k-malla-ml-completa) · [Resultados exhaustivos globales](#l-variantes-ml-y-resultados-globales) · [Explotación web](#m-posibilidades-de-explotación-y-web).
+
 ## 1. Resumen y abstract
 
 La estimación de la evapotranspiración de referencia (ET₀) permite relacionar la demanda atmosférica con las necesidades de agua de los cultivos. La fórmula FAO-56 Penman–Monteith (PM) requiere más información meteorológica que otras aproximaciones. Este trabajo investiga hasta qué punto fórmulas empíricas y modelos estadísticos con tres familias de entradas pueden reproducir **una referencia PM calculada**, a partir de datos SIAR de Baleares. No compara las predicciones con evapotranspiración observada por lisímetros.
@@ -134,11 +136,148 @@ En cada fold exterior se reserva un año de DEVELOPMENT y se entrena con los dem
 
 El código y el protocolo separan entradas por familia: HS-Ra usa Tmin, Tmax y Ra; HG-Rs la media de extremos y Rs; Valiantzas Tmin, Tmax, HRmedia y Ra. El mismo vector base se suministra a AHC indirectamente a través de la fórmula y a ML/ANN directamente; ML/ANN añaden indicadores estacionales o mensuales cuando corresponde. No se puede afirmar igualdad de entradas **entre** familias. Véanse [contrato](et0_v2_preparation.md), [implementación de soporte](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py) y [protocolo](../experiments/et0-v2-preparation.json).
 
+### 6.1. Cómo se cuentan las combinaciones
+
+~~~mermaid
+flowchart LR
+    S["12 estaciones"] --> F["3 familias meteorológicas por estación"]
+    F --> C["3 configuraciones de calendario por familia"]
+    C --> X["108 celdas potenciales"]
+    X --> A["108 fichas AHC · coeficientes por grupo"]
+    X --> B["105 celdas con ≥2 folds puntuables"]
+    X --> U["3 celdas de IB101 mensual · sin selección"]
+    B --> M["37 candidatos ML por celda"]
+    B --> N["5 arquitecturas × 3 semillas por variante ANN"]
+    M --> R["Reajuste DEVELOPMENT · 7 variantes ML"]
+    N --> T["Reajuste DEVELOPMENT · 1 ensemble por variante"]
+~~~
+
+La unidad de comparación es una **celda**, la clave estación × familia × configuración temporal. Una fórmula calcula ET₀ diaria con una ecuación y su conjunto de variables. AHC multiplica esa estimación por un **coeficiente** de su grupo temporal. Un **algoritmo ML** es una clase de estimador y una **configuración** fija sus hiperparámetros. Una **arquitectura ANN** fija las capas, mientras que la **semilla** gobierna la inicialización dentro de una ejecución. El **fold** delimita las fechas de ajuste y puntuación.
+
+Un **checkpoint** de candidato recoge los resultados de todos los folds válidos y, para ANN, las tres semillas por fold. Un **ajuste** corresponde a entrenar un estimador o una red en una partición. La **selección** decide la configuración con métricas DEVELOPMENT y el **reajuste** produce el objeto ajustado con todo DEVELOPMENT elegible. Una **red individual** produce una salida y el **ensemble** combina las tres salidas de una variante. El **modelo congelado** enlaza a los archivos ajustados por hash, con su configuración y selección. Una **predicción retrospectiva** es una salida diaria de ese objeto aplicada a una fecha del periodo reservado.
+
+Las tres celdas IB101 × familia × mensual existen para AHC y contienen grupos identificables sobre todo DEVELOPMENT, pero carecen de dos años exteriores puntuables. Los meses presentes en 2008 y 2009 no se solapan. El soporte de AHC, la disponibilidad del grupo en ambos ajustes internos y el mínimo de dos folds se aplican antes de seleccionar. IB101 conserva soporte anual y estacional en las tres familias. [Soporte y criterios congelados](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py#L44-L100).
+
+| Estación | Folds por celda | Celdas | Alcance |
+| --- | --- | --- | --- |
+| IB01 | 16 | 9 | Todas las soportadas de esta estación |
+| IB02 | 16 | 9 | Todas las soportadas de esta estación |
+| IB03 | 16 | 9 | Todas las soportadas de esta estación |
+| IB04 | 16 | 9 | Todas las soportadas de esta estación |
+| IB05 | 16 | 9 | Todas las soportadas de esta estación |
+| IB06 | 16 | 9 | Todas las soportadas de esta estación |
+| IB07 | 9 | 9 | Todas las soportadas de esta estación |
+| IB08 | 15 | 9 | Todas las soportadas de esta estación |
+| IB09 | 14 | 9 | Todas las soportadas de esta estación |
+| IB101 | 2 | 6 | Todas las soportadas de esta estación |
+| IB10 | 15 | 9 | Todas las soportadas de esta estación |
+| IB11 | 15 | 9 | Todas las soportadas de esta estación |
+
+### 6.2. De los sensores al vector de entradas
+
+| Familia | Entradas originales y sensor | Variables derivadas | Razón de diseño |
+| --- | --- | --- | --- |
+| HS-Ra | Tmin, Tmax en °C, termómetro | Ra en MJ m⁻² día⁻¹, calculada a partir de latitud y fecha | Contrasta un escenario con temperatura y metadatos, sin radiómetro. |
+| HG-Rs | Tmin, Tmax en °C y Rs en MJ m⁻² día⁻¹, termómetro y radiómetro | Tmedia de extremos = (Tmin + Tmax)/2, en °C | Contrasta el escenario con radiación solar incidente medida. |
+| Valiantzas | Tmin, Tmax en °C y HR media en %, termómetro e higrómetro | Ra calculada de latitud y fecha. La fórmula deriva una Rs estimada, pero los predictores ML/ANN reciben Ra y HR directamente. | Evalúa la disponibilidad de humedad en ausencia de radiómetro. |
+
+| Familia | Vector base y orden | Calendario anual | Calendario estacional | Calendario mensual |
+| --- | --- | --- | --- | --- |
+| HS-Ra | [Tmin, Tmax, Ra] | 3 entradas, +0 | 7 entradas, +4 | 15 entradas, +12 |
+| HG-Rs | [Tmedia de extremos, Rs] | 2 entradas, +0 | 6 entradas, +4 | 14 entradas, +12 |
+| Valiantzas | [Tmin, Tmax, HRmedia, Ra] | 4 entradas, +0 | 8 entradas, +4 | 16 entradas, +12 |
+
+Ejemplo real de IB01 el 30 de marzo de 2004. El vector HS-Ra anual es `[10,06; 15,20; 31,616142556]`. El estacional añade `[0, 1, 0, 0]` en orden DJF–MAM–JJA–SON y el mensual añade doce indicadores con un 1 en la tercera posición. Pasa al modelo propio de la celda de esa resolución. **ML y ANN ajustan un estimador o ensemble por celda y usan los indicadores como entradas, no un modelo independiente por mes o estación climática.** AHC sí aplica un multiplicador distinto para cada grupo disponible. Las tres salidas corresponden a **ET₀ diaria en mm/día**. [Construcción de entradas](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2.py#L33-L49) · [Indicadores y grupos](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py#L9-L24).
+
+### 6.3. Un fold real de IB01
+
+Para HG-Rs, la cápsula contiene **5.524 filas** IB01 de DEVELOPMENT. **5.512** tienen salida objetivo PM válida y entradas de la familia disponibles. Las otras 12 no forman pares para esta familia. Se muestra el último año exterior como ejemplo, con la disponibilidad original del año intacta.
+
+~~~mermaid
+flowchart LR
+    A["2004–2018 · IB01 · 5.147 pares"] --> B["A o E · 4.374 ajuste interno + 773 validación"]
+    B --> C["Elegir épocas y reajustar sobre los 5.147"]
+    C --> D["2019 retenido · 365 pares · puntuación exterior"]
+    D --> E["Selección con todos los folds · 5.512 pares para reajuste final"]
+    E --> F["Freeze global"]
+    F --> G["2020–2025 · TEST reservado"]
+~~~
+
+| Ámbito | Filas / pares | Uso |
+| --- | --- | --- |
+| DEVELOPMENT IB01/HG-Rs | 5.524 filas; 5.512 pares; 12 excluidas de ese pareado | Fuente de los folds y del reajuste posterior. |
+| Entrenamiento exterior 2004–2018 | 5.147 pares | Ajuste de AHC/ML y conjunto del que salen las particiones internas ANN. |
+| Interior A y E | 4.374 + 773 pares en cada regla | A toma los últimos 773 días elegibles ordenados, E toma 773 por orden de hash. Conjuntos de igual tamaño y criterio de selección distinto. |
+| Retenido 2019 | 365 filas de cápsula, 365 elegibles, 0 excluidas; 365 puntuables en las tres resoluciones | Calcula el error exterior. Queda fuera del ajuste de pesos, escala y épocas de ese fold. |
+| Ajuste final y TEST | 5.512 pares para ajustar, TEST posterior al freeze | Para redes se fijan arquitectura y épocas por semilla antes del ajuste final. TEST se usa solo para evaluar las configuraciones congeladas. |
+
+El plan de 2019 tiene SHA256 `75588fc8d86dfe8cbdb1981e4b775fdd6e4cb2d654581fa914ac896de0905352` en `support-inventory.json`. En otros folds pueden entrenar años posteriores al retenido, siempre dentro de 2004–2019. En rolling-origin solo entrenan fechas anteriores a cada corte. El ejemplo terminal de 2019 comparte ese orden por construcción, pero no convierte la selección de V2 en rolling-origin. El bloqueo debe corresponder a si se quiere evaluar transferencia temporal o espacial [12].
+
 ## 7. Ajuste AHC
 
 En cada fold, los coeficientes se calculan exclusivamente con los años de entrenamiento del fold y se aplican al año retenido. Después se ajustan por grupo con DEVELOPMENT completo y se congelan para la retrospectiva. Un AHC calculado con todo el histórico, incluida la retrospectiva, se publica en una tabla **in-sample** independiente: no sirve para afirmar generalización fuera de muestra.
 
 Ejemplos de coeficientes anuales congelados, extraídos de `frozen-run/AHC/<estación>__<familia>__annual/frozen.json`, campo `ahc.groups.annual`: IB01 HS-Ra 0,893456 (n=5.512), HG-Rs 0,918964 (n=5.512), Valiantzas 0,980209 (n=5.512); IB09 respectivamente 0,803193, 0,840085 y 0,880614 (n=4.390); IB101 1,096818, 0,903114 y 1,130896 (n=246). Son ajustes DEVELOPMENT, no coeficientes de histórico completo. Comparar la precisión de IB101 con IB01 sin tener en cuenta soporte sería improcedente. Integridad: [certificación](et0_v2_certificacion_evidencia.md).
+
+### 7.1. Inventario de coeficientes
+
+
+| Configuración | Celdas | Folds puntuados | Grupos finales registrados | Grupos esperables | c finales identificados | Grupos registrados en folds | c identificados en folds |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Anual | 36 | 498 | 36 | 36 | 36 | 498 | 498 |
+| Estacional | 36 | 498 | 141 | 144 | 141 | 1980 | 1980 |
+| Mensual | 36 | 492 | 423 | 432 | 423 | 5904 | 5904 |
+
+Se verificaron **600 coeficientes congelados** y **8.382 coeficientes de fold**. Los grupos finales ausentes son 12 de 612 esperables, todos de IB101, con SON y septiembre–noviembre sin pares para cada familia. En los folds puntuados hay 8.394 huecos teóricos de grupos, 12 sin datos: las tres celdas estacionales IB101 aportan dos folds y dos grupos ausentes por fold. Esta comparación se limita a folds que el ejecutor puntúa. En el histórico completo aparecen **36 coeficientes anuales** descriptivos, separados de las 600 estimaciones DEVELOPMENT. Algunos históricos no añaden TEST porque sus estaciones terminaron antes de 2020. Fuente `AHC/index.json`, `AHC/<celda>/frozen.json` y `ahc-full-history-in-sample.csv`.
+
+### 7.2. IB01 y HG-Rs desde el dato hasta el error
+
+1. En `IB01_datos_completos.csv`, fila de origen 2 del 30-03-2004, Dataset v1 conserva Tmin 10,06 °C, Tmax 15,20 °C, HR mínima/máxima 66,11/96,4 %, Rs 1,787 MJ m⁻² día⁻¹ y viento 2,011 m/s. El código obtiene presión a 120 m, radiación neta y presiones de vapor y aplica la ecuación diaria del capítulo 5. La salida PM de la cápsula es **1,186559563 mm/día**. Los supuestos de radiación y viento y las banderas de esta fecha aparecen en §10. [Implementación PM](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/penman_monteith.py#L68-L110).
+2. Con media de extremos 12,63 °C, `HG-Rs = 0,0135 × 0,408 × 1,787 × (12,63 + 17,8)` da **0,299516282 mm/día**. La estimación empírica es $x_i$, la salida PM es $y_i$. Solo entran fechas con ambas estimaciones disponibles y válidas según las reglas de la celda.
+3. El coeficiente anual minimiza `Σ(yᵢ − c xᵢ)²`. La derivada es `−2Σxᵢ(yᵢ − c xᵢ)`; al anularla se obtiene `c = Σ(xᵢ yᵢ) / Σ(xᵢ²)` si el denominador es positivo. Anualmente, `Σxᵢ² = 82.240,863781` y el numerador deducido de los valores archivados es `≈75.576,365507`, con **c = 0,918963664**. En el fold 2019 el ajuste usó 5.147 pares y dio **0,918719833** (Σx² = 77.055,410064), con RMSE exterior **0,4206515 mm/día** en 365 días.
+4. Tras cerrar los folds se ajusta con todo DEVELOPMENT. Las tablas siguientes reproducen los coeficientes finales a partir de `AHC/IB01__HG_RS_V1__{annual,seasonal,monthly}/frozen.json → ahc.groups`, verificados contra su índice. El ajuste es 30-03-2004 a 31-12-2019 según la disponibilidad de esa estación. El anexo B recoge los enlaces de trazabilidad. El histórico completo de esta celda produjo **0,921039617** sobre 7.704 pares e incluye los 2.192 días de TEST, por lo que su error es dentro de muestra.
+
+
+| Configuración | Grupo | Meses | n | Σx² | c |
+| --- | --- | --- | --- | --- | --- |
+| Anual | annual | Ene–dic | 5512 | 82240,86 | 0,91896366 |
+| Estacional | DJF | Dic–feb | 1251 | 2455,46 | 0,86739016 |
+| Estacional | JJA | Jun–ago | 1470 | 47803,33 | 0,92689110 |
+| Estacional | MAM | Mar–may | 1367 | 20680,26 | 0,92417549 |
+| Estacional | SON | Sep–nov | 1424 | 11301,81 | 0,88710125 |
+| Mensual | 01 | 01 | 422 | 704,05 | 0,84817731 |
+| Mensual | 02 | 02 | 365 | 1136,68 | 0,91564361 |
+| Mensual | 03 | 03 | 408 | 3210,29 | 0,92252525 |
+| Mensual | 04 | 04 | 473 | 6404,92 | 0,92116285 |
+| Mensual | 05 | 05 | 486 | 11065,04 | 0,92639811 |
+| Mensual | 06 | 06 | 480 | 16319,27 | 0,92766775 |
+| Mensual | 07 | 07 | 495 | 17894,66 | 0,92716407 |
+| Mensual | 08 | 08 | 495 | 13589,41 | 0,92559898 |
+| Mensual | 09 | 09 | 480 | 6851,54 | 0,91056260 |
+| Mensual | 10 | 10 | 496 | 3334,11 | 0,84958576 |
+| Mensual | 11 | 11 | 448 | 1116,16 | 0,85514758 |
+| Mensual | 12 | 12 | 464 | 614,73 | 0,80017044 |
+
+![Coeficientes AHC mensuales, estacionales y anual de IB01](et0-v2-figuras/ahc-ib01.svg)
+
+El coeficiente estacional se repite en los meses de su grupo. Los puntos mensuales muestran cuánto cambia la escala entre meses dentro de una misma estación climática. Se aprecia variación de escala, pero la figura por sí sola no demuestra una reducción de error fuera de muestra.
+
+Se eligieron el primer, el mediano superior y el último día elegible de TEST IB01/HG-Rs. Se cotejó para las tres fechas `c × fórmula` con las salidas preservadas hasta tolerancia numérica de 10⁻¹². Las estimaciones y errores están en mm/día, con signo estimación − PM.
+
+| Fecha | PM | Fórmula | Error fórmula | c anual | c estacional | c mensual | Anual / error | Estacional / error | Mensual / error |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2020-01-01 | 0,5892 | 0,7332 | 0,1440 | 0,918964 | 0,867390 | 0,848177 | 0,6738 / 0,0846 | 0,6360 / 0,0467 | 0,6219 / 0,0327 |
+| 2023-01-01 | 0,7116 | 1,4740 | 0,7624 | 0,918964 | 0,867390 | 0,848177 | 1,3546 / 0,6429 | 1,2785 / 0,5669 | 1,2502 / 0,5386 |
+| 2025-12-31 | 0,5853 | 1,0489 | 0,4636 | 0,918964 | 0,867390 | 0,800170 | 0,9639 / 0,3786 | 0,9098 / 0,3245 | 0,8393 / 0,2540 |
+
+
+| Configuración | n | MAE | RMSE | Sesgo | R² | Cob. |
+| --- | --- | --- | --- | --- | --- | --- |
+| Anual | 2192 | 0,3111 | 0,4156 | -0,0522 | 0,9416 | 100,00 % |
+| Estacional | 2192 | 0,3006 | 0,4095 | -0,0741 | 0,9433 | 100,00 % |
+| Mensual | 2192 | 0,2980 | 0,4094 | -0,0817 | 0,9434 | 100,00 % |
+
+En los mismos 2.192 pares, pasar de un coeficiente a cuatro reduce el RMSE 0,0061 mm/día y añadir ocho más cambia aproximadamente 0,0001. Al mismo tiempo el sesgo se vuelve más negativo. Este resultado ilustra que una reducción del RMSE no implica mejorar en todas las métricas. Fuente `retrospective-metrics.csv`, estación IB01, familia HG-Rs.
 
 ## 8. Aprendizaje automático clásico
 
@@ -147,6 +286,63 @@ Por cada celda soportada se evaluaron 37 configuraciones: regresión lineal (1),
 Los modelos lineales incorporan `StandardScaler` ajustado dentro de cada entrenamiento; los árboles no requieren escalado. Se elige una configuración por algoritmo y una principal por celda; las siete se reajustan con DEVELOPMENT y se serializan. Elastic Net permite 20.000 iteraciones y tolerancia 10⁻⁶. Se registraron 51 candidatos con avisos en folds y siete reajustes que no alcanzaron tolerancia; ninguno era el principal de su celda. Las variantes afectadas conservan esa advertencia y no se modificaron para forzar convergencia. Fuente: [evidencia](et0_v2_certificacion_evidencia.md) y [`et0_v2_models.py`](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py).
 
 La regresión lineal estima una suma ponderada de entradas; Ridge penaliza magnitudes de coeficientes y Elastic Net combina penalizaciones L1 y L2. Los árboles dividen el espacio de entrada por umbrales; los bosques promedian árboles con aleatoriedad y el boosting suma correctores sucesivos. Estas descripciones explican las familias, pero el resultado concreto depende de su malla y de la muestra. Los árboles candidatos fijan profundidades 4, 8 y 12 con dos políticas de tamaño mínimo; los dos bosques utilizan 200 árboles por configuración; boosting usa 200 iteraciones con tasas 0,05 o 0,1. El protocolo conserva los valores detallados de profundidad, hojas, regularización y semillas. Un `Pipeline` con escalador evita ajustar la escala sobre el año retenido.
+
+### 8.1. Siete estimadores y 37 candidatos
+
+| Identificador | Modelo y fundamento | Flexibilidad y coste relativo | Ventaja y límite para ET₀ |
+| --- | --- | --- | --- |
+| LINEAR | Mínimos cuadrados con intercepto sobre variables estandarizadas | Aditivo y lineal; un ajuste barato | Referencia interpretable; no representa interacciones no lineales salvo que estén codificadas. |
+| RIDGE | Mínimos cuadrados más penalización L2 | Aditivo, lineal; coste bajo | Estabiliza coeficientes con entradas correlacionadas; mayor penalización puede subajustar. |
+| ELASTIC_NET | Pérdida cuadrática con combinación L1 y L2 | Aditivo y lineal; optimización iterativa | Puede reducir coeficientes a cero; sensibilidad a escala, penalización y convergencia. |
+| TREE | Divisiones recursivas minimizando error cuadrático dentro de nodos | No lineal con interacciones; coste moderado | Umbrales fáciles de inspeccionar; modelo por tramos y sensible a datos del nodo. |
+| RANDOM_FOREST | Promedio de árboles con bootstrap y selección de variables por nodo | No lineal; 200 árboles por candidato | Reduce varianza del árbol individual; mayor coste y memoria, extrapolación limitada. |
+| EXTRA_TREES | Árboles con umbrales aleatorizados, sin bootstrap en este protocolo | No lineal; 200 árboles por candidato | Puede reducir correlación entre árboles; añade aleatoriedad y conserva límites de extrapolación. |
+| HIST_GRADIENT_BOOSTING | Suma de árboles que corrigen el error usando variables agrupadas en bins | No lineal; 200 iteraciones de corrección secuencial | Capta interacciones; profundidad efectiva y tasa de aprendizaje condicionan el ajuste. |
+
+El escalado forma parte del `Pipeline` de LINEAR, RIDGE y ELASTIC_NET y se ajusta en cada entrenamiento del fold. Para árboles y ensembles se introducen los valores directamente. La malla se lee del protocolo ML V1 fijado por hash, pero la validación y la selección se rigen por V2. Son 1 + 6 + 12 + 6 + 4 + 4 + 4 combinaciones **por celda**. Véase el [registro exacto de la malla](#k-malla-ml-completa) y [make_estimator](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/ml_classical.py#L167-L186).
+
+~~~mermaid
+flowchart LR
+    A["37 candidatos"] --> B["Ajustar por fold exterior"]
+    B --> C["RMSE medio por año DEVELOPMENT"]
+    C --> D["Un seleccionado por algoritmo · siete por celda"]
+    D --> E["Selección principal entre los siete"]
+    D --> F["Reajuste de los siete sobre todo DEVELOPMENT"]
+    E --> G["El índice señala uno de los siete como ML principal"]
+    F --> G
+    G --> H["Freeze"]
+~~~
+
+V2 calcula la media **no ponderada** de RMSE de los años comunes y su desviación poblacional. Para ML, entran en el desempate candidatos que se apartan como máximo **0,1 %** del RMSE medio mínimo. En ese conjunto se prefiere menor desviación y, si persiste empate, menor rango de complejidad declarado y orden de ID. Se aplica dentro de cada algoritmo y luego entre los siete seleccionados. La elección principal reutiliza el artefacto del algoritmo correspondiente. [Selección](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py#L102-L147) · [Selección y reajuste](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L179-L214).
+
+### 8.2. IB01, HG-Rs anual y resultados de las variantes
+
+La validación comparó 37 candidatos en 16 folds. Se muestran los siete reajustados, con puntuación DEVELOPMENT en mm/día. El principal fue **HIST_GRADIENT_BOOSTING** con 0,339113, seguido de Extra Trees con 0,339786, fuera del intervalo del 0,1 %. El checkpoint completo tiene en `selected` el ID y los folds, y en `models` el hash de cada modelo. Fuente `ML/IB01__HG_RS_V1__annual/frozen.json`.
+
+| Algoritmo | Configuración seleccionada | Folds | Media RMSE | DE RMSE | ID abreviado |
+| --- | --- | --- | --- | --- | --- |
+| LINEAR | {} | 16 | 0,418292 | 0,022361 | mlc-089f43ed4db8ea2… |
+| RIDGE | {"alpha":10.0} | 16 | 0,418317 | 0,022283 | mlc-4fb41a35c4d4bd1… |
+| ELASTIC_NET | {"alpha":0.01,"l1_ratio":0.9} | 16 | 0,418538 | 0,021782 | mlc-8bebfd57ff02713… |
+| TREE | {"max_depth":8,"min_samples_leaf":20,"min_samples_split":20} | 16 | 0,362274 | 0,019965 | mlc-a89dd690e8ba463… |
+| RANDOM_FOREST | {"max_depth":12,"max_features":0.7,"min_samples_leaf":5,"min_samples_split":10,"n_estimators":200} | 16 | 0,342969 | 0,020683 | mlc-1dc36049df1519b… |
+| EXTRA_TREES | {"max_depth":null,"max_features":1.0,"min_samples_leaf":5,"min_samples_split":10,"n_estimators":200} | 16 | 0,339786 | 0,019100 | mlc-8bdf4e9e05def60… |
+| HIST_GRADIENT_BOOSTING | {"l2_regularization":0.0,"learning_rate":0.05,"max_iter":200,"max_leaf_nodes":15} | 16 | 0,339113 | 0,019227 | mlc-e5014ca0d4e77f2… |
+
+
+| Algoritmo | Total | HS-Ra | HG-Rs | Valiantzas | Anual | Estacional | Mensual |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| LINEAR | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RIDGE | 1 | 1 | 0 | 0 | 0 | 1 | 0 |
+| ELASTIC_NET | 3 | 1 | 0 | 2 | 2 | 1 | 0 |
+| TREE | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| RANDOM_FOREST | 9 | 5 | 2 | 2 | 2 | 4 | 3 |
+| EXTRA_TREES | 58 | 23 | 12 | 23 | 26 | 13 | 19 |
+| HIST_GRADIENT_BOOSTING | 34 | 5 | 21 | 8 | 6 | 17 | 11 |
+
+En TEST anual, los siete errores de cada familia se comparan sobre claves idénticas, verificadas por `common_keys_sha256` y n. Extra Trees tiene el menor RMSE global descriptivo de las tres familias en ese calendario. Los modelos lineales dan los mayores errores en HG-Rs y los ensembles mejoran sobre el árbol aislado; en Valiantzas el árbol aislado queda cerca de la regresión lineal. La capacidad de modelar interacciones es una explicación plausible, no una causa aislada por diseño. El cuadro de [variantes ML](#l-variantes-ml-y-resultados-globales) permite revisar sesgo, MAE y cobertura. La comparación TEST no sustituye la selección por celda.
+
+Se registraron avisos en **51 checkpoints de candidatos Elastic Net en 31 celdas**. El número cuenta resúmenes con avisos y no llamadas que avisaron, porque el ejecutor conserva mensajes únicos por candidato. La certificación documenta aparte siete reajustes de Elastic Net que no alcanzaron la tolerancia. Se conserva la configuración evaluada, `max_iter=20000` y `tol=10⁻⁶`, y conviene interpretar el ajuste como aproximación del optimizador. Una sensibilidad a la tolerancia requeriría una campaña nueva y no puede simularse cambiando retrospectivamente el modelo. [Evidencia de certificación](et0_v2_certificacion_evidencia.md).
 
 ## 9. Redes ANN A y ANN E
 
@@ -168,6 +364,86 @@ flowchart LR
 
 Las decisiones, soporte de categorías y detalles están en [protocolo V2](../experiments/et0-v2-preparation.json) y código congelado; no se asume que todas las celdas eligieran la misma arquitectura. ReLU describe activaciones ocultas; la salida es de regresión sin restricción no negativa.
 
+### 9.1. Dimensiones y parámetros de cada red
+
+Una capa densa de (p) entradas y (q) unidades suma (pq) pesos y (q) sesgos. Por ello una red con tamaños ([d,h_1,dots,1]) tiene **Σ(p+1)q** parámetros. La dimensión (d) depende del vector de sensor y calendario. La salida es un escalar diario. Ejemplo con HG-Rs anual, (d=2) y 64 ocultas: ((2+1)64+(64+1)1=257).
+
+| Ocultas | Capas ocultas | d = 2 | d = 3 | d = 4 | d = 6 | d = 7 | d = 8 | d = 14 | d = 15 | d = 16 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 16 | 1 | 65 | 81 | 97 | 129 | 145 | 161 | 257 | 273 | 289 |
+| 32 | 1 | 129 | 161 | 193 | 257 | 289 | 321 | 513 | 545 | 577 |
+| 64 | 1 | 257 | 321 | 385 | 513 | 577 | 641 | 1025 | 1089 | 1153 |
+| 64-32 | 2 | 2305 | 2369 | 2433 | 2561 | 2625 | 2689 | 3073 | 3137 | 3201 |
+| 64-32-16 | 3 | 2817 | 2881 | 2945 | 3073 | 3137 | 3201 | 3585 | 3649 | 3713 |
+
+~~~mermaid
+flowchart LR
+    X["Vector de d entradas · StandardScaler"] --> A["16 ReLU"]
+    X --> B["32 ReLU"]
+    X --> C["64 ReLU"]
+    X --> D["64 → 32 ReLU"]
+    X --> E["64 → 32 → 16 ReLU"]
+    A --> Y["Una salida lineal por candidato"]
+    B --> Y
+    C --> Y
+    D --> Y
+    E --> Y
+~~~
+
+Cada red ajusta pesos con pérdida cuadrática de regresión y penalización L2, mediante Adam. El escalado centra y divide por la desviación de entrenamiento, se vuelve a estimar al cambiar el conjunto de ajuste y se conserva en el ensemble final. Las épocas se eligen con el **RMSE en validación interna**, distinto de la función de pérdida con regularización que actualiza los pesos. El tamaño de lote se limita a 256, con `shuffle=False`. La red permite resultados negativos por su salida lineal. [Constructor y épocas](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/ann_modern.py#L46-L58) · [Ajuste V2](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L118-L148).
+
+~~~mermaid
+flowchart LR
+    T["Entrenamiento exterior"] --> A["A · último 15 % de fechas"]
+    T --> E["E · 15 % por orden de hash"]
+    A --> S["Tres semillas · entrenar hasta 200 épocas"]
+    E --> S
+    S --> P["RMSE interno · mejora mínima 0,0001 · paciencia 15"]
+    P --> R["Reajuste exterior por semilla con épocas elegidas"]
+    R --> V["Media de tres predicciones · error del año retenido"]
+    V --> C["Comparación de arquitecturas en todos los folds"]
+    C --> F["Mediana de épocas por semilla · ajustar DEVELOPMENT"]
+    F --> Z["Tres redes + escalador · ensemble congelado"]
+~~~
+
+### 9.2. Selección real de arquitectura
+
+Se elige por estación, familia y resolución, por separado para A y E. Se compara el RMSE medio de los años retenidos comunes, calculado tras promediar las tres estimaciones diarias en cada fold. Candidatos en el margen absoluto de **10⁻¹²** respecto al mínimo se desempatan por menor desviación de RMSE, después menor número de parámetros y finalmente orden lexicográfico de arquitectura. Para cada semilla se redondea la mediana de sus mejores épocas exteriores al entero más próximo, con mitades hacia arriba, y se ajusta una nueva red durante ese número de épocas en todo DEVELOPMENT. [Criterio](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_support.py#L102-L147) · [Agregación y reajuste](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L151-L214) · [Mediana](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/ann_modern.py#L128-L135).
+
+Ejemplo real IB01/HG-Rs anual. Puntuación DEVELOPMENT en mm/día, extraída de los diez checkpoints por arquitectura y regla.
+
+| Regla | Arquitectura | Folds | Media RMSE | DE RMSE | Seleccionada |
+| --- | --- | --- | --- | --- | --- |
+| ANN_A | 16 | 16 | 0,3379808 | 0,0224790 |  |
+| ANN_A | 32 | 16 | 0,3371444 | 0,0214272 |  |
+| ANN_A | 64 | 16 | 0,3357316 | 0,0212311 | Sí |
+| ANN_A | 64-32 | 16 | 0,3439282 | 0,0231655 |  |
+| ANN_A | 64-32-16 | 16 | 0,3498068 | 0,0250683 |  |
+| ANN_E | 16 | 16 | 0,3377427 | 0,0219730 |  |
+| ANN_E | 32 | 16 | 0,3370018 | 0,0215025 |  |
+| ANN_E | 64 | 16 | 0,3357177 | 0,0212573 | Sí |
+| ANN_E | 64-32 | 16 | 0,3395894 | 0,0217928 |  |
+| ANN_E | 64-32-16 | 16 | 0,3429648 | 0,0234630 |  |
+
+Ambas eligieron una capa de 64 neuronas. Las tres semillas 20261101, 20261102 y 20261103 fijaron épocas **199/188/191** en A y **199/194/198** en E. Cada ensemble conserva las tres redes y el escalador. Los RMSE de TEST de esas dos selecciones fueron aproximadamente **0,368297** en A y **0,368318** en E, sobre 2.192 pares. Las arquitecturas descartadas solo disponen de métricas de DEVELOPMENT. Las frecuencias siguientes cuentan selecciones, con 105 celdas por variante.
+
+| Regla | Arquitectura | Total | HS-Ra | HG-Rs | Valiantzas | Anual | Estacional | Mensual |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ANN_A | 16 | 4 | 2 | 1 | 1 | 2 | 2 | 0 |
+| ANN_A | 32 | 18 | 3 | 9 | 6 | 3 | 2 | 13 |
+| ANN_A | 64 | 56 | 19 | 17 | 20 | 22 | 22 | 12 |
+| ANN_A | 64-32 | 13 | 4 | 7 | 2 | 3 | 5 | 5 |
+| ANN_A | 64-32-16 | 14 | 7 | 1 | 6 | 6 | 5 | 3 |
+| ANN_E | 16 | 3 | 2 | 1 | 0 | 2 | 1 | 0 |
+| ANN_E | 32 | 18 | 1 | 9 | 8 | 2 | 3 | 13 |
+| ANN_E | 64 | 55 | 21 | 15 | 19 | 23 | 19 | 13 |
+| ANN_E | 64-32 | 18 | 6 | 9 | 3 | 5 | 9 | 4 |
+| ANN_E | 64-32-16 | 11 | 5 | 1 | 5 | 4 | 4 | 3 |
+
+![Selección principal de ML y arquitecturas ANN](et0-v2-figuras/seleccion-development.svg)
+
+La capa única de 64 aparece en 56 celdas A y 55 E. En mensual, la capa única de 32 aparece 13 veces en cada variante. Las frecuencias cambian con familia y calendario, que también cambian las dimensiones de entrada. No aíslan el efecto de tamaño ni justifican afirmar que más capas aumenten la exactitud. Los diez candidatos del ejemplo IB01 permiten ver que las redes profundas tuvieron mayor RMSE medio que la seleccionada en esa celda.
+
 ## 10. Implementación informática y Kaggle
 
 La campaña se ejecutó en Kaggle CPU sobre una cápsula DEVELOPMENT con SHA256 `0c43f1020a04b0dedeeff84ccb1cbae4285ff00ac20c48473ff6c81b57ecd3e6`. El código separa preparación (`et0_v2.py`), particiones y soporte (`et0_v2_support.py`), entrenamiento (`et0_v2_models.py`), persistencia y reanudación (`et0_v2_campaign.py`) y retrospectiva (`et0_v2_retrospective.py`). Las entradas se validan antes del ajuste; se registran identidades, etapas, candidatos, métricas por fold y modelos serializados.
@@ -179,6 +455,22 @@ Un ejemplo concreto del flujo preservado —IB01, 2004-03-30— contiene Tmin=10
 La ejecución por lotes preserva candidatos válidos mediante checkpoints, sin volver a entrenar una etapa cerrada. Se verificaron 3.885 checkpoints ML y 525 por cada ANN. Primer lote conservado con bytes idénticos: ML 3.885 en `368475953`; ANN A 304 en `368475953`, 85 en `369095500` y 136 en `369223074`; ANN E 101 en `369632717`, 101 en `369691836`, 206 en `369788169` y 117 en `369953511`. Primera aparición disponible no demuestra necesariamente creación en ese lote. El sello final identifica 108 celdas AHC y 105 celdas para cada otra etapa; las tres celdas restantes carecían de soporte mensual para IB101.
 
 La identidad exacta de índices y modelos está enlazada desde `freeze.json`. Entorno registrado: Python 3.13.18, NumPy 2.1.3, SciPy 1.16.3, joblib 1.6.0, threadpoolctl 3.7.0 y scikit-learn 1.9.1; el wheel de scikit-learn se verificó por hash, las demás dependencias por versión. El notebook recuperado tiene un SHA distinto del listado inicialmente; se conserva como incidencia de procedencia sin causa demostrada. Código y configuración se contrastan por evidencias independientes. Véanse [ejecución](et0_v2_execution.md) y [certificación](et0_v2_certificacion_evidencia.md).
+
+### 10.1. Inventario auditado de ajustes y artefactos
+
+| Etapa | Celdas efectivas | Checkpoints de candidatos | Ajustes de validación acreditados por registros y código | Reajustes finales acreditados | Resultado congelado |
+| --- | ---: | ---: | ---: | ---: | --- |
+| AHC | 108 | 0 | 8.382 coeficientes de fold | 600 coeficientes de grupos DEVELOPMENT | 108 JSON de celda, 600 coeficientes |
+| ML | 105 | 3.885 | 55.056 llamadas de ajuste implicadas por los folds de candidato | 735 estimadores | 735 estimadores, de los cuales 105 son principales |
+| ANN A | 105 | 525 | 44.640 ajustes de red implicados por 22.320 registros de semilla-fold | 315 redes | 105 ensembles de tres redes |
+| ANN E | 105 | 525 | 44.640 ajustes de red implicados por 22.320 registros de semilla-fold | 315 redes | 105 ensembles de tres redes |
+| AHC histórico completo | 36 pares estación–familia | 0 | — | 36 coeficientes anuales descriptivos | Tabla separada dentro de muestra |
+
+Los **4.935 checkpoints únicos** se contaron una sola vez por fase, celda y candidato, partiendo de los hashes del índice final. Se comprobaron los bytes de 423 fichas de celda, sus 4.935 checkpoints y 945 archivos serializados, siguiendo los cuatro índices de `freeze.json`. No se cargaron los binarios para este inventario. Se usaron los tres miembros por ensemble según el código de reajuste y metadatos de semillas. El test de carga independiente anterior cubre tres modelos representativos.
+
+ML suma `37 × 1.488 = 55.056` ajustes exteriores más 735 finales, **55.791** en total. Para cada regla ANN, `5 × 1.488 = 7.440` candidato-folds. Cada uno conserva tres registros de semilla. Cada semilla implica dos ajustes de una red nueva, interior para épocas y exterior para puntuación: `22.320 × 2 = 44.640`. Sumando 315 redes de ajuste final se obtienen **44.955 por variante** y **89.910 para ambas**. El total que el código y los registros acreditan para ML y ANN es **145.701 ajustes de estimadores o redes**, incluidos los reajustes. No es un registro de llamadas real con precisión forense: ejecuciones fallidas o interrumpidas antes de escribir un checkpoint pueden añadir intentos. El piloto queda fuera y una época, un árbol de ensemble o una copia de un checkpoint en otro lote no equivalen a un ajuste adicional de este inventario.
+
+En ML resultan 105 modelos por algoritmo, 245 por familia y 252/252/231 para anual/estacional/mensual. El principal se identifica por ID entre los siete ajustados, sin crear un octavo modelo. Para cada regla ANN hay 35 ensembles por familia y 36/36/33 por calendario. La tabla por estación y familia está en [inventario detallado](#j-inventario-por-estación-y-familia). Fuentes `freeze.json`, `<fase>/index.json`, `frozen.json` y `candidates/*.json`. [Malla y ajuste](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L102-L176) · [Reajuste](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/src/siar_science/et0_v2_models.py#L200-L214).
 
 ## 11. Evaluación retrospectiva 2020–2025
 
@@ -206,21 +498,71 @@ En el cuadro, los cinco métodos de una fila se puntúan en 19.251 pares comunes
 
 La mejora relativa de ANN E frente a AHC anual es 15,5 % para HS-Ra, 10,9 % para HG-Rs y 17,8 % para Valiantzas. No son diferencias de precisión física demostrada. La cobertura propia de calendario global es 97,66 % en HS-Ra/HG-Rs y 97,58 % en Valiantzas; el denominador y cobertura no son los de la intersección de error. La comparación entre las tres fórmulas en la intersección de claves también usa 19.251 pares: la familia HG-Rs requiere un sensor de radiación que HS-Ra no necesita.
 
-```mermaid
-xychart-beta
-    title "RMSE retrospectivo anual respecto a PM calculado (mm/día)"
-    x-axis ["HS-Ra", "HG-Rs", "Valiantzas"]
-    y-axis "RMSE (mm/día)" 0 --> 1
-    bar [0.9491, 0.5670, 0.6236]
-    bar [0.6307, 0.4127, 0.5122]
-    bar [0.5530, 0.3809, 0.4388]
-    bar [0.5331, 0.3680, 0.4210]
-    bar [0.5327, 0.3676, 0.4209]
-```
-
-En cada familia las barras siguen el orden fórmula, AHC, ML, ANN A, ANN E. Es una figura de **concordancia con la referencia**; las familias no requieren los mismos sensores.
-
 En HG-Rs anual ANN A, IB08 muestra 0,3092 e IB11 0,4674 mm/día; no se ha ajustado esta comparación por cobertura o clima. Los valores negativos presentes incluyen ANN A en IB02/2023-01-27/Valiantzas mensual (−0,03365) e IB10/2023-02-27 (−0,02169), y ANN E en la primera clave (−0,03292). Se contaron 377 filas negativas en regresión lineal, 373 en Ridge y 367 en Elastic Net; las filas se distinguen por familia y resolución y no equivalen a fechas únicas. No se truncaron las predicciones ni se recalcularon métricas.
+
+### 12.1. Comparación de mejoras y coste de segmentar
+
+![RMSE retrospectivo por familia y calendario](et0-v2-figuras/rmse-global.svg)
+
+La figura usa las mismas 19.251 claves por comparación de métodos. Dentro de cada familia, se verificó el mismo hash de claves al comparar las tres segmentaciones. La disponibilidad de entradas propias se informa por separado. Se define la mejora absoluta como RMSE base − RMSE comparado y la relativa como 100 × mejora absoluta / RMSE base. El signo negativo indica que el método comparado empeora. [Resultados globales, incluidas las otras métricas](#l-variantes-ml-y-resultados-globales).
+
+| Familia | Configuración | AHC / Fórmula | ML / AHC | A / AHC | E / AHC | A / ML | E / ML |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| HS-Ra | Anual | 0,3184 / 33,55 % | 0,0776 / 12,31 % | 0,0976 / 15,48 % | 0,0980 / 15,54 % | 0,0200 / 3,61 % | 0,0204 / 3,69 % |
+| HS-Ra | Estacional | 0,3279 / 34,55 % | 0,0641 / 10,31 % | 0,0976 / 15,71 % | 0,0974 / 15,67 % | 0,0335 / 6,02 % | 0,0333 / 5,98 % |
+| HS-Ra | Mensual | 0,3289 / 34,65 % | 0,0621 / 10,01 % | 0,0849 / 13,69 % | 0,0845 / 13,63 % | 0,0228 / 4,09 % | 0,0224 / 4,02 % |
+| HG-Rs | Anual | 0,1543 / 27,22 % | 0,0318 / 7,71 % | 0,0446 / 10,81 % | 0,0451 / 10,92 % | 0,0128 / 3,36 % | 0,0133 / 3,48 % |
+| HG-Rs | Estacional | 0,1683 / 29,68 % | 0,0459 / 11,50 % | 0,0619 / 15,53 % | 0,0633 / 15,87 % | 0,0160 / 4,55 % | 0,0174 / 4,94 % |
+| HG-Rs | Mensual | 0,1717 / 30,28 % | 0,0505 / 12,78 % | 0,0674 / 17,05 % | 0,0668 / 16,91 % | 0,0169 / 4,89 % | 0,0163 / 4,73 % |
+| Valiantzas | Anual | 0,1114 / 17,87 % | 0,0734 / 14,33 % | 0,0913 / 17,81 % | 0,0913 / 17,83 % | 0,0179 / 4,07 % | 0,0179 / 4,08 % |
+| Valiantzas | Estacional | 0,1142 / 18,32 % | 0,0684 / 13,43 % | 0,0934 / 18,34 % | 0,0933 / 18,32 % | 0,0250 / 5,67 % | 0,0249 / 5,64 % |
+| Valiantzas | Mensual | 0,1164 / 18,67 % | 0,0660 / 13,01 % | 0,0839 / 16,55 % | 0,0840 / 16,57 % | 0,0179 / 4,07 % | 0,0181 / 4,09 % |
+
+
+| Familia | Método | Estacional / anual | Mensual / anual | Sesgo anual | Sesgo estacional | Sesgo mensual |
+| --- | --- | --- | --- | --- | --- | --- |
+| HS-Ra | AHC | 0,0095 / 1,51 % | 0,0105 / 1,66 % | 0,1969 | 0,1635 | 0,1611 |
+| HS-Ra | ML | -0,0041 / -0,73 % | -0,0051 / -0,91 % | 0,1736 | 0,1845 | 0,1855 |
+| HS-Ra | ANN_A | 0,0095 / 1,78 % | -0,0022 / -0,41 % | 0,1452 | 0,1336 | 0,1440 |
+| HS-Ra | ANN_E | 0,0089 / 1,66 % | -0,0030 / -0,57 % | 0,1444 | 0,1337 | 0,1453 |
+| HG-Rs | AHC | 0,0139 / 3,37 % | 0,0174 / 4,21 % | -0,0040 | -0,0227 | -0,0296 |
+| HG-Rs | ML | 0,0280 / 7,35 % | 0,0361 / 9,48 % | 0,0669 | 0,0790 | 0,0815 |
+| HG-Rs | ANN_A | 0,0312 / 8,48 % | 0,0402 / 10,91 % | 0,0427 | 0,0480 | 0,0638 |
+| HG-Rs | ANN_E | 0,0321 / 8,75 % | 0,0391 / 10,65 % | 0,0389 | 0,0461 | 0,0670 |
+| Valiantzas | AHC | 0,0028 / 0,55 % | 0,0050 / 0,98 % | 0,1347 | 0,1342 | 0,1387 |
+| Valiantzas | ML | -0,0022 / -0,49 % | -0,0024 / -0,54 % | 0,1129 | 0,1207 | 0,1222 |
+| Valiantzas | ANN_A | 0,0050 / 1,18 % | -0,0023 / -0,55 % | 0,0879 | 0,0866 | 0,1047 |
+| Valiantzas | ANN_E | 0,0048 / 1,14 % | -0,0023 / -0,54 % | 0,0878 | 0,0891 | 0,1064 |
+
+- **AHC.** Ajustar un multiplicador anual reduce el error global de las tres fórmulas. Para HG-Rs, pasar a cuatro coeficientes reduce otro 3,37 % respecto al anual y pasar a doce reduce 4,21 %. En Valiantzas los cambios son menores al 1 %. El AHC mensual en HG-Rs reduce RMSE, pero aumenta la infraestimación media. El ejemplo IB01 muestra un beneficio mensual marginal frente al estacional. Con pocas fechas o cambios de sensor, conviene valorar el soporte de cada grupo antes de pagar el coste de mantener más coeficientes. Este experimento no fijó un umbral de utilidad.
+- **ML.** Los siete algoritmos de la tabla anual tienen coberturas propias iguales dentro de cada familia. Con HG-Rs, las tres regresiones lineales superan 0,440 mm/día, frente a 0,3809 para Extra Trees y 0,3829 para boosting. El AHC anual queda en 0,4127. En HS-Ra y Valiantzas, segmentar más el ML principal empeora ligeramente el RMSE global. Las diferencias ensamblan efectos del calendario, de la malla elegida y del ajuste por estación. Los experimentos no separan causalmente esos factores.
+- **ANN.** Para HG-Rs, ambas variantes mejoran globalmente con calendario mensual. Para HS-Ra y Valiantzas, el estacional tiene menor RMSE que el mensual. Los cambios entre A y E en una misma familia y configuración son del orden de milésimas o menos, sin estimación de incertidumbre. A y E pueden invertir orden en IB01 y en el promedio regional. La capa de 64 fue la más frecuente en DEVELOPMENT y la arquitectura de tres capas se eligió en 14 celdas A y 11 E. La selección más frecuente expresa el resultado de la malla y la regla elegidas, sin una prueba causal de superioridad de profundidad.
+- **Uso práctico.** Añadir indicadores permite representar diferencias estacionales de PM y las entradas, pero amplía el espacio de respuestas e incrementa parámetros en ANN. En AHC divide directamente el número de pares por grupo. Un calendario flexible puede corregir sesgo por estación climática y al mismo tiempo aumentar inestabilidad ante faltantes o cambios meteorológicos. Estas son hipótesis compatibles con los patrones, no diagnósticos comprobados. La decisión operativa exige además coste de sensores, cobertura mínima y criterios prospectivos.
+
+### 12.2. Variación entre estaciones y diagnóstico de residuos
+
+![Mapa de calor de RMSE por estación para HG-Rs anual](et0-v2-figuras/rmse-estaciones.svg)
+
+Para cada estación se cotejaron las claves comunes de los cinco métodos en HG-Rs anual. El color siempre representa error frente a PM. Los extremos siguientes son observados entre las nueve estaciones con pares, sobre cohortes que cambian de una estación a otra. IB07, IB09 e IB101 quedan fuera de esta tabla por ausencia de observaciones retrospectivas.
+
+| Familia anual | Método | Menor RMSE observado (estación, n) | Mayor RMSE observado (estación, n) |
+| --- | --- | --- | --- |
+| HS-Ra | AHC | 0,5529 (IB03, 2.192) | 0,8700 (IB11, 2.188) |
+| HS-Ra | ANN A | 0,4694 (IB04, 2.124) | 0,6067 (IB11, 2.188) |
+| HG-Rs | AHC | 0,3363 (IB08, 2.097) | 0,5548 (IB11, 2.188) |
+| HG-Rs | ANN A | 0,3092 (IB08, 2.097) | 0,4674 (IB11, 2.188) |
+| Valiantzas | AHC | 0,4476 (IB05, 2.154) | 0,6561 (IB11, 2.188) |
+| Valiantzas | ANN A | 0,3882 (IB03, 2.192) | 0,5060 (IB11, 2.188) |
+
+Fuente `retrospective-metrics.csv`, grupo `station`, error en mm/día. IB11 presenta un error relativamente alto en varios métodos de la tabla. Cobertura, clima de la estación, sensores y rango de PM pueden contribuir, pero esta tabla no identifica una causa. No usar extremos de TEST para modificar selecciones.
+
+![Serie diaria de IB01 con HG-Rs anual](et0-v2-figuras/ib01-serie-test.svg)
+
+Se muestran los 365 días de 2023, el año de la fecha mediana superior del ejemplo IB01, sin suavizar la serie. Se aprecia la variación estacional de PM y que las diferencias ocurren también entre días próximos. Las curvas omiten dos métodos para mantener legibilidad. Los 365 días cumplen la intersección de los cinco métodos principales.
+
+![Dispersión y residuos de ANN A en IB01 con HG-Rs anual](et0-v2-figuras/ib01-residuos-test.svg)
+
+En el panel izquierdo, cada punto compara PM y ANN A y la línea discontinua marca igualdad. A la derecha se cuentan los residuos en intervalos de 0,25 mm/día. Se muestran los 2.192 pares comunes de 2020–2025, sin inferir independencia entre días. Ambas figuras se derivan de `predictions.csv.gz` usando IB01/HG-Rs/anual, PM presente y las cinco salidas principales presentes. Para reproducir el histograma, agrupar por `floor((ANN_A − PM)/0.25)`; para la serie, formar trazos con fecha ISO ascendente y las columnas originales. Estas figuras describen concordancia con la referencia calculada.
 
 ## 13. Discusión
 
@@ -237,6 +579,21 @@ Un modelo operativo precisa reglas para sensores ausentes, valores físicos nega
 3. Las redes A y E tuvieron errores globales próximos. La elección entre ellas no queda justificada por diferencias numéricas mínimas sin estabilidad, incertidumbre y coste.
 4. Una evaluación independiente con lisímetros, ensayos prospectivos y estaciones no vistas son prioridades antes de afirmar mejora física o transferibilidad.
 5. La web debe consultar tablas y catálogos versionados sin recalcular ciencia; inferencia futura, previsiones y ETc son trabajos posteriores, no resultados de esta retrospectiva.
+
+### 14.1. Diseños que podrían evaluarse en futuras campañas
+
+Las propuestas abordan preguntas distintas y se evaluarían con un protocolo predeclarado y datos independientes del ajuste. El bloqueo por tiempo y espacio debe alinearse con la extrapolación que se quiera medir [12].
+
+| Línea | Problema y beneficio esperado | Riesgo | Datos y coste | Evaluación propuesta |
+| --- | --- | --- | --- | --- |
+| AHC con regularización parcial o estacionalidad continua | Meses escasos generan coeficientes frágiles. Suavizar o acercar al anual puede estabilizar el ajuste. | Aplana cambios estacionales reales. | Pares diarios y soporte por grupo. Coste bajo o medio y selección de penalización. | Folds cronológicos y análisis por meses escasos, con referencia anual. |
+| AHC con intercepto o restricciones físicas | Un solo factor no corrige offset. Puede mejorar sesgo o evitar estimaciones negativas. | El intercepto altera comportamiento cerca de cero; restringir puede aumentar error. | Pares de baja ET₀, reglas físicas y pérdida fijadas. Coste bajo. | Comparar todos los pares además de bajas tasas; informar sesgo antes y después. |
+| ML con malla ampliada o variables derivadas | Las mallas discretas pueden quedar cortas. Interacciones físicas y modelos adicionales pueden mejorar ajuste. | Búsqueda extensa puede sobreajustar a los folds y elevar dependencia de sensores. | Inventario de variables, coste de sensores, registro de búsqueda. Coste alto si crece la malla. | Ablación sobre cohortes idénticas, búsqueda interior y test reservado independiente. |
+| ML interpretable o con restricciones | Salidas lineales pueden ser negativas y los ensembles son menos transparentes. | Restricciones globales simplifican relaciones físicas condicionadas por otras variables. | Variables físicas y condiciones de aplicabilidad. Coste medio. | Validar restricciones y residuos por régimen. Comparar cobertura y coste de inferencia. |
+| ANN con regularización, salida no negativa o nuevas arquitecturas | Robustez al sobreajuste y coherencia cerca de cero. | Más parámetros, nuevas fuentes de variabilidad y desviación del ajuste original. | Muestras comparables, semillas, trazas de épocas y recursos de cómputo. Coste alto. | Selección anidada por tiempo y sensibilidad a semillas, más evaluación por rango de PM. |
+| ANN con contexto temporal o pooling espacial | Captar estacionalidad y aprovechar estaciones cortas. | Fuga por vecindad temporal o contaminación de la estación retenida. | Series alineadas, metadatos y estaciones reservadas. Coste alto. | Ventanas causales, separación de estación y evaluación en años posteriores. |
+| Validación prospectiva y espacial | Medir estabilidad futura y transferencia a estaciones nuevas. | Cambios observacionales y cobertura desigual. | Años futuros y red de estaciones independientes. Coste de observación alto. | Congelar antes de observar, predeclarar fechas y criterios, auditar cohortes y faltantes. |
+| Validación instrumental e incertidumbre | Medir ET₀ física y tamaño de diferencias. | Pocas observaciones independientes y sesgos de emplazamiento. | Lisímetros comparables, QA, bloques estación-año. Coste alto. | Errores frente a instrumento, intervalos pareados bloqueados y sensibilidad a dependencia. |
 
 ## 15. Reproducibilidad y auditoría
 
@@ -285,6 +642,8 @@ Reproducir la evaluación con modelos conservados no equivale a reconstruir toda
 9. Ferreira, A., Cameira, M. R. y Rolim, J. (2024). Methodology for obtaining ETo data for climate change studies: quality analysis and calibration of the Hargreaves–Samani equation. *Climate*, 12, 205. [DOI: 10.3390/cli12120205](https://doi.org/10.3390/cli12120205).
 10. Bergmeir, C., Hyndman, R. J. y Koo, B. (2018). A note on the validity of cross-validation for evaluating autoregressive time series prediction. *Computational Statistics & Data Analysis*, 120, 70–83. [DOI: 10.1016/j.csda.2017.11.003](https://doi.org/10.1016/j.csda.2017.11.003).
 11. Raimondi, G., Bonato, J. y Maucieri, C. (2026). Machine learning models for reference evapotranspiration estimation in new locations under data-limited conditions in Northeastern Italy. *European Journal of Agronomy*, 178, 128132. [DOI: 10.1016/j.eja.2026.128132](https://doi.org/10.1016/j.eja.2026.128132).
+
+12. Roberts, D. R. et al. (2017). Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. *Ecography*, 40, 913–929. [DOI: 10.1111/ecog.02881](https://doi.org/10.1111/ecog.02881).
 
 ## Anexos
 
@@ -588,51 +947,179 @@ Para un mismo vector válido, sustituir numéricamente el coeficiente V2 por el 
 
 En AHC por mínimos cuadrados sin intercepto, si x′=k x con k positivo constante para todos los pares elegibles y Σx²>0, entonces c′=Σx′y/Σx′²=c/k y c′x′=cx. Así, una diferencia multiplicativa pura queda absorbida **solo** si permanecen idénticos pares, agrupación, soporte y reglas numéricas; no se extrapola esta invariancia a cambios de humedad, exponentes, exclusiones, redondeos o modelos distintos. Los modelos ML/ANN V2 reciben directamente Tmin, Tmax, HR y Ra, no la salida de la fórmula como entrada: cambiar únicamente el coeficiente empírico no exige suponer que sus predicciones existentes cambian, pero podría afectar elegibilidad o soporte si cambiara más que una escala positiva. No se han ejecutado contrafactuales ni recalculado métricas.
 
-### H. Comparación ampliada: errores, sesgos y cobertura
+### H. Diferencias pequeñas y alcance temporal
 
-La siguiente tabla procede de `retrospective-metrics.csv`, filtros `group=global` y `calendar=annual`; MAE, RMSE y sesgo están en mm/día, con sesgo = estimación − PM. Las cinco filas de cada familia comparten 19.251 claves en esta comparación. La cobertura de calendario es propia y su denominador no es el número de pares. Las cifras no justifican reseleccionar configuraciones con TEST.
-
-| Familia | Método | n | MAE | RMSE | Sesgo | R² | Cobertura calendario |
-|---|---|---:|---:|---:|---:|---:|---:|
-| HS_RA_V1 | FORMULA | 19251 | 0,7873 | 0,9491 | 0,5780 | 0,6913 | 97,6632 % |
-| HS_RA_V1 | AHC | 19251 | 0,4938 | 0,6307 | 0,1969 | 0,8637 | 97,6632 % |
-| HS_RA_V1 | ML | 19251 | 0,3996 | 0,5530 | 0,1736 | 0,8952 | 97,6632 % |
-| HS_RA_V1 | ANN_A | 19251 | 0,3854 | 0,5331 | 0,1452 | 0,9026 | 97,6632 % |
-| HS_RA_V1 | ANN_E | 19251 | 0,3850 | 0,5327 | 0,1444 | 0,9028 | 97,6632 % |
-| HG_RS_V1 | FORMULA | 19251 | 0,4743 | 0,5670 | 0,2941 | 0,8898 | 97,6632 % |
-| HG_RS_V1 | AHC | 19251 | 0,3146 | 0,4127 | -0,0040 | 0,9416 | 97,6632 % |
-| HG_RS_V1 | ML | 19251 | 0,2973 | 0,3809 | 0,0669 | 0,9503 | 97,6632 % |
-| HG_RS_V1 | ANN_A | 19251 | 0,2849 | 0,3680 | 0,0427 | 0,9536 | 97,6632 % |
-| HG_RS_V1 | ANN_E | 19251 | 0,2839 | 0,3676 | 0,0389 | 0,9537 | 97,6632 % |
-| VALIANTZAS_V1 | FORMULA | 19251 | 0,4701 | 0,6236 | 0,2371 | 0,8667 | 97,5821 % |
-| VALIANTZAS_V1 | AHC | 19251 | 0,3832 | 0,5122 | 0,1347 | 0,9101 | 97,5821 % |
-| VALIANTZAS_V1 | ML | 19251 | 0,3052 | 0,4388 | 0,1129 | 0,9340 | 97,5821 % |
-| VALIANTZAS_V1 | ANN_A | 19251 | 0,2941 | 0,4210 | 0,0879 | 0,9393 | 97,5821 % |
-| VALIANTZAS_V1 | ANN_E | 19251 | 0,2940 | 0,4209 | 0,0878 | 0,9393 | 97,5821 % |
-
-La diferencia ANN E − ANN A del RMSE anual es −0,000424 mm/día en HS-Ra, −0,000438 en HG-Rs y −0,000062 en Valiantzas, a partir de los valores sin redondear de esa tabla. Son diferencias descriptivas pequeñas; no se ha cuantificado su incertidumbre. En HG-Rs mensual, ANN A obtiene 0,3279 frente a 0,3285 de ANN E, ilustrando que el menor valor depende de familia y resolución. Escoger el mínimo en este TEST para sustituir el modelo ya congelado sería reselección retrospectiva.
-
-Figura H1. RMSE de ANN A con HG-Rs anual por estación, en mm/día, sobre las claves comunes de cada estación (tabla del capítulo 4). Las alturas comparan error, pero cada estación aporta diferente número de pares.
-
-```mermaid
-xychart-beta
-    title "ANN A y HG-Rs anual: RMSE por estación"
-    x-axis ["IB01", "IB02", "IB03", "IB04", "IB05", "IB06", "IB08", "IB10", "IB11"]
-    y-axis "RMSE (mm/día)" 0 --> 0.5
-    bar [0.3683, 0.3933, 0.3715, 0.3231, 0.3283, 0.3824, 0.3092, 0.3406, 0.4674]
-```
-
-Figura H2. ANN A con HG-Rs: RMSE común por resolución, mm/día. Las predicciones siguen siendo diarias.
-
-```mermaid
-xychart-beta
-    title "ANN A y HG-Rs: resolución de ajuste"
-    x-axis ["Anual", "Estacional", "Mensual"]
-    y-axis "RMSE (mm/día)" 0 --> 0.4
-    bar [0.3680, 0.3368, 0.3279]
-```
+En el calendario anual, el RMSE de ANN E menos el de ANN A es −0,000424 mm/día en HS-Ra, −0,000438 en HG-Rs y −0,000062 en Valiantzas. La comparación utiliza los valores sin redondear de `retrospective-metrics.csv`. La incertidumbre de esas diferencias permanece sin cuantificar.
 
 **Por qué más segmentos no aseguran mejora.** Los indicadores mensuales permiten diferencias sistemáticas entre meses, pero fraccionan el soporte de calibración y aumentan parámetros o flexibilidad respecto al ajuste anual. Pueden reducir sesgo estacional, pero también aumentar varianza y fragilidad frente a meses con pocos pares. En los datos globales, ANN A de HS-Ra pasa de 0,5331 anual a 0,5353 mensual, mientras HG-Rs baja de 0,3680 a 0,3279; los valores no establecen por sí solos la causa de esas diferencias. Los autores Ferreira et al. [9] examinaron calibración y complejidad en otra región; no es una validación de la causalidad en Baleares.
 
 Dejar un año fuera puede usar años posteriores al retenido en el entrenamiento. Por ello mide estabilidad entre años del periodo de desarrollo y no simula estrictamente una predicción operativa hacia el futuro. Bergmeir et al. [10] estudian condiciones específicas bajo las que cierta validación cruzada puede aplicarse a modelos autorregresivos; esas condiciones no se han demostrado aquí. El TEST 2020–2025 permanece posterior al desarrollo, pero es retrospectivo y las estaciones se conocían. Un ensayo prospectivo y una prueba espacial con estaciones no vistas responden a preguntas adicionales [11].
 
+### I. Límite de la evidencia de entrenamiento
+
+La cadena de integridad permite identificar ajustes concluidos a partir de archivos, índices y resultados por fold. Las llamadas que pudieron interrumpirse antes de terminar quedan fuera del recuento. Los registros de épocas de ANN se refieren a la validación interna y al reajuste por semilla. El número de refits por algoritmo se obtiene de los objetos archivados, no de un contador global de CPU o de tiempo de ejecución.
+
+### J. Inventario por estación y familia
+
+Los conteos corresponden a modelos serializados en el árbol congelado. Cada configuración soportada cuenta una celda por etapa. AHC presenta 3 fichas por estación y familia, con las excepciones de **grupos** descritas en el capítulo 7. Un ensemble por regla tiene tres redes. Las estaciones históricas figuran aquí por su contribución a DEVELOPMENT.
+
+| Estación | Familia | Configuraciones con selección | ML serializados | Ensembles A | Ensembles E | Redes finales A + E |
+| --- | --- | --- | --- | --- | --- | --- |
+| IB01 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB01 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB01 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB02 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB02 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB02 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB03 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB03 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB03 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB04 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB04 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB04 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB05 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB05 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB05 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB06 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB06 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB06 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB07 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB07 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB07 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB08 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB08 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB08 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB09 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB09 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB09 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB10 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB10 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB10 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB101 | HS-Ra | Anual, Estacional | 14 | 2 | 2 | 12 |
+| IB101 | HG-Rs | Anual, Estacional | 14 | 2 | 2 | 12 |
+| IB101 | Valiantzas | Anual, Estacional | 14 | 2 | 2 | 12 |
+| IB11 | HS-Ra | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB11 | HG-Rs | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+| IB11 | Valiantzas | Anual, Estacional, Mensual | 21 | 3 | 3 | 18 |
+
+### K. Malla ML completa
+
+Cada objeto representa la configuración adicional de un candidato. Parámetros fijos se combinan con cada objeto y los restantes valores los proporciona la versión fijada de scikit-learn. `null` significa profundidad sin cota explícita. Se conservan todas las combinaciones exactas, incluidas las cuatro de cada bosque y las cuatro de boosting. [Protocolo ML base fijado](https://github.com/lependens/Capitulo-1/blob/1e419ad881db1cc9798685ef19f414862461674b/scientific_pipeline/experiments/ml-v1-classical.json).
+
+| Algoritmo | N | Ejes o combinaciones | Parámetros fijos explícitos |
+| --- | --- | --- | --- |
+| LINEAR | 1 | `{}` | `{}` |
+| RIDGE | 6 | `{"alpha":0.001}`<br>`{"alpha":0.01}`<br>`{"alpha":0.1}`<br>`{"alpha":1}`<br>`{"alpha":10}`<br>`{"alpha":100}` | `{}` |
+| ELASTIC_NET | 12 | `{"alpha":0.0001,"l1_ratio":0.1}`<br>`{"alpha":0.0001,"l1_ratio":0.5}`<br>`{"alpha":0.0001,"l1_ratio":0.9}`<br>`{"alpha":0.001,"l1_ratio":0.1}`<br>`{"alpha":0.001,"l1_ratio":0.5}`<br>`{"alpha":0.001,"l1_ratio":0.9}`<br>`{"alpha":0.01,"l1_ratio":0.1}`<br>`{"alpha":0.01,"l1_ratio":0.5}`<br>`{"alpha":0.01,"l1_ratio":0.9}`<br>`{"alpha":0.1,"l1_ratio":0.1}`<br>`{"alpha":0.1,"l1_ratio":0.5}`<br>`{"alpha":0.1,"l1_ratio":0.9}` | `{"max_iter":20000,"tol":1e-06,"selection":"cyclic"}` |
+| TREE | 6 | `{"max_depth":4,"min_samples_leaf":20,"min_samples_split":20}`<br>`{"max_depth":4,"min_samples_leaf":80,"min_samples_split":100}`<br>`{"max_depth":8,"min_samples_leaf":20,"min_samples_split":20}`<br>`{"max_depth":8,"min_samples_leaf":80,"min_samples_split":100}`<br>`{"max_depth":12,"min_samples_leaf":20,"min_samples_split":20}`<br>`{"max_depth":12,"min_samples_leaf":80,"min_samples_split":100}` | `{"criterion":"squared_error","random_state":20261025}` |
+| RANDOM_FOREST | 4 | `{"n_estimators":200,"max_depth":12,"min_samples_leaf":1,"min_samples_split":2,"max_features":1}`<br>`{"n_estimators":200,"max_depth":12,"min_samples_leaf":5,"min_samples_split":10,"max_features":0.7}`<br>`{"n_estimators":200,"max_depth":null,"min_samples_leaf":1,"min_samples_split":2,"max_features":0.7}`<br>`{"n_estimators":200,"max_depth":null,"min_samples_leaf":5,"min_samples_split":10,"max_features":1}` | `{"criterion":"squared_error","bootstrap":true,"random_state":20261025,"n_jobs":1}` |
+| EXTRA_TREES | 4 | `{"n_estimators":200,"max_depth":12,"min_samples_leaf":1,"min_samples_split":2,"max_features":1}`<br>`{"n_estimators":200,"max_depth":12,"min_samples_leaf":5,"min_samples_split":10,"max_features":0.7}`<br>`{"n_estimators":200,"max_depth":null,"min_samples_leaf":1,"min_samples_split":2,"max_features":0.7}`<br>`{"n_estimators":200,"max_depth":null,"min_samples_leaf":5,"min_samples_split":10,"max_features":1}` | `{"criterion":"squared_error","bootstrap":false,"random_state":20261025,"n_jobs":1}` |
+| HIST_GRADIENT_BOOSTING | 4 | `{"max_iter":200,"learning_rate":0.05,"max_leaf_nodes":15,"l2_regularization":0}`<br>`{"max_iter":200,"learning_rate":0.05,"max_leaf_nodes":31,"l2_regularization":1}`<br>`{"max_iter":200,"learning_rate":0.1,"max_leaf_nodes":15,"l2_regularization":1}`<br>`{"max_iter":200,"learning_rate":0.1,"max_leaf_nodes":31,"l2_regularization":0}` | `{"loss":"squared_error","early_stopping":false,"random_state":20261025}` |
+
+### L. Variantes ML y resultados globales
+
+Las siete variantes se comparan por familia en calendario anual. Se comprobó que cada bloque coincide en n y hash de claves. La cobertura propia es de calendario, y los errores están en mm/día. R² es predictivo. Las métricas corresponden al candidato de cada algoritmo elegido en DEVELOPMENT y reajustado con esos datos. Se conservan las 9.612 filas completas para el resto de calendarios y cortes.
+
+| Familia anual | Algoritmo | n | MAE | RMSE | Sesgo | R² | Cob. propia |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| HS-Ra | LINEAR | 19251 | 0,4672 | 0,6221 | 0,1776 | 0,8674 | 97,66 % |
+| HS-Ra | RIDGE | 19251 | 0,4674 | 0,6220 | 0,1775 | 0,8674 | 97,66 % |
+| HS-Ra | ELASTIC_NET | 19251 | 0,4671 | 0,6218 | 0,1775 | 0,8675 | 97,66 % |
+| HS-Ra | TREE | 19251 | 0,4191 | 0,5772 | 0,1728 | 0,8858 | 97,66 % |
+| HS-Ra | RANDOM_FOREST | 19251 | 0,4036 | 0,5587 | 0,1766 | 0,8930 | 97,66 % |
+| HS-Ra | EXTRA_TREES | 19251 | 0,3993 | 0,5531 | 0,1725 | 0,8952 | 97,66 % |
+| HS-Ra | HIST_GRADIENT_BOOSTING | 19251 | 0,4030 | 0,5560 | 0,1775 | 0,8941 | 97,66 % |
+| HG-Rs | LINEAR | 19251 | 0,3460 | 0,4406 | 0,0767 | 0,9335 | 97,66 % |
+| HG-Rs | RIDGE | 19251 | 0,3463 | 0,4411 | 0,0768 | 0,9333 | 97,66 % |
+| HG-Rs | ELASTIC_NET | 19251 | 0,3464 | 0,4409 | 0,0767 | 0,9334 | 97,66 % |
+| HG-Rs | TREE | 19251 | 0,3133 | 0,4012 | 0,0676 | 0,9448 | 97,66 % |
+| HG-Rs | RANDOM_FOREST | 19251 | 0,3021 | 0,3867 | 0,0709 | 0,9488 | 97,66 % |
+| HG-Rs | EXTRA_TREES | 19251 | 0,2971 | 0,3809 | 0,0646 | 0,9503 | 97,66 % |
+| HG-Rs | HIST_GRADIENT_BOOSTING | 19251 | 0,2989 | 0,3829 | 0,0696 | 0,9498 | 97,66 % |
+| Valiantzas | LINEAR | 19251 | 0,3723 | 0,4960 | 0,1088 | 0,9157 | 97,58 % |
+| Valiantzas | RIDGE | 19251 | 0,3723 | 0,4960 | 0,1087 | 0,9157 | 97,58 % |
+| Valiantzas | ELASTIC_NET | 19251 | 0,3723 | 0,4959 | 0,1084 | 0,9157 | 97,58 % |
+| Valiantzas | TREE | 19251 | 0,3502 | 0,4938 | 0,1166 | 0,9164 | 97,58 % |
+| Valiantzas | RANDOM_FOREST | 19251 | 0,3099 | 0,4421 | 0,1135 | 0,9330 | 97,58 % |
+| Valiantzas | EXTRA_TREES | 19251 | 0,3052 | 0,4388 | 0,1129 | 0,9340 | 97,58 % |
+| Valiantzas | HIST_GRADIENT_BOOSTING | 19251 | 0,3128 | 0,4463 | 0,1161 | 0,9317 | 97,58 % |
+
+Métricas globales de los cinco métodos principales, por familia y calendario. Fuente `retrospective-metrics.csv`, grupo `global`, clave `all`.
+
+| Familia | Configuración | Método | n | MAE | RMSE | Sesgo | R² | Cobertura |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| HS-Ra | Anual | FORMULA | 19251 | 0,7873 | 0,9491 | 0,5780 | 0,6913 | 97,66 % |
+| HS-Ra | Anual | AHC | 19251 | 0,4938 | 0,6307 | 0,1969 | 0,8637 | 97,66 % |
+| HS-Ra | Anual | ML | 19251 | 0,3996 | 0,5530 | 0,1736 | 0,8952 | 97,66 % |
+| HS-Ra | Anual | ANN_A | 19251 | 0,3854 | 0,5331 | 0,1452 | 0,9026 | 97,66 % |
+| HS-Ra | Anual | ANN_E | 19251 | 0,3850 | 0,5327 | 0,1444 | 0,9028 | 97,66 % |
+| HS-Ra | Estacional | FORMULA | 19251 | 0,7873 | 0,9491 | 0,5780 | 0,6913 | 97,66 % |
+| HS-Ra | Estacional | AHC | 19251 | 0,4712 | 0,6212 | 0,1635 | 0,8678 | 97,66 % |
+| HS-Ra | Estacional | ML | 19251 | 0,4027 | 0,5571 | 0,1845 | 0,8936 | 97,66 % |
+| HS-Ra | Estacional | ANN_A | 19251 | 0,3794 | 0,5236 | 0,1336 | 0,9061 | 97,66 % |
+| HS-Ra | Estacional | ANN_E | 19251 | 0,3796 | 0,5238 | 0,1337 | 0,9060 | 97,66 % |
+| HS-Ra | Mensual | FORMULA | 19251 | 0,7873 | 0,9491 | 0,5780 | 0,6913 | 97,66 % |
+| HS-Ra | Mensual | AHC | 19251 | 0,4684 | 0,6202 | 0,1611 | 0,8682 | 97,66 % |
+| HS-Ra | Mensual | ML | 19251 | 0,4036 | 0,5581 | 0,1855 | 0,8933 | 97,66 % |
+| HS-Ra | Mensual | ANN_A | 19251 | 0,3895 | 0,5353 | 0,1440 | 0,9018 | 97,66 % |
+| HS-Ra | Mensual | ANN_E | 19251 | 0,3902 | 0,5357 | 0,1453 | 0,9017 | 97,66 % |
+| HG-Rs | Anual | FORMULA | 19251 | 0,4743 | 0,5670 | 0,2941 | 0,8898 | 97,66 % |
+| HG-Rs | Anual | AHC | 19251 | 0,3146 | 0,4127 | -0,0040 | 0,9416 | 97,66 % |
+| HG-Rs | Anual | ML | 19251 | 0,2973 | 0,3809 | 0,0669 | 0,9503 | 97,66 % |
+| HG-Rs | Anual | ANN_A | 19251 | 0,2849 | 0,3680 | 0,0427 | 0,9536 | 97,66 % |
+| HG-Rs | Anual | ANN_E | 19251 | 0,2839 | 0,3676 | 0,0389 | 0,9537 | 97,66 % |
+| HG-Rs | Estacional | FORMULA | 19251 | 0,4743 | 0,5670 | 0,2941 | 0,8898 | 97,66 % |
+| HG-Rs | Estacional | AHC | 19251 | 0,3009 | 0,3987 | -0,0227 | 0,9455 | 97,66 % |
+| HG-Rs | Estacional | ML | 19251 | 0,2713 | 0,3529 | 0,0790 | 0,9573 | 97,66 % |
+| HG-Rs | Estacional | ANN_A | 19251 | 0,2548 | 0,3368 | 0,0480 | 0,9611 | 97,66 % |
+| HG-Rs | Estacional | ANN_E | 19251 | 0,2534 | 0,3355 | 0,0461 | 0,9614 | 97,66 % |
+| HG-Rs | Mensual | FORMULA | 19251 | 0,4743 | 0,5670 | 0,2941 | 0,8898 | 97,66 % |
+| HG-Rs | Mensual | AHC | 19251 | 0,2966 | 0,3953 | -0,0296 | 0,9465 | 97,66 % |
+| HG-Rs | Mensual | ML | 19251 | 0,2638 | 0,3448 | 0,0815 | 0,9593 | 97,66 % |
+| HG-Rs | Mensual | ANN_A | 19251 | 0,2491 | 0,3279 | 0,0638 | 0,9632 | 97,66 % |
+| HG-Rs | Mensual | ANN_E | 19251 | 0,2505 | 0,3285 | 0,0670 | 0,9630 | 97,66 % |
+| Valiantzas | Anual | FORMULA | 19251 | 0,4701 | 0,6236 | 0,2371 | 0,8667 | 97,58 % |
+| Valiantzas | Anual | AHC | 19251 | 0,3832 | 0,5122 | 0,1347 | 0,9101 | 97,58 % |
+| Valiantzas | Anual | ML | 19251 | 0,3052 | 0,4388 | 0,1129 | 0,9340 | 97,58 % |
+| Valiantzas | Anual | ANN_A | 19251 | 0,2941 | 0,4210 | 0,0879 | 0,9393 | 97,58 % |
+| Valiantzas | Anual | ANN_E | 19251 | 0,2940 | 0,4209 | 0,0878 | 0,9393 | 97,58 % |
+| Valiantzas | Estacional | FORMULA | 19251 | 0,4701 | 0,6236 | 0,2371 | 0,8667 | 97,58 % |
+| Valiantzas | Estacional | AHC | 19251 | 0,3780 | 0,5094 | 0,1342 | 0,9111 | 97,58 % |
+| Valiantzas | Estacional | ML | 19251 | 0,3071 | 0,4410 | 0,1207 | 0,9334 | 97,58 % |
+| Valiantzas | Estacional | ANN_A | 19251 | 0,2903 | 0,4160 | 0,0866 | 0,9407 | 97,58 % |
+| Valiantzas | Estacional | ANN_E | 19251 | 0,2906 | 0,4161 | 0,0891 | 0,9407 | 97,58 % |
+| Valiantzas | Mensual | FORMULA | 19251 | 0,4701 | 0,6236 | 0,2371 | 0,8667 | 97,58 % |
+| Valiantzas | Mensual | AHC | 19251 | 0,3764 | 0,5072 | 0,1387 | 0,9118 | 97,58 % |
+| Valiantzas | Mensual | ML | 19251 | 0,3076 | 0,4412 | 0,1222 | 0,9333 | 97,58 % |
+| Valiantzas | Mensual | ANN_A | 19251 | 0,2963 | 0,4233 | 0,1047 | 0,9386 | 97,58 % |
+| Valiantzas | Mensual | ANN_E | 19251 | 0,2964 | 0,4232 | 0,1064 | 0,9386 | 97,58 % |
+
+### M. Posibilidades de explotación y web
+
+Las tablas de predicción y métricas pueden consultarse con el [contrato de lectura](et0_v2_handoff_web.md). Los checkpoints y metadatos de modelos son evidencias DEVELOPMENT, con acceso separado del catálogo web. Antes de comparar dos grupos, mostrar disponibilidad, claves, denominador y recuento. Las propuestas que requieren derivación deben versionarse y conservar origen, unidades y lógica explícita.
+
+| Comparativa | Datos necesarios | Artefacto | Disponible | Límite y derivación |
+| --- | --- | --- | --- | --- |
+| Entre estaciones | RMSE, MAE, sesgo, R², n y días calendario | `retrospective-metrics.csv`, `station` | Sí | Cohortes distintas entre estaciones. Mostrar cobertura y señalar históricas sin TEST. |
+| Familias y fórmulas | Predicción de fórmula y PM por estación-fecha | `predictions.csv.gz` o Parquet particionado | Sí | Sensores diferentes. Para comparación transversal, intersectar claves y registrar hash. |
+| Fórmula, AHC, ML y ANN | Salidas del grupo principal y referencia | Métricas y catálogo | Sí | Usar `common_core` dentro de familia/calendario. |
+| Siete algoritmos ML | Columnas `ML_*`, n y hash | Predicciones y métricas por variante | Sí | Comprobar igualdad de hash. Si difiere, calcular métricas descriptivas sobre nueva intersección. |
+| Candidatos ANN | Arquitectura, semillas, épocas, folds y métricas | `ANN_A/ANN_E/<celda>/candidates/*.json` | Sí, con acceso a evidencia DEVELOPMENT | Solo DEVELOPMENT; los descartados carecen de evaluación TEST. Requiere una tabla ligera de metadatos si se integra en web. |
+| Arquitecturas seleccionadas, ANN A y E | ID, parámetros, épocas, métricas y salida diaria | `frozen.json`, `index.json`, `retrospective-metrics.csv` | Sí | Unir por estación/familia/calendario y variante, verificando freeze. Evitar cargar los binarios en la web. |
+| Calendario anual, estacional y mensual | Método, calendario, claves comparables y cobertura | Métricas y predicciones | Sí | Resolución de ajuste, estimación diaria. Comprobar intersección antes de atribuir diferencias. |
+| Años, meses y estaciones climáticas | Dimensiones guardadas de calendario | `retrospective-metrics.csv` | Sí | Para cruces adicionales, seleccionar fechas y recalcular solo métricas descriptivas en las mismas predicciones. |
+| Coeficientes AHC | Coeficientes por grupo, n, suma de cuadrados, scope | `AHC/<celda>/frozen.json` y `ahc-full-history-in-sample.csv` | Sí | Indicar ámbito DEVELOPMENT o histórico completo dentro de muestra. Exportación futura por claves de grupo. |
+| Cobertura y calidad | Calendario, pares de referencia, presentes y estados | Métricas, predicciones, catálogo | Sí | No derivar QC completo a partir de `eligibility_status` web. |
+| Error por condición meteorológica | Variables diarias, referencia y salida | Dataset v1 de hash fijado, predicciones por estación-fecha | Insumos sí, tabla pendiente | Requiere unión y bins predefinidos, control de faltantes y cohortes. El portafolio actual no demuestra causalidad. |
+| Estaciones nuevas o validación instrumental | Predicciones y referencia independiente | Sin cobertura V2 | No | Requiere nueva recogida o campaña autorizada. |
+
+El [generador de figuras](et0-v2-figuras/generar_figuras.py) toma una copia del árbol congelado y la carpeta original de retrospectiva. Verifica el freeze, los índices, las fichas utilizadas y los hashes de métricas y predicciones. Escribe seis SVG en un directorio nuevo.
+
+~~~bash
+python scientific_pipeline/docs/et0-v2-figuras/generar_figuras.py \
+  --run /ruta/et0-v2-official-20261111 \
+  --retrospective /ruta/retrospectiva-370251881 \
+  --output /ruta/nueva/figuras
+~~~
+
+Artefactos de referencia en esta ampliación. `retrospective-metrics.csv` SHA256 `18381641c03e80c97a3880726c1a593d44773ab0d2d8b0adef30432424b6618d`. `predictions.csv.gz` SHA256 `bc9d2ff65122edd44229ce9baf8a7a39257f67126c24486ba0293a761ae8b969`. `ahc-full-history-in-sample.csv` SHA256 `0be2ce0f8e9534251743a3aea091ba1c530d4aa52305694cc43b8814a712b70d`. El archivo de predicciones original es ancho y tiene **173.448** filas estación-fecha-familia-calendario. Sus 12 columnas de métodos explican las **2.081.376** filas del derivado largo, incluidas salidas ausentes.

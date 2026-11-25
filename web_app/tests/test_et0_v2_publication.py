@@ -66,3 +66,23 @@ def test_real_series_retains_publication_values(v2):
     assert client.get("/api/et0-v2/series", params=dict(params, cohort="common_core")).status_code == 422
     assert client.get("/api/et0-v2/series", params=dict(params, end="2022-01-01")).status_code == 422
     assert client.get("/api/et0-v2/series", params=dict(params, station="IB09")).json()["points"] == []
+
+
+def test_comparison_matches_published_metrics(v2):
+    client, _ = v2
+    selection = dict(formula="HG_RS_V1", group="station", key=["IB01", "IB04"],
+                     calendar=["annual", "monthly"], method=["AHC", "ANN_A"])
+    response = client.get("/api/et0-v2/comparison", params=selection)
+    assert response.status_code == 200
+    rows = response.json()["rows"]
+    expected = []
+    for key in selection["key"]:
+        for calendar in selection["calendar"]:
+            result = client.get("/api/et0-v2/metrics", params=dict(
+                selection, key=key, calendar=calendar))
+            expected.extend(result.json()["rows"])
+    identity = lambda row: (row["key"], row["calendar"], row["method"])
+    assert len(rows) == 8
+    assert sorted(rows, key=identity) == sorted(expected, key=identity)
+    assert client.get("/api/et0-v2/comparison", params=dict(
+        selection, key=["wrong"])).status_code == 422

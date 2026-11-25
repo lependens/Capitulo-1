@@ -150,6 +150,20 @@ def router(directory, catalog_sha, stations, location_path=None, mode="approved"
                 == (formula, calendar, group, key)]
         return dict(source=source, scope="RETROSPECTIVE", rows=scores(rows, method))
 
+    @api.get("/comparison")
+    def comparison(formula: Formula, group: Group,
+                   calendar: Annotated[list[Calendar], Query(min_length=1, max_length=3)],
+                   key: Annotated[list[str], Query(min_length=1, max_length=12)],
+                   method: Annotated[list[str] | None, Query()] = None):
+        validate_methods(method)
+        selected_keys = set(key)
+        if not selected_keys <= set(group_keys.get(group, [])):
+            raise HTTPException(422, "Grupo y claves incompatibles")
+        calendars = set(calendar)
+        rows = [row for row in metric_rows if row["family"] == formula and row["group"] == group
+                and row["key"] in selected_keys and row["calendar"] in calendars]
+        return dict(source=source, scope="RETROSPECTIVE", rows=scores(rows, method))
+
     @api.get("/evolution")
     def evolution(formula: Formula, calendar: Calendar, station: str | None = None,
                   method: Annotated[list[str] | None, Query()] = None):

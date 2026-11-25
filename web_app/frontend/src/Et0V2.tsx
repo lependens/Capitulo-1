@@ -29,7 +29,7 @@ function StationMap({stations, current, select}: {stations: Station[]; current: 
   </div>;
 }
 
-function StationPage({catalog, current, select, compare}: {
+export function StationPage({catalog, current, select, compare}: {
   catalog: Catalog; current: string; select: (code:string)=>void; compare: ()=>void;
 }) {
   const [variable, setVariable] = useState<Variable>('TempMedia');

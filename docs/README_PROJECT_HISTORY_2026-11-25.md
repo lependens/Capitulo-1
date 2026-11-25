@@ -1,0 +1,549 @@
+> Copia histórica del README anterior al corte del 25/11/2026. Para estado y navegación vigentes, consultar el [README principal](../README.md).
+
+> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia; V2 DEVELOPMENT completo reportado; retrospectiva ejecutada con validación pendiente y preservación externa pendiente.
+
+# Capítulo 1 — Proyectos y ampliaciones del TFG
+
+Este repositorio contiene la evolución y ampliación del trabajo realizado originalmente en el TFG, incorporando nuevas herramientas, datos actualizados, automatización, análisis de evapotranspiración de referencia (ET₀), Machine Learning y futuras aplicaciones orientadas a la predicción y al riego.
+
+El proyecto comenzó como una continuación experimental del TFG y ha evolucionado progresivamente hacia una infraestructura de datos y modelado para las estaciones meteorológicas SIAR de las Islas Baleares.
+
+
+---
+
+# 1. Origen del proyecto
+
+El punto de partida es el TFG original, basado en la estimación de la evapotranspiración de referencia mediante diferentes métodos y modelos de redes neuronales.
+
+A partir de ese trabajo se planteó la posibilidad de:
+
+* migrar los cálculos a Python;
+* obtener datos meteorológicos actualizados;
+* automatizar el tratamiento de datos;
+* comparar métodos de estimación de ET₀;
+* desarrollar nuevos modelos de Machine Learning;
+* crear herramientas de visualización;
+* estudiar la predicción futura de ET₀;
+* aplicar posteriormente los resultados a necesidades de riego.
+
+La documentación histórica de esta evolución se conserva en los diferentes archivos `docs_*.md`.
+
+---
+
+# 2. Mapa de documentación
+
+## Estado actual y componentes
+
+**Actualizado: 2026-11-11.** El estado maestro está en PROJECT_STATUS; las descripciones de desarrollo y diagramas conceptuales conservan el contexto histórico. Quality está cerrada; Dataset v1, cuatro baselines y AHC ya existen. WEB-V0.3 Scientific Explorer está desplegada; ML clásico y ANN moderna v1 PASS, con WEB-V0.3 Scientific Explorer PASS / DEPLOYED.
+
+- [Estado actual del proyecto](../docs/PROJECT_STATUS.md) — punto de recuperación y situación consolidada.
+- [Hoja de ruta](../docs/ROADMAP.md) — líneas paralelas, fases y próximos hitos.
+- [Hitos del proyecto](../docs/MILESTONES.md) — decisiones y resultados materiales, registro append-only.
+- [Calidad SIAR](../docs/siar/quality.md) — política y formatos de Quality Audit v1.
+- [Estado de sincronización SIAR](../docs/siar/sync-status.md) — Quality cerrado, POST corregido y runtime Sync HOLD.
+- [SIAR Sync](../siar-sync/README.md) — documentación del componente y de su configuración.
+- [Forecast SIAR](../forecast_collector/README.md) — contrato, runtime permanente y límites del capturador raw v0.1.
+- [AEMET Forecast Collector](../aemet_forecast_collector/README.md) — Collector Track A municipal, raw append-only y política POSIX.
+- [Pipeline científico y resultados oficiales](../scientific_pipeline/README.md) — cuatro baselines, AHC y ML clásico PASS, con linaje y límites de evaluación.
+- [Modelos ML clásicos — explicación 1.2.6](../docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md) — de ecuaciones y calibración a modelos aprendidos, resultados y límites.
+- [Aplicación web](../web_app/README.md) — WEB-V0.3 Scientific Explorer desplegada en LAN, consumo de ciencia publicada read-only.
+- [Dónde consultar los datos y resultados](../docs/DATA_LOCATIONS.md) — raw, Quality, dataset, métricas y backups.
+- [Backup y recuperación](../docs/backup/README.md) — cobertura, operación y restore; ingestión Windows PASS tras finalización explícita y READY firmado (01/11/2026).
+- [Consolidación AHC/backup](../docs/REPO_AUDIT_AHC_BACKUP_2026-10-25.md) — registro histórico del cierre AHC/backup del 25/10.
+- [Auditoría documental 24/10](../docs/REPO_AUDIT_2026-10-24.md) — registro histórico de la etapa anterior.
+- [Auditoría documental 23/10](../docs/DOCUMENTATION_AUDIT_2026-10.md) — registro histórico preservado.
+- [Archivo legacy](../legacy/README.md) — código y resultados históricos/no productivos.
+
+## 2.1 Objetivos
+
+### [1.0 — Objetivos alcanzables](../docs_1.0_Objetivos%20alcanzables.md)
+
+Documento que recoge los objetivos iniciales del proyecto y su evolución.
+
+Incluye:
+
+* obtención de datos;
+* exploración;
+* migración de cálculos;
+* modelos de ET₀;
+* automatización;
+* visualización;
+* integración de IA;
+* evolución de los objetivos durante 2026.
+
+---
+
+## 2.2 Obtención de datos
+
+### [1.1 — Obtención de datos](../docs_1.1_Obtenci%C3%B3n%20de%20datos.md)
+
+Documento dedicado a la evolución del sistema de adquisición de datos SIAR.
+
+Incluye:
+
+* primeras consultas a SIAR;
+* identificación de estaciones;
+* estaciones de Baleares;
+* descargas históricas;
+* consultas por períodos;
+* formato de los CSV;
+* API oficial;
+* detección de cobertura;
+* detección de huecos;
+* actualización automática;
+* validación;
+* Docker;
+* Git;
+* SIAR Sync;
+* futura recopilación de predicciones.
+
+---
+
+## 2.3 Tratamiento de datos y cálculo de ET₀
+
+### [1.2 — Tratamiento de datos y cálculo de estimaciones](../docs_1.2_Tratamiento%20de%20datos%20y%20c%C3%A1lculo%20de%20estimaciones.md)
+
+Documentación del tratamiento de los datos meteorológicos y de la implementación de los cálculos de ET₀.
+
+Incluye el trabajo realizado con:
+
+* depuración;
+* preparación de datos;
+* Penman-Monteith;
+* radiación;
+* variables meteorológicas;
+* cálculo de Ra;
+* cálculo de Rso;
+* comparación con ET₀ de SIAR.
+
+---
+
+## 2.4 Análisis de errores
+
+### [1.3 — Análisis errores](../docs_1.3_An%C3%A1lisis%20errores.md)
+
+Documentación de la comparación entre diferentes métodos de estimación de ET₀.
+
+Se estudian diferentes métricas y métodos, incluyendo:
+
+* MSE;
+* RMSE;
+* MAE;
+* R²;
+* AARE;
+* Penman-Monteith;
+* Hargreaves;
+* variantes de Hargreaves;
+* Valiantzas;
+* métodos ajustados.
+
+Este documento sirve como continuación del análisis realizado en el TFG y como base para futuras comparaciones con Machine Learning.
+
+---
+
+## 2.5 Redes neuronales
+
+### [1.4 — Modelos redes neuronales](../docs_1.4_Modelos%20redes%20neuronales.md)
+
+Documentación de los primeros modelos de redes neuronales desarrollados a partir de los datos meteorológicos.
+
+Esta fase permite conectar el análisis clásico de ET₀ con los posteriores experimentos de Machine Learning.
+
+---
+
+## 2.6 Estimación de ET₀ mediante ANN
+
+### [2.1 — Estimación ET₀ ANN (TensorFlow)](../docs_2.1_Estimaci%C3%B3n%20Et0%20ANN%20%28tensorflow%29.md)
+
+Documentación de la implementación de redes neuronales artificiales para estimar ET₀ utilizando Python, TensorFlow y Keras.
+
+Esta etapa representa la transición hacia una infraestructura de Machine Learning más completa.
+
+---
+
+# 3. Estructura conceptual del proyecto
+
+El proyecto actual se organiza en varias capas:
+
+```text
+                    PROYECTO SIAR BALEARES
+                             │
+             ┌───────────────┴───────────────┐
+             │                               │
+       DATOS HISTÓRICOS                 PREDICCIONES
+             │                               │
+         SIAR Sync                    Forecast Collector
+             │                               │
+             └───────────────┬───────────────┘
+                             │
+                             ↓
+                     DATASET CIENTÍFICO
+                             │
+                ┌────────────┴────────────┐
+                │                         │
+              ET₀                   MACHINE LEARNING
+                │                         │
+        Métodos clásicos          ANN / otros modelos
+                │                         │
+                └────────────┬────────────┘
+                             │
+                             ↓
+                       VALIDACIÓN
+                             │
+                    ┌────────┴────────┐
+                    │                 │
+                HISTÓRICA         PREDICTIVA
+                    │                 │
+                    └────────┬────────┘
+                             │
+                             ↓
+                         WEB / API
+                             │
+                             ↓
+                       ET₀ → Kc → ETc
+                             │
+                             ↓
+                           RIEGO
+```
+
+---
+
+## Estructura actual del monorepo
+
+```text
+Capitulo-1/
+├── siar-sync/
+├── forecast_collector/
+├── aemet_forecast_collector/
+├── datos_siar_baleares/       # 12 CSV canónicos IB01–IB11 + IB101
+├── data_quality/siar/         # POST original y POST corregido versionados
+├── scientific_pipeline/      # cuatro baselines, AHC y runtime ML rolling
+├── web_app/                  # WEB-V0.3 Scientific Explorer, consulta read-only
+├── legacy/                    # código y datos históricos
+├── docs/
+│   ├── PROJECT_STATUS.md
+│   ├── ROADMAP.md
+│   ├── MILESTONES.md
+│   ├── backup/               # arquitectura, cobertura, operación y restore
+│   └── siar/
+├── estaciones_baleares.csv
+└── README.md
+```
+
+El backfill temporal de adquisición ha alcanzado las 12 estaciones: IB01–IB11 e IB101 tienen su CSV canónico. Quality está COMPLETE con POST corregido; la cobertura observacional es 96.987410 % por 2.345 ausencias SIAR confirmadas. No equivale a observaciones completas para todos los días ni a validación instrumental exhaustiva.
+
+---
+
+# 4. Evolución de la infraestructura — contexto 2026
+
+**Estado vigente:** SIAR-SYNC-RUNTIME HOLD hasta production alignment e incremental 2026 demostrado. El snapshot científico 2025 ya está cerrado. Las capacidades enumeradas debajo no significan que la adquisición rutinaria esté actualmente activa.
+
+Durante 2026 el proyecto ha dejado de centrarse únicamente en scripts independientes y ha comenzado a desarrollar una infraestructura reproducible.
+
+La primera parte consolidada es la adquisición de datos históricos mediante **SIAR Sync**.
+
+Sus funciones principales son:
+
+* conexión con la API oficial;
+* autenticación;
+* consulta controlada;
+* detección de cobertura;
+* detección de huecos;
+* descarga incremental;
+* validación;
+* deduplicación;
+* ordenación;
+* actualización;
+* escritura segura;
+* automatización;
+* control mediante Git.
+
+La reactivación de Sync exige sus gates propios; no condiciona la captura prospectiva de Forecast.
+
+---
+
+# 5. Perspectiva histórica de las siguientes etapas
+
+Esta sección conserva el planteamiento original. Dataset v1 y la primera ejecución oficial PM/HS ya existen; la secuencia vigente está en ROADMAP e incorpora auditoría Valiantzas antes de nuevos modelos. Parquet/DuckDB siguen siendo opciones derivadas, no requisitos del raw.
+
+## 5.1 Dataset científico
+
+Convertir los datos históricos en un dataset preparado para análisis y Machine Learning.
+
+Posible arquitectura:
+
+```text
+CSV
+ ↓
+Validación
+ ↓
+Normalización
+ ↓
+Parquet
+ ↓
+DuckDB / Python
+```
+
+---
+
+## 5.2 ET₀
+
+Establecer una referencia sólida para ET₀ y reproducir los cálculos necesarios.
+
+Se estudiarán:
+
+* Penman-Monteith;
+* Hargreaves;
+* variantes;
+* otros métodos empíricos;
+* ET₀ proporcionada por SIAR.
+
+---
+
+## 5.3 Machine Learning
+
+Desarrollar y comparar modelos capaces de estimar ET₀ utilizando diferentes combinaciones de variables meteorológicas.
+
+Se estudiarán, entre otros:
+
+* redes neuronales;
+* modelos de árboles;
+* modelos de boosting;
+* modelos híbridos;
+* modelos locales por estación;
+* modelos globales para Baleares.
+
+El objetivo científico será determinar hasta qué punto es posible reproducir la referencia de ET₀ utilizando menos variables meteorológicas.
+
+---
+
+## 5.4 Validación
+
+La evaluación deberá realizarse mediante divisiones temporales y espaciales.
+
+Se estudiarán:
+
+* entrenamiento;
+* validación;
+* prueba;
+* generalización temporal;
+* generalización entre estaciones.
+
+Las métricas podrán incluir:
+
+* MAE;
+* RMSE;
+* R²;
+* MBE;
+* error relativo;
+* comportamiento estacional;
+* comportamiento por rango de ET₀.
+
+---
+
+## 5.5 Predicción
+
+Se desarrollará una segunda línea de trabajo dedicada a la predicción de ET₀.
+
+Antes de entrenar modelos propios se estudiará la información disponible en el sistema de predicción de SIAR.
+
+El objetivo será conservar las predicciones emitidas en cada momento para poder compararlas posteriormente con las observaciones reales.
+
+La arquitectura prevista será independiente de SIAR Sync:
+
+```text
+SIAR
+ ├── SIAR Sync
+ │      └── Datos históricos
+ │
+ └── Forecast Collector
+        └── Predicciones
+```
+
+---
+
+## 5.6 Aplicación web
+
+Una futura aplicación permitirá consultar los resultados de forma sencilla.
+
+Posibles funcionalidades:
+
+* mapa de Baleares;
+* selección de estación o ubicación;
+* datos meteorológicos;
+* ET₀ histórica;
+* ET₀ calculada;
+* comparación de modelos;
+* predicciones;
+* gráficos;
+* información de calidad de datos.
+
+---
+
+## 5.7 Necesidades de riego
+
+Una fase posterior permitirá utilizar ET₀ para estimar las necesidades de agua de los cultivos.
+
+La base será:
+
+```text
+ETc = ET₀ × Kc
+```
+
+Posteriormente podrán incorporarse:
+
+* precipitación efectiva;
+* eficiencia del riego;
+* superficie;
+* volumen de agua;
+* necesidades netas;
+* necesidades brutas.
+
+---
+
+# 6. Principios del proyecto
+
+## Datos
+
+Los datos originales no deben modificarse artificialmente para eliminar problemas.
+
+Cuando SIAR no proporciona información para una fecha, debe distinguirse entre:
+
+* ausencia real de datos;
+* dato pendiente;
+* error de consulta;
+* error de conexión.
+
+---
+
+## Reproducibilidad
+
+Cada resultado importante debe poder relacionarse con:
+
+* datos utilizados;
+* código;
+* versión;
+* parámetros;
+* fecha de ejecución.
+
+---
+
+## Separación de responsabilidades
+
+Los sistemas de adquisición, análisis, Machine Learning y aplicación deben mantenerse suficientemente separados.
+
+Un experimento nuevo no debe poner en riesgo la infraestructura de adquisición histórica.
+
+---
+
+## Validación
+
+Un modelo no debe evaluarse únicamente con los mismos datos utilizados para entrenarlo.
+
+La validación temporal y espacial será una parte fundamental de la metodología.
+
+---
+
+# 7. Estado general — 31/10/2026
+
+| Área | Estado |
+|---|---|
+| Quality SIAR | COMPLETE; POST corregido SIAR-QA-POST-20261020T193140Z |
+| Datos observacionales | 75.496 filas raw; 75.495 oficiales; 2.345 ausencias confirmadas, 1 RECOVERED; cobertura 96.987410 % |
+| Dataset Observational v1 | Construido/validado PASS; backup SHA256 PASS en snapshot aceptado |
+| Cuatro baselines oficiales | PM_FAO56_V1 / HS_RA_V1 / VALIANTZAS_V1 / HG_RS_V1 PASS; comparación común n=70.860 (PR #36) |
+| AHC temporal | AHC-METHODOLOGY-AND-TEMPORAL-VALIDATION PASS; OLS0 TRAIN, TEST retrospective_locked; climatología separada |
+| Preservación científica | PROJECT-ARTIFACT-BACKUP-V1 PASS / MAINTAINED; Windows automation PASS; finalización y READY firmado explícitos, transferencia/preservación posteriores automáticas |
+| SIAR Sync v2.3.3 | HOLD hasta alignment e incremental 2026 demostrado |
+| Forecast SIAR | Timer ACTIVE; reconciliador cada 15 min enabled/active; OAuth Production; nuevo run real → backup automático → COMPLETE remoto pendiente |
+| AEMET Track A | E2E DEMONSTRATED; captura disabled/inactive, nuevo backup automático NOT ACTIVE; reactivar tras CAPTURE RUNNING |
+| AEMET Track B | OPEN |
+| Storage | CLOSED_OPERATIONALLY / MONITORING; preservación PASS; SSD IN SERVICE |
+| ANN y dashboards legacy | Historia preservada, sin convertir resultados antiguos en v1 |
+| WEB-V0.2-AHC | PASS / DEPLOYED en LAN; cuatro baselines y AHC publicados, datos read-only |
+| ML clásico | ML-V1-CLASSICAL-MODELS PASS; champion HGB FULL; evaluación retrospectiva recuperada |
+| WEB-V0.3-ML | READY para consumir outputs ML publicados; sin despliegue nuevo en esta misión |
+| ANN / Forecast integrado / Kc / ETc / riego | ANN-V1-MODERN-ET0 PASS contra PM_FAO56_V1 calculada; integraciones y riego posteriores bajo sus gates |
+
+Según el parte de 02 del 01/11 comunicado por Dirección 00W, SIAR Forecast alcanzó dos ciclos naturales PASS y PILOT RUNNING; esta documentación no constituye una nueva inspección del servidor. SIAR Sync sigue HOLD. AEMET depende de CAPTURE RUNNING, no del runtime Sync. IB08 permanece ACTIVE / TEMPORARILY_UNAVAILABLE_EXTERNAL y no bloquea las ocho estaciones funcionales. No se declara un gate superado sin parte verificable ni se reconstruyen emisiones perdidas.
+
+---
+
+# 8. Regla de evolución de la documentación
+
+La documentación de este repositorio debe conservar la evolución histórica del proyecto.
+
+Los documentos antiguos **no se eliminan simplemente porque el proyecto haya evolucionado**.
+
+Cuando una nueva etapa modifica sustancialmente un objetivo o sistema, se añadirá una sección de actualización al documento correspondiente.
+
+Por ejemplo:
+
+```text
+docs_1.0
+ ├── Objetivos originales
+ └── ACTUALIZACIÓN 2026
+
+docs_1.1
+ ├── Desarrollo inicial
+ └── ACTUALIZACIÓN 2026
+
+docs_1.2
+ └── Tratamiento y ET₀
+
+docs_1.3
+ └── Análisis de errores
+
+docs_1.4
+ └── Redes neuronales
+
+docs_2.1
+ └── ANN con TensorFlow
+```
+
+De esta forma, GitHub funciona simultáneamente como:
+
+1. repositorio de código;
+2. historial del proyecto;
+3. documentación técnica;
+4. bitácora científica;
+5. mapa de navegación hacia las diferentes líneas de trabajo.
+
+---
+
+# 9. Punto de partida para la siguiente etapa
+
+Quality CLOSED/COMPLETE, Dataset v1, [cuatro baselines oficiales](../scientific_pipeline/results/four-classical-20261024T042250Z/README.md) y AHC temporal PASS. **WEB-V0.3 Scientific Explorer desplegada**, con ciencia publicada y datos read-only. **Rolling validation, Linux smoke y runtime ML implementados/PASS**; la campaña ML clásica y la ANN moderna v1 están PASS; WEB-V0.3 Scientific Explorer permanece PASS / DEPLOYED. [Backup canónico](../docs/backup/README.md) documenta infraestructura existente y límites de cobertura. 05 produce ciencia, 06 consume outputs publicados y 02B preserva nuevos artefactos.
+
+El snapshot histórico protege 82 archivos scientific-results y 46 SIAR published Raw. **Actualización de preservación 01/11/2026:** Windows automation PASS; el productor finaliza/prepara y firma READY explícitamente y, con la clave SFTP desbloqueada en ssh-agent, transferencia/verificación/ingestión/preservación posteriores son automáticas. Un resultado sin finalizar todavía no es elegible. La reconciliación diaria de preservación general es distinta de la reconciliación SIAR de 15 min.
+
+En paralelo: mantener seguimiento del piloto Forecast SIAR comunicado por 02; completar backup cifrado dedicado y programación AEMET con evidencia, y resolver los gates de SIAR Sync V3 antes de levantar HOLD. La captura prospectiva no espera a los modelos. [PROJECT_STATUS](../docs/PROJECT_STATUS.md), [ROADMAP](../docs/ROADMAP.md) y [MILESTONES](../docs/MILESTONES.md) separan estado, futuro e historia.
+
+## Navegación rápida
+
+- **Estado e hitos:** [PROJECT_STATUS](../docs/PROJECT_STATUS.md), [ROADMAP](../docs/ROADMAP.md), [MILESTONES](../docs/MILESTONES.md).
+- **Capturadores:** [Forecast SIAR](../forecast_collector/README.md), [AEMET Track A](../aemet_forecast_collector/README.md).
+
+* **Objetivos:** [`docs_1.0_Objetivos alcanzables.md`](../docs_1.0_Objetivos%20alcanzables.md)
+* **Obtención de datos:** [`docs_1.1_Obtención de datos.md`](../docs_1.1_Obtenci%C3%B3n%20de%20datos.md)
+* **Tratamiento y ET₀:** [`docs_1.2_Tratamiento de datos y cálculo de estimaciones.md`](../docs_1.2_Tratamiento%20de%20datos%20y%20c%C3%A1lculo%20de%20estimaciones.md)
+* **Análisis de errores:** [`docs_1.3_Análisis errores.md`](../docs_1.3_An%C3%A1lisis%20errores.md)
+* **Redes neuronales:** [`docs_1.4_Modelos redes neuronales.md`](../docs_1.4_Modelos%20redes%20neuronales.md)
+* **ANN / TensorFlow:** [`docs_2.1_Estimación Et0 ANN (tensorflow).md`](../docs_2.1_Estimaci%C3%B3n%20Et0%20ANN%20%28tensorflow%29.md)
+
+---
+
+# 10. Idea central
+
+El proyecto puede resumirse actualmente en una única línea:
+
+> **Construir una infraestructura reproducible de datos meteorológicos de las Islas Baleares que permita estudiar, estimar y predecir ET₀ mediante métodos físicos, empíricos y de Machine Learning, con una futura aplicación práctica orientada al riego.**
+
+## Cierre vigente de producto — 01/11/2026
+
+**WEB-V0.3-SCIENTIFIC-EXPLORER = PASS / DEPLOYED** (PR #57–#60). [Acta canónica](../web_app/docs/release-v03.md): [LAN](http://192.168.1.43:8088/), 43 modelos (35 ML), 12 estaciones; comparación de modelos, análisis por estación y temporal, residuales, feature sets, fichas de modelos, glosario científico y audit/provenance. Montajes de datos read-only. WEB recalculates science = NO; scientific artifacts modified = NO; Dataset modified = NO; raw modified = NO. V0.2 queda como histórico/rollback. No se requiere WEB-V0.4 inmediato: la ANN moderna v1 ya está publicada; la web podrá consumirla junto con validación prospectiva posterior.
+
+
+## ET₀ V2 — estado 11/11/2026
+
+Diseño, inventario, preparación y ejecutor publicados mediante PR #65–#70. IB09 se admite excepcionalmente solo para DEVELOPMENT V2; Quality V1 sigue FAIL y verificación independiente UNRESOLVED. Según el parte de 05 comunicado por Dirección 00W, DEVELOPMENT y retrospectiva se han ejecutado; la validación científica y de integridad y la preservación externa están pendientes. El parte operativo no ha sido verificado aquí mediante manifiestos. [Estado y fuentes](../docs/PROJECT_STATUS.md) · [ejecución](../scientific_pipeline/docs/et0_v2_execution.md).

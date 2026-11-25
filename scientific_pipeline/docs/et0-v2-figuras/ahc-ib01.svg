@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 850 400">
+<title>Coeficientes AHC IB01</title><desc>Doce coeficientes mensuales y cuatro estacionales proyectados en sus meses.</desc>
+<rect width="850" height="400" fill="white"/>
+<g font-family="system-ui,sans-serif" fill="#172b41" font-size="14"><text x="28" y="34" font-size="22" text-anchor="start" fill="#172b41">IB01 · HG-Rs · Coeficientes AHC (DEVELOPMENT)</text>
+<text x="28" y="58" font-size="14" text-anchor="start" fill="#172b41">Coeficiente adimensional. Decisiones ajustadas hasta 2019.</text>
+<path d="M65 315.0 H817" stroke="#d9e1ea"/>
+<text x="54" y="320.0" font-size="12" text-anchor="end" fill="#172b41">0,82</text>
+<path d="M65 266.99999999999994 H817" stroke="#d9e1ea"/>
+<text x="54" y="271.99999999999994" font-size="12" text-anchor="end" fill="#172b41">0,86</text>
+<path d="M65 218.99999999999991 H817" stroke="#d9e1ea"/>
+<text x="54" y="223.99999999999991" font-size="12" text-anchor="end" fill="#172b41">0,90</text>
+<path d="M65 171.0 H817" stroke="#d9e1ea"/>
+<text x="54" y="176.0" font-size="12" text-anchor="end" fill="#172b41">0,94</text>
+<path d="M65 122.99999999999997 H817" stroke="#d9e1ea"/>
+<text x="54" y="127.99999999999997" font-size="12" text-anchor="end" fill="#172b41">0,98</text>
+<circle cx="84" cy="281.1872296863509" r="5" fill="#007f79"/>
+<circle cx="102" cy="258.1318083136954" r="5" fill="#c17710"/>
+<text x="93" y="340" font-size="12" text-anchor="middle" fill="#172b41">01</text>
+<circle cx="146" cy="200.2276662917927" r="5" fill="#007f79"/>
+<circle cx="164" cy="258.1318083136954" r="5" fill="#c17710"/>
+<text x="155" y="340" font-size="12" text-anchor="middle" fill="#172b41">02</text>
+<circle cx="208" cy="191.96969646291043" r="5" fill="#007f79"/>
+<circle cx="226" cy="189.9894138898858" r="5" fill="#c17710"/>
+<text x="217" y="340" font-size="12" text-anchor="middle" fill="#172b41">03</text>
+<circle cx="270" cy="193.60457650914555" r="5" fill="#007f79"/>
+<circle cx="288" cy="189.9894138898858" r="5" fill="#c17710"/>
+<text x="279" y="340" font-size="12" text-anchor="middle" fill="#172b41">04</text>
+<circle cx="332" cy="187.32226303316986" r="5" fill="#007f79"/>
+<circle cx="350" cy="189.9894138898858" r="5" fill="#c17710"/>
+<text x="341" y="340" font-size="12" text-anchor="middle" fill="#172b41">05</text>
+<circle cx="394" cy="185.79869662531286" r="5" fill="#007f79"/>
+<circle cx="412" cy="186.73067765057613" r="5" fill="#c17710"/>
+<text x="403" y="340" font-size="12" text-anchor="middle" fill="#172b41">06</text>
+<circle cx="456" cy="186.40311172441923" r="5" fill="#007f79"/>
+<circle cx="474" cy="186.73067765057613" r="5" fill="#c17710"/>
+<text x="465" y="340" font-size="12" text-anchor="middle" fill="#172b41">07</text>
+<circle cx="518" cy="188.28121835321042" r="5" fill="#007f79"/>
+<circle cx="536" cy="186.73067765057613" r="5" fill="#c17710"/>
+<text x="527" y="340" font-size="12" text-anchor="middle" fill="#172b41">08</text>
+<circle cx="580" cy="206.32487945032457" r="5" fill="#007f79"/>
+<circle cx="598" cy="234.47850480976365" r="5" fill="#c17710"/>
+<text x="589" y="340" font-size="12" text-anchor="middle" fill="#172b41">09</text>
+<circle cx="642" cy="279.4970840123117" r="5" fill="#007f79"/>
+<circle cx="660" cy="234.47850480976365" r="5" fill="#c17710"/>
+<text x="651" y="340" font-size="12" text-anchor="middle" fill="#172b41">10</text>
+<circle cx="704" cy="272.822901599326" r="5" fill="#007f79"/>
+<circle cx="722" cy="234.47850480976365" r="5" fill="#c17710"/>
+<text x="713" y="340" font-size="12" text-anchor="middle" fill="#172b41">11</text>
+<circle cx="766" cy="338.7954694968987" r="5" fill="#007f79"/>
+<circle cx="784" cy="258.1318083136954" r="5" fill="#c17710"/>
+<text x="775" y="340" font-size="12" text-anchor="middle" fill="#172b41">12</text>
+<path d="M65 196.24360325663804 H817" stroke="#395eaa" stroke-dasharray="6 4"/>
+<text x="100" y="375" font-size="15" text-anchor="start" fill="#007f79">Mensual</text>
+<text x="325" y="375" font-size="15" text-anchor="start" fill="#c17710">Estacional</text>
+<text x="550" y="375" font-size="15" text-anchor="start" fill="#395eaa">Anual (línea)</text></g></svg>

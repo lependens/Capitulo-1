@@ -1,0 +1,11 @@
+# Apply with compose.yaml and an isolated project name. Bind WEB_BIND_IP to 127.0.0.1.
+services:
+  backend:
+    environment:
+      WEB_ET0_V2_MODE: review
+      WEB_ET0_V2_DIR: /et0-v2
+      WEB_ET0_V2_CATALOG_SHA256: ${WEB_ET0_V2_CATALOG_SHA256:?Set the reviewed catalog SHA256}
+      WEB_ET0_V2_STATION_CSV: /app/stations-source.csv
+    volumes:
+      - ${WEB_ET0_V2_DIR:?Set the reviewed derivative directory}:/et0-v2:ro
+      - ${WEB_ET0_V2_STATION_CSV:?Set the verified SIAR station CSV}:/app/stations-source.csv:ro

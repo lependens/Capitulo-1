@@ -113,3 +113,9 @@ Se añaden cierres posteriores a las entradas que declaraban estas misiones pend
 
 
 | 2026-11-16 | ET₀ V2 — retrospectiva ejecutada | `EXECUTED_VALIDATION_PENDING`; Kaggle `370251881`, predicciones, métricas e informe generados según 05. | Parte 05 comunicado por Dirección 00W; manifest SHA256 `f771dc3564270528c203d9af709b2b88649a552ef7dd831bf4503d04a2fd8daa`; [estado](PROJECT_UPDATE_2026-11-16.md). | Supera el NO-GO anterior como estado de ejecución; integridad, revisión científica, preservación y publicación pendientes. Sin reentrenamiento ni reselección con TEST según 05. |
+
+## 24–25/11/2026 — cierre técnico y revisión web ET₀ V2
+
+- 24/11: PR #76 fusionada; evidencia retrospectiva, freeze y restauraciones documentados. PR #78 fusionada; memoria disponible para revisión científica independiente.
+- 25/11: PR #77 fusionada con CI backend y frontend correctos. Dirección cierra la fase 1; catálogo VERIFIED y publicación NOT_PUBLISHED. V0.3 recuperada en un proyecto separado.
+- [Corte consolidado, commits y evidencia](PROJECT_UPDATE_2026-11-25.md).

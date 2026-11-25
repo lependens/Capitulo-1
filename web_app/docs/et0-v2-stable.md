@@ -13,3 +13,11 @@ WEB_PORT=8090 WEB_ET0_V2_DEVELOPMENT_DIR=/home/josep/siar-et0-v2-development-pre
 ```
 
 Para detener y arrancar conservando contenedores: `docker stop siar-et0-v2-final-frontend-1 siar-et0-v2-final-backend-1` y `docker start siar-et0-v2-final-backend-1 siar-et0-v2-final-frontend-1`. El procedimiento de rollback a la revisión anterior y fase 1, las fuentes, limitaciones y seguimiento histórico se encuentran en [et0-v2-phase2.md](et0-v2-phase2.md). El inventario de contenedores anteriores reside en /home/josep/siar-et0-v2-phase2-rollback/.
+
+## Preservación operativa verificada
+
+Paquete `et0-v2-stable-20261125`, en `/home/josep/siar-et0-v2-operational-preservation-20261125` y en el destino cifrado `forecast-offsite-crypt:SIAR-project/operational/et0-v2-stable-20261125`. SHA-256 de `SHA256SUMS`: `69af43f822a8b2ab32dd7df2cbbb89ef21cfc381f929fcfd201371c8c91df2fc`. La verificación remota con descarga cotejó ocho archivos y no encontró diferencias. Es una copia operativa independiente del sistema de snapshots cumulativos `backup_*`.
+
+Restauración independiente en `/home/josep/siar-et0-v2-operational-restore-20261125`. Los siete archivos de contenido superaron `sha256sum -c` y la configuración Compose restaurada superó `docker compose config --quiet`. Se reconstruyó y arrancó el proyecto aislado `siar-et0-v2-restore-check` en `127.0.0.1:8091`. Ambos contenedores alcanzaron estado saludable, la web respondió HTTP 200 y el catálogo DEVELOPMENT devolvió el hash autorizado, NOT_PUBLISHED y 108 celdas. Los contenedores aislados se detuvieron después.
+
+El paquete preserva el código web, la configuración y los inventarios de rollback. La prueba utiliza las ubicaciones científicas originales montadas en solo lectura. Los artefactos científicos y las imágenes históricas se recuperan mediante sus procedimientos y copias independientes, documentados en `et0-v2-phase2.md` y `release-v03.md`.

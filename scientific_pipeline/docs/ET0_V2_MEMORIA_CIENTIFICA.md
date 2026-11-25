@@ -1094,6 +1094,32 @@ Métricas globales de los cinco métodos principales, por familia y calendario. 
 | Valiantzas | Mensual | ANN_A | 19251 | 0,2963 | 0,4233 | 0,1047 | 0,9386 | 97,58 % |
 | Valiantzas | Mensual | ANN_E | 19251 | 0,2964 | 0,4232 | 0,1064 | 0,9386 | 97,58 % |
 
+**Extremos descriptivos entre las siete variantes seleccionadas en DEVELOPMENT.** Se cotejaron n y hash en cada fila, tanto por familia y configuración (primer bloque, global) como por estación en HG-Rs anual (segundo bloque). Hist Gradient Boosting queda por delante de Extra Trees en HS-Ra estacional y mensual y en IB02/HG-Rs anual. En las restantes estaciones HG-Rs anuales, el mínimo es Extra Trees. Estos mínimos observados en TEST sirven para describir variabilidad y no sustituyen el principal congelado. Elastic Net aparece entre los mayores errores en varias estaciones, pero el diseño no permite atribuir ese resultado a convergencia.
+
+| Ámbito | Configuración | n | Menor RMSE | mm/día | Mayor RMSE | mm/día |
+| --- | --- | ---: | --- | ---: | --- | ---: |
+| HS_RA_V1 | annual | 19251 | EXTRA_TREES | 0,5531 | LINEAR | 0,6221 |
+| HS_RA_V1 | seasonal | 19251 | HIST_GRADIENT_BOOSTING | 0,5554 | LINEAR | 0,6024 |
+| HS_RA_V1 | monthly | 19251 | HIST_GRADIENT_BOOSTING | 0,5542 | LINEAR | 0,6031 |
+| HG_RS_V1 | annual | 19251 | EXTRA_TREES | 0,3809 | RIDGE | 0,4411 |
+| HG_RS_V1 | seasonal | 19251 | EXTRA_TREES | 0,3522 | RIDGE | 0,3935 |
+| HG_RS_V1 | monthly | 19251 | EXTRA_TREES | 0,3402 | RIDGE | 0,3804 |
+| VALIANTZAS_V1 | annual | 19251 | EXTRA_TREES | 0,4388 | LINEAR | 0,4960 |
+| VALIANTZAS_V1 | seasonal | 19251 | EXTRA_TREES | 0,4375 | TREE | 0,4936 |
+| VALIANTZAS_V1 | monthly | 19251 | EXTRA_TREES | 0,4390 | TREE | 0,4940 |
+
+| Ámbito | Configuración | n | Menor RMSE | mm/día | Mayor RMSE | mm/día |
+| --- | --- | ---: | --- | ---: | --- | ---: |
+| IB01 | annual | 2192 | EXTRA_TREES | 0,3823 | ELASTIC_NET | 0,4380 |
+| IB02 | annual | 2017 | HIST_GRADIENT_BOOSTING | 0,4043 | ELASTIC_NET | 0,4647 |
+| IB03 | annual | 2192 | EXTRA_TREES | 0,3798 | ELASTIC_NET | 0,4290 |
+| IB04 | annual | 2124 | EXTRA_TREES | 0,3337 | ELASTIC_NET | 0,4105 |
+| IB05 | annual | 2154 | EXTRA_TREES | 0,3429 | ELASTIC_NET | 0,4165 |
+| IB06 | annual | 2190 | EXTRA_TREES | 0,3938 | ELASTIC_NET | 0,4556 |
+| IB08 | annual | 2097 | EXTRA_TREES | 0,3234 | ELASTIC_NET | 0,3926 |
+| IB10 | annual | 2097 | EXTRA_TREES | 0,3643 | RIDGE | 0,4367 |
+| IB11 | annual | 2188 | EXTRA_TREES | 0,4747 | ELASTIC_NET | 0,5142 |
+
 ### M. Posibilidades de explotación y web
 
 Las tablas de predicción y métricas pueden consultarse con el [contrato de lectura](et0_v2_handoff_web.md). Los checkpoints y metadatos de modelos son evidencias DEVELOPMENT, con acceso separado del catálogo web. Antes de comparar dos grupos, mostrar disponibilidad, claves, denominador y recuento. Las propuestas que requieren derivación deben versionarse y conservar origen, unidades y lógica explícita.

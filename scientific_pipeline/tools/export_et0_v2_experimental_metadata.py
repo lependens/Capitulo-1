@@ -109,6 +109,10 @@ def main():
             for name, expected in sorted(info["checkpoints"].items()):
                 checkpoint = read(folder / "candidates" / name, expected)
                 summary = checkpoint["summary"]
+                summary_bytes = (json.dumps(summary, ensure_ascii=False, sort_keys=True,
+                                            indent=2, allow_nan=False) + "\n").encode("utf-8")
+                if hashlib.sha256(summary_bytes).hexdigest() != checkpoint["summary_sha256"]:
+                    raise ValueError(f"Candidate summary mismatch: {name}")
                 if name != summary["candidate_id"] + ".json" or [f["plan_sha256"] for f in summary["folds"]] != checkpoint["plans"]:
                     raise ValueError(f"Candidate identity mismatch: {name}")
                 spec = {**key, "checkpoint_sha256": expected, "candidate_id": summary["candidate_id"],

@@ -51,3 +51,10 @@
   .v2-table { overflow: visible; }
 }
 .v2-preview input[type=checkbox] { width: 1.2rem; height: 1.2rem; min-height: 0; flex: none; margin: 0; padding: 0; }
+
+.v2-map.v2-geographic { height: auto; aspect-ratio: 5 / 3; max-width: 880px; background-color: #dceff1; }
+.v2-geographic svg { display: block; width: 100%; height: 100%; }
+.v2-geographic .v2-map-west { bottom: 5%; left: 3%; }
+.v2-geographic .v2-map-center { top: 51%; left: 49%; }
+.v2-geographic .v2-map-east { top: 7%; right: 7%; }
+.v2-geographic .v2-marker { min-width: 22px; min-height: 22px; padding: 0 .15rem; }

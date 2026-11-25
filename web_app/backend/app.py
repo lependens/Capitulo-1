@@ -51,7 +51,8 @@ def create_app(data_dir=None):
         from .et0_v2 import router as v2_router
         api.include_router(v2_router(v2_directory, os.environ.get("WEB_ET0_V2_CATALOG_SHA256"),
                                      stations, os.environ.get("WEB_ET0_V2_STATION_CSV"),
-                                     os.environ.get("WEB_ET0_V2_MODE", "approved")))
+                                     os.environ.get("WEB_ET0_V2_MODE", "approved"),
+                                     os.environ.get("WEB_ET0_V2_DEVELOPMENT_DIR")))
     elif os.environ.get("WEB_ET0_V2_PREVIEW") == "1":
         from .et0_v2_preview import router as preview_router
         api.include_router(preview_router)
@@ -82,6 +83,11 @@ def create_app(data_dir=None):
         cursor = db.execute(sql, values)
         names = [d[0] for d in cursor.description]
         return [dict(zip(names, row)) for row in cursor.fetchall()]
+
+    if v2_directory:
+        from .station_weather import router as weather_router
+        columns = {row[0] for row in db.execute("DESCRIBE observations").fetchall()}
+        api.include_router(weather_router(query, where, columns))
 
     def require_ahc():
         if not ahc_enabled:

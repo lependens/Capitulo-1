@@ -71,7 +71,7 @@ def station_locations(path):
                 for r in csv.DictReader(stream)}
 
 
-def router(directory, catalog_sha, stations, location_path=None, mode="approved"):
+def router(directory, catalog_sha, stations, location_path=None, mode="approved", development_dir=None):
     root = Path(directory).resolve(strict=True)
     catalog_path = root / "catalog.json"
     if not catalog_sha or sha(catalog_path) != catalog_sha:
@@ -151,16 +151,16 @@ def router(directory, catalog_sha, stations, location_path=None, mode="approved"
         return dict(source=source, scope="RETROSPECTIVE", rows=scores(rows, method))
 
     @api.get("/comparison")
-    def comparison(formula: Formula, group: Group,
+    def comparison(formula: Annotated[list[Formula], Query(min_length=1, max_length=3)], group: Group,
                    calendar: Annotated[list[Calendar], Query(min_length=1, max_length=3)],
-                   key: Annotated[list[str], Query(min_length=1, max_length=12)],
+                   key: Annotated[list[str], Query(min_length=1, max_length=54)],
                    method: Annotated[list[str] | None, Query()] = None):
         validate_methods(method)
         selected_keys = set(key)
         if not selected_keys <= set(group_keys.get(group, [])):
             raise HTTPException(422, "Grupo y claves incompatibles")
         calendars = set(calendar)
-        rows = [row for row in metric_rows if row["family"] == formula and row["group"] == group
+        rows = [row for row in metric_rows if row["family"] in formula and row["group"] == group
                 and row["key"] in selected_keys and row["calendar"] in calendars]
         return dict(source=source, scope="RETROSPECTIVE", rows=scores(rows, method))
 
@@ -211,5 +211,9 @@ def router(directory, catalog_sha, stations, location_path=None, mode="approved"
         rows = [dict(row, method="AHC") for row in history_rows
                 if row["family"] == formula and row["station_code"] == station]
         return dict(source=source, scope="FULL_HISTORY_IN_SAMPLE", calendar="annual", rows=rows)
+
+    if development_dir:
+        from .et0_v2_development import router as development_router
+        api.include_router(development_router(development_dir, source, station_ids))
 
     return api

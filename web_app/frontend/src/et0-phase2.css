@@ -42,3 +42,13 @@
  .p2-sidebar nav.p2-open{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));padding-top:.5rem}
  .p2-counts{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
 }
+.p2-checks { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+.p2-checks label, .p2-inline { display: inline-flex; align-items: center; gap: .35rem; }
+.p2-cell-note { display: block; color: #4a6261; font-size: .8em; }
+.p2-network { max-width: 670px; margin-block: 1rem; padding: .35rem .75rem; background: #ecf4f0; border-radius: .6rem; }
+.p2-network svg { width: 100%; }
+.p2-hash { overflow-wrap: anywhere; white-space: normal; }
+.p2-guide { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(260px,100%),1fr)); gap: .85rem; margin: 0; }
+.p2-guide > div { padding: .85rem; border: 1px solid #d4e2df; border-radius: .5rem; }
+.p2-guide dt { font-weight: 700; }
+.p2-guide dd { margin: .6rem 0 0; color: #3d5551; }

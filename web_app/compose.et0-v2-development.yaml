@@ -1,0 +1,12 @@
+# Add to a verified ET₀ V2 review deployment.
+services:
+  backend:
+    environment:
+      WEB_ET0_V2_DEVELOPMENT_DIR: /et0-v2-development
+    volumes:
+      - type: bind
+        source: ${WEB_ET0_V2_DEVELOPMENT_DIR:?Set the verified DEVELOPMENT package}
+        target: /et0-v2-development
+        read_only: true
+        bind:
+          create_host_path: false

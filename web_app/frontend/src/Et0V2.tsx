@@ -1,111 +1,13 @@
-import { lazy, Suspense, useState } from 'react';
+import { useState } from 'react';
+import { StationPage } from './Et0V2Stations';
 import { Select, useRead, Workspace } from './Et0V2Preview';
-import type { Catalog, Station } from './Et0V2Preview';
+import type { Catalog } from './Et0V2Preview';
 
-const Chart = lazy(() => import('./Chart'));
 const sections = {
   home:'Inicio', stations:'Estaciones y datos', models:'Modelos y metodología',
   results:'Resultados por familia', compare:'Comparar modelos', sources:'Fuentes y auditoría',
 };
 type Section = keyof typeof sections;
-const variables = {
-  TempMedia:{label:'Temperatura media',unit:'°C'}, HumedadMedia:{label:'Humedad relativa media',unit:'%'},
-  VelViento:{label:'Velocidad del viento',unit:'m/s'}, Radiacion:{label:'Radiación',unit:'MJ/m²/día'},
-  ET0_PM_FAO56_V1:{label:'ET₀ PM FAO56 calculada',unit:'mm/día'},
-};
-type Variable = keyof typeof variables;
-
-function StationMap({stations, current, select}: {stations: Station[]; current: string; select: (code:string)=>void}) {
-  const located = stations.filter(s=>s.latitude != null && s.longitude != null);
-  if (!located.length) return null;
-  // A coordinate grid keeps the map usable on the LAN without external basemap requests.
-  return <div className="v2-map" role="group" aria-label="Mapa de estaciones del catálogo SIAR">
-    {located.map(station=><button key={station.code} className="v2-marker"
-      style={{left:`${(station.longitude!-1)/3.45*100}%`,top:`${(40.22-station.latitude!)/1.74*100}%`}}
-      aria-label={`${station.code} · ${station.name}`} aria-pressed={current===station.code}
-      title={station.name} onClick={()=>select(station.code)}>{station.code.slice(2)}</button>)}
-    <span className="v2-map-west">Ibiza y Formentera</span><span className="v2-map-center">Mallorca</span>
-    <span className="v2-map-east">Menorca</span>
-  </div>;
-}
-
-export function StationPage({catalog, current, select, compare}: {
-  catalog: Catalog; current: string; select: (code:string)=>void; compare: ()=>void;
-}) {
-  const [variable, setVariable] = useState<Variable>('TempMedia');
-  const [second, setSecond] = useState<Variable | ''>('');
-  const [offset, setOffset] = useState(0);
-  const station = catalog.station_details?.find(s=>s.code===current);
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
-  const query = new URLSearchParams({station:current, limit:'200', offset:String(offset)});
-  if (start) query.set('from',start);
-  if (end) query.set('to',end);
-  const validRange = !start || !end || start <= end;
-  const response = useRead<{rows: Record<string,string|null>[]}>(
-    validRange ? '/api/observations?' + query : '');
-  const rows = response?.data?.rows ?? [];
-  const change = (code: string) => {setOffset(0); setStart(''); setEnd(''); select(code);};
-  const metric = variables[variable];
-  const yVariable = second ? variables[second] : null;
-  const variableOptions = Object.fromEntries(Object.entries(variables).map(([id,v])=>[id,v.label]));
-  return <>
-    <section className="v2-panel"><h2>Estaciones y datos</h2>
-      <StationMap stations={catalog.station_details??[]} current={current} select={change}/>
-      {catalog.station_catalog_sha256 && <p className="v2-subtle">Posiciones del catálogo SIAR verificado. Mapa esquemático.</p>}
-      <div className="v2-table" role="region" aria-label="Catálogo de estaciones" tabIndex={0}>
-        <table><thead><tr><th>Estación</th><th>Periodo de catálogo</th><th>Quality V1</th><th>Retrospectiva V2</th></tr></thead>
-          <tbody>{catalog.station_details?.map(s=><tr key={s.code}>
-            <th scope="row"><button className="v2-link" onClick={()=>change(s.code)}>{s.code} · {s.name}</button></th>
-            <td>{s.official_from} – {s.official_to}</td><td>{s.quality_status}</td>
-            <td>{s.retrospective?'Disponible':'Serie histórica'}</td>
-          </tr>)}</tbody></table>
-      </div>
-    </section>
-    <section className="v2-panel"><h2>{current} · {catalog.stations[current]}</h2>
-      <div className="v2-actions">
-        <button onClick={compare}>Comparar modelos en esta estación</button>
-        <button onClick={()=>window.print()}>Imprimir ficha</button>
-      </div>
-      {station && <p>{station.municipality} {station.altitude != null && <>· {station.altitude} m · </>}
-        Cobertura de observaciones SIAR {station.coverage_percent}% · Quality V1 {station.quality_status}.</p>}
-      {station && !station.retrospective && <p>Serie histórica sin observaciones para la evaluación V2 de 2020–2025.</p>}
-      {current==='IB09' && <p>IB09 conserva Quality V1 FAIL. Su admisión excepcional se limita a DEVELOPMENT.</p>}
-      <p>Disponibilidad variable × año, medias anuales y correlaciones: pendientes de tablas científicas publicadas con método, soporte y cobertura.</p>
-      <div className="v2-filters">
-        <Select label="Variable histórica" value={variable} options={variableOptions}
-          onChange={id=>setVariable(id as Variable)}/>
-        <Select label="Segunda variable" value={second} options={{'':'Serie temporal',...variableOptions}}
-          onChange={id=>setSecond(id as Variable | '')}/>
-        <label>Desde<input type="date" value={start} onChange={e=>{setOffset(0);setStart(e.target.value);}}/></label>
-        <label>Hasta<input type="date" value={end} onChange={e=>{setOffset(0);setEnd(e.target.value);}}/></label>
-      </div>
-      <p>Observaciones del Dataset V1. Hasta 200 filas por página.</p>
-      {rows.length > 0 ? <>
-        <p>{rows[0].date} – {rows.at(-1)?.date}</p>
-        <Suspense fallback={<p>Cargando gráfico…</p>}><Chart label={yVariable ?
-          `${metric.label} frente a ${yVariable.label}` : `${metric.label} · ${metric.unit}`} option={{
-          tooltip:{trigger:'item'}, grid:{left:57,right:20,bottom:50},
-          xAxis:yVariable ? {type:'value',name:metric.unit,nameLocation:'middle',nameGap:28} : {type:'time'},
-          yAxis:{type:'value',name:yVariable?.unit ?? metric.unit},
-          series:[{type:'scatter',symbolSize:5,data:rows.flatMap(row=>row[variable] == null || row[variable]==='' ||
-            (second && (row[second] == null || row[second]==='')) ? [] : second ?
-            [[Number(row[variable]),Number(row[second])]] : [[Date.parse(row.date!), Number(row[variable])]])}],
-        }}/></Suspense>
-        <details><summary>Observaciones en tabla</summary><div className="v2-table" role="region" aria-label="Observaciones diarias" tabIndex={0}>
-          <table><thead><tr><th>Fecha</th><th>{metric.label} ({metric.unit})</th>
-            {yVariable && <th>{yVariable.label} ({yVariable.unit})</th>}</tr></thead>
-            <tbody>{rows.map(row=><tr key={row.date}><th scope="row">{row.date}</th><td>{row[variable] || '—'}</td>
-              {second && <td>{row[second] || '—'}</td>}</tr>)}</tbody></table>
-        </div></details>
-      </> : <p role="status">{!validRange ? 'Seleccione un intervalo válido.' :
-        response?.error ?? (response?.data ? 'Sin observaciones para esta selección.' : 'Consultando observaciones…')}</p>}
-      <div className="v2-actions"><button disabled={!offset} onClick={()=>setOffset(offset-200)}>Página anterior</button>
-        <button disabled={rows.length<200} onClick={()=>setOffset(offset+200)}>Página siguiente</button></div>
-    </section>
-  </>;
-}
-
 function ModelPage({catalog}: {catalog: Catalog}) {
   const [formula,setFormula] = useState('HG_RS_V1');
   const [method,setMethod] = useState('AHC');

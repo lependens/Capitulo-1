@@ -58,7 +58,7 @@ def main():
 
     with gzip.open(retro/'predictions.csv.gz', 'rt', encoding='utf-8', newline='') as stream:
         samples = [r for r in csv.DictReader(stream) if r['station_code']=='IB01' and r['family']=='HG_RS_V1']
-        
+
     families = {'HS_RA_V1':'HS-Ra','HG_RS_V1':'HG-Rs','VALIANTZAS_V1':'Valiantzas'}
     calendars = {'annual':'Anual','seasonal':'Estacional','monthly':'Mensual'}
     core = ['FORMULA','AHC','ML','ANN_A','ANN_E']

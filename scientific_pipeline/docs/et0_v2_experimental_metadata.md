@@ -43,3 +43,24 @@ JOIN retrospective_metrics m
 ```
 
 El catálogo de salida registra hashes por archivo, identidades de fuente y nombres de columnas. La verificación científica y preservación del paquete instalado requieren evidencia independiente. La ruta provisional de servidor debe verificarse antes de usarla.
+
+
+## Publicación verificada para el handoff web (2026-11-25)
+
+La exportación de esta versión quedó instalada y verificada en:
+
+`/srv/siar-project/scientific-artifacts/et0-v2-experimental-metadata-v1/`
+
+El catálogo complementario `catalog.json` tiene SHA256 `3207fe042abb004b7cd69122339845adc8d55cd65b5cfd4d676d9e5512e6eea9`. Conserva las identidades de Dataset v1 (`0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`) y freeze (`97acad7ce7cc39c65d82f6efdc36290ed0325caaef2dedb69d9ffbefe1addfbd`). El inventario firmado de los 11 archivos tiene SHA256 `ffd32445e07c596434e75e80fa7a23e939ded475bbfae3e284178c55cc9ec947`; su recibo de ingestión está en `/srv/siar-project/ingestion-receipts/science-20261125T122837Z-29599217_c2839b84.json` y registra `published-verified`.
+
+Se cotejaron tamaños y SHA256 de las diez tablas frente al catálogo tanto en la ubicación publicada como en el snapshot remoto. La copia cifrada quedó `REMOTE_VERIFIED` bajo el backup `backup_20261125T123805Z_0944177f`; el SHA256 de su manifiesto es `ca1449888e2986a202fc60faf6902619d7f8387181efdb64a48d89a62cc3686b`. La restauración independiente se realizó en la cuarentena temporal `/srv/siar-project/preservation/restores/backup_20261125T123805Z_0944177f_8513c71d/`. El procedimiento devolvió `RESTORE_HASHES_PASS ... files=46`; dentro de la restauración se verificó el conjunto exacto de 11 archivos: el catálogo conserva SHA256 `3207fe042abb004b7cd69122339845adc8d55cd65b5cfd4d676d9e5512e6eea9` y los diez hashes de tabla coinciden con `catalog.json`.
+
+### Contrato disponible para 06
+
+- Los diez CSV son UTF-8; los esquemas de columnas, conteos de filas, tamaños y hashes están declarados en `catalog.json`. No se publicaron binarios de modelos.
+- La clave de una celda experimental es `station_code, family, calendar`; `cell_id` es su identificador compuesto. Candidatos, folds y semillas agregan `stage`, `candidate_id`, `year`, `seed_seed` o `group` según el grano indicado arriba.
+- El inventario declara disponibilidad y falta de soporte por celda. No se deben completar las tres celdas mensuales de IB101 que carecen de soporte ni inferir métricas o predicciones para ellas.
+- Para la unión con resultados retrospectivos, comprobar las claves de estación, método/familia, resolución/calendario y fecha, además de elegibilidad y disponibilidad de referencia; la tabla de candidatos DEVELOPMENT no representa predicciones diarias ni resultados TEST.
+- `ahc-history-in-sample.csv` es exclusivamente in-sample. Las selecciones y métricas de candidatos son DEVELOPMENT; las métricas retrospectivas permanecen en el catálogo existente. No se cambió el estado científico `NOT_PUBLISHED`.
+
+Este paquete está instalado y listo para que 06 lo consuma en la integración autorizada. La carga en la aplicación no implica publicación científica ni altera el catálogo retrospectivo firmado.

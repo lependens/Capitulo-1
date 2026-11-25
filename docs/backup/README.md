@@ -1,5 +1,7 @@
 # Preservación y recuperación del proyecto
 
+El [corte del 25/11](../PROJECT_UPDATE_2026-11-25.md) enlaza los restores acreditados de ET₀ V2 y distingue el alcance de los backups de cada colector.
+
 **Actualizado: 2026-11-01.** Canonización inicial 31/10 y cierre Windows de 02B comunicado por Dirección 00 el 01/11: **WINDOWS-SCIENCE-INGEST-AUTOMATION = PASS**, **PROJECT-ARTIFACT-BACKUP-V1 = PASS / MAINTAINED**. Fuente operativa: inventario `BACKUP-IMPLEMENTATION-INVENTORY-V1 = PASS` recibido de Dirección 00. Esta documentación transcribe ese inventario; no es una nueva inspección del servidor, no ejecuta backups ni modifica infraestructura. Los estados de unidades indicados son los del inventario o su estado esperado entre ejecuciones, no una garantía de disponibilidad permanente.
 
 GitHub conserva código, documentación y evidencia versionable. Los artefactos científicos completos y los raw Forecast se preservan fuera de Git, dentro de ámbitos explícitos. La decisión científica sigue siendo explícita: resultado completo + preparación y READY firmado; después, watcher/SFTP, verificación servidor, ingestión y preservación son automáticos. La mera existencia de un archivo no lo hace elegible ni demuestra copia remota.

@@ -1,6 +1,6 @@
-> **Estado posterior — 16/11/2026:** consultar [actualización consolidada](../docs/PROJECT_UPDATE_2026-11-16.md). Los estados operativos anteriores se conservan como historia.
-
 # SIAR Sync
+
+V3 tiene publicaciones de [CSV evolutivos](../datos_siar_v3) registradas en GitHub. Para estado de integración y acceso, consultar el [inventario del 25/11](../docs/PROJECT_STATUS.md). La guía que sigue describe la base canónica v2.3.3.
 
 Componente FastAPI para consultar SIAR y sincronizar los CSV diarios de estaciones de Baleares. La interfaz se sirve desde `templates/index.html`; la lógica de descarga y sincronización está en `siar_worker.py`.
 

@@ -1,5 +1,7 @@
 # Integración de ET₀ V2 para revisión aislada
 
+La configuración vigente del corte del 25/11 figura en [Catálogo VERIFIED](#catálogo-verified-en-revisión-lan-24-11-2026) y [Recuperación operativa de V0.3](#recuperación-operativa-de-v03--25-11-2026). Los apartados DRAFT preservan el procedimiento de revisión y la alternativa de reversión.
+
 ## Alcance y datos comprobados
 
 La entrada `/?science=et0-v2` sigue la guía acordada. Inicio, Estaciones y datos, Modelos y metodología, Resultados por familia, Comparar modelos y Fuentes y auditoría. Incluye fichas imprimibles, catálogo de estaciones y mapa interactivo esquemático. El mapa usa las coordenadas del catálogo SIAR identificado por el protocolo de ciencia. Las fichas consultan observaciones de Dataset V1 en páginas de 200, con filtros de fechas, serie y dispersión de dos variables.

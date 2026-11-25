@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="0 0 850 381">
+<title>Frecuencias de selección</title><desc>Siete métodos principales ML y arquitecturas por regla A y E.</desc>
+<rect width="850" height="381" fill="white"/>
+<g font-family="system-ui,sans-serif" fill="#172b41" font-size="14"><text x="28" y="34" font-size="22" text-anchor="start" fill="#172b41">DEVELOPMENT · Configuraciones seleccionadas</text>
+<text x="28" y="59" font-size="14" text-anchor="start" fill="#172b41">Frecuencias de selección por celda, sin ordenar por TEST</text>
+<text x="32" y="92" font-size="17" text-anchor="start" fill="#172b41">ML principal</text>
+<text x="32" y="124" font-size="11" text-anchor="start" fill="#172b41">LINEAR</text>
+<rect x="218" y="111" width="0.0" height="11" fill="#007f79"/>
+<text x="223.0" y="120" font-size="11" text-anchor="start" fill="#172b41">0</text>
+<text x="32" y="159" font-size="11" text-anchor="start" fill="#172b41">RIDGE</text>
+<rect x="218" y="146" width="2.45" height="11" fill="#007f79"/>
+<text x="225.45" y="155" font-size="11" text-anchor="start" fill="#172b41">1</text>
+<text x="32" y="194" font-size="11" text-anchor="start" fill="#172b41">ELASTIC_NET</text>
+<rect x="218" y="181" width="7.3500000000000005" height="11" fill="#007f79"/>
+<text x="230.35" y="190" font-size="11" text-anchor="start" fill="#172b41">3</text>
+<text x="32" y="229" font-size="11" text-anchor="start" fill="#172b41">TREE</text>
+<rect x="218" y="216" width="0.0" height="11" fill="#007f79"/>
+<text x="223.0" y="225" font-size="11" text-anchor="start" fill="#172b41">0</text>
+<text x="32" y="264" font-size="11" text-anchor="start" fill="#172b41">RANDOM_FOREST</text>
+<rect x="218" y="251" width="22.05" height="11" fill="#007f79"/>
+<text x="245.05" y="260" font-size="11" text-anchor="start" fill="#172b41">9</text>
+<text x="32" y="299" font-size="11" text-anchor="start" fill="#172b41">EXTRA_TREES</text>
+<rect x="218" y="286" width="142.10000000000002" height="11" fill="#007f79"/>
+<text x="365.1" y="295" font-size="11" text-anchor="start" fill="#172b41">58</text>
+<text x="32" y="334" font-size="11" text-anchor="start" fill="#172b41">HIST_GRADIENT_BOOSTING</text>
+<rect x="218" y="321" width="83.30000000000001" height="11" fill="#007f79"/>
+<text x="306.3" y="330" font-size="11" text-anchor="start" fill="#172b41">34</text>
+<text x="520" y="92" font-size="17" text-anchor="start" fill="#172b41">Arquitecturas ANN A / E</text>
+<text x="520" y="124" font-size="11" text-anchor="start" fill="#172b41">16</text>
+<rect x="560" y="111" width="9.8" height="11" fill="#007f79"/>
+<text x="574.8" y="120" font-size="11" text-anchor="start" fill="#172b41">4</text>
+<rect x="560" y="124" width="7.3500000000000005" height="11" fill="#c17710"/>
+<text x="572.35" y="133" font-size="11" text-anchor="start" fill="#172b41">3</text>
+<text x="520" y="159" font-size="11" text-anchor="start" fill="#172b41">32</text>
+<rect x="560" y="146" width="44.1" height="11" fill="#007f79"/>
+<text x="609.1" y="155" font-size="11" text-anchor="start" fill="#172b41">18</text>
+<rect x="560" y="159" width="44.1" height="11" fill="#c17710"/>
+<text x="609.1" y="168" font-size="11" text-anchor="start" fill="#172b41">18</text>
+<text x="520" y="194" font-size="11" text-anchor="start" fill="#172b41">64</text>
+<rect x="560" y="181" width="137.20000000000002" height="11" fill="#007f79"/>
+<text x="702.2" y="190" font-size="11" text-anchor="start" fill="#172b41">56</text>
+<rect x="560" y="194" width="134.75" height="11" fill="#c17710"/>
+<text x="699.75" y="203" font-size="11" text-anchor="start" fill="#172b41">55</text>
+<text x="520" y="229" font-size="11" text-anchor="start" fill="#172b41">64-32</text>
+<rect x="560" y="216" width="31.85" height="11" fill="#007f79"/>
+<text x="596.85" y="225" font-size="11" text-anchor="start" fill="#172b41">13</text>
+<rect x="560" y="229" width="44.1" height="11" fill="#c17710"/>
+<text x="609.1" y="238" font-size="11" text-anchor="start" fill="#172b41">18</text>
+<text x="520" y="264" font-size="11" text-anchor="start" fill="#172b41">64-32-16</text>
+<rect x="560" y="251" width="34.300000000000004" height="11" fill="#007f79"/>
+<text x="599.3" y="260" font-size="11" text-anchor="start" fill="#172b41">14</text>
+<rect x="560" y="264" width="26.950000000000003" height="11" fill="#c17710"/>
+<text x="591.95" y="273" font-size="11" text-anchor="start" fill="#172b41">11</text>
+<text x="520" y="330" font-size="13" text-anchor="start" fill="#007f79">ANN A</text>
+<text x="620" y="330" font-size="13" text-anchor="start" fill="#c17710">ANN E</text></g></svg>

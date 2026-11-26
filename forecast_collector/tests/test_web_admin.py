@@ -18,6 +18,18 @@ class Tests(unittest.TestCase):
  def test_outside_lan(self):
   handler=object.__new__(w.Handler);handler.client_address=('203.0.113.4',1234);handler.headers={'Host':w.urllib.parse.urlsplit(w.ORIGIN).netloc};handler.reply=lambda *x:None
   self.assertFalse(handler.access())
+ def test_aemet_freshness_and_schema(self):
+  from datetime import datetime,timezone,timedelta
+  path=Path(self.tmp.name)/'aemet.json';now=datetime(2026,11,26,12,tzinfo=timezone.utc)
+  def write(stamp):path.write_text(json.dumps({'schema':'aemet-dashboard-v1','generated_at_utc':stamp,'captures':[],'forecasts':[]}))
+  write((now-timedelta(minutes=5)).isoformat());self.assertEqual(w.load_aemet(path,now)['source_status'],'current')
+  write((now-timedelta(minutes=16)).isoformat());self.assertEqual(w.load_aemet(path,now)['source_status'],'stale')
+  write('invalid');self.assertEqual(w.load_aemet(path,now)['source_status'],'unknown')
+  path.write_text('{}')
+  with self.assertRaises(ValueError):w.load_aemet(path,now)
+ def test_aemet_unavailable(self):
+  with patch.object(w,'AEMET_INDEX',Path(self.tmp.name)/'missing'):
+   self.assertEqual(self.req('/api/aemet')[0],503)
  def test_data(self):self.assertEqual(json.loads(self.req('/api/runs')[1]),[])
  def test_reject_traversal(self):self.assertEqual(self.req('/api/csv?run=../x&station=IB04')[0],503)
  def test_csrf(self):self.assertEqual(self.req('/api/action/pause','POST')[0],403)

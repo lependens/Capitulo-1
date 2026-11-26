@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 """LAN-only SIAR Forecast administrator, served through TLS."""
-import csv,io,ipaddress,json,os,re,ssl,subprocess,urllib.parse
+import csv,datetime,io,ipaddress,json,os,re,ssl,subprocess,urllib.parse
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 
 ROOT=Path('/srv/siar-forecast/raw/runs')
 INDEX=Path('/var/lib/siar-forecast-quality/status.json')
+AEMET_INDEX=Path('/var/lib/aemet-forecast/export/status.json')
 LAN=ipaddress.ip_network('192.168.1.0/24')
 HELPER='/usr/local/libexec/siar-forecast-web-control'
 ORIGIN=os.environ.get('SIAR_WEB_ORIGIN','https://127.0.0.1:8091')
@@ -17,6 +18,19 @@ ID=re.compile(r'^run_[A-Za-z0-9._-]+$'); STATION=re.compile(r'^IB(?:01|02|03|04|
 def load():
  data=json.loads(INDEX.read_text(encoding='utf-8'))
  if not isinstance(data,list):raise ValueError('index')
+ return data
+
+def load_aemet(path=None,now=None):
+ path=path or AEMET_INDEX
+ data=json.loads(path.read_text(encoding='utf-8'))
+ if data.get('schema')!='aemet-dashboard-v1' or not isinstance(data.get('captures'),list) or not isinstance(data.get('forecasts'),list):raise ValueError('invalid aemet export')
+ try:
+  generated=datetime.datetime.fromisoformat(data['generated_at_utc'].replace('Z','+00:00'))
+  if generated.tzinfo is None:raise ValueError('timezone missing')
+  age=((now or datetime.datetime.now(datetime.timezone.utc))-generated).total_seconds()
+  data['source_age_seconds']=int(age)
+  data['source_status']='current' if -300<=age<=900 else 'stale'
+ except (KeyError,TypeError,ValueError,OverflowError):data['source_age_seconds']=None;data['source_status']='unknown'
  return data
 
 def get_csv(run,station):
@@ -62,7 +76,7 @@ class Handler(BaseHTTPRequestHandler):
    if u.path=='/style.css':return self.reply(200,Path('/opt/siar-forecast/web/style.css').read_bytes(),'text/css; charset=utf-8')
    if u.path=='/combined.js':return self.reply(200,Path('/opt/siar-forecast/web/combined.js').read_bytes(),'text/javascript; charset=utf-8')
    if u.path=='/api/aemet':
-    p=execute('aemet-report');return self.reply(200 if p.returncode==0 else 503,p.stdout if p.returncode==0 else '{}')
+    return self.reply(200,json.dumps(load_aemet(),ensure_ascii=False))
    if u.path=='/api/runs':return self.reply(200,json.dumps(load(),ensure_ascii=False))
    if u.path=='/api/system':
     p=subprocess.run(['systemctl','show','siar-forecast-capture.timer','siar-forecast-backup.service','siar-forecast-quality.service','--property=Id,ActiveState,Result,NextElapseUSecRealtime,LastTriggerUSec','--no-pager'],capture_output=True,text=True,timeout=10);v=os.statvfs(ROOT);return self.reply(200,json.dumps({'text':p.stdout,'free_bytes':v.f_bavail*v.f_frsize,'free_inodes':v.f_favail}))

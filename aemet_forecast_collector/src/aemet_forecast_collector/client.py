@@ -91,9 +91,12 @@ class AemetClient:
                         return response
             if not 0 <= delay <= 600:
                 return response
+            print(f"AEMET_RETRY reason=http_{response.status_code} wait_seconds={delay:.0f}", flush=True)
             time.sleep(delay)
             return fetch()
         if response.transport_error == "timeout" or response.status_code in (500, 502, 504):
+            reason = "timeout" if response.transport_error == "timeout" else f"http_{response.status_code}"
+            print(f"AEMET_RETRY reason={reason} wait_seconds=30", flush=True)
             time.sleep(30)
             return fetch()
         return response

@@ -1,3 +1,5 @@
+> **Contexto de lectura (26/11/2026):** documento histórico conservado en su ruta original. Sus estados y planes fechados pueden haber sido superados. Consulte el [recorrido científico](docs/RECORRIDO_CIENTIFICO.md) y el [estado del proyecto](docs/PROJECT_STATUS.md).
+
 # 1.2.6 — Modelos ML clásicos para estimación de ET₀
 
 **Actualización: 01/11/2026. ML-V1-CLASSICAL-MODELS = PASS**, cierre científico autorizado por Dirección 00. Este documento explica los resultados comunicados del run preservado; no ejecuta modelos ni recalcula métricas. Los contratos detallados siguen en [scientific_pipeline/docs/](scientific_pipeline/docs/ml_v1_classical_methodology.md); los bytes y evidencias externas, en [DATA_LOCATIONS](docs/DATA_LOCATIONS.md).

@@ -1,3 +1,5 @@
+> **Actualización 26/11/2026:** el cuadro siguiente es el corte histórico del 25/11. Las PR #80–#82 se fusionaron después; la fase 2 web y los metadatos DEVELOPMENT están documentados en [web estable](../web_app/docs/et0-v2-stable.md) y [metadatos](../scientific_pipeline/docs/et0_v2_experimental_metadata.md). Las PR #83–#85 estaban abiertas en borrador al revisar. Véase la [auditoría posterior](AUDITORIA_DOCUMENTAL_2026-11-26.md) para evidencias y pendientes; runtime actual sin verificar.
+
 # Estado de SIAR / ET₀ — 25/11/2026
 
 Los estados de GitHub se comprobaron directamente. Los estados de ejecución proceden de los partes y actas citados. En esta auditoría no hubo acceso al servidor. El [corte consolidado](PROJECT_UPDATE_2026-11-25.md) recoge las transiciones respecto al [16/11](PROJECT_UPDATE_2026-11-16.md); los [hitos](MILESTONES.md) conservan la secuencia histórica.

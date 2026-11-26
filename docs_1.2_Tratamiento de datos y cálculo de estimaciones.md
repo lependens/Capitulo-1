@@ -1,3 +1,5 @@
+> **Contexto de lectura (26/11/2026):** documento histórico conservado en su ruta original. Sus estados y planes fechados pueden haber sido superados. Consulte el [recorrido científico](docs/RECORRIDO_CIENTIFICO.md) y el [estado del proyecto](docs/PROJECT_STATUS.md).
+
 # 1.2 Depuración y Verificación de Datos Meteorológicos: Guía Paso a Paso
 
 > **Estado vigente — 01/11/2026:** Dataset v1, cuatro baselines, AHC y **ML-V1-CLASSICAL-MODELS PASS**. El proyecto distingue **formulaciones deterministas/empíricas**, **calibraciones AHC** y **modelos ML aprendidos**. ANN moderna NOT STARTED; WEB-V0.3-ML READY. La explicación narrativa de la campaña está en [1.2.6 — Modelos ML clásicos](docs_1.2.6_Modelos%20ML%20cl%C3%A1sicos%20para%20estimaci%C3%B3n%20de%20ET0.md). Las notas y secciones fechadas anteriormente se conservan como historia, no como estado vigente.

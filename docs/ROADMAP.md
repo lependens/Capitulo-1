@@ -1,3 +1,5 @@
+> **Actualización 26/11/2026:** la tabla siguiente conserva prioridades del 25/11. La memoria ampliada y la fase 2 web se integraron mediante #80–#82; no se deben leer como trabajo aún no iniciado. Forecast continúa con PR en borrador y validaciones pendientes. Véase la [auditoría posterior](AUDITORIA_DOCUMENTAL_2026-11-26.md).
+
 # Hoja de ruta — 25/11/2026
 
 Prioridades fijadas por Dirección. Consultar el [inventario](PROJECT_STATUS.md) para conocer qué se ha implementado y la evidencia de operación de cada componente.

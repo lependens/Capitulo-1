@@ -8,7 +8,7 @@ La cola verifica como maximo cuatro runs por ejecucion, priorizando los mas reci
 
 La configuracion privada de rclone y la direccion LAN se mantienen fuera de Git. Para la unidad de backup se suministran SIAR_FORECAST_RCLONE_CONFIG y SIAR_FORECAST_REMOTE_ROOT mediante un EnvironmentFile protegido. Para la web se suministran SIAR_WEB_BIND, SIAR_WEB_PORT y SIAR_WEB_ORIGIN mediante /etc/siar-forecast-web/environment. No almacenar contrasenas, claves privadas ni configuraciones reales en el repositorio.
 
-La interfaz usa HTTPS y credenciales independientes. El servicio escucha solo en la direccion LAN configurada; no se debe exponer a Internet. El usuario web no tiene shell ni socket Docker. Un helper propiedad de root acepta exclusivamente operaciones fijas para SIAR Forecast y registros de sus servicios. El certificado, clave y contrasena tienen permisos restringidos.
+La interfaz usa HTTPS sin usuario ni contrasena por decision del propietario. Escucha en la direccion LAN y admite conexiones directas desde 192.168.1.0/24 o loopback, con comprobaciones de Host y Origin; no se debe exponer a Internet. Cualquier dispositivo de esa LAN puede consultar y operar las programaciones. El usuario web no tiene shell ni socket Docker. Un helper propiedad de root acepta exclusivamente las operaciones fijas autorizadas. El certificado y la clave tienen permisos restringidos.
 
 ## Verificacion
 

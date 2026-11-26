@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 """LAN-only SIAR Forecast administrator, served through TLS."""
-import base64,csv,hmac,io,json,os,re,ssl,subprocess,urllib.parse
+import csv,io,ipaddress,json,os,re,ssl,subprocess,urllib.parse
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 
 ROOT=Path('/srv/siar-forecast/raw/runs')
 INDEX=Path('/var/lib/siar-forecast-quality/status.json')
-PASSWORD=Path('/etc/siar-forecast-web/password')
+LAN=ipaddress.ip_network('192.168.1.0/24')
 HELPER='/usr/local/libexec/siar-forecast-web-control'
 ORIGIN=os.environ.get('SIAR_WEB_ORIGIN','https://127.0.0.1:8091')
 BIND=os.environ.get('SIAR_WEB_BIND','127.0.0.1')
@@ -45,16 +45,16 @@ class Handler(BaseHTTPRequestHandler):
  def reply(self,code,data,kind='application/json; charset=utf-8'):
   if not isinstance(data,bytes):data=data.encode('utf-8')
   self.send_response(code);self.send_header('Content-Type',kind);self.send_header('Content-Length',str(len(data)));self.send_header('Cache-Control','no-store');self.send_header('X-Content-Type-Options','nosniff');self.send_header('Content-Security-Policy',"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'");self.end_headers();self.wfile.write(data)
- def auth(self):
+ def access(self):
   try:
-   a=self.headers.get('Authorization',''); scheme,encoded=a.split(' ',1); user,pwd=base64.b64decode(encoded,validate=True).decode().split(':',1)
-   expected=PASSWORD.read_text().strip(); ok=scheme=='Basic' and user=='admin' and hmac.compare_digest(pwd,expected) and len(expected)>=32
-  except Exception:ok=False
-  if not ok:
-   self.send_response(401);self.send_header('WWW-Authenticate','Basic realm="SIAR Forecast", charset="UTF-8"');self.send_header('Content-Length','0');self.send_header('Cache-Control','no-store');self.end_headers()
+   peer=ipaddress.ip_address(self.client_address[0])
+   host=self.headers.get('Host','')
+   ok=(peer.is_loopback or peer in LAN) and host==urllib.parse.urlsplit(ORIGIN).netloc
+  except ValueError:ok=False
+  if not ok:self.reply(403,'{}')
   return ok
  def do_GET(self):
-  if not self.auth():return
+  if not self.access():return
   u=urllib.parse.urlsplit(self.path)
   try:
    if u.path=='/':return self.reply(200,Path('/opt/siar-forecast/web/index.html').read_bytes(),'text/html; charset=utf-8')
@@ -75,7 +75,7 @@ class Handler(BaseHTTPRequestHandler):
    self.reply(404,'{}')
   except (OSError,ValueError,KeyError,json.JSONDecodeError,subprocess.SubprocessError):self.reply(503,json.dumps({'error':'Datos no disponibles'}))
  def do_POST(self):
-  if not self.auth():return
+  if not self.access():return
   if self.headers.get('Origin')!=ORIGIN or self.headers.get('X-SIAR-Request')!='1' or self.headers.get('Content-Length','0')!='0':return self.reply(403,'{}')
   action=urllib.parse.urlsplit(self.path).path.removeprefix('/api/action/')
   try:

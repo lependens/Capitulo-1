@@ -1,0 +1,14 @@
+[Unit]
+Description=Publish sanitized AEMET status snapshot for the forecast interface
+After=local-fs.target
+[Service]
+Type=oneshot
+User=root
+Group=siar-forecast-web
+UMask=0027
+ExecStart=/usr/bin/python3 /opt/aemet-forecast/export_snapshot.py
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+ReadWritePaths=/var/lib/aemet-forecast/export

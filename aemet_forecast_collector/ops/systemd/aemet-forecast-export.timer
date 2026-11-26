@@ -1,0 +1,8 @@
+[Unit]
+Description=Refresh sanitized AEMET status snapshot
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Unit=aemet-forecast-export.service
+[Install]
+WantedBy=timers.target

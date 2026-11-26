@@ -466,7 +466,7 @@ def test_atomic_publication_failure_leaves_no_visible_run(tmp_path, monkeypatch)
     import aemet_forecast_collector.storage as storage
 
     monkeypatch.setattr(capture_module, "new_run_id", lambda _started: "run_atomic")
-    fetcher, _, _ = _successful_fetcher()
+    fetcher, wrapper_bytes, payload_bytes = _successful_fetcher()
     real_rename = storage.os.rename
 
     def fail_final_rename(source, destination):
@@ -479,7 +479,18 @@ def test_atomic_publication_failure_leaves_no_visible_run(tmp_path, monkeypatch)
         capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
     final_parent = tmp_path / "raw/runs/2026/10/13"
     assert not (final_parent / "run_atomic").exists()
-    assert list(final_parent.iterdir()) == []
+    stages = list(final_parent.iterdir())
+    assert len(stages) == 1 and stages[0].name.startswith(".run_atomic.")
+    stage = stages[0]
+    assert next(stage.rglob("wrapper.raw")).read_bytes() == wrapper_bytes
+    assert next(stage.rglob("payload.raw")).read_bytes() == payload_bytes
+    assert storage.verify_checksums(stage) == []
+    assert storage.verify_checksums(next(stage.glob("IB04/cap_*"))) == []
+    monkeypatch.setattr(storage.os, "rename", real_rename)
+    recovered = final_parent / "run_atomic"
+    real_rename(stage, recovered)
+    assert storage.verify_checksums(recovered) == []
+    assert next(recovered.rglob("payload.raw")).read_bytes() == payload_bytes
 
 
 def test_config_rejects_inline_api_key_and_loads_station_fixture(tmp_path):

@@ -23,3 +23,8 @@ Antes de desplegar, conservar copia de las unidades y ejecutables existentes. Pa
 ## Evidencia y limites
 
 En una consulta manual del producto de pronostico diario con el cultivo aguacate, cinco estaciones baleares mostraron cero registros en la web oficial. Sus CSV automaticos recientes tambien carecian de filas. No se pudo verificar independientemente la descarga manual y la causa no esta determinada. Una copia remota de una captura reciente fue verificada de nuevo sin duplicacion y restaurada de forma independiente, con manifiesto SHA256 valido. Esa muestra no certifica toda la historia.
+
+
+## Proteccion previa de captura
+
+El control opcional de captura comprueba espacio e inodos libres, acceso al directorio temporal y los hashes del ultimo run publicado antes de iniciar una nueva consulta. Su umbral predeterminado es 2 GiB y 1000 inodos. Un fallo detiene esa ejecucion; un fallo de backup por si solo no la detiene. La revision de integridad cubre el ultimo run, no certifica todos los historicos. Instalar el ejecutable como archivo protegido y el drop-in de systemd, verificar la configuracion antes de reiniciar el servicio y mantener una copia de reversion. El panel muestra espacio e inodos disponibles.

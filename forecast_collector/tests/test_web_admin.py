@@ -20,4 +20,6 @@ class Tests(unittest.TestCase):
   headers={'Origin':w.ORIGIN,'X-SIAR-Request':'1'};self.assertEqual(self.req('/api/action/shell','POST',headers)[0],400)
  def test_whitelist(self):
   with self.assertRaises(ValueError):w.execute('shell')
+ def test_free_space(self):
+  code,data=self.req('/api/system');info=json.loads(data);self.assertEqual(code,200);self.assertGreater(info['free_bytes'],0)
 if __name__=='__main__':unittest.main()

@@ -62,7 +62,7 @@ class Handler(BaseHTTPRequestHandler):
    if u.path=='/style.css':return self.reply(200,Path('/opt/siar-forecast/web/style.css').read_bytes(),'text/css; charset=utf-8')
    if u.path=='/api/runs':return self.reply(200,json.dumps(load(),ensure_ascii=False))
    if u.path=='/api/system':
-    p=subprocess.run(['systemctl','show','siar-forecast-capture.timer','siar-forecast-backup.service','siar-forecast-quality.service','--property=Id,ActiveState,Result,NextElapseUSecRealtime,LastTriggerUSec','--no-pager'],capture_output=True,text=True,timeout=10);return self.reply(200,json.dumps({'text':p.stdout}))
+    p=subprocess.run(['systemctl','show','siar-forecast-capture.timer','siar-forecast-backup.service','siar-forecast-quality.service','--property=Id,ActiveState,Result,NextElapseUSecRealtime,LastTriggerUSec','--no-pager'],capture_output=True,text=True,timeout=10);v=os.statvfs(ROOT);return self.reply(200,json.dumps({'text':p.stdout,'free_bytes':v.f_bavail*v.f_frsize,'free_inodes':v.f_favail}))
    if u.path=='/api/csv':
     q=urllib.parse.parse_qs(u.query);return self.reply(200,get_csv(q.get('run',[''])[0],q.get('station',[''])[0]),'text/csv; charset=utf-8')
    if u.path=='/api/preservation':

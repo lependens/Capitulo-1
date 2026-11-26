@@ -1,3 +1,5 @@
+> **Contexto histórico (26/11/2026):** esta guía describe el alcance del explorador V0.3 al cerrar su release. La frase «ANN is NOT STARTED» refleja aquel momento; ANN V1 y V2 se desarrollaron después. Véanse la [guía ANN V1](../../scientific_pipeline/docs/ann_v1_modern_explained.md) y la [web V2 estable](et0-v2-stable.md). El estado actual de los servicios requiere comprobación.
+
 # WEB-V0.3 — Scientific Explorer
 
 ## Scientific semantics

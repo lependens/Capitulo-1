@@ -1,0 +1,58 @@
+data_root = "/srv/aemet-forecast/raw"
+request_timeout_seconds = 30
+
+[[targets]]
+station_code = "IB04"
+station_name = "Son Ferriol"
+municipality_id = "07040"
+municipality_name = "Palma"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB01"
+station_name = "Santa Eulalia"
+municipality_id = "07054"
+municipality_name = "Santa Eulària des Riu"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB02"
+station_name = "Inca"
+municipality_id = "07027"
+municipality_name = "Inca"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB03"
+station_name = "Manacor"
+municipality_id = "07033"
+municipality_name = "Manacor"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB05"
+station_name = "Felanitx"
+municipality_id = "07022"
+municipality_name = "Felanitx"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB06"
+station_name = "Sa Pobla"
+municipality_id = "07044"
+municipality_name = "Pobla, Sa"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB10"
+station_name = "Calvià"
+municipality_id = "07011"
+municipality_name = "Calvià"
+spatial_match = "municipal_capital"
+
+[[targets]]
+station_code = "IB11"
+station_name = "S’ Estany des Peix"
+municipality_id = "07024"
+municipality_name = "Formentera"
+spatial_match = "municipal_capital"

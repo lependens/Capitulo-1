@@ -9,7 +9,7 @@ def summarize(items):
         status=m.get('capture',{}).get('status'); valid=status=='complete' and isinstance(issue,str) and bool(issue.strip())
         repeat=key in seen if valid else None
         if valid: seen.add(key)
-        result.append({'run_id':m.get('run_id'),'capture_id':m.get('capture_id'),'status':status,'municipality_id':municipality,'product':product,'issue_time_raw':issue,'captured_at_utc':m.get('capture',{}).get('started_at_utc'),'valid_times_raw':m.get('valid_times_raw',[]),'repeated_emission':repeat})
+        result.append({'run_id':m.get('run_id'),'capture_id':m.get('capture_id'),'status':status,'station_code':m.get('station',{}).get('code'),'station_name':m.get('station',{}).get('name'),'municipality_id':municipality,'municipality_name':m.get('municipality',{}).get('name'),'product':product,'issue_time_raw':issue,'captured_at_utc':m.get('capture',{}).get('started_at_utc'),'valid_times_raw':m.get('valid_times_raw',[]),'repeated_emission':repeat})
     return result
 
 def main():

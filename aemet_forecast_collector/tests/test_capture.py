@@ -334,7 +334,6 @@ def test_payload_http_failure_keeps_wrapper_and_safe_payload_bytes(tmp_path, mon
     fetcher = SequenceFetcher(
         HttpResponse(200, {"Content-Type": "application/json"}, wrapper_bytes),
         HttpResponse(503, {"Content-Type": "text/plain"}, b"first transient error"),
-        HttpResponse(503, {"Content-Type": "text/plain"}, b"first transient error"),
         HttpResponse(503, {"Content-Type": "text/plain"}, error_body),
     )
     run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)

@@ -19,10 +19,10 @@ def report():
    try: data=json.loads(raw.decode('utf-8-sig'))
    except UnicodeDecodeError: data=json.loads(raw.decode('latin-1'))
    for item in data:
-    if str(item.get('id','')) not in ('07040','7040'): continue
+    if str(item.get('id','')).zfill(5) != m.get('municipality',{}).get('id'): raise ValueError('payload municipality mismatch')
     for day in item.get('prediccion',{}).get('dia',[]):
      temp=day.get('temperatura',{}); humidity=day.get('humedadRelativa',{})
-     forecasts.append({'capture_id':m.get('capture_id'),'date':day.get('fecha'),'min_temp':temp.get('minima'),'max_temp':temp.get('maxima'),'min_humidity':humidity.get('minima'),'max_humidity':humidity.get('maxima')})
+     forecasts.append({'capture_id':m.get('capture_id'),'station_code':m.get('station',{}).get('code'),'municipality_id':m.get('municipality',{}).get('id'),'municipality_name':m.get('municipality',{}).get('name'),'date':day.get('fecha'),'min_temp':temp.get('minima'),'max_temp':temp.get('maxima'),'min_humidity':humidity.get('minima'),'max_humidity':humidity.get('maxima')})
   except (OSError, ValueError, TypeError) as e: errors.append({'file':str(p),'error':str(e)})
  runs=sorted(p.name for p in ROOT.glob('*/*/*/run_*') if p.is_dir())
  j=command(['journalctl','-u','aemet-forecast-backup.service','-o','json','--no-pager'])

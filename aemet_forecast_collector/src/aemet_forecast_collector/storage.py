@@ -143,3 +143,7 @@ def publish_run(stage: Path, final: Path, run_metadata: dict[str, Any]) -> Path:
 def discard_stage(stage: Path) -> None:
     if stage.exists():
         shutil.rmtree(stage)
+
+def preserve_stage(stage: Path) -> None:
+    if stage.exists():
+        _set_shared_permissions(stage)

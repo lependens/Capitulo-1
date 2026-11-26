@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 import hashlib
 import json
@@ -6,12 +7,12 @@ from pathlib import Path
 from typing import Callable
 
 from . import __version__
-from .client import AemetClient
+from .client import AemetClient, CaptureOutcome
 from .config import Config
 from .ids import iso_utc, new_capture_id, new_run_id, utc_now
 from .metadata import validate_capture_metadata, validate_run_metadata
 from .secret_safety import contains_secret, redact_metadata
-from .storage import create_run_stage, discard_stage, publish_run, write_capture
+from .storage import create_run_stage, preserve_stage, publish_run, write_capture
 from .transport import HttpResponse, http_get
 
 
@@ -31,17 +32,23 @@ def capture_run(
     run_id = new_run_id(started)
     stage, final = create_run_stage(config.data_root, started_iso, run_id)
     results: list[dict] = []
+    outcomes = {}
     try:
         for target in config.targets:
             station_started = now()
             capture_id = new_capture_id(target.station_code, station_started)
-            outcome = AemetClient(
-                api_key,
-                config.request_timeout_seconds,
-                fetcher,
-                now,
-                api_key_expires_at=api_key_expires_at,
-            ).capture(target)
+            if target.municipality_id not in outcomes:
+                if outcomes:
+                    time.sleep(3)
+                try:
+                    outcomes[target.municipality_id] = AemetClient(
+                        api_key, config.request_timeout_seconds, fetcher, now,
+                        api_key_expires_at=api_key_expires_at,
+                    ).capture(target)
+                except Exception as exc:
+                    print("AEMET_MUNICIPALITY_FAILURE type=" + type(exc).__name__, flush=True)
+                    outcomes[target.municipality_id] = CaptureOutcome(errors=["municipality capture failed"])
+            outcome = outcomes[target.municipality_id]
             finished = now()
             status = "complete" if outcome.complete else ("partial" if outcome.artifacts else "failed")
             artifact_records = {
@@ -112,4 +119,4 @@ def capture_run(
         validate_run_metadata(run_metadata)
         return publish_run(stage, final, run_metadata)
     finally:
-        discard_stage(stage)
+        preserve_stage(stage)

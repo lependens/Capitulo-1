@@ -39,3 +39,5 @@ persistent configuration and protected original until credential state is
 reviewed; do not blindly roll back OAuth tokens, which may have been invalidated
 or rotated. Do not delete encrypted objects. Diagnose and authorize any further
 capture separately.
+
+La captura conserva la respuesta HTTP final (incluido su cuerpo de error si supera el control de secretos). Ante 503 se realiza un reintento acotado: las respuestas intermedias no se almacenan como payload RAW ni se presentan como previsiones. Si el último intento falla por transporte, no hay cuerpo final que guardar; el resultado se registra como fallo de transporte. La prueba simula explícitamente ambos intentos y la espera.

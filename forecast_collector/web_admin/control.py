@@ -3,8 +3,10 @@
 import hashlib,json,os,re,subprocess,sys,time
 from pathlib import Path
 A={'resume':['start','siar-forecast-capture.timer'],'pause':['stop','siar-forecast-capture.timer'],'capture':['start','--no-block','siar-forecast-capture.service'],'restart':['restart','--no-block','siar-forecast-capture.service'],'reconcile':['start','--no-block','siar-forecast-backup.service']}
+A.update({'aemet-pause':['stop','aemet-forecast-capture.timer'],'aemet-resume':['start','aemet-forecast-capture.timer']})
 if len(sys.argv)!=2:sys.exit(2)
 a=sys.argv[1]
+if a=='aemet-report':os.execv('/usr/bin/python3',['python3','-I','/opt/siar-forecast-aemet-read/report.py'])
 if a=='logs':os.execv('/usr/bin/journalctl',['journalctl','-u','siar-forecast-capture.service','-u','siar-forecast-backup.service','-u','siar-forecast-quality.service','-n','120','--no-pager','-o','short-iso'])
 if a=='preservation':
  root=Path('/srv/siar-forecast/raw/runs');state=Path('/var/lib/siar-forecast-backup/receipts');total=good=deferred=0

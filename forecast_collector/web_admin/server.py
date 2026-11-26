@@ -11,7 +11,7 @@ HELPER='/usr/local/libexec/siar-forecast-web-control'
 ORIGIN=os.environ.get('SIAR_WEB_ORIGIN','https://127.0.0.1:8091')
 BIND=os.environ.get('SIAR_WEB_BIND','127.0.0.1')
 PORT=int(os.environ.get('SIAR_WEB_PORT','8091'))
-ACTIONS={'resume','pause','capture','restart','reconcile'}
+ACTIONS={'resume','pause','capture','restart','reconcile','aemet-pause','aemet-resume'}
 ID=re.compile(r'^run_[A-Za-z0-9._-]+$'); STATION=re.compile(r'^IB(?:01|02|03|04|05|06|10|11)$')
 
 def load():
@@ -37,8 +37,8 @@ def get_csv(run,station):
  return raw
 
 def execute(action):
- if action not in ACTIONS and action not in ('logs','preservation'):raise ValueError('invalid action')
- return subprocess.run(['sudo','-n',HELPER,action],capture_output=True,text=True,timeout=30,check=False)
+ if action not in ACTIONS and action not in ('logs','preservation','aemet-report'):raise ValueError('invalid action')
+ return subprocess.run(['sudo','-n',HELPER,action],capture_output=True,text=True,timeout=90,check=False)
 
 class Handler(BaseHTTPRequestHandler):
  def log_message(self,*args):pass
@@ -60,6 +60,9 @@ class Handler(BaseHTTPRequestHandler):
    if u.path=='/':return self.reply(200,Path('/opt/siar-forecast/web/index.html').read_bytes(),'text/html; charset=utf-8')
    if u.path=='/app.js':return self.reply(200,Path('/opt/siar-forecast/web/app.js').read_bytes(),'text/javascript; charset=utf-8')
    if u.path=='/style.css':return self.reply(200,Path('/opt/siar-forecast/web/style.css').read_bytes(),'text/css; charset=utf-8')
+   if u.path=='/combined.js':return self.reply(200,Path('/opt/siar-forecast/web/combined.js').read_bytes(),'text/javascript; charset=utf-8')
+   if u.path=='/api/aemet':
+    p=execute('aemet-report');return self.reply(200 if p.returncode==0 else 503,p.stdout if p.returncode==0 else '{}')
    if u.path=='/api/runs':return self.reply(200,json.dumps(load(),ensure_ascii=False))
    if u.path=='/api/system':
     p=subprocess.run(['systemctl','show','siar-forecast-capture.timer','siar-forecast-backup.service','siar-forecast-quality.service','--property=Id,ActiveState,Result,NextElapseUSecRealtime,LastTriggerUSec','--no-pager'],capture_output=True,text=True,timeout=10);v=os.statvfs(ROOT);return self.reply(200,json.dumps({'text':p.stdout,'free_bytes':v.f_bavail*v.f_frsize,'free_inodes':v.f_favail}))

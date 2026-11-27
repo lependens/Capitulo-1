@@ -20,6 +20,9 @@ Se inspeccionaron las cinco fechas 01–05/06/2020, en la sección inicial del C
 
 Las discrepancias ET0 no se explican todas por redondear directamente EtPMon a dos decimales. Causa no determinada: no corregir ni sustituir valores sin investigación; comprobar definiciones, fuente original y posible revisión o recálculo.
 
+## Contraste con portal oficial SIAR
+Consulta efectuada el 27/11/2026: AL02 - Almería, datos diarios del 01/06/2020 al 05/06/2020, todas las variables, en https://servicio.mapa.gob.es/siarweb/consultaDatos/consultaDatos. Resultado visible de ET0, respectivamente: 5,20; 4,61; 5,24; 5,45; 5,41 mm. Coincide con V3 a la precisión mostrada por la web. El archivo histórico coincide en una de estas cinco fechas a dos decimales. La causa de las diferencias permanece sin determinar. La consulta es evidencia puntual; no valida otras estaciones ni el histórico entero.
+
 ## Pendiente
 - Inventario y hashes de cada fuente; identificar cada archivo y las secciones con código de estación y evidencia, especialmente archivos sin cabecera.
 - Comparación reproducible por fecha y variable, con reglas explícitas de redondeo y tratamiento de valores ausentes.

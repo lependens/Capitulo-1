@@ -1,3 +1,5 @@
+> **Actualización 27/11/2026:** la [auditoría científica independiente TFG–TFM–ET₀ V2](../scientific_pipeline/docs/et0_v2_auditoria_cientifica_tfg_tfm.md) se incorporó mediante [PR #87](https://github.com/lependens/Capitulo-1/pull/87). Concluye concordancia descriptiva con limitaciones y deja comprobaciones científicas pendientes; V2 sigue **NOT_PUBLISHED**. La revisión focalizada no equivale al cierre de todos los puntos científicos abiertos. Las PR #83–#85 permanecían abiertas en borrador en la consulta del 27/11. Los servicios no se han inspeccionado.
+
 > **Actualización 26/11/2026:** el cuadro siguiente es el corte histórico del 25/11. Las PR #80–#82 se fusionaron después; la fase 2 web y los metadatos DEVELOPMENT están documentados en [web estable](../web_app/docs/et0-v2-stable.md) y [metadatos](../scientific_pipeline/docs/et0_v2_experimental_metadata.md). Las PR #83–#85 estaban abiertas en borrador al revisar. Véase la [auditoría posterior](AUDITORIA_DOCUMENTAL_2026-11-26.md) para evidencias y pendientes; runtime actual sin verificar.
 
 # Estado de SIAR / ET₀ — 25/11/2026

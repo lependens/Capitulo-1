@@ -116,3 +116,7 @@ AL06 Virgen de Fátima-Cuevas de Almanzora, a12.txt SHA256 1585042346240bc2a7b4c
 ## AL07: contraste de dos bloques
 
 AL07 Huércal-Overa, a5.txt SHA256 fab27a8702c5d44fe08b6fd6ad1a7bedd3771a50931308bd73b48fc32a0f7f01: consulta web oficial SIAR el 27/11/2026 de 20–24/05/2001 y 28/08–01/09/2014. Los 12 campos meteorológicos comparables son compatibles en las diez filas con la precisión del histórico y horas exactas. ET0 se registra sin penalizar y difiere en los diez días. Evidencia en docs/evidencia-muestreo/AL07-siar-web-20261127.json y AL07-comparacion-20261127.json. Muestra PASS, sin importación ni garantía de integridad de todas las filas.
+
+## AL08: contraste de dos bloques en web pública
+
+AL08 Cuevas de Almanzora, a3.txt SHA256 160148b0c9203c66e2da4f445ea13572181ac7fd031179d968ed357f98157be9: consulta web pública SIAR el 27/11/2026 de 26–30/09/2000 y 12–16/09/2011. Los 12 campos meteorológicos comparables son compatibles en las diez filas con la precisión del histórico y horas exactas. ET0 se registra sin penalizar. Evidencia en docs/evidencia-muestreo/AL08-siar-web-20261127.json y AL08-comparacion-20261127.json. Muestra PASS, sin importación ni garantía de integridad de todas las filas. No se empleó la API autenticada para esta consulta web.

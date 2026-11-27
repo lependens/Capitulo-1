@@ -1,6 +1,6 @@
 # Auditoría inicial de históricos manuales de Andalucía
 
-Fecha de revisión: 2026-11-27. Estado: EN CURSO; sin autorización científica para importar a V3 a partir de este documento.
+Fecha de revisión: 2026-11-27. Estado: EN CURSO. El propietario autoriza la importación progresiva tras contrastar las variables y preparar pruebas y copias de seguridad.
 
 ## Procedencia
 Archivos aportados por el propietario, recopilados manualmente desde SIAR para el TFM. Origen local: carpeta estacions andalucia, estructurada por provincias. Se observa diversidad de formatos; no debe inferirse el código de estación exclusivamente del nombre de archivo. Ejemplo: Almería/a1.txt tiene cabeceras AL10. La sección inicial de Almería/GENERAL ALMERIA.csv identifica AL02.
@@ -18,10 +18,10 @@ Se inspeccionaron las cinco fechas 01–05/06/2020, en la sección inicial del C
 | 04/06/2020 | 5.48 | 5.445802 | +0.034198 |
 | 05/06/2020 | 5.42 | 5.406935 | +0.013065 |
 
-Las discrepancias ET0 no se explican todas por redondear directamente EtPMon a dos decimales. Causa no determinada: no corregir ni sustituir valores sin investigación; comprobar definiciones, fuente original y posible revisión o recálculo.
+Las discrepancias ET0 no se explican todas por redondear directamente EtPMon a dos decimales. Causa no determinada: no corregir ni sustituir valores sin investigación; comprobar definiciones, fuente original y posibles cambios posteriores en SIAR; no atribuir el valor histórico al cálculo posterior del propietario.
 
 ## Contraste con portal oficial SIAR
-Consulta efectuada el 27/11/2026: AL02 - Almería, datos diarios del 01/06/2020 al 05/06/2020, todas las variables, en https://servicio.mapa.gob.es/siarweb/consultaDatos/consultaDatos. Resultado visible de ET0, respectivamente: 5,20; 4,61; 5,24; 5,45; 5,41 mm. Coincide con V3 a la precisión mostrada por la web. El archivo histórico coincide en una de estas cinco fechas a dos decimales. La causa de las diferencias permanece sin determinar. La consulta es evidencia puntual; no valida otras estaciones ni el histórico entero.
+Consulta efectuada el 27/11/2026: AL02 - Almería, datos diarios del 01/06/2020 al 05/06/2020, todas las variables, en https://servicio.mapa.gob.es/siarweb/consultaDatos/consultaDatos. Resultado visible de ET0, respectivamente: 5,20; 4,61; 5,24; 5,45; 5,41 mm. Coincide con V3 a la precisión mostrada por la web. El archivo histórico coincide en una de estas cinco fechas a dos decimales. El propietario aclara que la ET0 de estos archivos se descargó directamente de SIAR y que sus cálculos propios fueron posteriores. La causa de las diferencias permanece sin determinar. La consulta es evidencia puntual; no valida otras estaciones ni el histórico entero.
 
 ## Ampliación: AL01 y AL04
 AL01: archivo original Almería/a6.txt, identificado por sus cabeceras; contraste con el CSV V3 para el 01–05/06/2020. ET0 histórica / EtPMon V3: 5.27 / 5.256639; 4.48 / 4.470225; 5.62 / 5.570457; 5.26 / 5.231101; 6.02 / 5.940239. Los cinco pares difieren al comparar con dos decimales. Las variables comunes observadas son compatibles con el redondeo de las cifras históricas; no se ha hecho un cotejo automático exhaustivo ni una validación de las otras fechas.
@@ -37,3 +37,6 @@ En V3 el CSV conserva, en estas muestras, decimales adicionales, por ejemplo AL0
 - Resolver discrepancias y determinar compatibilidad con las 23 columnas; las variables ausentes no deben inventarse.
 - Evaluar duplicados, periodos, huecos, conflictos y cómo planificador y SQLite reconocen datos importados.
 - Preparar prueba aislada y copias de seguridad antes de cualquier incorporación. No se han modificado los CSV, SQLite ni trabajos de producción en esta revisión.
+
+## Decisión del propietario
+Conservar e importar los valores de ET0 históricos originales junto a las variables comprobadas, sin sobrescribir valores de V3 en conflicto. Registrar procedencia y discrepancias. Campos faltantes quedan vacíos y documentados para posible recuperación futura en V3.A; no se deben reconsultar todas las fechas únicamente por dichos campos. Comprobar previamente la interacción con la cola, los huecos y publicación.

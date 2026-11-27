@@ -94,3 +94,7 @@ Estado de la muestra AL05: PASS para identidad y variables observadas, pendiente
 ## AL04: diez fechas aleatorias frente a SIAR
 
 Comprobación 27/11/2026 de AL04 Tabernas, fuente a9.txt SHA256 7150c9a2daa6d199aade034efaf1d7a9b013cb4609a98dfba64caea7c03781d9. Se consultaron las diez fechas predeterminadas de 2000-06-29 a 2018-02-10. Los 12 campos meteorológicos comunes, incluidas ambas horas de temperatura extrema, resultan compatibles aplicando la tolerancia indicada para AL05 y horas exactas en las diez fechas. La ET0 se registra separada y difiere en diez fechas; no penaliza la muestra. Evidencia en docs/evidencia-muestreo/AL04-siar-web-20261127.json y AL04-comparacion-20261127.json. Datos capturados de la web, no RAW API. Muestra PASS, no es validación total del conjunto ni autorización por sí sola para modificar datos sin resolver seguridad de la importación.
+
+## AL02: diez fechas aleatorias frente a SIAR
+
+Comprobación 27/11/2026 de AL02 Almería, fuente a2.txt SHA256 06eda863db3b5418e5dd66e3267f56f8038f299a070770282afca2cb190d1fcd. Las diez fechas seleccionadas entre 2003 y 2020 tienen 12 campos meteorológicos comunes compatibles según la tolerancia de redondeo de AL05 y horas exactas. La ET0 se registra separada sin penalizar. Evidencias docs/evidencia-muestreo/AL02-siar-web-20261127.json y AL02-comparacion-20261127.json. Muestra PASS, no valida todas las filas ni importa datos.

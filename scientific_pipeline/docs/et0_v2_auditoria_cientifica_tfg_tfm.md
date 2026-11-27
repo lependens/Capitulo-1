@@ -242,7 +242,7 @@ Series por color · Fórmula (verde azulado) · AHC (naranja) · ML (azul) · AN
 | HS-Ra | 0,672 | 0,468 | 0,7873 | 0,4938 |
 | HR/Valiantzas | 0,461 | 0,373 | 0,4701 | 0,3832 |
 
-HG-Rs presenta la principal divergencia de calibración. El TFG empeora +0,021 mm/día con media de cocientes y V2 mejora ≈0,160 con OLS en su propio TEST. Estimador, reparto de días, target y ventanas son explicaciones plausibles. El texto TFG p. 35 cruza cifras de MSE y AARE de la tabla 7. Se priorizan la tabla y los anexos.
+HG-Rs presenta la principal divergencia de calibración. El TFG empeora +0,021 mm/día con media de cocientes y V2 mejora ≈0,160 en TEST con el coeficiente OLS ajustado en DEVELOPMENT y congelado antes de la evaluación. Estimador, reparto de días, target y ventanas son explicaciones plausibles. El texto TFG p. 35 cruza cifras de MSE y AARE de la tabla 7. Se priorizan la tabla y los anexos.
 
 ### Derivación desde predicciones preservadas
 

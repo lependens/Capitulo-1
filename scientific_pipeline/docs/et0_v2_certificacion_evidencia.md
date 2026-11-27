@@ -1,3 +1,5 @@
+> **Lectura posterior, 27/11/2026:** la [auditoría científica independiente TFG–TFM–ET₀ V2](et0_v2_auditoria_cientifica_tfg_tfm.md) complementa esta certificación técnica con una comparación histórica y bibliográfica focalizada y sus cuestiones pendientes. Se conserva el alcance de las comprobaciones y el estado científico NOT_PUBLISHED.
+
 # Evidencia de certificación técnica ET₀ V2
 
 El ZIP retrospectivo Kaggle `370251881` conserva 108 celdas AHC, 105 ML, 105 ANN A y 105 ANN E; en el árbol congelado se inventariaron 3.885 checkpoints de candidatos ML y 525 para cada ANN, además de 735 modelos ML y 105 modelos por variante ANN. La mera cuenta no reemplaza el cotejo de hashes y relaciones; el expediente previo registra los cuatro índices y su verificación.

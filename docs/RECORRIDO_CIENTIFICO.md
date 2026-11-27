@@ -14,7 +14,7 @@ Esta guía ordena las fuentes; no sustituye los protocolos ni convierte estados 
 8. **Retrospectiva y revisión.** Los [resultados](../scientific_pipeline/docs/et0_v2_retrospective_results_2026.md), [certificación técnica](../scientific_pipeline/docs/et0_v2_certificacion_evidencia.md) y [contrato de inferencia](../scientific_pipeline/docs/et0_v2_contrato_inferencia.md) precisan cobertura, cohortes y límites. V2 sigue NOT_PUBLISHED; la evaluación 2020–2025 no es prospectiva ni medición instrumental independiente.
 9. **Preservación y presentación.** Consultar [recuperación](backup/README.md), [ubicaciones](DATA_LOCATIONS.md), [web V2 estable](../web_app/docs/et0-v2-stable.md) y [V0.3](../web_app/docs/release-v03.md). Cada recibo o restore acredita solo el alcance y fecha documentados.
 
-Para la comparación independiente con los antecedentes de la UIB, véase la [auditoría científica de ET₀ V2, TFG y TFM](../scientific_pipeline/docs/et0_v2_auditoria_cientifica_tfg_tfm.md).
+La [auditoría científica independiente de ET₀ V2, TFG y TFM](../scientific_pipeline/docs/et0_v2_auditoria_cientifica_tfg_tfm.md), fechada el 25/11/2026 e incorporada en la PR #87, compara los antecedentes con el experimento V2. Encuentra concordancia descriptiva del orden y escala de errores, con periodos, cobertura y referencias diferentes. Recoge posibles errores en código histórico impreso, cuya incidencia en los resultados originales requiere recuperar las versiones ejecutadas y sus datos. La comparación diaria con una referencia común y la revisión de la altura del viento siguen pendientes. V2 continúa NOT_PUBLISHED.
 
 ## Líneas operativas y futuras
 

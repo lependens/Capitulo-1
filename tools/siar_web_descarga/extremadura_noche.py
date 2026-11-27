@@ -49,6 +49,15 @@ def main():
     root=Path('/home/josep/siar-web-extremadura-20261127'); root.mkdir(mode=0o700,exist_ok=True)
     stations=json.loads((Path(__file__).parent/'extremadura_estaciones.json').read_text(encoding='utf-8'))['stations']
     if len(stations)!=56 or len({x['code'] for x in stations})!=56: raise ValueError('catalogo incorrecto')
+    active=[s for s in stations if s['active']]
+    inactive=iter(s for s in stations if not s['active'])
+    stations=[]
+    for i,station in enumerate(active):
+        stations.append(station)
+        if i % 2 == 1:
+            other=next(inactive,None)
+            if other: stations.append(other)
+    stations.extend(inactive)
     deadline=datetime(2026,11,28,8,0,tzinfo=ZoneInfo('Europe/Madrid'))
     end=date(2026,11,26); first=date(2000,1,1)
     db=sqlite3.connect(root/'progreso.sqlite'); db.execute('PRAGMA journal_mode=WAL')

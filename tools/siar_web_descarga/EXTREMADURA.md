@@ -1,0 +1,11 @@
+# Recopilación web de Extremadura: ejecución experimental nocturna
+
+Catálogo obtenido el 27/11/2026 de la selección de estaciones del formulario SIAR: 56 estaciones, 40 activas y 16 inactivas, con nombres y estado en `extremadura_estaciones.json`. Los estados reflejan lo mostrado al consultar, no la historia completa de cada estación.
+
+`extremadura_noche.py` usa el formulario web público y almacena datos en `/home/josep/siar-web-extremadura-20261127`, de manera independiente de SIAR Sync V3. Periodo solicitado 01/01/2000–26/11/2026, del más reciente al más antiguo, alternando estaciones activas e inactivas. Se ejecutó en segundo plano el 27/11/2026 y se programó para detenerse a las 08:00 del día 28, hora de Madrid; puede detenerse antes si hay cinco fallos consecutivos. No reinicia tras reinicio del servidor.
+
+Las respuestas originales y fecha de captura se conservan en SQLite con SHA-256; se construyen CSV con las 23 cabeceras V3. Los valores corresponden a la precisión visible de la web; temperatura del suelo 1 y 2 quedan vacías porque no se obtienen de la tabla. Los días no devueltos o sin ningún valor quedan pendientes, igual que los intervalos con error; no equivalen a ausencia confirmada. Una fila con alguna variable disponible se conserva con vacíos en las restantes. Los periodos pendientes no se reintentan automáticamente. No se efectúa integración ni sobrescritura de datos V3.
+
+Se probaron seis pruebas unitarias, BA01 (01–05/06/2020) y BA03 inactiva (01–05/06/2010): cinco filas y 23 columnas. Las primeras capturas reales de BA01 y BA02 contenían 31 días. Se detectó que la web devuelve filas totalmente vacías para BA03 en 2026: el código se corrigió, esas 31 fechas se marcaron pendientes y se guardó copia de los CSV previos en `copia-antes-vacios`. El primer intento de BA06 acabó en ValueError y su intervalo permanece pendiente, sin atribuir el error a ausencia de datos. No se han completado pruebas exhaustivas de todas las estaciones y situaciones.
+
+Ver progreso con `tail -n 30 /home/josep/siar-web-extremadura-20261127/ejecucion.log`. El log anterior a la corrección puede mostrar cero pendientes para bloques cuyas filas estaban vacías; el estado corregido está en la columna `missing` de SQLite. La ejecución no garantiza completar el periodo en una noche.

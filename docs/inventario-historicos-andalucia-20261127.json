@@ -1,0 +1,1295 @@
+[
+  {
+    "file": "Almería\\a1.txt",
+    "header": "AL10",
+    "candidate_station": "AL10",
+    "status": "candidate_unverified",
+    "sha256": "ac6c8f5e9e9be7dd1112fb8793936ac05dad18c1a7909245e6ed502dea6c3417",
+    "candidate_rows": 7173,
+    "exceptions": {
+      "invalid_value": 15,
+      "date_only": 23,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a10.txt",
+    "header": "AL09",
+    "candidate_station": "AL09",
+    "status": "candidate_unverified",
+    "sha256": "8c60d59bbdd56f841ea95170367471b023674cf1b48c6a246179823f07291df7",
+    "candidate_rows": 353,
+    "exceptions": {
+      "date_outside_source_period": 10
+    }
+  },
+  {
+    "file": "Almería\\a11.txt",
+    "header": "AL12",
+    "candidate_station": "AL12",
+    "status": "candidate_unverified",
+    "sha256": "3df4fc38c7e075c63c1b868181a7489129c934a5803c2fc1989c82f7c19e9303",
+    "candidate_rows": 6786,
+    "exceptions": {
+      "invalid_value": 6,
+      "date_only": 41,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a12.txt",
+    "header": "AL06",
+    "candidate_station": "AL06",
+    "status": "candidate_unverified",
+    "sha256": "1585042346240bc2a7b4cab5fc837855b8d7c8d5c92cf160be796eba20b64996",
+    "candidate_rows": 7440,
+    "exceptions": {
+      "invalid_value": 13,
+      "date_only": 7,
+      "date_day_mismatch": 2,
+      "date_outside_source_period": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a2.txt",
+    "header": "AL02",
+    "candidate_station": "AL02",
+    "status": "candidate_unverified",
+    "sha256": "06eda863db3b5418e5dd66e3267f56f8038f299a070770282afca2cb190d1fcd",
+    "candidate_rows": 7235,
+    "exceptions": {
+      "invalid_value": 5,
+      "date_only": 189,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1,
+      "duplicate_date": 2
+    }
+  },
+  {
+    "file": "Almería\\a3.txt",
+    "header": "AL08",
+    "candidate_station": "AL08",
+    "status": "candidate_unverified",
+    "sha256": "160148b0c9203c66e2da4f445ea13572181ac7fd031179d968ed357f98157be9",
+    "candidate_rows": 6742,
+    "exceptions": {
+      "invalid_value": 7,
+      "date_only": 710,
+      "date_day_mismatch": 2,
+      "date_outside_source_period": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a4.txt",
+    "header": "AL05",
+    "candidate_station": "AL05",
+    "status": "candidate_unverified",
+    "sha256": "1153c1ca89b31200ffeba3f0d56bf00cfe0eaea59892dbe29d71232aa84e49b0",
+    "candidate_rows": 7402,
+    "exceptions": {
+      "date_only": 23,
+      "date_day_mismatch": 2,
+      "invalid_value": 5,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a5.txt",
+    "header": "AL07",
+    "candidate_station": "AL07",
+    "status": "candidate_unverified",
+    "sha256": "fab27a8702c5d44fe08b6fd6ad1a7bedd3771a50931308bd73b48fc32a0f7f01",
+    "candidate_rows": 7437,
+    "exceptions": {
+      "invalid_value": 8,
+      "date_only": 15,
+      "date_day_mismatch": 2,
+      "date_outside_source_period": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a6.txt",
+    "header": "AL01",
+    "candidate_station": "AL01",
+    "status": "candidate_unverified",
+    "sha256": "f18272c7c54d0cdfbf186a290435077fe0e11843c07e65ef6c5cc212298ef96d",
+    "candidate_rows": 7413,
+    "exceptions": {
+      "date_only": 16,
+      "date_day_mismatch": 2,
+      "invalid_value": 1,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a7.txt",
+    "header": "AL11",
+    "candidate_station": "AL11",
+    "status": "candidate_unverified",
+    "sha256": "b282a0ff97659e09efaa925e45db97584e1740c5694dbc83f4a5974bbac8873b",
+    "candidate_rows": 6764,
+    "exceptions": {
+      "date_only": 62,
+      "date_day_mismatch": 2,
+      "invalid_value": 7,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Almería\\a8.txt",
+    "header": "AL03",
+    "candidate_station": "AL03",
+    "status": "candidate_unverified",
+    "sha256": "f050ae8651c4d2fb668dad7ff4f3f6a927dfb159834e7290b13a15895119f5ac",
+    "candidate_rows": 161,
+    "exceptions": {}
+  },
+  {
+    "file": "Almería\\a9.txt",
+    "header": "AL04",
+    "candidate_station": "AL04",
+    "status": "candidate_unverified",
+    "sha256": "7150c9a2daa6d199aade034efaf1d7a9b013cb4609a98dfba64caea7c03781d9",
+    "candidate_rows": 7403,
+    "exceptions": {
+      "invalid_value": 5,
+      "date_only": 22,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Cádiz\\c1.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c10.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c11.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c12.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c2.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c3.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c4.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c5.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c6.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c7.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c8.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Cádiz\\c9.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co1.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co10.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co11.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co2.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co3.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co4.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co5.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co6.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co7.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co8.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Córdoba\\co9.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g1.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g10.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g11.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g12.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g13.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g14.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g2.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g3.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g4.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g5.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g6.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g7.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g8.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Granada\\g9.txt",
+    "status": "unidentified_or_other_format"
+  },
+  {
+    "file": "Huelva\\h1.txt",
+    "header": "HU10",
+    "candidate_station": "H10",
+    "status": "candidate_unverified",
+    "sha256": "3d02098ec6c579b26d34a5e13cd2d0b0964f008cabcd2015c3757182b81064dd",
+    "candidate_rows": 6800,
+    "exceptions": {
+      "invalid_value": 9,
+      "date_only": 331,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h10.txt",
+    "header": "HU102",
+    "candidate_station": "H102",
+    "status": "candidate_unverified",
+    "sha256": "7c64ee31539da2cccd4ac36eb6e7da6c21c056ca1ee94f1af9d222ea2bfcca25",
+    "candidate_rows": 2410,
+    "exceptions": {
+      "invalid_value": 51,
+      "date_only": 1744,
+      "date_day_mismatch": 11,
+      "date_has_ambiguous_evidence": 7
+    }
+  },
+  {
+    "file": "Huelva\\h11.txt",
+    "header": "HU09",
+    "candidate_station": "H09",
+    "status": "candidate_unverified",
+    "sha256": "530319d3adbe10d14132de83ae1ab130af53311956e0f38b8c7d94a0fe00d48c",
+    "candidate_rows": 7080,
+    "exceptions": {
+      "invalid_value": 13,
+      "date_only": 47,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h12.txt",
+    "header": "HU07",
+    "candidate_station": "H07",
+    "status": "candidate_unverified",
+    "sha256": "8b2e2d3efddb89906cfa9f0008abc02efa39e267798eb565abebb73018442ab3",
+    "candidate_rows": 7111,
+    "exceptions": {
+      "invalid_value": 19,
+      "date_only": 12,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h13.txt",
+    "header": "HU106",
+    "candidate_station": "H106",
+    "status": "candidate_unverified",
+    "sha256": "8100054e4103a366be1b2c0b1b68115ed775e11c3f1fc866ce7195142ce6f1d2",
+    "candidate_rows": 440,
+    "exceptions": {
+      "invalid_value": 11,
+      "date_only": 480,
+      "date_day_mismatch": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h14.txt",
+    "header": "HU02",
+    "candidate_station": "H02",
+    "status": "candidate_unverified",
+    "sha256": "2f10986d6df0926d176609014c15002c8814bfe923b84df9c9c9def17ae1f236",
+    "candidate_rows": 7386,
+    "exceptions": {
+      "date_only": 64,
+      "date_day_mismatch": 2,
+      "invalid_value": 10,
+      "date_outside_source_period": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h15.txt",
+    "header": "HU04",
+    "candidate_station": "H04",
+    "status": "candidate_unverified",
+    "sha256": "8c8c7632c8b3a1a9b9a923ae6a616bde9dc677c03203087fe7dd417e31b7084f",
+    "candidate_rows": 7145,
+    "exceptions": {
+      "invalid_value": 5,
+      "date_only": 12,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h16.txt",
+    "header": "HU05",
+    "candidate_station": "H05",
+    "status": "candidate_unverified",
+    "sha256": "8c49c5ee5e68d95035aa0f9026c4c7951b845e91fe8d08e45ae2d0bff84a0987",
+    "candidate_rows": 7083,
+    "exceptions": {
+      "invalid_value": 6,
+      "date_only": 72,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h2.txt",
+    "header": "HU103",
+    "candidate_station": "H103",
+    "status": "candidate_unverified",
+    "sha256": "28647d32609ebee1c3b33c26e5429385695370f16146cbbb10b452af3c3c81cd",
+    "candidate_rows": 2011,
+    "exceptions": {
+      "invalid_value": 48,
+      "date_only": 1040,
+      "date_day_mismatch": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h3.txt",
+    "header": "HU104",
+    "candidate_station": "H104",
+    "status": "candidate_unverified",
+    "sha256": "d1433e9d47c70269efb8f557075764199700f523c8d496f7b1a85dcc4ad9a064",
+    "candidate_rows": 271,
+    "exceptions": {}
+  },
+  {
+    "file": "Huelva\\h4.txt",
+    "header": "HU06",
+    "candidate_station": "H06",
+    "status": "candidate_unverified",
+    "sha256": "2fee61dd7609a523345d549e13ef85676a405ef09156517db1895a3dea9fa796",
+    "candidate_rows": 7114,
+    "exceptions": {
+      "date_only": 23,
+      "date_day_mismatch": 2,
+      "invalid_value": 5,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h5.txt",
+    "header": "HU08",
+    "candidate_station": "H08",
+    "status": "candidate_unverified",
+    "sha256": "d106d566f2733287aef262d537b5dae003fcd2f05d5d25bbba6834b0c1996a5b",
+    "candidate_rows": 7123,
+    "exceptions": {
+      "invalid_value": 11,
+      "date_only": 7,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h6.txt",
+    "header": "HU01",
+    "candidate_station": "H01",
+    "status": "candidate_unverified",
+    "sha256": "fa6010f86d2e18e6413b87a78320cb74f67d60063502186f3a9a41c558fdb5f1",
+    "candidate_rows": 5906,
+    "exceptions": {
+      "date_only": 8,
+      "date_day_mismatch": 2,
+      "invalid_value": 1,
+      "date_outside_source_period": 11,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h7.txt",
+    "header": "HU03",
+    "candidate_station": "H03",
+    "status": "candidate_unverified",
+    "sha256": "c5244a87aeb2185696514cfb007a8362d50ebba71bf7cdf29956d9f0de9bce66",
+    "candidate_rows": 7416,
+    "exceptions": {
+      "date_only": 42,
+      "date_day_mismatch": 2,
+      "invalid_value": 2,
+      "date_outside_source_period": 10,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Huelva\\h8.txt",
+    "header": "HU11",
+    "candidate_station": "H11",
+    "status": "candidate_unverified",
+    "sha256": "8a4190270032abad760d6ab4e08fc33e3ecd1c9647250377d37161be3e92c07a",
+    "candidate_rows": 1309,
+    "exceptions": {
+      "invalid_value": 1
+    }
+  },
+  {
+    "file": "Huelva\\h9.txt",
+    "header": "HU101",
+    "candidate_station": "H101",
+    "status": "candidate_unverified",
+    "sha256": "e4dfac4ba0a09cc75a9dcbb09e5c6ebe49f3f5985ddb066260baf5fba08768a5",
+    "candidate_rows": 6809,
+    "exceptions": {
+      "invalid_value": 4,
+      "date_only": 22,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j1.txt",
+    "header": "JA06",
+    "candidate_station": "J06",
+    "status": "candidate_unverified",
+    "sha256": "6c3c4f3dfafe4a8d432714075d34c6fc7f786a400420eb919962b893e621b00f",
+    "candidate_rows": 7053,
+    "exceptions": {
+      "date_only": 47,
+      "date_day_mismatch": 2,
+      "invalid_value": 125,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j10.txt",
+    "header": "JA07",
+    "candidate_station": "J07",
+    "status": "candidate_unverified",
+    "sha256": "05c13ad4544b904f988cb3d0361ef3e0fcde24c95ac94384c5b069a4b9525e64",
+    "candidate_rows": 7190,
+    "exceptions": {
+      "date_only": 33,
+      "date_day_mismatch": 2,
+      "invalid_value": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j11.txt",
+    "header": "JA16",
+    "candidate_station": "J16",
+    "status": "candidate_unverified",
+    "sha256": "aa664cf44a8db4e20c6c9efb2e44a699dc49c0047bac7b3b5ee604ab74809753",
+    "candidate_rows": 3276,
+    "exceptions": {
+      "invalid_value": 26,
+      "date_only": 43,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j12.txt",
+    "header": "JA10",
+    "candidate_station": "J10",
+    "status": "candidate_unverified",
+    "sha256": "9992c9d05ba5d74d1d2393b607124ddbd9ca90d8ecfb30bc51a4be1a0fe2651f",
+    "candidate_rows": 3373,
+    "exceptions": {
+      "date_only": 16,
+      "invalid_value": 1
+    }
+  },
+  {
+    "file": "Jaén\\j13.txt",
+    "header": "JA13",
+    "candidate_station": "J13",
+    "status": "candidate_unverified",
+    "sha256": "026ad631354fe4493f0fff3478d32664b701dba876b3714b6f8e351248246b11",
+    "candidate_rows": 90,
+    "exceptions": {
+      "date_only": 3,
+      "invalid_value": 1
+    }
+  },
+  {
+    "file": "Jaén\\j14.txt",
+    "header": "JA02",
+    "candidate_station": "J02",
+    "status": "candidate_unverified",
+    "sha256": "582256b58fdbfbd21359d0f61d889122aef014539d89753406d8934e0172aace",
+    "candidate_rows": 7206,
+    "exceptions": {
+      "invalid_value": 2,
+      "date_only": 31,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j15.txt",
+    "header": "JA04",
+    "candidate_station": "J04",
+    "status": "candidate_unverified",
+    "sha256": "8ad7c745365a48c9a94868cd36b17a68279a92e13fec72dfcc1122ffe91403c3",
+    "candidate_rows": 7168,
+    "exceptions": {
+      "date_only": 61,
+      "invalid_value": 9,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j16.txt",
+    "header": "JA03",
+    "candidate_station": "J03",
+    "status": "candidate_unverified",
+    "sha256": "1f614334d3d4b6620b15d6893561fffb0bc5c1c668626262b6c91105b5bcd14b",
+    "candidate_rows": 7221,
+    "exceptions": {
+      "invalid_value": 2,
+      "date_only": 16,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j17.txt",
+    "header": "JA14",
+    "candidate_station": "J14",
+    "status": "candidate_unverified",
+    "sha256": "6edbcc9058ce90880f1b3b60554888d0d912eda743a4995de4415c5da00f8057",
+    "candidate_rows": 6962,
+    "exceptions": {
+      "date_only": 32,
+      "invalid_value": 7,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j18.txt",
+    "header": "JA05",
+    "candidate_station": "J05",
+    "status": "candidate_unverified",
+    "sha256": "439a40960e8af7d9a2bf5a6ad1cf597ceb9e72bedb4f78411d2f72329b49b32b",
+    "candidate_rows": 7212,
+    "exceptions": {
+      "invalid_value": 3,
+      "date_only": 23,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j19.txt",
+    "header": "JA101",
+    "candidate_station": "J101",
+    "status": "candidate_unverified",
+    "sha256": "b561bbcf0c95e4b6c9cf99ea6b05e8d580c0307ca02352eb87220ecc9ce11da2",
+    "candidate_rows": 4886,
+    "exceptions": {
+      "invalid_value": 3,
+      "date_only": 283,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j2.txt",
+    "header": "JA11",
+    "candidate_station": "J11",
+    "status": "candidate_unverified",
+    "sha256": "24abcac081dfc739e9da22a58adc344762bc95826d0c1453e09b5013dd67b620",
+    "candidate_rows": 7119,
+    "exceptions": {
+      "invalid_value": 10,
+      "date_only": 70,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j20.txt",
+    "header": "JA08",
+    "candidate_station": "J08",
+    "status": "candidate_unverified",
+    "sha256": "661e6ff021f8d1246c9fde9a9c733fd9c84eee306eb4d709865cf1de3d37b267",
+    "candidate_rows": 7083,
+    "exceptions": {
+      "invalid_value": 49,
+      "date_only": 92,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j21.txt",
+    "header": "JA102",
+    "candidate_station": "J102",
+    "status": "candidate_unverified",
+    "sha256": "1bd9726eb2b1141246a5f5ec93d4896b108788b9deff2585f484f7ff44c3f16b",
+    "candidate_rows": 5099,
+    "exceptions": {
+      "invalid_value": 1,
+      "date_only": 67,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j3.txt",
+    "header": "JA01",
+    "candidate_station": "J01",
+    "status": "candidate_unverified",
+    "sha256": "2fe0a0346d75540aedd423024e08149b0d0a54f9c3d0c9e758d7e27f2f03a5a2",
+    "candidate_rows": 7151,
+    "exceptions": {
+      "invalid_value": 12,
+      "date_only": 76,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j4.txt",
+    "header": "JA104",
+    "candidate_station": "J104",
+    "status": "candidate_unverified",
+    "sha256": "49f18282046b273eb95e6c79e9ecdd25f9ef9240cc2ba071cb22627e94c5cd4e",
+    "candidate_rows": 4402,
+    "exceptions": {
+      "date_only": 16,
+      "invalid_value": 4,
+      "date_day_mismatch": 12,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j5.txt",
+    "header": "JA15",
+    "candidate_station": "J15",
+    "status": "candidate_unverified",
+    "sha256": "51650ff780595c733b48f2691da14fab67f5f1d7bf068477caa0e7ce71de0e53",
+    "candidate_rows": 6949,
+    "exceptions": {
+      "invalid_value": 3,
+      "date_only": 32,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j6.txt",
+    "header": "JA103",
+    "candidate_station": "J103",
+    "status": "candidate_unverified",
+    "sha256": "445de77d8c3ed6585b7368ebcccefd8459ea8b849765d955d8808a8693d36cbe",
+    "candidate_rows": 5129,
+    "exceptions": {
+      "invalid_value": 6,
+      "date_only": 38,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j7.txt",
+    "header": "JA12",
+    "candidate_station": "J12",
+    "status": "candidate_unverified",
+    "sha256": "e4b6c5046b77cdf5414b400b92fea8aea846e093ab3e033ce2d8ba50aadb26cd",
+    "candidate_rows": 6981,
+    "exceptions": {
+      "invalid_value": 22,
+      "date_only": 75,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j8.txt",
+    "header": "JA09",
+    "candidate_station": "J09",
+    "status": "candidate_unverified",
+    "sha256": "e8c0cc8ac5250f2b3ed00c5f4c9274d05fabfeb69310d6b47c43c344b8174953",
+    "candidate_rows": 6442,
+    "exceptions": {
+      "invalid_value": 7,
+      "date_only": 50,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Jaén\\j9.txt",
+    "header": "JA17",
+    "candidate_station": "J17",
+    "status": "candidate_unverified",
+    "sha256": "248826651e358bdb4e1abf8c9f0d0180676a3e46a96efc506e9297b7485abf1a",
+    "candidate_rows": 721,
+    "exceptions": {
+      "invalid_value": 3
+    }
+  },
+  {
+    "file": "Málaga\\m1.txt",
+    "header": "MA03",
+    "candidate_station": "MA03",
+    "status": "candidate_unverified",
+    "sha256": "d93e03698ed1d377b200f8e224e1cfd0f93fac4a4328009d3d21ce48ae2bac0d",
+    "candidate_rows": 3755,
+    "exceptions": {
+      "date_only": 6,
+      "invalid_value": 1
+    }
+  },
+  {
+    "file": "Málaga\\m10.txt",
+    "header": "MA08",
+    "candidate_station": "MA08",
+    "status": "candidate_unverified",
+    "sha256": "679169a2d294436d40b782f4a95634a03408db0475e3c93b0d3bf96ffebb3db7",
+    "candidate_rows": 7018,
+    "exceptions": {
+      "invalid_value": 9,
+      "date_only": 43,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m11.txt",
+    "header": "MA06",
+    "candidate_station": "MA06",
+    "status": "candidate_unverified",
+    "sha256": "055ff11b5595934d8607354406ab81f2259a35817b7da543ccb83ba1701c7183",
+    "candidate_rows": 7082,
+    "exceptions": {
+      "invalid_value": 7,
+      "date_only": 17,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m12.txt",
+    "header": "MA02",
+    "candidate_station": "MA02",
+    "status": "candidate_unverified",
+    "sha256": "cf5911abc703760264662eb7ac7fec061f45cd7f0235173542b4938219277a27",
+    "candidate_rows": 7000,
+    "exceptions": {
+      "invalid_value": 7,
+      "date_only": 162,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m2.txt",
+    "header": "MA10",
+    "candidate_station": "MA10",
+    "status": "candidate_unverified",
+    "sha256": "794db4681b5e98db5c46d679ee46887faa8ec43d49abffdcc475a500c96de6ba",
+    "candidate_rows": 3368,
+    "exceptions": {
+      "invalid_value": 4,
+      "date_only": 1,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m3.txt",
+    "header": "MA11",
+    "candidate_station": "MA11",
+    "status": "candidate_unverified",
+    "sha256": "9ccbd08a68fdc396e7199430d5be4043c775ac8af34275f2b1af424ee89b6404",
+    "candidate_rows": 2164,
+    "exceptions": {
+      "invalid_value": 2,
+      "date_only": 7,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m4.txt",
+    "header": "MA05",
+    "candidate_station": "MA05",
+    "status": "candidate_unverified",
+    "sha256": "5255d2c8db2db717d23502cf7c9af6875b7e726e3112180bb8e2c8cbf9a76d56",
+    "candidate_rows": 4281,
+    "exceptions": {
+      "invalid_value": 2,
+      "date_only": 16
+    }
+  },
+  {
+    "file": "Málaga\\m5.txt",
+    "header": "MA09",
+    "candidate_station": "MA09",
+    "status": "candidate_unverified",
+    "sha256": "add454f72e37563dbfa63e11c336e604a0630c2d36223bdaae009b96da62e2b2",
+    "candidate_rows": 6864,
+    "exceptions": {
+      "invalid_value": 6,
+      "date_only": 53,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m6.txt",
+    "header": "MA04",
+    "candidate_station": "MA04",
+    "status": "candidate_unverified",
+    "sha256": "d6d6ef5d3cfd183070908fb23b2ef6e3d0248d2cc57c56ec22a168dc1fca476e",
+    "candidate_rows": 6835,
+    "exceptions": {
+      "invalid_value": 10,
+      "date_only": 288,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m7.txt",
+    "header": "MA101",
+    "candidate_station": "MA101",
+    "status": "candidate_unverified",
+    "sha256": "7dd6bbfebde824705e02d1f12e747df4764daa4af1946ee0ce2dbbcec4a9c34a",
+    "candidate_rows": 4640,
+    "exceptions": {
+      "invalid_value": 8,
+      "date_only": 12,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m8.txt",
+    "header": "MA07",
+    "candidate_station": "MA07",
+    "status": "candidate_unverified",
+    "sha256": "1a1f8d099f7abd9600a220039b84963d859224fef6a764a89410b4007359406c",
+    "candidate_rows": 7014,
+    "exceptions": {
+      "date_only": 32,
+      "date_day_mismatch": 2,
+      "invalid_value": 3,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Málaga\\m9.txt",
+    "header": "MA01",
+    "candidate_station": "MA01",
+    "status": "candidate_unverified",
+    "sha256": "b9b0abf68ae342b8d014d428cce9c92852ffcbcc3732f37411f753ad13dadeec",
+    "candidate_rows": 7137,
+    "exceptions": {
+      "invalid_value": 5,
+      "date_only": 27,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s1.txt",
+    "header": "SE05",
+    "candidate_station": "SE05",
+    "status": "candidate_unverified",
+    "sha256": "cd44ea04abbdd78d6dc10b1ff935755fdfc63ddd1c97609f1bdcf861adeb1603",
+    "candidate_rows": 7042,
+    "exceptions": {
+      "invalid_value": 7,
+      "date_only": 113,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s10.txt",
+    "header": "SE07",
+    "candidate_station": "SE07",
+    "status": "candidate_unverified",
+    "sha256": "ed565958e6a2200464eb724d1ea31fe5357019b7a397dfb0969cc8a86fedf470",
+    "candidate_rows": 7117,
+    "exceptions": {
+      "invalid_value": 5,
+      "date_only": 39,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s11.txt",
+    "header": "SE12",
+    "candidate_station": "SE12",
+    "status": "candidate_unverified",
+    "sha256": "695fede54ea22df4114f9fbd497e147df1a7a7dd74c60f59ed537386850dd875",
+    "candidate_rows": 7104,
+    "exceptions": {
+      "invalid_value": 6,
+      "date_only": 31,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s12.txt",
+    "header": "SE02",
+    "candidate_station": "SE02",
+    "status": "candidate_unverified",
+    "sha256": "7f9ac7a8a86dce9218e5270da4298f96de13fc237b042a96fb4ea8ef087e9212",
+    "candidate_rows": 7140,
+    "exceptions": {
+      "invalid_value": 2,
+      "date_only": 41,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s13.txt",
+    "header": "SE04",
+    "candidate_station": "SE04",
+    "status": "candidate_unverified",
+    "sha256": "60f05cf9c42c6420d36dbee1ddbcf753c60c658defeff418ddef5237193a5b98",
+    "candidate_rows": 1892,
+    "exceptions": {
+      "date_only": 2
+    }
+  },
+  {
+    "file": "Sevilla\\s14.txt",
+    "header": "SE03",
+    "candidate_station": "SE03",
+    "status": "candidate_unverified",
+    "sha256": "c70ecbcef2ef4ea9eba5ae20da81b5c0274900938761cefec5074fbe15a47d46",
+    "candidate_rows": 7125,
+    "exceptions": {
+      "invalid_value": 4,
+      "date_only": 53,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s15.txt",
+    "header": "SE15",
+    "candidate_station": "SE15",
+    "status": "candidate_unverified",
+    "sha256": "a9c6295fb46976b89f9620fa0bb2109c9da18ada715dba31071cd61c8e349901",
+    "candidate_rows": 7134,
+    "exceptions": {
+      "date_only": 6,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s16.txt",
+    "header": "SE16",
+    "candidate_station": "SE16",
+    "status": "candidate_unverified",
+    "sha256": "813f7c60c7df3101db9fc83c2b2ca53b8f8f4e1cd319337ec45bdc2fed8cb0b1",
+    "candidate_rows": 7041,
+    "exceptions": {
+      "invalid_value": 4,
+      "date_only": 10,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s17.txt",
+    "header": "SE01",
+    "candidate_station": "SE01",
+    "status": "candidate_unverified",
+    "sha256": "c09d385d30566d88dfac54a1ecde16af4bb85a2bf748d2c7ac33eca94bcaf57d",
+    "candidate_rows": 2457,
+    "exceptions": {
+      "date_only": 27,
+      "invalid_value": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s18.txt",
+    "header": "SE11",
+    "candidate_station": "SE11",
+    "status": "candidate_unverified",
+    "sha256": "a1a0d2a7926910f592200b61e7a3c5bb7ba7d32dbfcad009988cc1fdbc35b079",
+    "candidate_rows": 7085,
+    "exceptions": {
+      "invalid_value": 20,
+      "date_only": 37,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s19.txt",
+    "header": "SE18",
+    "candidate_station": "SE18",
+    "status": "candidate_unverified",
+    "sha256": "59b79fd585a0db49383bbbd44e29f1ae1083d5262c03806c9785e18aefc5a53a",
+    "candidate_rows": 6948,
+    "exceptions": {
+      "invalid_value": 2,
+      "date_only": 49,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s2.txt",
+    "header": "SE09",
+    "candidate_station": "SE09",
+    "status": "candidate_unverified",
+    "sha256": "ac4ce5b334e40b6e9281d8368c5cd5c53877f7bb9fd5b2f63633e98604ecb284",
+    "candidate_rows": 7088,
+    "exceptions": {
+      "invalid_value": 4,
+      "date_only": 51,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s20.txt",
+    "header": "SE13",
+    "candidate_station": "SE13",
+    "status": "candidate_unverified",
+    "sha256": "d3373435cdad57c630f6f3df5abeaab76ec5baf2a8fe48b4b891574ff32611f3",
+    "candidate_rows": 6848,
+    "exceptions": {
+      "invalid_value": 12,
+      "date_only": 279,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s21.txt",
+    "header": "SE06",
+    "candidate_station": "SE06",
+    "status": "candidate_unverified",
+    "sha256": "1b578ca8eaf3704c3e61187b79cf21fc19316a905c329dcd4736f571db343936",
+    "candidate_rows": 379,
+    "exceptions": {
+      "date_only": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s22.txt",
+    "header": "SE14",
+    "candidate_station": "SE14",
+    "status": "candidate_unverified",
+    "sha256": "26570d5eddcd52ad0ab6751f182e1f17d8f91be780074806fca3bada03471eed",
+    "candidate_rows": 3372,
+    "exceptions": {
+      "date_only": 14,
+      "invalid_value": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s23.txt",
+    "header": "SE22",
+    "candidate_station": "SE22",
+    "status": "candidate_unverified",
+    "sha256": "058268a445b4ed23f2b188ccb08c804cf75c88d84284ba8c233fd8b3bb757338",
+    "candidate_rows": 3183,
+    "exceptions": {
+      "invalid_value": 129,
+      "date_only": 16,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s3.txt",
+    "header": "SE17",
+    "candidate_station": "SE17",
+    "status": "candidate_unverified",
+    "sha256": "d50b0595ab5d397a62436799b25ecee468d75620b04b05eb2e121d03421c8061",
+    "candidate_rows": 6868,
+    "exceptions": {
+      "invalid_value": 17,
+      "date_only": 115,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s4.txt",
+    "header": "SE19",
+    "candidate_station": "SE19",
+    "status": "candidate_unverified",
+    "sha256": "d6ff9cb9f3f20b9fd4d648d8fc67faa762341dbe9d1809ee8ec22fdd6fc89594",
+    "candidate_rows": 5258,
+    "exceptions": {
+      "invalid_value": 5,
+      "date_only": 14,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s5.txt",
+    "header": "SE21",
+    "candidate_station": "SE21",
+    "status": "candidate_unverified",
+    "sha256": "c53f0350ec5882f2d881e82e63cf4e594239583422901540d55369e5eab49f43",
+    "candidate_rows": 4601,
+    "exceptions": {
+      "invalid_value": 14,
+      "date_only": 82,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s6.txt",
+    "header": "SE101",
+    "candidate_station": "SE101",
+    "status": "candidate_unverified",
+    "sha256": "25b04b862d73cfd06fb349908a6037580114703a227a4a690d9f3ef1ff330679",
+    "candidate_rows": 6787,
+    "exceptions": {
+      "invalid_value": 11,
+      "date_only": 37,
+      "date_day_mismatch": 2,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s7.txt",
+    "header": "SE20",
+    "candidate_station": "SE20",
+    "status": "candidate_unverified",
+    "sha256": "21f3406a73ed7c9e572a001f81c90c8a4ccdb64837071481579a37294035b30d",
+    "candidate_rows": 5724,
+    "exceptions": {
+      "date_only": 230,
+      "date_day_mismatch": 2,
+      "invalid_value": 5,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s8.txt",
+    "header": "SE10",
+    "candidate_station": "SE10",
+    "status": "candidate_unverified",
+    "sha256": "e5b601c7aeb4de92e7672240bdeffe7379f5b0cdf2ffa63e0e99c27e5186992b",
+    "candidate_rows": 7125,
+    "exceptions": {
+      "date_only": 13,
+      "date_day_mismatch": 2,
+      "invalid_value": 4,
+      "date_has_ambiguous_evidence": 1
+    }
+  },
+  {
+    "file": "Sevilla\\s9.txt",
+    "header": "SE08",
+    "candidate_station": "SE08",
+    "status": "candidate_unverified",
+    "sha256": "fc77c07e27d129fa1c13273e3315dfa171b3437ccfee93061d7aaa709a2320b2",
+    "candidate_rows": 7056,
+    "exceptions": {
+      "invalid_value": 10,
+      "date_only": 94,
+      "date_day_mismatch": 3,
+      "date_has_ambiguous_evidence": 1
+    }
+  }
+]

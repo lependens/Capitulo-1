@@ -31,14 +31,16 @@ def normalize(station,headers,row):
     return [day]+v[:17]+['','']+[v[18],v[17],station]
 
 def export(db,root,station):
-    result={}
+    result={}; has_blocks=False
     for (raw,) in db.execute('SELECT data FROM blocks WHERE station=? ORDER BY start',(station,)):
+        has_blocks=True
         data=json.loads(raw)
         for row in data['rows']:
             normalized=normalize(station,data['headers'],row); day=normalized[0]
+            if not any(normalized[1:-1]): continue
             if day in result and result[day]!=normalized: raise ValueError('conflicto de datos')
             result[day]=normalized
-    if not result: return
+    if not has_blocks: return
     dest=root/(station+'_datos_web_v3.csv'); temp=dest.with_suffix('.tmp')
     with temp.open('w',encoding='utf-8',newline='') as f:
         writer=csv.writer(f); writer.writerow(COLUMNS); writer.writerows(result[k] for k in sorted(result))
@@ -63,6 +65,13 @@ def main():
     db=sqlite3.connect(root/'progreso.sqlite'); db.execute('PRAGMA journal_mode=WAL')
     db.execute('CREATE TABLE IF NOT EXISTS blocks (station TEXT,start TEXT,end TEXT,captured TEXT,sha256 TEXT,data TEXT,missing TEXT, PRIMARY KEY(station,start,end))')
     db.execute('CREATE TABLE IF NOT EXISTS failures (station TEXT,start TEXT,end TEXT,attempted TEXT,error TEXT, PRIMARY KEY(station,start,end))');db.commit()
+    # An existing SIAR row with no values is not a meteorological observation.
+    for station,start,stop,raw,missing_json in db.execute('SELECT station,start,end,data,missing FROM blocks').fetchall():
+        data=json.loads(raw); missing=set(json.loads(missing_json))
+        for row in data['rows']:
+            values=normalize(station,data['headers'],row)
+            if not any(values[1:-1]): missing.add(values[0])
+        with db: db.execute('UPDATE blocks SET missing=? WHERE station=? AND start=? AND end=?',(json.dumps(sorted(missing)),station,start,stop))
     from playwright.sync_api import sync_playwright
     consecutive=0
     with sync_playwright() as pw:
@@ -80,6 +89,10 @@ def main():
                         headers,rows=retrieve(page,code,start,end)
                         for row in rows: normalize(code,headers,row)
                         count,missing=save_block(db,code,start,end,headers,rows)
+                        missing_days=set(json.loads(db.execute('SELECT missing FROM blocks WHERE station=? AND start=? AND end=?',key).fetchone()[0]))
+                        missing_days.update(v[0] for v in (normalize(code,headers,row) for row in rows) if not any(v[1:-1]))
+                        with db: db.execute('UPDATE blocks SET missing=? WHERE station=? AND start=? AND end=?',(json.dumps(sorted(missing_days)),*key))
+                        missing=len(missing_days)
                         export(db,root,code); consecutive=0
                         print(json.dumps({'station':code,'start':key[1],'end':key[2],'rows':count,'pending':missing}),flush=True)
                     except Exception as exc:

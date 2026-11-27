@@ -123,11 +123,15 @@ def main():
         print(json.dumps({'remaining_labelled':len(todo),'unsupported_files':sum(x.get('status')=='unidentified_or_other_format' for x in inventory),'network_calls':0})); return
     from playwright.sync_api import sync_playwright
     with sync_playwright() as pw:
-        browser=pw.chromium.launch(headless=True); page=browser.new_page()
+        browser=pw.chromium.launch(headless=True)
+        def fetch(station,start,end):
+            page=browser.new_page()
+            try: return get_block(page,station,start,end)
+            finally: page.close()
         try:
             for entry,header in todo[:args.max_stations]:
                 try:
-                    result=audit_one(entry,root,header,db,lambda st,a,b:get_block(page,st,a,b),args.pause_seconds)
+                    result=audit_one(entry,root,header,db,fetch,args.pause_seconds)
                     print(json.dumps({'station':entry['station_candidate'],'status':result['status']},ensure_ascii=False),flush=True)
                 except Exception as exc:
                     # Fail closed: do not write a false absence or loop on errors.

@@ -13,7 +13,7 @@ COLUMNS = ('Fecha','TempMedia','TempMax','HorMinTempMax','TempMin','HorMinTempMi
 HEADER = re.compile(r'^FECHA\s+DIA\s+(\S+?)TMax\b', re.I)
 DATE = re.compile(r'^(\d{2})-(\d{2})-(\d{2})(?:\s+(.*))?$')
 
-def parse_file(path, station, century):
+def parse_file(path, station, century, *, header_label=None, max_date=None):
     """Return rows and exceptions; never infer a station or century silently."""
     raw = Path(path).read_bytes()
     text = raw.decode('utf-8-sig', errors='strict')
@@ -21,8 +21,15 @@ def parse_file(path, station, century):
     if not lines or not (match := HEADER.match(lines[0])):
         raise ValueError('station header not found')
     label = unicodedata.normalize('NFKD', match.group(1)).encode('ascii','ignore').decode().upper()
-    if not re.fullmatch(r'[A-Z]{1,2}\d{2,3}', station) or label != station:
+    expected = header_label if header_label is not None else station
+    if not re.fullmatch(r'[A-Z]{1,2}\d{2,3}', station) or label != expected:
         raise ValueError(f'header {label} != confirmed station {station}')
+    header_fields=lines[0].split()[2:]
+    header_base=match.group(1)
+    suffixes=[field[len(header_base):] if field.startswith(header_base) else '' for field in header_fields]
+    required=['TMax','HTMax','TMin','HTMin','TMed','HumMax','HumMin','HumMed','VelViento','DirViento','Rad']
+    if suffixes not in (required, required+['Precip','ETo']):
+        raise ValueError('unsupported variable headers')
     rows, exceptions = [], []
     for index, line in enumerate(lines[2:], start=3):
         if not line.strip():
@@ -35,11 +42,13 @@ def parse_file(path, station, century):
             actual = date(century+year,month,day)
         except ValueError:
             exceptions.append({'line':index,'reason':'invalid_date','raw':line}); continue
+        if max_date is not None and actual > max_date:
+            exceptions.append({'line':index,'reason':'date_outside_source_period','date':actual.isoformat(),'raw':line}); continue
         rest=m.group(4)
         if not rest:
             exceptions.append({'line':index,'reason':'date_only','date':actual.isoformat(),'raw':line}); continue
         parts=rest.split()
-        if len(parts)!=14:
+        if len(parts)!=len(suffixes)+1:
             exceptions.append({'line':index,'reason':'invalid_fields','date':actual.isoformat(),'raw':line}); continue
         try:
             ordinal=int(parts[0]); inferred=date(actual.year,1,1)+timedelta(days=ordinal-1)
@@ -53,10 +62,11 @@ def parse_file(path, station, century):
             if not m or int(m[1]) > 23 or int(m[2]) > 59: raise ValueError('invalid time')
             return str(int(m[1])*100+int(m[2]))
         try:
-            for i in (1,3,5,6,7,8,9,10,11,12,13):
+            for i in [1,3,5,6,7,8,9,10,11]+([12,13] if len(suffixes)==13 else []):
                 if not math.isfinite(float(parts[i])): raise ValueError('non-finite value')
             row=dict.fromkeys(COLUMNS,'')
-            row.update(Fecha=actual.isoformat(),Estacion=station,TempMax=parts[1],HorMinTempMax=timeval(parts[2]),TempMin=parts[3],HorMinTempMin=timeval(parts[4]),TempMedia=parts[5],HumedadMax=parts[6],HumedadMin=parts[7],HumedadMedia=parts[8],VelViento=parts[9],DirViento=parts[10],Radiacion=parts[11],Precipitacion=parts[12],EtPMon=parts[13])
+            row.update(Fecha=actual.isoformat(),Estacion=station,TempMax=parts[1],HorMinTempMax=timeval(parts[2]),TempMin=parts[3],HorMinTempMin=timeval(parts[4]),TempMedia=parts[5],HumedadMax=parts[6],HumedadMin=parts[7],HumedadMedia=parts[8],VelViento=parts[9],DirViento=parts[10],Radiacion=parts[11])
+            if len(suffixes)==13: row.update(Precipitacion=parts[12],EtPMon=parts[13])
         except ValueError:
             exceptions.append({'line':index,'reason':'invalid_value','date':actual.isoformat(),'raw':line}); continue
         rows.append((index,row))

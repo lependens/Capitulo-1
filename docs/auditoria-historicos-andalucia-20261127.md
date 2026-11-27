@@ -102,3 +102,7 @@ Comprobación 27/11/2026 de AL02 Almería, fuente a2.txt SHA256 06eda863db3b5418
 ## AL01: diez fechas aleatorias frente a SIAR
 
 Comprobación 27/11/2026 de AL01 La Mojonera, fuente a6.txt SHA256 f18272c7c54d0cdfbf186a290435077fe0e11843c07e65ef6c5cc212298ef96d. Las diez fechas predeterminadas entre 2000 y 2019 tienen 12 campos meteorológicos comunes compatibles según la tolerancia de redondeo de AL05 y horas exactas. La ET0 se registra separada sin penalizar. Evidencias docs/evidencia-muestreo/AL01-siar-web-20261127.json y AL01-comparacion-20261127.json. Muestra PASS, no valida todas las filas ni importa datos.
+
+## AL03: diez fechas aleatorias frente a SIAR
+
+Comprobación 27/11/2026 de AL03 Níjar (inactiva), fuente a8.txt SHA256 f050ae8651c4d2fb668dad7ff4f3f6a927dfb159834e7290b13a15895119f5ac. Las diez fechas predeterminadas entre febrero y junio de 2000 tienen 12 campos meteorológicos comunes compatibles según la tolerancia de redondeo de AL05 y horas exactas. Se consultaron intervalos pequeños para agrupar fechas próximas. La ET0 se registra separada sin penalizar. Evidencias docs/evidencia-muestreo/AL03-siar-web-20261127.json y AL03-comparacion-20261127.json. Muestra PASS, no valida todas las filas ni importa datos.

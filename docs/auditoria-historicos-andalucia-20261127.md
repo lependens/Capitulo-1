@@ -40,3 +40,13 @@ En V3 el CSV conserva, en estas muestras, decimales adicionales, por ejemplo AL0
 
 ## Decisión del propietario
 Conservar e importar los valores de ET0 históricos originales junto a las variables comprobadas, sin sobrescribir valores de V3 en conflicto. Registrar procedencia y discrepancias. Campos faltantes quedan vacíos y documentados para posible recuperación futura en V3.A; no se deben reconsultar todas las fechas únicamente por dichos campos. Comprobar previamente la interacción con la cola, los huecos y publicación.
+
+## Revisión estructural 27/11/2026
+
+- AL05 / a4.txt: 7410 líneas con fecha y contenido, 23 líneas adicionales no vacías fuera de ese patrón, una fecha duplicada; SHA256 1153c1ca89b31200ffeba3f0d56bf00cfe0eaea59892dbe29d71232aa84e49b0.
+- AL01 / a6.txt: 7417 líneas con fecha y contenido, 16 líneas adicionales no vacías fuera de ese patrón, una fecha duplicada; SHA256 f18272c7c54d0cdfbf186a290435077fe0e11843c07e65ef6c5cc212298ef96d.
+- AL04 / a9.txt: 7411 líneas con fecha y contenido, 22 líneas adicionales no vacías fuera de ese patrón, una fecha duplicada; SHA256 7150c9a2daa6d199aade034efaf1d7a9b013cb4609a98dfba64caea7c03781d9.
+
+La fecha duplicada es 29-12-15 en los tres archivos; una fila tiene día anual 364 y otra 363. 364 corresponde al 30/12/2015, de modo que existe una posible discordancia fecha/día anual; la causa y la corrección requieren comprobación frente a SIAR antes de asignar un día. Ejemplo AL01 filas 1623–1624. También hay líneas que contienen solo una fecha, incluida 31-12-15. No tratarlas automáticamente como observaciones ni como ausencias confirmadas.
+
+Revisión del código: worker_v3.py toma fechas de filas CSV y planner_s1a.py da prioridad a fechas observadas con acción SKIP, incluso si faltan variables. Esto debe verificarse con pruebas aisladas y con los estados del ledger antes de importar. La presencia de filas totalmente vacías para algunas estaciones es un caso especial que no debe imitarse. La publicación toma snapshots y está vinculada a entradas pendientes; aún debe probarse cómo registrar la publicación de una importación.

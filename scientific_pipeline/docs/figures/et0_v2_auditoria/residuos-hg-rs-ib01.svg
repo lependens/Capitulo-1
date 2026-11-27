@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Residuos de HG-Rs · IB01" viewBox="0 0 710 441">
+<title>Residuos de HG-Rs · IB01</title>
+<desc>2.192 residuos diarios ANN A menos PM, TEST de IB01 2020–2025. Intervalos en mm/día · días</desc>
+<rect width="100%" height="100%" fill="#fff"/>
+<g font-family="system-ui, sans-serif" font-size="13" fill="#18373a">
+<line x1="116" x2="116" y1="4" y2="421" stroke="#d5dfdd"/>
+<text x="116" y="436" text-anchor="middle">0</text>
+<line x1="246" x2="246" y1="4" y2="421" stroke="#d5dfdd"/>
+<text x="246" y="436" text-anchor="middle">175</text>
+<line x1="376" x2="376" y1="4" y2="421" stroke="#d5dfdd"/>
+<text x="376" y="436" text-anchor="middle">350</text>
+<line x1="506" x2="506" y1="4" y2="421" stroke="#d5dfdd"/>
+<text x="506" y="436" text-anchor="middle">525</text>
+<line x1="636" x2="636" y1="4" y2="421" stroke="#d5dfdd"/>
+<text x="636" y="436" text-anchor="middle">700</text>
+<text x="4" y="18">[−2,25;−2)</text>
+<rect x="116" y="7" width="0.7428571428571429" height="12" rx="2" fill="#116466">
+<title>[−2,25;−2) · 1 días</title>
+</rect>
+<text x="4" y="50">[−2;−1,75)</text>
+<rect x="116" y="39" width="2.2285714285714286" height="12" rx="2" fill="#116466">
+<title>[−2;−1,75) · 3 días</title>
+</rect>
+<text x="4" y="82">[−1,75;−1,50)</text>
+<rect x="116" y="71" width="5.2" height="12" rx="2" fill="#116466">
+<title>[−1,75;−1,50) · 7 días</title>
+</rect>
+<text x="4" y="114">[−1,50;−1,25)</text>
+<rect x="116" y="103" width="5.2" height="12" rx="2" fill="#116466">
+<title>[−1,50;−1,25) · 7 días</title>
+</rect>
+<text x="4" y="146">[−1,25;−1)</text>
+<rect x="116" y="135" width="20.057142857142857" height="12" rx="2" fill="#116466">
+<title>[−1,25;−1) · 27 días</title>
+</rect>
+<text x="4" y="178">[−1;−0,75)</text>
+<rect x="116" y="167" width="26" height="12" rx="2" fill="#116466">
+<title>[−1;−0,75) · 35 días</title>
+</rect>
+<text x="4" y="210">[−0,75;−0,50)</text>
+<rect x="116" y="199" width="81.71428571428571" height="12" rx="2" fill="#116466">
+<title>[−0,75;−0,50) · 110 días</title>
+</rect>
+<text x="4" y="242">[−0,50;−0,25)</text>
+<rect x="116" y="231" width="181.25714285714287" height="12" rx="2" fill="#116466">
+<title>[−0,50;−0,25) · 244 días</title>
+</rect>
+<text x="4" y="274">[−0,25;0)</text>
+<rect x="116" y="263" width="412.2857142857143" height="12" rx="2" fill="#116466">
+<title>[−0,25;0) · 555 días</title>
+</rect>
+<text x="4" y="306">[0;0,25)</text>
+<rect x="116" y="295" width="492.51428571428573" height="12" rx="2" fill="#116466">
+<title>[0;0,25) · 663 días</title>
+</rect>
+<text x="4" y="338">[0,25;0,50)</text>
+<rect x="116" y="327" width="325.37142857142857" height="12" rx="2" fill="#116466">
+<title>[0,25;0,50) · 438 días</title>
+</rect>
+<text x="4" y="370">[0,50;0,75)</text>
+<rect x="116" y="359" width="71.31428571428572" height="12" rx="2" fill="#116466">
+<title>[0,50;0,75) · 96 días</title>
+</rect>
+<text x="4" y="402">[0,75;1)</text>
+<rect x="116" y="391" width="4.457142857142857" height="12" rx="2" fill="#116466">
+<title>[0,75;1) · 6 días</title>
+</rect>
+</g>
+</svg>

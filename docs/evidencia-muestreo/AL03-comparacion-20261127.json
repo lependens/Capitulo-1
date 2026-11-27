@@ -1,0 +1,108 @@
+{
+  "station": "AL03",
+  "source_sha256": "f050ae8651c4d2fb668dad7ff4f3f6a927dfb159834e7290b13a15895119f5ac",
+  "reference": "SIAR web 2026-11-27",
+  "numeric_rule": "half last historical decimal plus 0.005 SIAR display rounding; hours exact",
+  "rows": [
+    {
+      "date": "2000-02-05",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "3.21",
+        "siar": "3.12"
+      }
+    },
+    {
+      "date": "2000-02-20",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "3.03",
+        "siar": "2.88"
+      }
+    },
+    {
+      "date": "2000-02-24",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "2.32",
+        "siar": "2.28"
+      }
+    },
+    {
+      "date": "2000-03-17",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "2.47",
+        "siar": "2.43"
+      }
+    },
+    {
+      "date": "2000-03-23",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "4.21",
+        "siar": "4.15"
+      }
+    },
+    {
+      "date": "2000-04-01",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "4.21",
+        "siar": "4.12"
+      }
+    },
+    {
+      "date": "2000-04-29",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "4.45",
+        "siar": "4.42"
+      }
+    },
+    {
+      "date": "2000-05-12",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "6.7",
+        "siar": "6.56"
+      }
+    },
+    {
+      "date": "2000-05-13",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "5.16",
+        "siar": "5.11"
+      }
+    },
+    {
+      "date": "2000-06-19",
+      "meteorology": "PASS",
+      "mismatches": [],
+      "et0": {
+        "field": "EtPMon",
+        "historical": "6.66",
+        "siar": "6.60"
+      }
+    }
+  ]
+}

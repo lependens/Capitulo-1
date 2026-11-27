@@ -1,0 +1,287 @@
+{
+  "source": "https://servicio.mapa.gob.es/siarweb/consultaDatos/inicio",
+  "captured": "2026-11-27",
+  "community": "Extremadura",
+  "stations": [
+    {
+      "code": "BA01",
+      "name": "Zalamea de la Serena",
+      "active": true
+    },
+    {
+      "code": "BA02",
+      "name": "Monterrubio de la Serena",
+      "active": true
+    },
+    {
+      "code": "BA04",
+      "name": "Villagonzalo",
+      "active": true
+    },
+    {
+      "code": "BA05",
+      "name": "Jerez de los Caballeros",
+      "active": true
+    },
+    {
+      "code": "BA06",
+      "name": "Olivenza",
+      "active": true
+    },
+    {
+      "code": "BA08",
+      "name": "Don Benito",
+      "active": true
+    },
+    {
+      "code": "BA09",
+      "name": "Villafranca de los Barros",
+      "active": true
+    },
+    {
+      "code": "BA101",
+      "name": "Mérida",
+      "active": true
+    },
+    {
+      "code": "BA102",
+      "name": "Azuaga",
+      "active": true
+    },
+    {
+      "code": "BA103",
+      "name": "Puebla de Alcocer",
+      "active": true
+    },
+    {
+      "code": "BA104",
+      "name": "Fuente de Cantos",
+      "active": true
+    },
+    {
+      "code": "BA105",
+      "name": "Don Benito-EFA",
+      "active": true
+    },
+    {
+      "code": "BA106",
+      "name": "Santa Amalia",
+      "active": true
+    },
+    {
+      "code": "BA107",
+      "name": "Torrefresneda",
+      "active": true
+    },
+    {
+      "code": "BA108",
+      "name": "Navalvillar de Pela",
+      "active": true
+    },
+    {
+      "code": "BA109",
+      "name": "Aceuchal",
+      "active": true
+    },
+    {
+      "code": "BA203",
+      "name": "Bercial",
+      "active": true
+    },
+    {
+      "code": "BA204",
+      "name": "Rueda Chica",
+      "active": true
+    },
+    {
+      "code": "BA205",
+      "name": "La Orden",
+      "active": true
+    },
+    {
+      "code": "BA206",
+      "name": "Arroyo",
+      "active": true
+    },
+    {
+      "code": "BA210",
+      "name": "Palazuelo",
+      "active": true
+    },
+    {
+      "code": "CC01",
+      "name": "Casatejada",
+      "active": true
+    },
+    {
+      "code": "CC04",
+      "name": "Aldehuela del Jerte",
+      "active": true
+    },
+    {
+      "code": "CC07",
+      "name": "Madrigalejo",
+      "active": true
+    },
+    {
+      "code": "CC09",
+      "name": "Peraleda de la Mata",
+      "active": true
+    },
+    {
+      "code": "CC10",
+      "name": "Valdeiñigos-Tejeda de Tíetar",
+      "active": true
+    },
+    {
+      "code": "CC11",
+      "name": "Jarandilla de la Vera",
+      "active": true
+    },
+    {
+      "code": "CC12",
+      "name": "Gargantilla",
+      "active": true
+    },
+    {
+      "code": "CC14",
+      "name": "Coria-Puebla de Argeme",
+      "active": true
+    },
+    {
+      "code": "CC16",
+      "name": "Moraleja",
+      "active": true
+    },
+    {
+      "code": "CC17",
+      "name": "Valdastillas",
+      "active": true
+    },
+    {
+      "code": "CC18",
+      "name": "Valdesalor",
+      "active": true
+    },
+    {
+      "code": "CC19",
+      "name": "Zarza de Granadilla",
+      "active": true
+    },
+    {
+      "code": "CC101",
+      "name": "Hurdes-Azabal",
+      "active": true
+    },
+    {
+      "code": "CC103",
+      "name": "Guadalupe",
+      "active": true
+    },
+    {
+      "code": "CC104",
+      "name": "Alcantara",
+      "active": true
+    },
+    {
+      "code": "CC105",
+      "name": "Mirabel",
+      "active": true
+    },
+    {
+      "code": "CC107",
+      "name": "Rebollar",
+      "active": true
+    },
+    {
+      "code": "CC108",
+      "name": "Tiétar",
+      "active": true
+    },
+    {
+      "code": "CC109",
+      "name": "Valdeíñigos II",
+      "active": true
+    },
+    {
+      "code": "BA03",
+      "name": "Don Benito",
+      "active": false
+    },
+    {
+      "code": "BA07",
+      "name": "Villafranca de los Barros",
+      "active": false
+    },
+    {
+      "code": "BA201",
+      "name": "Acevedos",
+      "active": false
+    },
+    {
+      "code": "BA202",
+      "name": "Sagrajas",
+      "active": false
+    },
+    {
+      "code": "BA207",
+      "name": "Don Rodrigo",
+      "active": false
+    },
+    {
+      "code": "BA208",
+      "name": "Guareña",
+      "active": false
+    },
+    {
+      "code": "BA209",
+      "name": "Don Benito-EFA",
+      "active": false
+    },
+    {
+      "code": "CC02",
+      "name": "Cabezuela del Valle",
+      "active": false
+    },
+    {
+      "code": "CC03",
+      "name": "Zarza de Granadilla",
+      "active": false
+    },
+    {
+      "code": "CC05",
+      "name": "Moraleja",
+      "active": false
+    },
+    {
+      "code": "CC06",
+      "name": "Coria",
+      "active": false
+    },
+    {
+      "code": "CC08",
+      "name": "Valdesalor",
+      "active": false
+    },
+    {
+      "code": "CC13",
+      "name": "Talayuela",
+      "active": false
+    },
+    {
+      "code": "CC15",
+      "name": "Valdastillas",
+      "active": false
+    },
+    {
+      "code": "CC102",
+      "name": "Madroñera",
+      "active": false
+    },
+    {
+      "code": "CC106",
+      "name": "Aliseda",
+      "active": false
+    }
+  ]
+}

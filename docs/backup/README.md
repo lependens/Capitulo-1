@@ -15,7 +15,9 @@ GitHub conserva código, documentación y evidencia versionable. Los artefactos 
 | [Ingestión Windows](windows-ingestion.md) | Flujo operativo PASS, finalización explícita, READY firmado y transferencia/preservación automáticas |
 | [Secretos y recuperación](secrets-and-recovery.md) | Dependencias de recuperación y política de exclusión |
 
-## Tres mecanismos distintos
+## Tres mecanismos distintos — inventario histórico del 01/11/2026
+
+La tabla reproduce el inventario de esa fecha. Las propuestas posteriores de AEMET incluyen programación y reconciliación; consulte la [auditoría del 26/11](../AUDITORIA_DOCUMENTAL_2026-11-26.md) y confirme el runtime antes de operar.
 
 | Mecanismo | Activación | Ámbito |
 |---|---|---|

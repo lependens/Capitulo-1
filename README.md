@@ -1,41 +1,20 @@
 # SIAR y evapotranspiración de referencia (ET₀)
 
-El proyecto extiende un TFG de ingeniería agronómica. Reúne observaciones meteorológicas del SIAR, prepara datos reproducibles y compara métodos de estimación diaria de ET₀. El histórico de emisiones meteorológicas servirá para evaluar en el futuro qué precisión se obtiene antes de conocer las observaciones.
+Este repositorio reúne observaciones meteorológicas SIAR, investigación sobre estimación diaria de ET₀ y herramientas para explorar y preservar resultados. La comparación científica utiliza una **referencia Penman–Monteith FAO-56 calculada**, no una medición independiente mediante lisímetro.
 
-```mermaid
-flowchart TD
-  subgraph A["Adquisición y ciencia implementadas"]
-    O["SIAR observado"] --> S["SIAR Sync"]
-    S --> D["Dataset científico congelado"]
-    D --> T["Entrenamiento"]
-    T --> M["Modelos congelados"]
-    M --> R["Resultados retrospectivos"]
-    R --> W["Exploradores científicos"]
-    F["SIAR Forecast"] --> H["Histórico de emisiones"]
-    G["AEMET Forecast"] --> H
-  end
-  subgraph B["Investigación prevista"]
-    H -.-> E["Evaluación por horizonte"]
-    E -.-> I["Inferencia ET₀"]
-    M -.-> I
-    I -.-> C["ETc y consulta agronómica"]
-  end
-  classDef future fill:#e8eefb,stroke:#465987,color:#182640,stroke-dasharray:5 3
-  class E,I,C future
-```
+## Empezar aquí
 
-El dataset congelado se construyó con observaciones sometidas a control de calidad. Las actualizaciones del Sync V3 siguen una línea evolutiva independiente. Las flechas indican el flujo de datos, y el [inventario](docs/PROJECT_STATUS.md) distingue implementación, evidencia de operación y tareas pendientes.
+1. [Recorrido científico y cronológico](docs/RECORRIDO_CIENTIFICO.md): datos, Quality, dataset, fórmulas, calibración, ML y ANN, V1 y V2, desarrollo, freeze y retrospectiva.
+2. [Memoria científica V2](scientific_pipeline/docs/ET0_V2_MEMORIA_CIENTIFICA.md): métodos, ecuaciones, resultados, bibliografía y límites para revisión.
+3. [Estado](docs/PROJECT_STATUS.md), [hoja de ruta](docs/ROADMAP.md) y [auditoría documental del 26/11](docs/AUDITORIA_DOCUMENTAL_2026-11-26.md).
+4. [Datos y ubicaciones](docs/DATA_LOCATIONS.md) y [preservación y recuperación](docs/backup/README.md).
 
-| Componente | Qué se puede consultar | Evidencia disponible |
-|---|---|---|
-| [SIAR Sync](siar-sync/README.md) | Código canónico v2.3.3 y CSV evolutivos V3 | V3 publica CSV en GitHub. Estado del servicio por confirmar |
-| [SIAR Forecast](forecast_collector/README.md) | Capturas y preservación por emisión | Piloto en marcha según último parte |
-| [AEMET Forecast](aemet_forecast_collector/README.md) | Colector municipal y piloto de Palma | Captura puntual preservada; cierre operativo pendiente |
-| [Explorador de resultados V1](web_app/docs/release-v03.md) | [Web V0.3 en LAN](http://192.168.1.43:8088/) | Recuperación comprobada por 06 el 25/11 |
-| [Explorador ET₀ V2](web_app/docs/et0-v2-integration.md) | [Revisión en LAN](http://192.168.1.43:8090/?science=et0-v2) | Catálogo VERIFIED; resultados NOT_PUBLISHED |
+## Líneas operativas
 
-Para V1, consultar el [pipeline y sus resultados](scientific_pipeline/README.md), incluidos PM FAO-56, Hargreaves–Samani, Hargreaves con radiación medida, Valiantzas, AHC, ML clásico y ANN moderna. Para V2, consultar la [memoria científica](scientific_pipeline/docs/ET0_V2_MEMORIA_CIENTIFICA.md), los [resultados retrospectivos](scientific_pipeline/docs/et0_v2_retrospective_results_2026.md) y la [certificación técnica](scientific_pipeline/docs/et0_v2_certificacion_evidencia.md). V2 compara contra PM calculada en 2020–2025 y mantiene identificados los resultados AHC dentro de muestra.
+- [SIAR Sync](siar-sync/README.md): adquisición observacional y publicación evolutiva. Sus CSV actuales no sustituyen el dataset científico congelado.
+- [SIAR Forecast](forecast_collector/README.md) y [AEMET Forecast](aemet_forecast_collector/README.md): captura y preservación de previsiones, independientes de los experimentos retrospectivos.
+- [Web científica V1](web_app/docs/release-v03.md) y [web V2 estable en LAN](web_app/docs/et0-v2-stable.md): actas y procedimientos, no comprobaciones en tiempo real.
 
-- [Datos, resultados y rutas](docs/DATA_LOCATIONS.md) y [preservación y restauración](docs/backup/README.md).
-- [Prioridades vigentes](docs/ROADMAP.md), [hitos](docs/MILESTONES.md) y [corte del 25/11/2026](docs/PROJECT_UPDATE_2026-11-25.md).
-- [Origen y capítulos del TFG](docs_1.0_Objetivos%20alcanzables.md) y [copia histórica del índice anterior](docs/README_PROJECT_HISTORY_2026-11-25.md).
+V2 permanece **NOT_PUBLISHED**. Las pruebas retrospectivas no son validación prospectiva ni instrumental externa. Los estados de ejecución y copias deben contrastarse con sus responsables: un merge o un recibo histórico no acreditan el estado actual de un servicio.
+
+Los capítulos históricos de la raíz conservan sus rutas y contenido; el [recorrido](docs/RECORRIDO_CIENTIFICO.md#documentos-históricos-de-la-raíz) explica su posición. Se conserva también el [índice anterior](docs/README_PROJECT_HISTORY_2026-11-25.md).

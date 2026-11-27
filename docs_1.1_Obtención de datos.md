@@ -1,3 +1,5 @@
+> **Contexto de lectura (26/11/2026):** documento histórico conservado en su ruta original. Sus estados y planes fechados pueden haber sido superados. Consulte el [recorrido científico](docs/RECORRIDO_CIENTIFICO.md) y el [estado del proyecto](docs/PROJECT_STATUS.md).
+
 # 1. Obtención de datos históricos y actuales de las estaciones meteorológicas de Baleares
 
 > **Estado vigente — 25/10/2026.** Las secciones previas a la actualización final conservan historia y estados intermedios. AHC temporal y PROJECT-ARTIFACT-BACKUP-V1 ya están PASS, con límites explícitos; consultar la última sección y [PROJECT_STATUS](docs/PROJECT_STATUS.md).

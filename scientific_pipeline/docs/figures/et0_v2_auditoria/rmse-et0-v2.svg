@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="RMSE absoluto de ET₀ V2" viewBox="0 0 710 325">
+<title>RMSE absoluto de ET₀ V2</title>
+<desc>TEST anual 2020–2025, 19.251 pares por familia · mm/día</desc>
+<rect width="100%" height="100%" fill="#fff"/>
+<g font-family="system-ui, sans-serif" font-size="13" fill="#18373a">
+<line x1="116" x2="116" y1="4" y2="305" stroke="#d5dfdd"/>
+<text x="116" y="320" text-anchor="middle">0,000</text>
+<line x1="246" x2="246" y1="4" y2="305" stroke="#d5dfdd"/>
+<text x="246" y="320" text-anchor="middle">0,250</text>
+<line x1="376" x2="376" y1="4" y2="305" stroke="#d5dfdd"/>
+<text x="376" y="320" text-anchor="middle">0,500</text>
+<line x1="506" x2="506" y1="4" y2="305" stroke="#d5dfdd"/>
+<text x="506" y="320" text-anchor="middle">0,750</text>
+<line x1="636" x2="636" y1="4" y2="305" stroke="#d5dfdd"/>
+<text x="636" y="320" text-anchor="middle">1,000</text>
+<text x="4" y="18">HG-Rs</text>
+<rect x="116" y="7" width="294.84" height="12" rx="2" fill="#116466">
+<title>HG-Rs · 0,5670 mm/día</title>
+</rect>
+<rect x="116" y="24" width="214.604" height="12" rx="2" fill="#ab5c2e">
+<title>HG-Rs · 0,4127 mm/día</title>
+</rect>
+<rect x="116" y="41" width="198.068" height="12" rx="2" fill="#466a9b">
+<title>HG-Rs · 0,3809 mm/día</title>
+</rect>
+<rect x="116" y="58" width="191.35999999999999" height="12" rx="2" fill="#884d7e">
+<title>HG-Rs · 0,3680 mm/día</title>
+</rect>
+<rect x="116" y="75" width="191.152" height="12" rx="2" fill="#62813c">
+<title>HG-Rs · 0,3676 mm/día</title>
+</rect>
+<text x="4" y="118">HS-Ra</text>
+<rect x="116" y="107" width="493.53200000000004" height="12" rx="2" fill="#116466">
+<title>HS-Ra · 0,9491 mm/día</title>
+</rect>
+<rect x="116" y="124" width="327.964" height="12" rx="2" fill="#ab5c2e">
+<title>HS-Ra · 0,6307 mm/día</title>
+</rect>
+<rect x="116" y="141" width="287.56" height="12" rx="2" fill="#466a9b">
+<title>HS-Ra · 0,5530 mm/día</title>
+</rect>
+<rect x="116" y="158" width="277.212" height="12" rx="2" fill="#884d7e">
+<title>HS-Ra · 0,5331 mm/día</title>
+</rect>
+<rect x="116" y="175" width="277.00399999999996" height="12" rx="2" fill="#62813c">
+<title>HS-Ra · 0,5327 mm/día</title>
+</rect>
+<text x="4" y="218">HR/Valiantzas</text>
+<rect x="116" y="207" width="324.27200000000005" height="12" rx="2" fill="#116466">
+<title>HR/Valiantzas · 0,6236 mm/día</title>
+</rect>
+<rect x="116" y="224" width="266.344" height="12" rx="2" fill="#ab5c2e">
+<title>HR/Valiantzas · 0,5122 mm/día</title>
+</rect>
+<rect x="116" y="241" width="228.17600000000002" height="12" rx="2" fill="#466a9b">
+<title>HR/Valiantzas · 0,4388 mm/día</title>
+</rect>
+<rect x="116" y="258" width="218.92" height="12" rx="2" fill="#884d7e">
+<title>HR/Valiantzas · 0,4210 mm/día</title>
+</rect>
+<rect x="116" y="275" width="218.868" height="12" rx="2" fill="#62813c">
+<title>HR/Valiantzas · 0,4209 mm/día</title>
+</rect>
+</g>
+</svg>

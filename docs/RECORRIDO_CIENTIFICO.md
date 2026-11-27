@@ -14,6 +14,8 @@ Esta guía ordena las fuentes; no sustituye los protocolos ni convierte estados 
 8. **Retrospectiva y revisión.** Los [resultados](../scientific_pipeline/docs/et0_v2_retrospective_results_2026.md), [certificación técnica](../scientific_pipeline/docs/et0_v2_certificacion_evidencia.md) y [contrato de inferencia](../scientific_pipeline/docs/et0_v2_contrato_inferencia.md) precisan cobertura, cohortes y límites. V2 sigue NOT_PUBLISHED; la evaluación 2020–2025 no es prospectiva ni medición instrumental independiente.
 9. **Preservación y presentación.** Consultar [recuperación](backup/README.md), [ubicaciones](DATA_LOCATIONS.md), [web V2 estable](../web_app/docs/et0-v2-stable.md) y [V0.3](../web_app/docs/release-v03.md). Cada recibo o restore acredita solo el alcance y fecha documentados.
 
+Para la comparación independiente con los antecedentes de la UIB, véase la [auditoría científica de ET₀ V2, TFG y TFM](../scientific_pipeline/docs/et0_v2_auditoria_cientifica_tfg_tfm.md).
+
 ## Líneas operativas y futuras
 
 [Sync](../siar-sync/README.md) mantiene observaciones; [SIAR Forecast](../forecast_collector/README.md) y [AEMET Forecast](../aemet_forecast_collector/README.md) acumulan previsiones. Estas líneas no son el dataset congelado ni una evaluación ET₀ por horizonte. La inferencia con previsiones y la validación prospectiva figuran en la [hoja de ruta](ROADMAP.md), sin declararlas realizadas.

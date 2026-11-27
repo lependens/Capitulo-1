@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="MAE HG-Rs por estación · V2" viewBox="0 0 710 313">
+<title>MAE HG-Rs por estación · V2</title>
+<desc>TEST anual 2020–2025. Tamaños de cohorte en la tabla · mm/día</desc>
+<rect width="100%" height="100%" fill="#fff"/>
+<g font-family="system-ui, sans-serif" font-size="13" fill="#18373a">
+<line x1="116" x2="116" y1="4" y2="293" stroke="#d5dfdd"/>
+<text x="116" y="308" text-anchor="middle">0,000</text>
+<line x1="246" x2="246" y1="4" y2="293" stroke="#d5dfdd"/>
+<text x="246" y="308" text-anchor="middle">0,125</text>
+<line x1="376" x2="376" y1="4" y2="293" stroke="#d5dfdd"/>
+<text x="376" y="308" text-anchor="middle">0,250</text>
+<line x1="506" x2="506" y1="4" y2="293" stroke="#d5dfdd"/>
+<text x="506" y="308" text-anchor="middle">0,375</text>
+<line x1="636" x2="636" y1="4" y2="293" stroke="#d5dfdd"/>
+<text x="636" y="308" text-anchor="middle">0,500</text>
+<text x="4" y="18">IB01</text>
+<rect x="116" y="7" width="288.288" height="12" rx="2" fill="#116466">
+<title>IB01 · 0,2772 mm/día</title>
+</rect>
+<text x="4" y="50">IB02</text>
+<rect x="116" y="39" width="315.64" height="12" rx="2" fill="#116466">
+<title>IB02 · 0,3035 mm/día</title>
+</rect>
+<text x="4" y="82">IB03</text>
+<rect x="116" y="71" width="298.688" height="12" rx="2" fill="#116466">
+<title>IB03 · 0,2872 mm/día</title>
+</rect>
+<text x="4" y="114">IB04</text>
+<rect x="116" y="103" width="270.19199999999995" height="12" rx="2" fill="#116466">
+<title>IB04 · 0,2598 mm/día</title>
+</rect>
+<text x="4" y="146">IB05</text>
+<rect x="116" y="135" width="273" height="12" rx="2" fill="#116466">
+<title>IB05 · 0,2625 mm/día</title>
+</rect>
+<text x="4" y="178">IB06</text>
+<rect x="116" y="167" width="306.8" height="12" rx="2" fill="#116466">
+<title>IB06 · 0,2950 mm/día</title>
+</rect>
+<text x="4" y="210">IB08</text>
+<rect x="116" y="199" width="254.696" height="12" rx="2" fill="#116466">
+<title>IB08 · 0,2449 mm/día</title>
+</rect>
+<text x="4" y="242">IB10</text>
+<rect x="116" y="231" width="288.288" height="12" rx="2" fill="#116466">
+<title>IB10 · 0,2772 mm/día</title>
+</rect>
+<text x="4" y="274">IB11</text>
+<rect x="116" y="263" width="368.992" height="12" rx="2" fill="#116466">
+<title>IB11 · 0,3548 mm/día</title>
+</rect>
+</g>
+</svg>

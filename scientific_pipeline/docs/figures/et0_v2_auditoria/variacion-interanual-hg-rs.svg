@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Variación interanual HG-Rs · V2" viewBox="0 0 710 319">
+<title>Variación interanual HG-Rs · V2</title>
+<desc>V2, ANN A anual, agrupación de los pares por año 2020–2025 · mm/día</desc>
+<rect width="100%" height="100%" fill="#fff"/>
+<g font-family="system-ui, sans-serif" font-size="13" fill="#18373a">
+<line x1="116" x2="116" y1="4" y2="299" stroke="#d5dfdd"/>
+<text x="116" y="314" text-anchor="middle">0,000</text>
+<line x1="246" x2="246" y1="4" y2="299" stroke="#d5dfdd"/>
+<text x="246" y="314" text-anchor="middle">0,125</text>
+<line x1="376" x2="376" y1="4" y2="299" stroke="#d5dfdd"/>
+<text x="376" y="314" text-anchor="middle">0,250</text>
+<line x1="506" x2="506" y1="4" y2="299" stroke="#d5dfdd"/>
+<text x="506" y="314" text-anchor="middle">0,375</text>
+<line x1="636" x2="636" y1="4" y2="299" stroke="#d5dfdd"/>
+<text x="636" y="314" text-anchor="middle">0,500</text>
+<text x="4" y="18">2020</text>
+<rect x="116" y="7" width="398.944" height="12" rx="2" fill="#116466">
+<title>2020 · 0,3836 mm/día</title>
+</rect>
+<rect x="116" y="24" width="296.4" height="12" rx="2" fill="#ab5c2e">
+<title>2020 · 0,2850 mm/día</title>
+</rect>
+<text x="4" y="67">2021</text>
+<rect x="116" y="56" width="378.56" height="12" rx="2" fill="#116466">
+<title>2021 · 0,3640 mm/día</title>
+</rect>
+<rect x="116" y="73" width="287.144" height="12" rx="2" fill="#ab5c2e">
+<title>2021 · 0,2761 mm/día</title>
+</rect>
+<text x="4" y="116">2022</text>
+<rect x="116" y="105" width="393.224" height="12" rx="2" fill="#116466">
+<title>2022 · 0,3781 mm/día</title>
+</rect>
+<rect x="116" y="122" width="307.528" height="12" rx="2" fill="#ab5c2e">
+<title>2022 · 0,2957 mm/día</title>
+</rect>
+<text x="4" y="165">2023</text>
+<rect x="116" y="154" width="396.344" height="12" rx="2" fill="#116466">
+<title>2023 · 0,3811 mm/día</title>
+</rect>
+<rect x="116" y="171" width="308.56800000000004" height="12" rx="2" fill="#ab5c2e">
+<title>2023 · 0,2967 mm/día</title>
+</rect>
+<text x="4" y="214">2024</text>
+<rect x="116" y="203" width="396.96799999999996" height="12" rx="2" fill="#116466">
+<title>2024 · 0,3817 mm/día</title>
+</rect>
+<rect x="116" y="220" width="318.864" height="12" rx="2" fill="#ab5c2e">
+<title>2024 · 0,3066 mm/día</title>
+</rect>
+<text x="4" y="263">2025</text>
+<rect x="116" y="252" width="324.48" height="12" rx="2" fill="#116466">
+<title>2025 · 0,3120 mm/día</title>
+</rect>
+<rect x="116" y="269" width="257.608" height="12" rx="2" fill="#ab5c2e">
+<title>2025 · 0,2477 mm/día</title>
+</rect>
+</g>
+</svg>

@@ -100,7 +100,7 @@ def audit_one(entry, root, header, db, fetch, pause_seconds):
     return result
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--source-root',required=True);parser.add_argument('--plan',required=True);parser.add_argument('--inventory',required=True);parser.add_argument('--db',required=True);parser.add_argument('--max-stations',type=int,default=1);parser.add_argument('--pause-seconds',type=int,default=10);parser.add_argument('--dry-run',action='store_true')
+    parser=argparse.ArgumentParser();parser.add_argument('--source-root',required=True);parser.add_argument('--plan',required=True);parser.add_argument('--inventory',required=True);parser.add_argument('--db',required=True);parser.add_argument('--max-stations',type=int,default=1);parser.add_argument('--pause-seconds',type=int,default=10);parser.add_argument('--exclude',nargs='*',default=[]);parser.add_argument('--dry-run',action='store_true')
     args=parser.parse_args()
     if args.max_stations<1 or args.pause_seconds<3: parser.error('max-stations >= 1 and pause-seconds >= 3 required')
     root=Path(args.source_root).resolve(strict=True); dbpath=Path(args.db).resolve()
@@ -113,6 +113,7 @@ def main():
     todo=[]
     for entry in plans:
         if entry.get('status')!='PENDING_SIAR': continue
+        if entry['station_candidate'] in args.exclude: continue
         meta=metadata[entry['file']]
         if meta['candidate_station']!=entry['station_candidate'] or meta['sha256']!=entry['sha256']: raise ValueError('inventory/plan mismatch')
         validate_plan(entry,root,meta['header'])

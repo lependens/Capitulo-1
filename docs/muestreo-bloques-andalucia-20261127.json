@@ -1,0 +1,1266 @@
+[
+  {
+    "file": "Almería\\a1.txt",
+    "station_candidate": "AL10",
+    "sha256": "ac6c8f5e9e9be7dd1112fb8793936ac05dad18c1a7909245e6ed502dea6c3417",
+    "windows": [
+      {
+        "start": "2009-10-30",
+        "end": "2009-11-03"
+      },
+      {
+        "start": "2012-03-14",
+        "end": "2012-03-18"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Almería\\a10.txt",
+    "station_candidate": "AL09",
+    "sha256": "8c60d59bbdd56f841ea95170367471b023674cf1b48c6a246179823f07291df7",
+    "windows": [
+      {
+        "start": "2000-01-19",
+        "end": "2000-01-23"
+      },
+      {
+        "start": "2000-11-01",
+        "end": "2000-11-05"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Almería\\a11.txt",
+    "station_candidate": "AL12",
+    "sha256": "3df4fc38c7e075c63c1b868181a7489129c934a5803c2fc1989c82f7c19e9303",
+    "windows": [
+      {
+        "start": "2009-07-31",
+        "end": "2009-08-04"
+      },
+      {
+        "start": "2013-01-22",
+        "end": "2013-01-26"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Almería\\a12.txt",
+    "station_candidate": "AL06",
+    "sha256": "1585042346240bc2a7b4cab5fc837855b8d7c8d5c92cf160be796eba20b64996",
+    "windows": [
+      {
+        "start": "2002-08-16",
+        "end": "2002-08-20"
+      },
+      {
+        "start": "2013-10-25",
+        "end": "2013-10-29"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Almería\\a3.txt",
+    "station_candidate": "AL08",
+    "sha256": "160148b0c9203c66e2da4f445ea13572181ac7fd031179d968ed357f98157be9",
+    "windows": [
+      {
+        "start": "2000-09-26",
+        "end": "2000-09-30"
+      },
+      {
+        "start": "2011-09-12",
+        "end": "2011-09-16"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Almería\\a5.txt",
+    "station_candidate": "AL07",
+    "sha256": "fab27a8702c5d44fe08b6fd6ad1a7bedd3771a50931308bd73b48fc32a0f7f01",
+    "windows": [
+      {
+        "start": "2001-05-20",
+        "end": "2001-05-24"
+      },
+      {
+        "start": "2014-08-28",
+        "end": "2014-09-01"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Almería\\a7.txt",
+    "station_candidate": "AL11",
+    "sha256": "b282a0ff97659e09efaa925e45db97584e1740c5694dbc83f4a5974bbac8873b",
+    "windows": [
+      {
+        "start": "2008-02-24",
+        "end": "2008-02-28"
+      },
+      {
+        "start": "2018-04-22",
+        "end": "2018-04-26"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h1.txt",
+    "station_candidate": "H10",
+    "sha256": "3d02098ec6c579b26d34a5e13cd2d0b0964f008cabcd2015c3757182b81064dd",
+    "windows": [
+      {
+        "start": "2006-05-06",
+        "end": "2006-05-10"
+      },
+      {
+        "start": "2020-03-22",
+        "end": "2020-03-26"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h10.txt",
+    "station_candidate": "H102",
+    "sha256": "7c64ee31539da2cccd4ac36eb6e7da6c21c056ca1ee94f1af9d222ea2bfcca25",
+    "windows": [
+      {
+        "start": "2015-04-16",
+        "end": "2015-04-20"
+      },
+      {
+        "start": "2019-08-07",
+        "end": "2019-08-11"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h11.txt",
+    "station_candidate": "H09",
+    "sha256": "530319d3adbe10d14132de83ae1ab130af53311956e0f38b8c7d94a0fe00d48c",
+    "windows": [
+      {
+        "start": "2002-04-02",
+        "end": "2002-04-06"
+      },
+      {
+        "start": "2015-02-13",
+        "end": "2015-02-17"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h12.txt",
+    "station_candidate": "H07",
+    "sha256": "8b2e2d3efddb89906cfa9f0008abc02efa39e267798eb565abebb73018442ab3",
+    "windows": [
+      {
+        "start": "2007-10-23",
+        "end": "2007-10-27"
+      },
+      {
+        "start": "2012-07-06",
+        "end": "2012-07-10"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h13.txt",
+    "station_candidate": "H106",
+    "sha256": "8100054e4103a366be1b2c0b1b68115ed775e11c3f1fc866ce7195142ce6f1d2",
+    "windows": [
+      {
+        "start": "2016-01-15",
+        "end": "2016-01-19"
+      },
+      {
+        "start": "2018-05-16",
+        "end": "2018-05-20"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h14.txt",
+    "station_candidate": "H02",
+    "sha256": "2f10986d6df0926d176609014c15002c8814bfe923b84df9c9c9def17ae1f236",
+    "windows": [
+      {
+        "start": "2008-03-14",
+        "end": "2008-03-18"
+      },
+      {
+        "start": "2016-04-05",
+        "end": "2016-04-09"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h15.txt",
+    "station_candidate": "H04",
+    "sha256": "8c8c7632c8b3a1a9b9a923ae6a616bde9dc677c03203087fe7dd417e31b7084f",
+    "windows": [
+      {
+        "start": "2006-07-24",
+        "end": "2006-07-28"
+      },
+      {
+        "start": "2014-08-03",
+        "end": "2014-08-07"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h16.txt",
+    "station_candidate": "H05",
+    "sha256": "8c49c5ee5e68d95035aa0f9026c4c7951b845e91fe8d08e45ae2d0bff84a0987",
+    "windows": [
+      {
+        "start": "2008-03-26",
+        "end": "2008-03-30"
+      },
+      {
+        "start": "2018-09-14",
+        "end": "2018-09-18"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h2.txt",
+    "station_candidate": "H103",
+    "sha256": "28647d32609ebee1c3b33c26e5429385695370f16146cbbb10b452af3c3c81cd",
+    "windows": [
+      {
+        "start": "2017-02-21",
+        "end": "2017-02-25"
+      },
+      {
+        "start": "2019-08-15",
+        "end": "2019-08-19"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h3.txt",
+    "station_candidate": "H104",
+    "sha256": "d1433e9d47c70269efb8f557075764199700f523c8d496f7b1a85dcc4ad9a064",
+    "windows": [
+      {
+        "start": "2013-08-24",
+        "end": "2013-08-28"
+      },
+      {
+        "start": "2014-03-08",
+        "end": "2014-03-12"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h4.txt",
+    "station_candidate": "H06",
+    "sha256": "2fee61dd7609a523345d549e13ef85676a405ef09156517db1895a3dea9fa796",
+    "windows": [
+      {
+        "start": "2004-06-08",
+        "end": "2004-06-12"
+      },
+      {
+        "start": "2016-02-12",
+        "end": "2016-02-16"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h5.txt",
+    "station_candidate": "H08",
+    "sha256": "d106d566f2733287aef262d537b5dae003fcd2f05d5d25bbba6834b0c1996a5b",
+    "windows": [
+      {
+        "start": "2009-07-18",
+        "end": "2009-07-22"
+      },
+      {
+        "start": "2010-12-26",
+        "end": "2010-12-30"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h6.txt",
+    "station_candidate": "H01",
+    "sha256": "fa6010f86d2e18e6413b87a78320cb74f67d60063502186f3a9a41c558fdb5f1",
+    "windows": [
+      {
+        "start": "2005-10-17",
+        "end": "2005-10-21"
+      },
+      {
+        "start": "2009-01-25",
+        "end": "2009-01-29"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h7.txt",
+    "station_candidate": "H03",
+    "sha256": "c5244a87aeb2185696514cfb007a8362d50ebba71bf7cdf29956d9f0de9bce66",
+    "windows": [
+      {
+        "start": "2003-09-10",
+        "end": "2003-09-14"
+      },
+      {
+        "start": "2015-05-27",
+        "end": "2015-05-31"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h8.txt",
+    "station_candidate": "H11",
+    "sha256": "8a4190270032abad760d6ab4e08fc33e3ecd1c9647250377d37161be3e92c07a",
+    "windows": [
+      {
+        "start": "2017-06-17",
+        "end": "2017-06-21"
+      },
+      {
+        "start": "2020-03-05",
+        "end": "2020-03-09"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Huelva\\h9.txt",
+    "station_candidate": "H101",
+    "sha256": "e4dfac4ba0a09cc75a9dcbb09e5c6ebe49f3f5985ddb066260baf5fba08768a5",
+    "windows": [
+      {
+        "start": "2010-05-20",
+        "end": "2010-05-24"
+      },
+      {
+        "start": "2013-08-10",
+        "end": "2013-08-14"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j1.txt",
+    "station_candidate": "J06",
+    "sha256": "6c3c4f3dfafe4a8d432714075d34c6fc7f786a400420eb919962b893e621b00f",
+    "windows": [
+      {
+        "start": "2010-08-17",
+        "end": "2010-08-21"
+      },
+      {
+        "start": "2012-10-25",
+        "end": "2012-10-29"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j10.txt",
+    "station_candidate": "J07",
+    "sha256": "05c13ad4544b904f988cb3d0361ef3e0fcde24c95ac94384c5b069a4b9525e64",
+    "windows": [
+      {
+        "start": "2008-12-19",
+        "end": "2008-12-23"
+      },
+      {
+        "start": "2018-06-08",
+        "end": "2018-06-12"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j11.txt",
+    "station_candidate": "J16",
+    "sha256": "aa664cf44a8db4e20c6c9efb2e44a699dc49c0047bac7b3b5ee604ab74809753",
+    "windows": [
+      {
+        "start": "2015-05-05",
+        "end": "2015-05-09"
+      },
+      {
+        "start": "2017-10-17",
+        "end": "2017-10-21"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j12.txt",
+    "station_candidate": "J10",
+    "sha256": "9992c9d05ba5d74d1d2393b607124ddbd9ca90d8ecfb30bc51a4be1a0fe2651f",
+    "windows": [
+      {
+        "start": "2003-10-28",
+        "end": "2003-11-01"
+      },
+      {
+        "start": "2009-09-21",
+        "end": "2009-09-25"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j13.txt",
+    "station_candidate": "J13",
+    "sha256": "026ad631354fe4493f0fff3478d32664b701dba876b3714b6f8e351248246b11",
+    "windows": [
+      {
+        "start": "2001-02-22",
+        "end": "2001-02-26"
+      },
+      {
+        "start": "2001-03-24",
+        "end": "2001-03-28"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j14.txt",
+    "station_candidate": "J02",
+    "sha256": "582256b58fdbfbd21359d0f61d889122aef014539d89753406d8934e0172aace",
+    "windows": [
+      {
+        "start": "2007-06-07",
+        "end": "2007-06-11"
+      },
+      {
+        "start": "2015-02-02",
+        "end": "2015-02-06"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j15.txt",
+    "station_candidate": "J04",
+    "sha256": "8ad7c745365a48c9a94868cd36b17a68279a92e13fec72dfcc1122ffe91403c3",
+    "windows": [
+      {
+        "start": "2004-02-25",
+        "end": "2004-02-29"
+      },
+      {
+        "start": "2017-11-09",
+        "end": "2017-11-13"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j16.txt",
+    "station_candidate": "J03",
+    "sha256": "1f614334d3d4b6620b15d6893561fffb0bc5c1c668626262b6c91105b5bcd14b",
+    "windows": [
+      {
+        "start": "2009-12-17",
+        "end": "2009-12-21"
+      },
+      {
+        "start": "2018-03-05",
+        "end": "2018-03-09"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j17.txt",
+    "station_candidate": "J14",
+    "sha256": "6edbcc9058ce90880f1b3b60554888d0d912eda743a4995de4415c5da00f8057",
+    "windows": [
+      {
+        "start": "2005-08-15",
+        "end": "2005-08-19"
+      },
+      {
+        "start": "2020-03-30",
+        "end": "2020-04-03"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j18.txt",
+    "station_candidate": "J05",
+    "sha256": "439a40960e8af7d9a2bf5a6ad1cf597ceb9e72bedb4f78411d2f72329b49b32b",
+    "windows": [
+      {
+        "start": "2006-01-07",
+        "end": "2006-01-11"
+      },
+      {
+        "start": "2018-05-23",
+        "end": "2018-05-27"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j19.txt",
+    "station_candidate": "J101",
+    "sha256": "b561bbcf0c95e4b6c9cf99ea6b05e8d580c0307ca02352eb87220ecc9ce11da2",
+    "windows": [
+      {
+        "start": "2011-09-19",
+        "end": "2011-09-23"
+      },
+      {
+        "start": "2018-11-08",
+        "end": "2018-11-12"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j2.txt",
+    "station_candidate": "J11",
+    "sha256": "24abcac081dfc739e9da22a58adc344762bc95826d0c1453e09b5013dd67b620",
+    "windows": [
+      {
+        "start": "2001-03-05",
+        "end": "2001-03-09"
+      },
+      {
+        "start": "2013-01-23",
+        "end": "2013-01-27"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j20.txt",
+    "station_candidate": "J08",
+    "sha256": "661e6ff021f8d1246c9fde9a9c733fd9c84eee306eb4d709865cf1de3d37b267",
+    "windows": [
+      {
+        "start": "2007-10-09",
+        "end": "2007-10-13"
+      },
+      {
+        "start": "2019-12-10",
+        "end": "2019-12-14"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j21.txt",
+    "station_candidate": "J102",
+    "sha256": "1bd9726eb2b1141246a5f5ec93d4896b108788b9deff2585f484f7ff44c3f16b",
+    "windows": [
+      {
+        "start": "2012-02-21",
+        "end": "2012-02-25"
+      },
+      {
+        "start": "2016-07-02",
+        "end": "2016-07-06"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j3.txt",
+    "station_candidate": "J01",
+    "sha256": "2fe0a0346d75540aedd423024e08149b0d0a54f9c3d0c9e758d7e27f2f03a5a2",
+    "windows": [
+      {
+        "start": "2005-06-06",
+        "end": "2005-06-10"
+      },
+      {
+        "start": "2015-06-21",
+        "end": "2015-06-25"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j4.txt",
+    "station_candidate": "J104",
+    "sha256": "49f18282046b273eb95e6c79e9ecdd25f9ef9240cc2ba071cb22627e94c5cd4e",
+    "windows": [
+      {
+        "start": "2008-04-27",
+        "end": "2008-05-01"
+      },
+      {
+        "start": "2020-01-28",
+        "end": "2020-02-01"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j5.txt",
+    "station_candidate": "J15",
+    "sha256": "51650ff780595c733b48f2691da14fab67f5f1d7bf068477caa0e7ce71de0e53",
+    "windows": [
+      {
+        "start": "2003-12-14",
+        "end": "2003-12-18"
+      },
+      {
+        "start": "2019-07-11",
+        "end": "2019-07-15"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j6.txt",
+    "station_candidate": "J103",
+    "sha256": "445de77d8c3ed6585b7368ebcccefd8459ea8b849765d955d8808a8693d36cbe",
+    "windows": [
+      {
+        "start": "2011-11-13",
+        "end": "2011-11-17"
+      },
+      {
+        "start": "2018-06-30",
+        "end": "2018-07-04"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j7.txt",
+    "station_candidate": "J12",
+    "sha256": "e4b6c5046b77cdf5414b400b92fea8aea846e093ab3e033ce2d8ba50aadb26cd",
+    "windows": [
+      {
+        "start": "2005-09-26",
+        "end": "2005-09-30"
+      },
+      {
+        "start": "2017-12-28",
+        "end": "2018-01-01"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j8.txt",
+    "station_candidate": "J09",
+    "sha256": "e8c0cc8ac5250f2b3ed00c5f4c9274d05fabfeb69310d6b47c43c344b8174953",
+    "windows": [
+      {
+        "start": "2005-08-20",
+        "end": "2005-08-24"
+      },
+      {
+        "start": "2013-04-24",
+        "end": "2013-04-28"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Jaén\\j9.txt",
+    "station_candidate": "J17",
+    "sha256": "248826651e358bdb4e1abf8c9f0d0180676a3e46a96efc506e9297b7485abf1a",
+    "windows": [
+      {
+        "start": "2019-01-15",
+        "end": "2019-01-19"
+      },
+      {
+        "start": "2020-01-13",
+        "end": "2020-01-17"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m1.txt",
+    "station_candidate": "MA03",
+    "sha256": "d93e03698ed1d377b200f8e224e1cfd0f93fac4a4328009d3d21ce48ae2bac0d",
+    "windows": [
+      {
+        "start": "2002-10-12",
+        "end": "2002-10-16"
+      },
+      {
+        "start": "2010-09-15",
+        "end": "2010-09-19"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m10.txt",
+    "station_candidate": "MA08",
+    "sha256": "679169a2d294436d40b782f4a95634a03408db0475e3c93b0d3bf96ffebb3db7",
+    "windows": [
+      {
+        "start": "2009-09-14",
+        "end": "2009-09-18"
+      },
+      {
+        "start": "2014-05-07",
+        "end": "2014-05-11"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m11.txt",
+    "station_candidate": "MA06",
+    "sha256": "055ff11b5595934d8607354406ab81f2259a35817b7da543ccb83ba1701c7183",
+    "windows": [
+      {
+        "start": "2004-07-19",
+        "end": "2004-07-23"
+      },
+      {
+        "start": "2018-11-08",
+        "end": "2018-11-12"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m12.txt",
+    "station_candidate": "MA02",
+    "sha256": "cf5911abc703760264662eb7ac7fec061f45cd7f0235173542b4938219277a27",
+    "windows": [
+      {
+        "start": "2001-10-14",
+        "end": "2001-10-18"
+      },
+      {
+        "start": "2016-11-09",
+        "end": "2016-11-13"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m2.txt",
+    "station_candidate": "MA10",
+    "sha256": "794db4681b5e98db5c46d679ee46887faa8ec43d49abffdcc475a500c96de6ba",
+    "windows": [
+      {
+        "start": "2011-05-12",
+        "end": "2011-05-16"
+      },
+      {
+        "start": "2017-12-19",
+        "end": "2017-12-23"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m3.txt",
+    "station_candidate": "MA11",
+    "sha256": "9ccbd08a68fdc396e7199430d5be4043c775ac8af34275f2b1af424ee89b6404",
+    "windows": [
+      {
+        "start": "2015-07-27",
+        "end": "2015-07-31"
+      },
+      {
+        "start": "2020-05-05",
+        "end": "2020-05-09"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m4.txt",
+    "station_candidate": "MA05",
+    "sha256": "5255d2c8db2db717d23502cf7c9af6875b7e726e3112180bb8e2c8cbf9a76d56",
+    "windows": [
+      {
+        "start": "2001-03-23",
+        "end": "2001-03-27"
+      },
+      {
+        "start": "2011-07-07",
+        "end": "2011-07-11"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m5.txt",
+    "station_candidate": "MA09",
+    "sha256": "add454f72e37563dbfa63e11c336e604a0630c2d36223bdaae009b96da62e2b2",
+    "windows": [
+      {
+        "start": "2009-03-10",
+        "end": "2009-03-14"
+      },
+      {
+        "start": "2019-05-03",
+        "end": "2019-05-07"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m6.txt",
+    "station_candidate": "MA04",
+    "sha256": "d6d6ef5d3cfd183070908fb23b2ef6e3d0248d2cc57c56ec22a168dc1fca476e",
+    "windows": [
+      {
+        "start": "2009-04-08",
+        "end": "2009-04-12"
+      },
+      {
+        "start": "2019-02-05",
+        "end": "2019-02-09"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m7.txt",
+    "station_candidate": "MA101",
+    "sha256": "7dd6bbfebde824705e02d1f12e747df4764daa4af1946ee0ce2dbbcec4a9c34a",
+    "windows": [
+      {
+        "start": "2009-03-22",
+        "end": "2009-03-26"
+      },
+      {
+        "start": "2019-09-02",
+        "end": "2019-09-06"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m8.txt",
+    "station_candidate": "MA07",
+    "sha256": "1a1f8d099f7abd9600a220039b84963d859224fef6a764a89410b4007359406c",
+    "windows": [
+      {
+        "start": "2002-08-26",
+        "end": "2002-08-30"
+      },
+      {
+        "start": "2012-03-28",
+        "end": "2012-04-01"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Málaga\\m9.txt",
+    "station_candidate": "MA01",
+    "sha256": "b9b0abf68ae342b8d014d428cce9c92852ffcbcc3732f37411f753ad13dadeec",
+    "windows": [
+      {
+        "start": "2007-08-29",
+        "end": "2007-09-02"
+      },
+      {
+        "start": "2019-07-16",
+        "end": "2019-07-20"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s1.txt",
+    "station_candidate": "SE05",
+    "sha256": "cd44ea04abbdd78d6dc10b1ff935755fdfc63ddd1c97609f1bdcf861adeb1603",
+    "windows": [
+      {
+        "start": "2009-01-04",
+        "end": "2009-01-08"
+      },
+      {
+        "start": "2018-11-27",
+        "end": "2018-12-01"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s10.txt",
+    "station_candidate": "SE07",
+    "sha256": "ed565958e6a2200464eb724d1ea31fe5357019b7a397dfb0969cc8a86fedf470",
+    "windows": [
+      {
+        "start": "2001-07-22",
+        "end": "2001-07-26"
+      },
+      {
+        "start": "2014-11-06",
+        "end": "2014-11-10"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s11.txt",
+    "station_candidate": "SE12",
+    "sha256": "695fede54ea22df4114f9fbd497e147df1a7a7dd74c60f59ed537386850dd875",
+    "windows": [
+      {
+        "start": "2001-07-21",
+        "end": "2001-07-25"
+      },
+      {
+        "start": "2012-06-23",
+        "end": "2012-06-27"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s12.txt",
+    "station_candidate": "SE02",
+    "sha256": "7f9ac7a8a86dce9218e5270da4298f96de13fc237b042a96fb4ea8ef087e9212",
+    "windows": [
+      {
+        "start": "2008-05-02",
+        "end": "2008-05-06"
+      },
+      {
+        "start": "2016-09-06",
+        "end": "2016-09-10"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s13.txt",
+    "station_candidate": "SE04",
+    "sha256": "60f05cf9c42c6420d36dbee1ddbcf753c60c658defeff418ddef5237193a5b98",
+    "windows": [
+      {
+        "start": "2001-08-02",
+        "end": "2001-08-06"
+      },
+      {
+        "start": "2005-11-20",
+        "end": "2005-11-24"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s14.txt",
+    "station_candidate": "SE03",
+    "sha256": "c70ecbcef2ef4ea9eba5ae20da81b5c0274900938761cefec5074fbe15a47d46",
+    "windows": [
+      {
+        "start": "2009-09-06",
+        "end": "2009-09-10"
+      },
+      {
+        "start": "2016-03-06",
+        "end": "2016-03-10"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s15.txt",
+    "station_candidate": "SE15",
+    "sha256": "a9c6295fb46976b89f9620fa0bb2109c9da18ada715dba31071cd61c8e349901",
+    "windows": [
+      {
+        "start": "2007-12-01",
+        "end": "2007-12-05"
+      },
+      {
+        "start": "2014-10-25",
+        "end": "2014-10-29"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s16.txt",
+    "station_candidate": "SE16",
+    "sha256": "813f7c60c7df3101db9fc83c2b2ca53b8f8f4e1cd319337ec45bdc2fed8cb0b1",
+    "windows": [
+      {
+        "start": "2002-10-31",
+        "end": "2002-11-04"
+      },
+      {
+        "start": "2011-06-19",
+        "end": "2011-06-23"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s17.txt",
+    "station_candidate": "SE01",
+    "sha256": "c09d385d30566d88dfac54a1ecde16af4bb85a2bf748d2c7ac33eca94bcaf57d",
+    "windows": [
+      {
+        "start": "2002-12-02",
+        "end": "2002-12-06"
+      },
+      {
+        "start": "2005-04-27",
+        "end": "2005-05-01"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s18.txt",
+    "station_candidate": "SE11",
+    "sha256": "a1a0d2a7926910f592200b61e7a3c5bb7ba7d32dbfcad009988cc1fdbc35b079",
+    "windows": [
+      {
+        "start": "2005-01-22",
+        "end": "2005-01-26"
+      },
+      {
+        "start": "2012-09-01",
+        "end": "2012-09-05"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s19.txt",
+    "station_candidate": "SE18",
+    "sha256": "59b79fd585a0db49383bbbd44e29f1ae1083d5262c03806c9785e18aefc5a53a",
+    "windows": [
+      {
+        "start": "2006-11-08",
+        "end": "2006-11-12"
+      },
+      {
+        "start": "2014-09-29",
+        "end": "2014-10-03"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s2.txt",
+    "station_candidate": "SE09",
+    "sha256": "ac4ce5b334e40b6e9281d8368c5cd5c53877f7bb9fd5b2f63633e98604ecb284",
+    "windows": [
+      {
+        "start": "2001-09-05",
+        "end": "2001-09-09"
+      },
+      {
+        "start": "2014-10-30",
+        "end": "2014-11-03"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s20.txt",
+    "station_candidate": "SE13",
+    "sha256": "d3373435cdad57c630f6f3df5abeaab76ec5baf2a8fe48b4b891574ff32611f3",
+    "windows": [
+      {
+        "start": "2009-05-10",
+        "end": "2009-05-14"
+      },
+      {
+        "start": "2017-09-11",
+        "end": "2017-09-15"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s21.txt",
+    "station_candidate": "SE06",
+    "sha256": "1b578ca8eaf3704c3e61187b79cf21fc19316a905c329dcd4736f571db343936",
+    "windows": [
+      {
+        "start": "2001-04-03",
+        "end": "2001-04-07"
+      },
+      {
+        "start": "2001-11-02",
+        "end": "2001-11-06"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s22.txt",
+    "station_candidate": "SE14",
+    "sha256": "26570d5eddcd52ad0ab6751f182e1f17d8f91be780074806fca3bada03471eed",
+    "windows": [
+      {
+        "start": "2004-03-06",
+        "end": "2004-03-10"
+      },
+      {
+        "start": "2005-10-22",
+        "end": "2005-10-26"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s23.txt",
+    "station_candidate": "SE22",
+    "sha256": "058268a445b4ed23f2b188ccb08c804cf75c88d84284ba8c233fd8b3bb757338",
+    "windows": [
+      {
+        "start": "2015-05-20",
+        "end": "2015-05-24"
+      },
+      {
+        "start": "2016-02-09",
+        "end": "2016-02-13"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s3.txt",
+    "station_candidate": "SE17",
+    "sha256": "d50b0595ab5d397a62436799b25ecee468d75620b04b05eb2e121d03421c8061",
+    "windows": [
+      {
+        "start": "2005-02-28",
+        "end": "2005-03-04"
+      },
+      {
+        "start": "2013-05-24",
+        "end": "2013-05-28"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s4.txt",
+    "station_candidate": "SE19",
+    "sha256": "d6ff9cb9f3f20b9fd4d648d8fc67faa762341dbe9d1809ee8ec22fdd6fc89594",
+    "windows": [
+      {
+        "start": "2006-10-12",
+        "end": "2006-10-16"
+      },
+      {
+        "start": "2015-05-13",
+        "end": "2015-05-17"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s5.txt",
+    "station_candidate": "SE21",
+    "sha256": "c53f0350ec5882f2d881e82e63cf4e594239583422901540d55369e5eab49f43",
+    "windows": [
+      {
+        "start": "2007-08-16",
+        "end": "2007-08-20"
+      },
+      {
+        "start": "2014-09-25",
+        "end": "2014-09-29"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s6.txt",
+    "station_candidate": "SE101",
+    "sha256": "25b04b862d73cfd06fb349908a6037580114703a227a4a690d9f3ef1ff330679",
+    "windows": [
+      {
+        "start": "2005-12-15",
+        "end": "2005-12-19"
+      },
+      {
+        "start": "2012-06-23",
+        "end": "2012-06-27"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s7.txt",
+    "station_candidate": "SE20",
+    "sha256": "21f3406a73ed7c9e572a001f81c90c8a4ccdb64837071481579a37294035b30d",
+    "windows": [
+      {
+        "start": "2008-11-28",
+        "end": "2008-12-02"
+      },
+      {
+        "start": "2015-12-03",
+        "end": "2015-12-07"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s8.txt",
+    "station_candidate": "SE10",
+    "sha256": "e5b601c7aeb4de92e7672240bdeffe7379f5b0cdf2ffa63e0e99c27e5186992b",
+    "windows": [
+      {
+        "start": "2004-04-03",
+        "end": "2004-04-07"
+      },
+      {
+        "start": "2018-07-02",
+        "end": "2018-07-06"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  },
+  {
+    "file": "Sevilla\\s9.txt",
+    "station_candidate": "SE08",
+    "sha256": "fc77c07e27d129fa1c13273e3315dfa171b3437ccfee93061d7aaa709a2320b2",
+    "windows": [
+      {
+        "start": "2009-04-20",
+        "end": "2009-04-24"
+      },
+      {
+        "start": "2018-11-22",
+        "end": "2018-11-26"
+      }
+    ],
+    "status": "PENDING_SIAR"
+  }
+]

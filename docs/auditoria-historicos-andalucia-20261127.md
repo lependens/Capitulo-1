@@ -106,3 +106,9 @@ Comprobación 27/11/2026 de AL01 La Mojonera, fuente a6.txt SHA256 f18272c7c54d0
 ## AL03: diez fechas aleatorias frente a SIAR
 
 Comprobación 27/11/2026 de AL03 Níjar (inactiva), fuente a8.txt SHA256 f050ae8651c4d2fb668dad7ff4f3f6a927dfb159834e7290b13a15895119f5ac. Las diez fechas predeterminadas entre febrero y junio de 2000 tienen 12 campos meteorológicos comunes compatibles según la tolerancia de redondeo de AL05 y horas exactas. Se consultaron intervalos pequeños para agrupar fechas próximas. La ET0 se registra separada sin penalizar. Evidencias docs/evidencia-muestreo/AL03-siar-web-20261127.json y AL03-comparacion-20261127.json. Muestra PASS, no valida todas las filas ni importa datos.
+
+## Muestreo acordado de dos bloques y AL06
+
+El 27/11/2026 el propietario autorizó cambiar la muestra de diez días separados a dos bloques de cinco días consecutivos por estación, con periodos separados cuando sea posible. Los 79 archivos restantes con cabecera reconocida tienen un plan reproducible derivado de su hash en muestreo-bloques-andalucia-20261127.json. Las 37 fuentes sin cabecera requieren identificación y planificación adicional. Un plan no constituye una validación ni una importación.
+
+AL06 Virgen de Fátima-Cuevas de Almanzora, a12.txt SHA256 1585042346240bc2a7b4cab5fc837855b8d7c8d5c92cf160be796eba20b64996: consultas oficiales SIAR de 16–20/08/2002 y 25–29/10/2013. En 10/10 días coinciden los 12 campos meteorológicos comunes según precisión del histórico, con horas exactas. ET0 se registra pero no penaliza, y difiere en las diez fechas. Evidencia en docs/evidencia-muestreo/AL06-siar-web-20261127.json y AL06-comparacion-20261127.json. Muestra PASS; no valida la integridad de cada fila ni supone que se hayan importado datos. Siete pruebas del conversor y dos pruebas de selección de bloques pasan localmente.

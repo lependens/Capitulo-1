@@ -89,6 +89,8 @@ def main():
     output.mkdir(parents=True,exist_ok=True)
     with sqlite3.connect(output/'progreso.sqlite') as db:
         db.execute('CREATE TABLE IF NOT EXISTS blocks (station TEXT,start TEXT,end TEXT,captured TEXT,sha256 TEXT,data TEXT,missing TEXT, PRIMARY KEY(station,start,end))')
+        # Rebuild the derived CSV if a previous run stopped after its DB commit.
+        export(db,output,station)
         done=0
         from playwright.sync_api import sync_playwright
         with sync_playwright() as pw:

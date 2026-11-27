@@ -6,8 +6,9 @@ Este repositorio reúne observaciones meteorológicas SIAR, investigación sobre
 
 1. [Recorrido científico y cronológico](docs/RECORRIDO_CIENTIFICO.md): datos, Quality, dataset, fórmulas, calibración, ML y ANN, V1 y V2, desarrollo, freeze y retrospectiva.
 2. [Memoria científica V2](scientific_pipeline/docs/ET0_V2_MEMORIA_CIENTIFICA.md): métodos, ecuaciones, resultados, bibliografía y límites para revisión.
-3. [Estado](docs/PROJECT_STATUS.md), [hoja de ruta](docs/ROADMAP.md) y [auditoría documental del 26/11](docs/AUDITORIA_DOCUMENTAL_2026-11-26.md).
-4. [Datos y ubicaciones](docs/DATA_LOCATIONS.md) y [preservación y recuperación](docs/backup/README.md).
+3. [Auditoría científica independiente TFG–TFM–ET₀ V2](scientific_pipeline/docs/et0_v2_auditoria_cientifica_tfg_tfm.md): concordancias, discrepancias metodológicas y comprobaciones pendientes.
+4. [Estado](docs/PROJECT_STATUS.md), [hoja de ruta](docs/ROADMAP.md) y [auditoría documental del 26/11](docs/AUDITORIA_DOCUMENTAL_2026-11-26.md).
+5. [Datos y ubicaciones](docs/DATA_LOCATIONS.md) y [preservación y recuperación](docs/backup/README.md).
 
 ## Líneas operativas
 

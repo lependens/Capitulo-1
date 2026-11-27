@@ -1,3 +1,5 @@
+> **Actualización posterior, 27/11/2026:** la [PR #87](https://github.com/lependens/Capitulo-1/pull/87) incorporó la [auditoría científica TFG–TFM–ET₀ V2](../scientific_pipeline/docs/et0_v2_auditoria_cientifica_tfg_tfm.md). Es una revisión independiente focalizada con comprobaciones pendientes, que complementa esta auditoría documental fechada. V2 continúa NOT_PUBLISHED.
+
 # Auditoría documental — 26/11/2026
 
 Base de lectura: [main 258c833](https://github.com/lependens/Capitulo-1/commit/258c83320fae00dc8994c643c5af50fdd46a1846). El árbol contiene 545 rutas versionadas en este corte. La actividad automática puede mover main después. Se revisaron la estructura, índices y documentos científicos y operativos de referencia; esta guía no certifica cada afirmación histórica ni inspecciona servicios, copias o secretos.

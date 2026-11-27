@@ -2,6 +2,8 @@
 
 ## Desarrollo, validación retrospectiva y análisis comparativo con datos agroclimáticos SIAR de Baleares
 
+> **Complemento de revisión incorporado el 27/11/2026.** La [auditoría científica independiente del TFG y TFM](et0_v2_auditoria_cientifica_tfg_tfm.md) compara los antecedentes y la campaña V2. Identifica concordancia descriptiva con límites de cohorte y referencia, posibles errores en fragmentos históricos y cuestiones abiertas sobre viento, unidades y métricas. Sus hallazgos deben contrastarse con los códigos efectivamente ejecutados y las fuentes originales. La publicación científica V2 permanece NOT_PUBLISHED.
+
 **Memoria científica para revisión. No constituye una publicación académica ni una validación instrumental externa.** Código científico ejecutado: [`1e419ad881db1cc9798685ef19f414862461674b`](https://github.com/lependens/Capitulo-1/tree/1e419ad881db1cc9798685ef19f414862461674b). Dataset v1 SHA256 `0ddb10941710f6d3a945eae94fe6b9eca36ae4c12f28203e2364862920a49bbb`. Evaluación retrospectiva: Kaggle `370251881`; freeze SHA256 `97acad7ce7cc39c65d82f6efdc36290ed0325caaef2dedb69d9ffbefe1addfbd`.
 
 ## Índice

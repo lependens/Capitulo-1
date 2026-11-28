@@ -1,0 +1,18 @@
+[Unit]
+Description=SIAR Forecast independent content quality index
+After=local-fs.target
+[Service]
+Type=oneshot
+User=siar-forecast
+Group=siar-forecast
+UMask=0027
+StateDirectory=siar-forecast-quality
+StateDirectoryMode=0750
+Environment=PYTHONPATH=/opt/siar-forecast/quality
+ExecStart=/usr/bin/python3 /opt/siar-forecast/quality/quality_scan.py --output /var/lib/siar-forecast-quality/status.json
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

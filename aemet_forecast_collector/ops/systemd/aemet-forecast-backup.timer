@@ -1,0 +1,9 @@
+[Unit]
+Description=AEMET periodic backup reconciliation
+ConditionPathExists=/etc/aemet-forecast/pilot.gate
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=aemet-forecast-backup.service
+[Install]
+WantedBy=timers.target

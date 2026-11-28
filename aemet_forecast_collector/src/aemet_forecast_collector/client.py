@@ -64,12 +64,42 @@ class AemetClient:
         }
 
     def _request(self, url: str, headers: Mapping[str, str]) -> HttpResponse:
-        try:
-            return self._fetcher(url, headers, self._timeout_seconds)
-        except Exception as exc:
-            # Do not retain exception text or chained transport data.
-            kind = "timeout" if type(exc).__name__ in {"TimeoutError", "Timeout", "ReadTimeout"} else "network"
-            return HttpResponse(None, {}, b"", kind)
+        # At most one retry. Honor a server delay; never shorten Retry-After.
+        import time
+        from datetime import datetime, timezone
+        from email.utils import parsedate_to_datetime
+        def fetch():
+            try:
+                return self._fetcher(url, headers, self._timeout_seconds)
+            except Exception as exc:
+                kind = "timeout" if type(exc).__name__ in {"TimeoutError", "Timeout", "ReadTimeout"} else "network"
+                return HttpResponse(None, {}, b"", kind)
+        response = fetch()
+        if response.status_code in (429, 503):
+            delay = 120.0
+            retry = next((v for k, v in response.headers.items() if k.lower() == "retry-after"), None)
+            if retry:
+                try:
+                    delay = max(delay, float(retry))
+                except (ValueError, TypeError):
+                    try:
+                        dt = parsedate_to_datetime(retry)
+                        if dt.tzinfo is None:
+                            dt = dt.replace(tzinfo=timezone.utc)
+                        delay = max(delay, (dt - datetime.now(timezone.utc)).total_seconds())
+                    except (ValueError, TypeError, OverflowError):
+                        return response
+            if not 0 <= delay <= 600:
+                return response
+            print(f"AEMET_RETRY reason=http_{response.status_code} wait_seconds={delay:.0f}", flush=True)
+            time.sleep(delay)
+            return fetch()
+        if response.transport_error == "timeout" or response.status_code in (500, 502, 504):
+            reason = "timeout" if response.transport_error == "timeout" else f"http_{response.status_code}"
+            print(f"AEMET_RETRY reason={reason} wait_seconds=30", flush=True)
+            time.sleep(30)
+            return fetch()
+        return response
 
     def _body_has_secret(self, response: HttpResponse) -> bool:
         if contains_secret(response.body, self._api_key or ""):

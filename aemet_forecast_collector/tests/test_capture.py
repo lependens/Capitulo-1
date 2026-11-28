@@ -325,11 +325,15 @@ def test_malformed_content_type_charset_is_nonfatal():
     assert declared_charset("application/json; charset=\"unterminated") is None
 
 
-def test_payload_http_failure_keeps_wrapper_and_safe_payload_bytes(tmp_path):
+def test_payload_http_failure_keeps_wrapper_and_safe_payload_bytes(tmp_path, monkeypatch):
+    import time
+    delays = []
+    monkeypatch.setattr(time, "sleep", delays.append)
     wrapper_bytes = _wrapper()
     error_body = b"temporary service error"
     fetcher = SequenceFetcher(
         HttpResponse(200, {"Content-Type": "application/json"}, wrapper_bytes),
+        HttpResponse(503, {"Content-Type": "text/plain"}, b"first transient error"),
         HttpResponse(503, {"Content-Type": "text/plain"}, error_body),
     )
     run_path = capture_run(_config(tmp_path / "raw"), api_key=KEY, fetcher=fetcher, now=lambda: NOW)
@@ -337,6 +341,10 @@ def test_payload_http_failure_keeps_wrapper_and_safe_payload_bytes(tmp_path):
     assert metadata["capture"]["status"] == "partial"
     assert next(run_path.rglob("wrapper.raw")).read_bytes() == wrapper_bytes
     assert next(run_path.rglob("payload.raw")).read_bytes() == error_body
+    assert len(fetcher.calls) == 3
+    assert delays == [120.0]
+    assert len(fetcher.calls) == 3
+    assert delays == [120.0]
     assert metadata["http"]["payload"]["status_code"] == 503
 
 

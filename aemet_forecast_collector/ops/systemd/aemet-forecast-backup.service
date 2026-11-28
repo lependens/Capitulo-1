@@ -1,0 +1,29 @@
+[Unit]
+Description=AEMET offsite backup and reconciliation (pilot gate required)
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/etc/aemet-forecast/pilot.gate
+ConditionPathExists=/var/lib/aemet-forecast/rclone/rclone.conf
+
+[Service]
+Type=oneshot
+User=aemet-forecast
+Group=aemet-forecast
+UMask=0007
+WorkingDirectory=/srv/aemet-forecast/raw
+ExecStart=/opt/aemet-forecast/current/venv/bin/python /opt/aemet-forecast/current/ops.py reconcile
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+ReadWritePaths=/srv/aemet-forecast/raw/tmp /var/lib/aemet-forecast/rclone
+TimeoutStartSec=2h
+StandardOutput=journal
+StandardError=journal
